@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "MilkBook - Automatic Milk Collection & Dairy Accounting Software for Indian milk businesses - Designed by signimus",
   "main": "index.tsx",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
