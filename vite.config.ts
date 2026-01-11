@@ -13,5 +13,6 @@ export default defineConfig({
   },
   server: {
     open: true
-  }
+  },
+  publicDir: 'public' // Include public directory in build
 });
