@@ -1,0 +1,235 @@
+import React, { useState } from 'react';
+import { formatCurrency, formatDate } from '../utils/constants';
+import { Icon, Card, StatCard } from '../components/shared';
+
+const InventoryScreen = ({ state, setState, notify }) => {
+  const [form, setForm] = useState({ 
+    item: 'Feed', 
+    type: 'Purchase', 
+    qty: '', 
+    date: new Date().toISOString().split('T')[0],
+    supplier: '',
+    rate: '',
+    amount: ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newEntry = {
+      id: Date.now().toString(),
+      ...form,
+      qty: parseFloat(form.qty),
+      rate: parseFloat(form.rate) || 0,
+      amount: (parseFloat(form.qty) * (parseFloat(form.rate) || 0)).toFixed(2)
+    };
+
+    setState(prev => ({
+      ...prev,
+      inventory: [...prev.inventory, newEntry]
+    }));
+
+    notify(`${form.type} of ${form.qty} ${form.item} recorded`);
+    setForm({ 
+      item: 'Feed', 
+      type: 'Purchase', 
+      qty: '', 
+      date: new Date().toISOString().split('T')[0],
+      supplier: '',
+      rate: '',
+      amount: ''
+    });
+  };
+
+  // Calculate stock levels
+  const stockLevels = ['Feed', 'Ghee', 'Other'].map(itemType => {
+    const purchases = state.inventory
+      .filter(inv => inv.item === itemType && inv.type === 'Purchase')
+      .reduce((sum, inv) => sum + parseFloat(inv.qty || 0), 0);
+    
+    const sales = state.inventory
+      .filter(inv => inv.item === itemType && inv.type === 'Sale')
+      .reduce((sum, inv) => sum + parseFloat(inv.qty || 0), 0);
+    
+    const totalValue = state.inventory
+      .filter(inv => inv.item === itemType && inv.type === 'Purchase')
+      .reduce((sum, inv) => sum + parseFloat(inv.amount || 0), 0);
+    
+    return {
+      item: itemType,
+      totalIn: purchases,
+      totalOut: sales,
+      currentStock: purchases - sales,
+      totalValue
+    };
+  });
+
+  const totalInventoryValue = stockLevels.reduce((sum, item) => sum + item.totalValue, 0);
+
+  return (
+    <div className="max-w-6xl mx-auto">
+      <Card title="Inventory Management">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4 items-end">
+          <div className="lg:col-span-2">
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Item</label>
+            <select
+              className="w-full p-3 bg-slate-50 border rounded-xl font-bold"
+              value={form.item}
+              onChange={e => setForm({...form, item: e.target.value})}
+            >
+              <option value="Feed">Animal Feed</option>
+              <option value="Ghee">Ghee/Butter</option>
+              <option value="Other">Other Products</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Action</label>
+            <select
+              className="w-full p-3 bg-slate-50 border rounded-xl font-bold"
+              value={form.type}
+              onChange={e => setForm({...form, type: e.target.value})}
+            >
+              <option value="Purchase">Purchase</option>
+              <option value="Sale">Sale</option>
+              <option value="Consumption">Consumption</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Supplier</label>
+            <input
+              type="text"
+              className="w-full p-3 bg-slate-50 border rounded-xl font-bold"
+              value={form.supplier}
+              onChange={e => setForm({...form, supplier: e.target.value})}
+              placeholder="Supplier name"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Quantity</label>
+            <input
+              type="number"
+              step="0.01"
+              required
+              className="w-full p-3 bg-slate-50 border rounded-xl font-bold"
+              value={form.qty}
+              onChange={e => setForm({...form, qty: e.target.value})}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Rate</label>
+            <input
+              type="number"
+              step="0.01"
+              className="w-full p-3 bg-slate-50 border rounded-xl font-bold text-blue-600"
+              value={form.rate}
+              onChange={e => setForm({...form, rate: e.target.value})}
+              placeholder="Rate per unit"
+            />
+          </div>
+          <div className="flex items-end">
+            <button
+              type="submit"
+              className="w-full py-4 bg-slate-900 text-white rounded-xl font-black uppercase text-xs tracking-widest"
+            >Update Stock</button>
+          </div>
+        </form>
+      </Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-5">
+          <div className="p-4 rounded-xl bg-blue-50 text-blue-600">
+            <Icon name="package" size={24} />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Items</p>
+            <p className="text-2xl font-black text-slate-800">{state.inventory.length}</p>
+          </div>
+        </div>
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-5">
+          <div className="p-4 rounded-xl bg-green-50 text-green-600">
+            <Icon name="trending-up" size={24} />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Inventory Value</p>
+            <p className="text-2xl font-black text-slate-800">{formatCurrency(totalInventoryValue)}</p>
+          </div>
+        </div>
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-5">
+          <div className="p-4 rounded-xl bg-amber-50 text-amber-600">
+            <Icon name="box" size={24} />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Feed Stock</p>
+            <p className="text-2xl font-black text-slate-800">{stockLevels.find(s => s.item === 'Feed')?.currentStock || 0} Bags</p>
+          </div>
+        </div>
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-5">
+          <div className="p-4 rounded-xl bg-rose-50 text-rose-600">
+            <Icon name="coffee" size={24} />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Ghee Stock</p>
+            <p className="text-2xl font-black text-slate-800">{stockLevels.find(s => s.item === 'Ghee')?.currentStock || 0} Kg</p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {stockLevels.map(stock => 
+          <Card key={stock.item} title={`${stock.item} Status`}>
+            <div className="space-y-4">
+              <div className="flex justify-between">
+                <span className="font-bold text-slate-600">Purchased:</span>
+                <span className="font-black text-slate-800">{stock.totalIn} {stock.item === 'Feed' ? 'Bags' : stock.item === 'Ghee' ? 'Kg' : 'Units'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-bold text-slate-600">Sold/Consumed:</span>
+                <span className="font-black text-slate-800">{stock.totalOut} {stock.item === 'Feed' ? 'Bags' : stock.item === 'Ghee' ? 'Kg' : 'Units'}</span>
+              </div>
+              <div className="flex justify-between pt-2 border-t">
+                <span className="font-bold text-slate-600">Current Stock:</span>
+                <span className={`font-black text-xl ${stock.currentStock > 10 ? 'text-green-600' : 'text-amber-600'}`}>
+                  {stock.currentStock} {stock.item === 'Feed' ? 'Bags' : stock.item === 'Ghee' ? 'Kg' : 'Units'}
+                </span>
+              </div>
+              <div className="flex justify-between pt-2 border-t">
+                <span className="font-bold text-slate-600">Value:</span>
+                <span className="font-black text-slate-800">{formatCurrency(stock.totalValue)}</span>
+              </div>
+            </div>
+          </Card>
+        )}
+      </div>
+      
+      <Card title="Inventory Transactions">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="border-b text-[10px] font-black text-slate-400 uppercase">
+              <tr>
+                <th className="pb-4">Date</th>
+                <th className="pb-4">Item</th>
+                <th className="pb-4">Type</th>
+                <th className="pb-4">Qty</th>
+                <th className="pb-4">Rate</th>
+                <th className="pb-4 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {state.inventory.slice(0, 15).map(transaction => 
+                <tr key={transaction.id}>
+                  <td className="py-4 font-bold text-slate-500">{transaction.date}</td>
+                  <td className="py-4 font-black">{transaction.item}</td>
+                  <td className="py-4 font-bold text-slate-500">{transaction.type}</td>
+                  <td className="py-4 font-black text-slate-700">{transaction.qty} {transaction.item === 'Feed' ? 'Bags' : transaction.item === 'Ghee' ? 'Kg' : 'Units'}</td>
+                  <td className="py-4 font-black text-blue-600">{transaction.rate ? formatCurrency(parseFloat(transaction.rate)) : 'N/A'}</td>
+                  <td className="py-4 text-right font-black text-green-600">{transaction.amount ? formatCurrency(transaction.amount) : 'N/A'}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+export default InventoryScreen;

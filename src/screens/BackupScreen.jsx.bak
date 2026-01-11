@@ -1,0 +1,89 @@
+import React from 'react';
+import { formatCurrency, formatDate } from '../utils/constants';
+import { Icon, Card, StatCard } from '../components/shared';
+
+const BackupScreen = ({ state, setState, notify }) => {
+  const backup = () => { 
+    localStorage.setItem('milkbook_backup_v1', JSON.stringify(state)); 
+    setState(p => ({...p, settings: {...p.settings, lastBackup: new Date()}})); 
+    notify("Backup Secured Locally"); 
+  };
+  const restore = () => { 
+    const data = localStorage.getItem('milkbook_backup_v1'); 
+    if (data && confirm("Wipe current data and restore?")) { 
+      setState(JSON.parse(data)); 
+      notify("Restored"); 
+    } 
+  };
+  
+  return (
+    <div className="max-w-2xl mx-auto space-y-8">
+      <Card title="Disaster Recovery & Sync">
+        <div className="space-y-8">
+          <div className="flex items-center gap-6 bg-blue-50/50 p-8 rounded-3xl border-2 border-dashed border-blue-200">
+            <Icon name="database" size={48} className="text-blue-600" />
+            <div>
+              <p className="font-black text-xl uppercase tracking-tighter">Persistence Engine</p>
+              <p className="text-sm font-bold text-slate-400 italic">Latest snapshot: {state.settings.lastBackup ? formatDate(state.settings.lastBackup) : 'No snapshot found'}</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-6">
+            <button 
+              onClick={backup} 
+              className="py-6 bg-blue-600 text-white rounded-2xl font-black text-lg hover:bg-blue-700"
+            >Secure Backup</button>
+            <button 
+              onClick={restore} 
+              className="py-6 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-800"
+            >Restore Data</button>
+          </div>
+        </div>
+      </Card>
+      <Card title="Export Data">
+        <div className="space-y-6">
+          <button 
+            onClick={() => {
+              const dataStr = JSON.stringify(state, null, 2);
+              const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+              const exportFileDefaultName = 'milkbook_data_export.json';
+              const linkElement = document.createElement('a');
+              linkElement.setAttribute('href', dataUri);
+              linkElement.setAttribute('download', exportFileDefaultName);
+              linkElement.click();
+            }}
+            className="w-full py-5 bg-green-600 text-white rounded-xl font-black text-lg hover:bg-green-700"
+          >Export All Data (JSON)</button>
+          <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200">
+            <p className="font-black text-amber-800 mb-2 flex items-center gap-2">
+              <Icon name="alert-circle" size={18} />
+              Important Note
+            </p>
+            <ul className="text-sm space-y-1 text-amber-700 font-medium">
+              <li>Data is stored in your browser. You own your data completely</li>
+              <li>Always maintain external backups of critical data</li>
+              <li>Export data regularly to prevent accidental loss</li>
+              <li>Transparency reduces disputes between parties</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+      <div className="flex justify-between items-center p-8 bg-rose-50 border-2 border-rose-100 rounded-3xl">
+        <div className="pr-12">
+          <p className="font-black text-rose-800 uppercase tracking-tighter text-xl">Factory Reset</p>
+          <p className="text-sm font-bold text-rose-600 opacity-80 uppercase tracking-widest">Permanent erasure of all centers, farmers, and logs.</p>
+        </div>
+        <button 
+          onClick={() => { 
+            if(confirm("ABSOLUTE WIPE?")) { 
+              localStorage.clear(); 
+              window.location.reload(); 
+            } 
+          }} 
+          className="px-8 py-4 bg-rose-600 text-white rounded-xl font-black uppercase text-xs tracking-widest"
+        >Execute Wipe</button>
+      </div>
+    </div>
+  );
+};
+
+export default BackupScreen;
