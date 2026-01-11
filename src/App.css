@@ -1,7 +1,8 @@
+/* src/App.css */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-body { 
-  font-family: 'Inter', sans-serif; 
+body {
+  font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f8fafc;
@@ -9,46 +10,46 @@ body {
 }
 
 /* ERP Style Scrollbars */
-::-webkit-scrollbar { 
-  width: 8px; 
-  height: 8px; 
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
-::-webkit-scrollbar-track { 
-  background: #f1f1f1; 
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
-::-webkit-scrollbar-thumb { 
-  background: #cbd5e1; 
-  border-radius: 4px; 
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover { 
-  background: #94a3b8; 
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 /* Print Optimization */
 @media print {
-  .print-hidden { 
-    display: none !important; 
+  .print-hidden {
+    display: none !important;
   }
-  .print-only { 
-    display: block !important; 
+  .print-only {
+    display: block !important;
   }
-  body { 
-    background: white; 
-    color: black; 
-    font-size: 10pt; 
+  body {
+    background: white;
+    color: black;
+    font-size: 10pt;
   }
-  .card { 
-    border: none !important; 
-    box-shadow: none !important; 
+  .card {
+    border: none !important;
+    box-shadow: none !important;
   }
-  table { 
-    width: 100% !important; 
-    border-collapse: collapse !important; 
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
   }
-  th, td { 
-    border: 1px solid #ddd !important; 
-    padding: 4pt !important; 
-    text-align: left !important; 
+  th, td {
+    border: 1px solid #ddd !important;
+    padding: 4pt !important;
+    text-align: left !important;
   }
 }
 
@@ -72,22 +73,22 @@ input:focus, select:focus, textarea:focus {
   border: none;
 }
 
-.btn-primary { 
-  background: #2563eb; 
-  color: white; 
+.btn-primary {
+  background: #2563eb;
+  color: white;
 }
-.btn-primary:hover { 
-  background: #1d4ed8; 
-  transform: translateY(-1px); 
+.btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
 }
-.btn-secondary { 
-  background: white; 
-  border: 1px solid #e2e8f0; 
-  color: #475569; 
+.btn-secondary {
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #475569;
 }
-.btn-secondary:hover { 
-  background: #f8fafc; 
-  border-color: #cbd5e1; 
+.btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 /* Card styles */
