@@ -1,0 +1,11 @@
+[build]
+  publish = "."
+  command = "echo 'No build command needed for static files'"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[template.environment]
+  NODE_VERSION = "18"

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bold Flat Milk Sales V2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#17a1cf",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111d21",
+                        "dark-text": "#2D3136",
+                        "zebra-light": "#EDEDF0"
+                    },
+                    fontFamily: {
+                        "display": ["Lexend"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Lexend', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-dark-text min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-solid border-[#dce3e5] px-6 lg:px-10 py-3 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-primary p-2 rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl">water_drop</span>
+</div>
+<h2 class="text-dark-text dark:text-white text-lg font-bold leading-tight tracking-tight">Bold Flat Milk Sales</h2>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary text-sm font-bold border-b-2 border-primary pb-1" href="#">Dashboard</a>
+<a class="text-dark-text dark:text-gray-300 text-sm font-medium hover:text-primary" href="#">Inventory</a>
+<a class="text-dark-text dark:text-gray-300 text-sm font-medium hover:text-primary" href="#">Customers</a>
+<a class="text-dark-text dark:text-gray-300 text-sm font-medium hover:text-primary" href="#">Reports</a>
+</nav>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-gray-100 dark:bg-gray-800 text-dark-text dark:text-white">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-gray-100 dark:bg-gray-800 text-dark-text dark:text-white">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-4 lg:px-10 py-8">
+<!-- Sales Overview -->
+<section class="mb-10">
+<h1 class="text-dark-text dark:text-white text-3xl font-bold mb-6">Sales Overview</h1>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Today's Total Sales -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 flex items-center gap-5 shadow-sm">
+<div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1">payments</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wider">Today's Total</p>
+<p class="text-dark-text dark:text-white text-2xl font-bold">₹ 12,450</p>
+</div>
+</div>
+<!-- Stock Remaining -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 flex items-center gap-5 shadow-sm">
+<div class="w-16 h-16 bg-orange-50 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-500 text-4xl" style="font-variation-settings: 'FILL' 1">liquor</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wider">Stock Left</p>
+<p class="text-dark-text dark:text-white text-2xl font-bold">450 Bottles</p>
+</div>
+</div>
+<!-- Deliveries Pending -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 flex items-center gap-5 shadow-sm">
+<div class="w-16 h-16 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-purple-500 text-4xl" style="font-variation-settings: 'FILL' 1">local_shipping</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wider">Pending Trucks</p>
+<p class="text-dark-text dark:text-white text-2xl font-bold">3 Trucks</p>
+</div>
+</div>
+</div>
+</section>
+<!-- New Sale Entry Section -->
+<section class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-lg mb-10">
+<div class="p-6 border-b border-gray-100 dark:border-gray-700">
+<h2 class="text-xl font-bold text-dark-text dark:text-white">New Sale Entry</h2>
+</div>
+<div class="p-6 flex flex-col gap-8">
+<!-- Product Selector -->
+<div>
+<label class="block text-sm font-bold text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-widest">1. Select Product</label>
+<div class="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+<button class="flex flex-col items-center justify-center border-2 border-primary bg-primary/5 min-w-[140px] p-5 rounded-xl transition-all">
+<span class="material-symbols-outlined text-primary text-4xl mb-2">water_full</span>
+<p class="text-dark-text dark:text-white font-bold text-sm">Full Cream</p>
+</button>
+<button class="flex flex-col items-center justify-center border-2 border-transparent bg-gray-50 dark:bg-gray-700/50 min-w-[140px] p-5 rounded-xl hover:border-gray-300">
+<span class="material-symbols-outlined text-gray-400 text-4xl mb-2">opacity</span>
+<p class="text-gray-500 dark:text-gray-400 font-bold text-sm">Toned Milk</p>
+</button>
+<button class="flex flex-col items-center justify-center border-2 border-transparent bg-gray-50 dark:bg-gray-700/50 min-w-[140px] p-5 rounded-xl hover:border-gray-300">
+<span class="material-symbols-outlined text-gray-400 text-4xl mb-2">icecream</span>
+<p class="text-gray-500 dark:text-gray-400 font-bold text-sm">Curd</p>
+</button>
+<button class="flex flex-col items-center justify-center border-2 border-transparent bg-gray-50 dark:bg-gray-700/50 min-w-[140px] p-5 rounded-xl hover:border-gray-300">
+<span class="material-symbols-outlined text-gray-400 text-4xl mb-2">grid_view</span>
+<p class="text-gray-500 dark:text-gray-400 font-bold text-sm">Paneer</p>
+</button>
+<button class="flex flex-col items-center justify-center border-2 border-transparent bg-gray-50 dark:bg-gray-700/50 min-w-[140px] p-5 rounded-xl hover:border-gray-300">
+<span class="material-symbols-outlined text-gray-400 text-4xl mb-2">cooking</span>
+<p class="text-gray-500 dark:text-gray-400 font-bold text-sm">Ghee</p>
+</button>
+</div>
+</div>
+<!-- Input Zone -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-end">
+<div class="lg:col-span-1">
+<label class="block text-sm font-bold text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-widest">2. Enter Quantity</label>
+<div class="bg-primary rounded-xl p-1 shadow-lg shadow-primary/20">
+<div class="flex items-center bg-primary rounded-lg px-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-white text-5xl font-bold py-4 text-center" type="number" value="10"/>
+<span class="text-white/80 font-bold text-xl pr-4">Units</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-1 bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6 border-2 border-dashed border-gray-200 dark:border-gray-600">
+<label class="block text-xs font-bold text-gray-400 uppercase mb-1">Total Bill Amount</label>
+<div class="flex items-baseline gap-2">
+<span class="text-gray-400 text-2xl font-medium">₹</span>
+<span class="text-dark-text dark:text-white text-5xl font-bold">540.00</span>
+</div>
+</div>
+<div class="lg:col-span-1">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-6 px-8 rounded-xl shadow-xl shadow-primary/30 flex items-center justify-center gap-3 transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined text-2xl">add_shopping_cart</span>
+<span class="text-xl">COMPLETE SALE</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Sales History -->
+<section class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+<div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+<h2 class="text-xl font-bold text-dark-text dark:text-white">Recent Sales Log</h2>
+<button class="text-primary font-bold text-sm flex items-center gap-1">
+                    VIEW ALL <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-gray-50 dark:bg-gray-900/50">
+<th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Time</th>
+<th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Product</th>
+<th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Quantity</th>
+<th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Total</th>
+<th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+<td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300 font-medium">10:45 AM</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-blue-400"></div>
+<span class="font-bold text-dark-text dark:text-white">Full Cream Milk</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">12 Bottles</td>
+<td class="px-6 py-4 text-sm font-bold">₹ 648</td>
+<td class="px-6 py-4 text-right">
+<span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-full">COMPLETED</span>
+</td>
+</tr>
+<tr class="bg-zebra-light/30 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-700/30">
+<td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300 font-medium">10:30 AM</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-orange-400"></div>
+<span class="font-bold text-dark-text dark:text-white">Fresh Paneer</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">2.5 kg</td>
+<td class="px-6 py-4 text-sm font-bold">₹ 875</td>
+<td class="px-6 py-4 text-right">
+<span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-full">COMPLETED</span>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+<td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300 font-medium">10:15 AM</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-blue-200"></div>
+<span class="font-bold text-dark-text dark:text-white">Toned Milk</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">5 Bottles</td>
+<td class="px-6 py-4 text-sm font-bold">₹ 240</td>
+<td class="px-6 py-4 text-right">
+<span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-full">COMPLETED</span>
+</td>
+</tr>
+<tr class="bg-zebra-light/30 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-700/30">
+<td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300 font-medium">09:50 AM</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-purple-400"></div>
+<span class="font-bold text-dark-text dark:text-white">Curd Pro</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">20 Cups</td>
+<td class="px-6 py-4 text-sm font-bold">₹ 400</td>
+<td class="px-6 py-4 text-right">
+<span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-full">COMPLETED</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<!-- Simple Footer -->
+<footer class="mt-12 py-8 px-10 text-center text-gray-400 text-sm">
+<p>© 2024 Bold Flat Dairy Management. Clean. Bold. Authoritative.</p>
+</footer>
+</body></html>

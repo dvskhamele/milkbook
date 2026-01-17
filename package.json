@@ -1,0 +1,18 @@
+{
+  "name": "milkbook-standalone",
+  "private": true,
+  "version": "1.0.0",
+  "description": "MilkBook - Automatic Milk Collection & Dairy Accounting System - Designed by signimus",
+  "scripts": {
+    "start": "serve public",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["dairy", "milk", "accounting", "vlcc"],
+  "author": "signimus",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

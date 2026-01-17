@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Milk Collection - Error Alert</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#da0b1d",
+                        "brand-blue": "rgb(37, 99, 235)",
+                        "background-light": "#ffffff",
+                        "background-dark": "#da0b1d",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                    animation: {
+                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+                    },
+                    keyframes: {
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Ensuring full height for the layout */
+        html, body {
+            height: 100%;
+        }
+        /* Custom scrollbar hiding if needed for kiosks */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-primary overflow-hidden font-display flex flex-col h-screen w-full">
+<!-- Global Header: Brand Blue context anchor -->
+<header class="flex-none bg-brand-blue flex items-center justify-between px-6 py-4 shadow-sm z-10">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 bg-white/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[24px]">local_drink</span>
+</div>
+<div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-tight opacity-90">Milk Collection System</h2>
+<p class="text-white/70 text-xs font-medium uppercase tracking-wider">Station 04 • Operator ID: 8921</p>
+</div>
+</div>
+<div class="flex items-center gap-6 text-white/90">
+<div class="flex items-center gap-2 bg-black/10 px-3 py-1.5 rounded">
+<span class="material-symbols-outlined text-[20px]">wifi</span>
+<span class="text-sm font-medium">Online</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-white/20 border-2 border-white/30 bg-center bg-cover" data-alt="User profile avatar showing a smiling operator" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC9_lmcZu1e91JJh2T4IRyMpwsaLgsdO1ihFw5k48rFFe4g4T-DkeXQkhE95sz7O-PFpO7J6s2JwRK-0-ul6UvtpUMQ4pLUseBJ3M2HiXcHnchi1KcgugAEpf5NXXaBzmlGvF32EgkosaiUyePNAlnVNteFjQyBcz0Wakx_WiXXkyB3u8EBvFJs8ibIo_46OaqInj3RuU-BzE4CW9PecMJ3CZP2slMY2CaUAsdvAxpm3A5GmtgsWpoRTk1WdCXZMGjKjrjole3u-w");'></div>
+</div>
+</div>
+</header>
+<!-- Main Alert Container: Full Bleed Red -->
+<main class="flex-1 flex flex-col items-center justify-center relative p-4 w-full">
+<!-- Large Industrial Warning Icon -->
+<div class="mb-6 animate-pulse">
+<span class="material-symbols-outlined text-white text-[160px] leading-none drop-shadow-md">cancel</span>
+</div>
+<!-- Primary Action Text -->
+<h1 class="text-white text-[80px] md:text-[100px] font-extrabold tracking-tight leading-none text-center uppercase mb-2 drop-shadow-sm">
+            RE-ENTER
+        </h1>
+<!-- Specific Error Label -->
+<div class="bg-black/20 px-6 py-2 rounded-lg mb-10 backdrop-blur-sm border border-white/10">
+<h2 class="text-white text-2xl md:text-3xl font-medium tracking-wide text-center">
+                Invalid Fat Percentage <span class="font-bold bg-white text-primary px-2 rounded ml-2">18.5% detected</span>
+</h2>
+</div>
+<!-- Shaking Input Field Area -->
+<div class="w-full max-w-[500px] animate-shake">
+<div class="relative group">
+<label class="sr-only" for="fat-percentage">Fat Percentage Input</label>
+<!-- Input wrapper to handle focus styles -->
+<div class="relative flex items-center">
+<input autofocus="" class="block w-full h-24 px-8 text-center text-5xl font-bold text-primary bg-white rounded-lg border-4 border-transparent focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/30 shadow-2xl placeholder:text-gray-300 outline-none transition-all" id="fat-percentage" name="fat-percentage" placeholder="0.00 %" type="text" value=""/>
+<!-- Reset Icon inside input -->
+<button class="absolute right-6 p-2 text-gray-300 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-4xl">backspace</span>
+</button>
+</div>
+<p class="text-white/80 text-center mt-4 text-sm font-medium uppercase tracking-widest">
+                    Enter Correct Value
+                </p>
+</div>
+</div>
+<!-- Optional Footer Instructions -->
+<div class="absolute bottom-10 left-0 w-full text-center">
+<p class="text-white/60 text-lg font-medium flex items-center justify-center gap-2">
+<span class="border border-white/40 rounded px-2 py-0.5 text-base">ESC</span> 
+                to Cancel Collection
+            </p>
+</div>
+</main>
+</body></html>

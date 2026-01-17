@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milk Collection - MilkBook</title>
+    <link rel="stylesheet" href="/assets/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-white flex flex-col">
+            <div class="p-6 flex items-center gap-3 border-b border-slate-800">
+                <div class="bg-blue-600 p-2 rounded-lg">
+                    <i data-lucide="droplet" class="text-white" style="width: 20px; height: 20px;"></i>
+                </div>
+                <span class="font-bold text-xl uppercase tracking-tighter">MilkBook</span>
+            </div>
+            <nav class="flex-1 mt-4 px-3 space-y-1">
+                <a href="dashboard.html" class="sidebar-item">
+                    <i data-lucide="layout-dashboard" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Dashboard</span>
+                </a>
+                <a href="collection.html" class="sidebar-item active">
+                    <i data-lucide="droplets" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Milk Collection</span>
+                </a>
+                <a href="farmers.html" class="sidebar-item">
+                    <i data-lucide="users" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Farmers</span>
+                </a>
+                <a href="ledger.html" class="sidebar-item">
+                    <i data-lucide="book-open" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Ledger</span>
+                </a>
+                <a href="payments.html" class="sidebar-item">
+                    <i data-lucide="indian-rupee" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Payments</span>
+                </a>
+                <a href="sales.html" class="sidebar-item">
+                    <i data-lucide="shopping-bag" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Milk Sales</span>
+                </a>
+                <a href="inventory.html" class="sidebar-item">
+                    <i data-lucide="warehouse" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Inventory</span>
+                </a>
+                <a href="reports.html" class="sidebar-item">
+                    <i data-lucide="bar-chart-3" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Reports</span>
+                </a>
+                <div class="pt-6 border-t border-slate-800 mt-6 space-y-1">
+                    <a href="backup.html" class="sidebar-item">
+                        <i data-lucide="database" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                        <span class="font-bold text-sm tracking-tight">Backup</span>
+                    </a>
+                    <a href="settings.html" class="sidebar-item">
+                        <i data-lucide="settings" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                        <span class="font-bold text-sm tracking-tight">Settings</span>
+                    </a>
+                    <a href="index.html" class="sidebar-item">
+                        <i data-lucide="log-out" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                        <span class="font-bold text-sm tracking-tight">Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col">
+            <header class="h-16 bg-white border-b flex items-center justify-between px-8">
+                <div class="flex items-center gap-6">
+                    <h1 class="text-xl font-bold text-slate-800 uppercase tracking-wide" id="dairyName">Loading...</h1>
+                    <span class="text-xs px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-bold flex items-center gap-1">
+                        <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                        <span id="currentDate">Loading...</span>
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">System Healthy</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="alert-circle" class="text-amber-600" style="width: 14px; height: 14px;"></i>
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Pending: <span id="pendingCount">0</span></span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right">
+                            <p class="text-sm font-bold text-slate-700" id="userName">Loading...</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Administrator</p>
+                        </div>
+                        <div class="w-10 h-10 bg-slate-200 rounded-lg flex items-center justify-center font-black text-slate-600 border shadow-inner" id="userInitial">U</div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex justify-between items-center mb-6 print:hidden">
+                        <h2 class="text-2xl font-black tracking-tighter uppercase">Milk Collection</h2>
+                        <button 
+                            onclick="alert('Contact support to verify compatibility with your specific analyzer model. Hardware integration success depends on device compatibility, driver support, and browser capabilities.')"
+                            class="px-6 py-3 bg-green-600 text-white rounded-xl font-black text-sm uppercase tracking-widest flex items-center gap-2"
+                        >
+                            <i data-lucide="upload" style="width: 18px; height: 18px;"></i>
+                            Import Readings
+                        </button>
+                    </div>
+                    
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h3 class="card-title">New Collection</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="collectionForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="lg:col-span-2">
+                                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Farmer</label>
+                                    <select 
+                                        id="farmerSelect"
+                                        required 
+                                        class="w-full p-4 bg-slate-50 border rounded-xl font-bold"
+                                    >
+                                        <option value="">Select Farmer</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Date</label>
+                                    <input 
+                                        type="date" 
+                                        id="dateInput"
+                                        required 
+                                        class="w-full p-4 bg-slate-50 border rounded-xl font-bold" 
+                                        value=""
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Shift</label>
+                                    <select 
+                                        id="shiftSelect"
+                                        class="w-full p-4 bg-slate-50 border rounded-xl font-bold"
+                                    >
+                                        <option value="Morning">Morning</option>
+                                        <option value="Evening">Evening</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Milk Type</label>
+                                    <select 
+                                        id="typeSelect"
+                                        class="w-full p-4 bg-slate-50 border rounded-xl font-bold"
+                                    >
+                                        <option value="Cow">Cow</option>
+                                        <option value="Buffalo">Buffalo</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Quantity (L)</label>
+                                    <input 
+                                        type="number" 
+                                        step="0.01" 
+                                        id="quantityInput"
+                                        required 
+                                        class="w-full p-4 bg-slate-50 border rounded-xl font-bold text-blue-600" 
+                                        placeholder="Liters"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Fat %</label>
+                                    <input 
+                                        type="number" 
+                                        step="0.01" 
+                                        id="fatInput"
+                                        required 
+                                        class="w-full p-4 bg-slate-50 border rounded-xl font-bold text-blue-600" 
+                                        placeholder="Fat percentage"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">SNF %</label>
+                                    <input 
+                                        type="number" 
+                                        step="0.01" 
+                                        id="snfInput"
+                                        class="w-full p-4 bg-slate-50 border rounded-xl font-bold text-slate-600" 
+                                        placeholder="Solid Not Fat"
+                                    >
+                                </div>
+                                <div class="md:col-span-3 flex justify-end pt-4">
+                                    <button type="submit" class="px-8 py-4 bg-blue-600 text-white rounded-xl font-black text-lg hover:bg-blue-700">Record Collection</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Collections</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="overflow-x-auto">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Farmer</th>
+                                            <th>Shift</th>
+                                            <th>Type</th>
+                                            <th>Qty</th>
+                                            <th>Fat%</th>
+                                            <th class="text-right">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentCollections">
+                                        <tr>
+                                            <td colSpan="7" className="py-8 text-center text-slate-500">No collections recorded today</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="print:hidden text-center py-4 text-slate-500 text-sm border-t bg-slate-50">
+        Designed by <span class="font-bold text-slate-700">signimus</span>
+    </footer>
+
+    <script src="/assets/state.js"></script>
+    <script src="/assets/db.js"></script>
+    <script src="/assets/app.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Check authentication
+        const session = sessionStorage.getItem('milkbook_session');
+        if (!session) {
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        // Load data
+        const storedData = localStorage.getItem('milkbook_data');
+        let state = storedData ? JSON.parse(storedData) : {
+            auth: { user: null, role: 'owner' },
+            dairyInfo: { name: 'New Dairy', owner: 'New Owner', mobile: '', address: '', rateType: 'Fat_SNF', language: 'EN' },
+            farmers: [],
+            milkEntries: [],
+            rates: {
+                cow: { base: 40, fatRef: 3.5, snfRef: 8.5 },
+                buffalo: { base: 60, fatRef: 6.0, snfRef: 9.0 }
+            },
+            payments: [],
+            sales: [],
+            inventory: [],
+            settings: { 
+                backupEnabled: true, 
+                lastBackup: null, 
+                printerName: 'Default',
+                syncState: 'QUARANTINED',
+                lastServerSync: null,
+                pendingRecords: 0,
+                lastSyncTime: null,
+                localRecordsToday: 0
+            }
+        };
+        
+        // Update header info
+        document.getElementById('dairyName').textContent = state.dairyInfo.name || 'Milk Collection Center';
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN');
+        document.getElementById('userName').textContent = state.auth.user?.name || 'User';
+        document.getElementById('userInitial').textContent = (state.auth.user?.name || 'U').charAt(0).toUpperCase();
+        document.getElementById('pendingCount').textContent = state.settings.pendingRecords || 0;
+        
+        // Collection form handling
+        document.getElementById('collectionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                farmerId: document.getElementById('farmerSelect').value,
+                date: document.getElementById('dateInput').value,
+                shift: document.getElementById('shiftSelect').value,
+                type: document.getElementById('typeSelect').value,
+                qty: parseFloat(document.getElementById('quantityInput').value),
+                fat: parseFloat(document.getElementById('fatInput').value),
+                snf: parseFloat(document.getElementById('snfInput').value) || 0,
+                syncState: 'QUARANTINED', // Mark as quarantined until synced to server
+                createdAtLocal: new Date().toISOString(),
+                syncedAtServer: null,
+                isManual: true, // Flag for manual entry
+                inputSource: 'keyboard', // 'scale' or 'keyboard'
+                deviceId: navigator.userAgent,
+                operatorId: state.auth.user?.id || 'unknown'
+            };
+            
+            // Calculate amount based on rates
+            const calc = calculateMilkAmount(
+                formData.qty, 
+                formData.fat, 
+                formData.snf, 
+                state.dairyInfo.rateType, 
+                state.rates, 
+                formData.type
+            );
+            
+            const newEntry = {
+                ...formData,
+                rate: calc.rate,
+                amount: calc.amount,
+                id: Date.now().toString() // Add unique ID
+            };
+            
+            // Add to state
+            state.milkEntries.push(newEntry);
+            state.settings.pendingRecords = (state.settings.pendingRecords || 0) + 1;
+            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            
+            // Show notification
+            const farmer = state.farmers.find(f => f.id === formData.farmerId);
+            alert(`Collection recorded for ${farmer?.name || 'Farmer'} - ${formData.qty}L at ${formData.fat}% fat. Amount: ₹${calc.amount}`);
+            
+            // Reset form
+            document.getElementById('collectionForm').reset();
+            document.getElementById('dateInput').valueAsDate = new Date();
+            
+            // Update recent collections display
+            updateRecentCollections();
+        });
+        
+        // Calculate milk amount function
+        function calculateMilkAmount(qty, fat, snf, rateType, rates, type) {
+            const baseRate = type === 'Cow' ? rates.cow.base : rates.buffalo.base;
+            const fatRef = type === 'Cow' ? rates.cow.fatRef : rates.buffalo.fatRef;
+            const snfRef = type === 'Cow' ? rates.cow.snfRef : rates.buffalo.snfRef;
+
+            let calculatedRate = Number(baseRate);
+            if (rateType === 'Fat_SNF') {
+                const fatDiff = (fat - fatRef) * 2;
+                const snfDiff = (snf - snfRef) * 1.5;
+                calculatedRate = Number(baseRate) + fatDiff + snfDiff;
+            } else if (rateType === 'Fat') {
+                calculatedRate = (baseRate / fatRef) * fat;
+            }
+
+            return {
+                rate: Math.max(calculatedRate, 10).toFixed(2),
+                amount: (qty * Math.max(calculatedRate, 10)).toFixed(2)
+            };
+        }
+        
+        // Update recent collections display
+        function updateRecentCollections() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayEntries = state.milkEntries.filter(e => e.date === today);
+
+            const recentCollections = document.getElementById('recentCollections');
+            recentCollections.innerHTML = '';
+
+            if (todayEntries.length > 0) {
+                todayEntries.slice(0, 10).forEach(entry => {
+                    const farmer = state.farmers.find(f => f.id === entry.farmerId);
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="py-4 font-bold text-slate-500">${entry.date}</td>
+                        <td class="py-4 font-black">${farmer?.name || 'Unknown'}</td>
+                        <td class="py-4 font-bold text-slate-500">${entry.shift}</td>
+                        <td class="py-4 font-black">${entry.type}</td>
+                        <td class="py-4 font-black text-slate-700">${entry.qty} L</td>
+                        <td class="py-4 font-black text-amber-600">${entry.fat}</td>
+                        <td class="py-4 text-right font-black text-blue-600">₹${entry.amount}</td>
+                    `;
+                    recentCollections.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colSpan="7" className="py-8 text-center text-slate-500">No collections recorded today</td>';
+                recentCollections.appendChild(row);
+            }
+        }
+
+        // Populate farmers dropdown
+        function populateFarmers() {
+            const farmerSelect = document.getElementById('farmerSelect');
+            farmerSelect.innerHTML = '<option value="">Select Farmer</option>';
+            state.farmers.filter(f => f.active !== false).forEach(farmer => {
+                const option = document.createElement('option');
+                option.value = farmer.id;
+                option.textContent = farmer.name;
+                farmerSelect.appendChild(option);
+            });
+        }
+
+        // Set today's date
+        document.getElementById('dateInput').valueAsDate = new Date();
+
+        // Initial update
+        populateFarmers();
+        updateRecentCollections();
+    </script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MilkBook</title>
+    <link rel="stylesheet" href="/assets/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-white flex flex-col">
+            <div class="p-6 flex items-center gap-3 border-b border-slate-800">
+                <div class="bg-blue-600 p-2 rounded-lg">
+                    <i data-lucide="droplet" class="text-white" style="width: 20px; height: 20px;"></i>
+                </div>
+                <span class="font-bold text-xl uppercase tracking-tighter">MilkBook</span>
+            </div>
+            <nav class="flex-1 mt-4 px-3 space-y-1">
+                <a href="dashboard.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-900/30">
+                    <i data-lucide="layout-dashboard" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Dashboard</span>
+                </a>
+                <a href="collection.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="droplets" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Milk Collection</span>
+                </a>
+                <a href="farmers.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="users" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Farmers</span>
+                </a>
+                <a href="ledger.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="book-open" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Ledger</span>
+                </a>
+                <a href="payments.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="indian-rupee" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Payments</span>
+                </a>
+                <a href="sales.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="shopping-bag" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Milk Sales</span>
+                </a>
+                <a href="inventory.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="warehouse" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Inventory</span>
+                </a>
+                <a href="reports.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="bar-chart-3" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Reports</span>
+                </a>
+                <div class="pt-6 border-t border-slate-800 mt-6 space-y-1">
+                    <a href="backup.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="database" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                        <span class="font-bold text-sm tracking-tight">Backup</span>
+                    </a>
+                    <a href="settings.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="settings" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                        <span class="font-bold text-sm tracking-tight">Settings</span>
+                    </a>
+                    <a href="index.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="log-out" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                        <span class="font-bold text-sm tracking-tight">Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col">
+            <header class="h-16 bg-white border-b flex items-center justify-between px-8">
+                <div class="flex items-center gap-6">
+                    <h1 class="text-xl font-bold text-slate-800 uppercase tracking-wide" id="dairyName">Loading...</h1>
+                    <span class="text-xs px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-bold flex items-center gap-1">
+                        <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                        <span id="currentDate">Loading...</span>
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">System Healthy</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="alert-circle" class="text-amber-600" style="width: 14px; height: 14px;"></i>
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Pending: <span id="pendingCount">0</span></span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right">
+                            <p class="text-sm font-bold text-slate-700" id="userName">Loading...</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Administrator</p>
+                        </div>
+                        <div class="w-10 h-10 bg-slate-200 rounded-lg flex items-center justify-center font-black text-slate-600 border shadow-inner" id="userInitial">U</div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-black tracking-tighter uppercase mb-6">Dashboard</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-slate-900 text-white p-10 rounded-3xl shadow-2xl">
+                            <p class="text-[10px] font-black opacity-40 uppercase tracking-widest mb-2">Today's Milk</p>
+                            <p class="text-4xl font-black tracking-tighter"><span id="todaysMilk">0.0</span> <span class="text-sm font-bold opacity-50">LTRS</span></p>
+                        </div>
+                        <div class="bg-blue-600 text-white p-10 rounded-3xl shadow-2xl">
+                            <p class="text-[10px] font-black opacity-40 uppercase tracking-widest mb-2">Acquisition Cost</p>
+                            <p class="text-4xl font-black tracking-tighter" id="todaysValue">₹0.00</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-10 rounded-3xl shadow-sm">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Efficiency Index</p>
+                            <p class="text-4xl font-black tracking-tighter text-slate-800"><span id="avgRate">0.00</span><span class="text-sm">/L</span></p>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-10 rounded-3xl shadow-sm">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Active Farmers</p>
+                            <p class="text-4xl font-black tracking-tighter text-slate-800" id="activeFarmers">0</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                            <div class="px-6 py-4 border-b bg-slate-50/30 flex justify-between items-center">
+                                <h3 class="text-lg font-bold text-slate-800">Recent Collections</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left">
+                                        <thead class="border-b text-[10px] font-black text-slate-400 uppercase">
+                                            <tr>
+                                                <th class="pb-4">Farmer</th>
+                                                <th class="pb-4">Date</th>
+                                                <th class="pb-4">Shift</th>
+                                                <th class="pb-4">Type</th>
+                                                <th class="pb-4">Qty</th>
+                                                <th class="pb-4">Fat%</th>
+                                                <th class="pb-4 text-right">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recentCollections">
+                                            <tr>
+                                                <td colSpan="7" className="py-8 text-center text-slate-500">No collections recorded today</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                            <div class="px-6 py-4 border-b bg-slate-50/30 flex justify-between items-center">
+                                <h3 class="text-lg font-bold text-slate-800">Active Farmers</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left">
+                                        <thead class="border-b text-[10px] font-black text-slate-400 uppercase">
+                                            <tr>
+                                                <th class="pb-4">Name</th>
+                                                <th class="pb-4">Mobile</th>
+                                                <th class="pb-4">Address</th>
+                                                <th class="pb-4 text-right">Balance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="activeFarmersList">
+                                            <tr>
+                                                <td colSpan="4" className="py-8 text-center text-slate-500">No farmers registered yet</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="print:hidden text-center py-4 text-slate-500 text-sm border-t bg-slate-50">
+        Designed by <span class="font-bold text-slate-700">signimus</span>
+    </footer>
+
+    <script src="/assets/state.js"></script>
+    <script src="/assets/db.js"></script>
+    <script src="/assets/app.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Load dashboard data
+        document.addEventListener('DOMContentLoaded', function() {
+            const session = sessionStorage.getItem('milkbook_session');
+            if (!session) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const data = localStorage.getItem('milkbook_data');
+            if (!data) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const state = JSON.parse(data);
+            
+            // Update header info
+            document.getElementById('dairyName').textContent = state.dairyInfo.name || 'Milk Collection Center';
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN');
+            document.getElementById('userName').textContent = state.auth.user.name;
+            document.getElementById('userInitial').textContent = state.auth.user.name.charAt(0).toUpperCase();
+            document.getElementById('pendingCount').textContent = state.settings.pendingRecords || 0;
+            
+            // Calculate today's stats
+            const today = new Date().toISOString().split('T')[0];
+            const todayEntries = state.milkEntries.filter(e => e.date === today);
+            const totalQty = todayEntries.reduce((sum, entry) => sum + parseFloat(entry.qty || 0), 0);
+            const totalAmount = todayEntries.reduce((sum, entry) => sum + parseFloat(entry.amount || 0), 0);
+            const avgRate = totalQty > 0 ? (totalAmount / totalQty).toFixed(2) : '0.00';
+            
+            document.getElementById('todaysMilk').textContent = totalQty.toFixed(1);
+            document.getElementById('todaysValue').textContent = '₹' + totalAmount.toFixed(2);
+            document.getElementById('avgRate').textContent = '₹' + avgRate;
+            document.getElementById('activeFarmers').textContent = state.farmers.filter(f => f.active).length;
+            
+            // Update recent collections
+            const recentCollections = document.getElementById('recentCollections');
+            recentCollections.innerHTML = '';
+            
+            if (todayEntries.length > 0) {
+                todayEntries.slice(0, 5).forEach(entry => {
+                    const farmer = state.farmers.find(f => f.id === entry.farmerId);
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="py-4 font-black">${farmer?.name || 'Unknown'}</td>
+                        <td class="py-4 font-bold text-slate-500">${entry.date}</td>
+                        <td class="py-4 font-bold text-slate-500">${entry.shift}</td>
+                        <td class="py-4 font-black">${entry.type}</td>
+                        <td class="py-4 font-black text-slate-700">${entry.qty} L</td>
+                        <td class="py-4 font-black text-amber-600">${entry.fat}</td>
+                        <td class="py-4 text-right font-black text-blue-600">₹${entry.amount}</td>
+                    `;
+                    recentCollections.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colSpan="7" className="py-8 text-center text-slate-500">No collections recorded today</td>';
+                recentCollections.appendChild(row);
+            }
+            
+            // Update active farmers
+            const activeFarmersList = document.getElementById('activeFarmersList');
+            activeFarmersList.innerHTML = '';
+            
+            const activeFarmers = state.farmers.filter(f => f.active);
+            if (activeFarmers.length > 0) {
+                activeFarmers.slice(0, 5).forEach(farmer => {
+                    // Calculate farmer balance
+                    const totalMilkValue = state.milkEntries
+                        .filter(e => e.farmerId === farmer.id)
+                        .reduce((sum, entry) => sum + parseFloat(entry.amount || 0), 0);
+                    
+                    const totalPayments = state.payments
+                        .filter(p => p.farmerId === farmer.id && p.type === 'Payment')
+                        .reduce((sum, payment) => sum + parseFloat(payment.amount || 0), 0);
+                    
+                    const balance = totalMilkValue - totalPayments;
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="py-4 font-black">${farmer.name}</td>
+                        <td class="py-4 font-bold text-slate-500">${farmer.mobile}</td>
+                        <td class="py-4 font-bold text-slate-500">${farmer.address || 'N/A'}</td>
+                        <td class="py-4 text-right font-black text-${balance >= 0 ? 'blue-600' : 'red-600'}">₹${balance.toFixed(2)}</td>
+                    `;
+                    activeFarmersList.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colSpan="4" className="py-8 text-center text-slate-500">No farmers registered yet</td>';
+                activeFarmersList.appendChild(row);
+            }
+        });
+    </script>
+</body>
+</html>

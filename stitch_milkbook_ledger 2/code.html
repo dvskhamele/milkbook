@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkBook Ledger - Farmer Ledger View</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2563eb","background-light": "#ffffff",
+                        "background-dark": "#18181b",
+                        "ledger-green": "#16a34a",
+                        "ledger-red": "#dc2626",
+                        "ledger-border": "#e5e7eb",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "sm": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-background-dark font-display text-[#111118] dark:text-white overflow-x-hidden">
+<div class="relative flex h-auto min-h-screen w-full flex-col">
+<header class="w-full border-b border-ledger-border bg-white dark:bg-[#18181b] px-4 py-4 md:px-10 lg:px-20">
+<div class="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-3xl">auto_stories</span>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-[#111118] dark:text-white">MilkBook Ledger</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden text-right md:block">
+<p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Logged in as</p>
+<p class="text-sm font-bold text-[#111118] dark:text-white">Station Admin #42</p>
+</div>
+<div class="h-10 w-10 overflow-hidden rounded-full bg-slate-200" data-alt="User profile avatar showing a generic silhouette">
+<img alt="User Avatar" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgiEfE6sfPK8v2hyjnP9TTrGJoCA50W5rHkwpWvVNGd5PZTE8UAL4smDTQz0XEuqgnJ_0nBmYFJfGMR5nybVsNQuHcF9KbEvnUgz7SolgWibJVQaWNE4-z1bX3QSnA5iYAAI-D6H58Dt59Q7muPNtCyr6auIC4FwylI_rhNJkB7LAetc6IvlTLw5qtNfnzrYnDWSB34IEp9lKkQIlovZnnJuk8n51g5ALbf8M79aWZt3nXn6EmfTnGl0t8KhRvK3KtzZosc55vew"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 px-4 py-8 md:px-10 lg:px-20 bg-slate-50 dark:bg-zinc-900">
+<div class="mx-auto flex max-w-7xl flex-col gap-8">
+<div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+<div class="flex flex-col gap-1">
+<h2 class="text-3xl font-bold leading-tight tracking-tight text-[#111118] dark:text-white md:text-4xl">Daily Register</h2>
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+<span class="text-lg font-medium">October 24, 2023</span>
+</div>
+</div>
+<button class="group flex h-14 items-center justify-center gap-3 rounded bg-primary px-8 text-white shadow-lg shadow-primary/30 transition-all hover:bg-blue-700 active:scale-95 md:w-auto">
+<span class="material-symbols-outlined text-3xl transition-transform group-hover:-translate-x-1">arrow_back</span>
+<span class="text-lg font-bold">Back to Collection</span>
+</button>
+</div>
+<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+<div class="relative flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-800 md:col-span-1">
+<div class="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-green-50 dark:bg-green-900/20"></div>
+<p class="relative z-10 text-base font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Net Daily Total</p>
+<div class="relative z-10 mt-2 flex items-baseline gap-1">
+<span class="text-4xl font-black text-[#111118] dark:text-white md:text-5xl">₹ 12,450</span>
+</div>
+<div class="mt-4 flex items-center gap-1 text-sm font-medium text-ledger-green">
+<span class="material-symbols-outlined text-lg">trending_up</span>
+<span>+8.2% vs yesterday</span>
+</div>
+</div>
+<div class="flex flex-col justify-center rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-800">
+<div class="flex items-center gap-3 mb-2">
+<div class="rounded-lg bg-blue-50 p-2 text-primary dark:bg-blue-900/20">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+<p class="text-base font-semibold text-slate-500 dark:text-slate-400">Total Volume</p>
+</div>
+<p class="text-3xl font-bold text-[#111118] dark:text-white">850 <span class="text-xl text-slate-400 font-normal">Liters</span></p>
+</div>
+<div class="flex flex-col justify-center rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-800">
+<div class="flex items-center gap-3 mb-2">
+<div class="rounded-lg bg-orange-50 p-2 text-orange-600 dark:bg-orange-900/20">
+<span class="material-symbols-outlined">groups</span>
+</div>
+<p class="text-base font-semibold text-slate-500 dark:text-slate-400">Active Farmers</p>
+</div>
+<p class="text-3xl font-bold text-[#111118] dark:text-white">42 <span class="text-xl text-slate-400 font-normal">Entries</span></p>
+</div>
+</div>
+<div class="overflow-hidden rounded-xl border-2 border-slate-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+<div class="hidden grid-cols-12 gap-4 border-b-2 border-slate-200 bg-blue-100 px-6 py-4 text-sm font-bold uppercase tracking-wider text-blue-900 dark:border-zinc-700 dark:bg-zinc-800/50 dark:text-slate-400 md:grid">
+<div class="col-span-1 text-center">Type</div>
+<div class="col-span-5 text-left">Farmer Details</div>
+<div class="col-span-3 text-right">Amount (₹)</div>
+<div class="col-span-3 text-center">Status</div>
+</div>
+<div class="divide-y-2 divide-slate-200 dark:divide-zinc-700">
+<div class="group relative grid grid-cols-2 items-center gap-4 p-4 transition-colors hover:bg-slate-50 dark:hover:bg-zinc-700/30 md:grid-cols-12 md:px-6 md:py-6">
+<div class="col-span-1 flex items-center justify-center md:col-span-1">
+<div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-ledger-green dark:bg-green-900/30">
+<span class="material-symbols-outlined text-4xl font-bold">arrow_upward</span>
+</div>
+</div>
+<div class="col-span-1 flex flex-col justify-center md:col-span-5">
+<span class="text-xl font-bold text-[#111118] dark:text-white">Farmer #104</span>
+<span class="text-sm text-slate-500">Morning Collection • 24.5 Liters</span>
+</div>
+<div class="col-span-1 flex items-center justify-end md:col-span-3 md:justify-end">
+<span class="text-2xl font-bold text-ledger-green dark:text-green-400">+₹ 450.00</span>
+</div>
+<div class="col-span-1 flex justify-end md:col-span-3 md:justify-center">
+<span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-800 dark:bg-green-900/50 dark:text-green-200">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+                                    Paid
+                                </span>
+</div>
+</div>
+<div class="group relative grid grid-cols-2 items-center gap-4 p-4 transition-colors hover:bg-slate-50 dark:hover:bg-zinc-700/30 md:grid-cols-12 md:px-6 md:py-6">
+<div class="col-span-1 flex items-center justify-center md:col-span-1">
+<div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-ledger-green dark:bg-green-900/30">
+<span class="material-symbols-outlined text-4xl font-bold">arrow_upward</span>
+</div>
+</div>
+<div class="col-span-1 flex flex-col justify-center md:col-span-5">
+<span class="text-xl font-bold text-[#111118] dark:text-white">Farmer #108</span>
+<span class="text-sm text-slate-500">Morning Collection • 18.2 Liters</span>
+</div>
+<div class="col-span-1 flex items-center justify-end md:col-span-3 md:justify-end">
+<span class="text-2xl font-bold text-ledger-green dark:text-green-400">+₹ 320.50</span>
+</div>
+<div class="col-span-1 flex justify-end md:col-span-3 md:justify-center">
+<span class="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-4 py-2 text-sm font-bold text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200">
+<span class="material-symbols-outlined text-lg">hourglass_empty</span>
+                                    Pending
+                                </span>
+</div>
+</div>
+<div class="group relative grid grid-cols-2 items-center gap-4 p-4 transition-colors hover:bg-slate-50 dark:bg-red-900/5 dark:hover:bg-red-900/10 md:grid-cols-12 md:px-6 md:py-6">
+<div class="col-span-1 flex items-center justify-center md:col-span-1">
+<div class="flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-ledger-red dark:bg-red-900/30">
+<span class="material-symbols-outlined text-4xl font-bold">arrow_downward</span>
+</div>
+</div>
+<div class="col-span-1 flex flex-col justify-center md:col-span-5">
+<span class="text-xl font-bold text-[#111118] dark:text-white">Farmer #042</span>
+<span class="text-sm text-slate-500">Loan Repayment • Weekly Installment</span>
+</div>
+<div class="col-span-1 flex items-center justify-end md:col-span-3 md:justify-end">
+<span class="text-2xl font-bold text-ledger-red dark:text-red-400">-₹ 1,200.00</span>
+</div>
+<div class="col-span-1 flex justify-end md:col-span-3 md:justify-center">
+<span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-4 py-2 text-sm font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-200">
+<span class="material-symbols-outlined text-lg">receipt_long</span>
+                                    Adv. Ded.
+                                </span>
+</div>
+</div>
+<div class="group relative grid grid-cols-2 items-center gap-4 p-4 transition-colors hover:bg-slate-50 dark:hover:bg-zinc-700/30 md:grid-cols-12 md:px-6 md:py-6">
+<div class="col-span-1 flex items-center justify-center md:col-span-1">
+<div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-ledger-green dark:bg-green-900/30">
+<span class="material-symbols-outlined text-4xl font-bold">arrow_upward</span>
+</div>
+</div>
+<div class="col-span-1 flex flex-col justify-center md:col-span-5">
+<span class="text-xl font-bold text-[#111118] dark:text-white">Farmer #112</span>
+<span class="text-sm text-slate-500">Morning Collection • 28.0 Liters</span>
+</div>
+<div class="col-span-1 flex items-center justify-end md:col-span-3 md:justify-end">
+<span class="text-2xl font-bold text-ledger-green dark:text-green-400">+₹ 500.00</span>
+</div>
+<div class="col-span-1 flex justify-end md:col-span-3 md:justify-center">
+<span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-800 dark:bg-green-900/50 dark:text-green-200">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+                                    Paid
+                                </span>
+</div>
+</div>
+<div class="group relative grid grid-cols-2 items-center gap-4 p-4 transition-colors hover:bg-slate-50 dark:hover:bg-zinc-700/30 md:grid-cols-12 md:px-6 md:py-6">
+<div class="col-span-1 flex items-center justify-center md:col-span-1">
+<div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-ledger-green dark:bg-green-900/30">
+<span class="material-symbols-outlined text-4xl font-bold">arrow_upward</span>
+</div>
+</div>
+<div class="col-span-1 flex flex-col justify-center md:col-span-5">
+<span class="text-xl font-bold text-[#111118] dark:text-white">Farmer #115</span>
+<span class="text-sm text-slate-500">Morning Collection • 12.0 Liters</span>
+</div>
+<div class="col-span-1 flex items-center justify-end md:col-span-3 md:justify-end">
+<span class="text-2xl font-bold text-ledger-green dark:text-green-400">+₹ 210.00</span>
+</div>
+<div class="col-span-1 flex justify-end md:col-span-3 md:justify-center">
+<span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-800 dark:bg-green-900/50 dark:text-green-200">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+                                    Paid
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-center pt-4 pb-8">
+<nav class="flex items-center gap-2 rounded-lg bg-white p-2 shadow-sm border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700">
+<a class="flex h-12 w-12 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-zinc-700 dark:text-slate-400 dark:hover:bg-zinc-700" href="#">
+<span class="material-symbols-outlined">chevron_left</span>
+</a>
+<a class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-white font-bold text-lg shadow-sm" href="#">1</a>
+<a class="flex h-12 w-12 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-lg dark:text-slate-400 dark:hover:bg-zinc-700" href="#">2</a>
+<a class="flex h-12 w-12 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-50 font-medium text-lg dark:text-slate-400 dark:hover:bg-zinc-700" href="#">3</a>
+<span class="flex h-12 w-8 items-center justify-center text-slate-400">...</span>
+<a class="flex h-12 w-12 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-zinc-700 dark:text-slate-400 dark:hover:bg-zinc-700" href="#">
+<span class="material-symbols-outlined">chevron_right</span>
+</a>
+</nav>
+</div>
+</div>
+</main>
+</div>
+</body></html>
