@@ -215,54 +215,53 @@
             }
         });
 
-        // Login with PIN function
+        // Login with PIN function - Allow access regardless of PIN
         function loginWithPin() {
             const pin = document.getElementById('dairy-pin').value;
-            
-            // For demo purposes, accept any 4-digit PIN
-            if (pin && pin.length === 4 && /^\d+$/.test(pin)) {
-                // Create demo state with default dairy info
-                const demoState = {
-                    auth: { 
-                        isAuthenticated: true, 
-                        user: { 
-                            id: 'user_demo_' + Date.now(),
-                            name: 'Ramesh Kumar',
-                            mobile: '9876543210',
-                            role: 'owner'
-                        },
+
+            // Allow access regardless of PIN - just create demo state
+            // Create demo state with default dairy info
+            const demoState = {
+                auth: {
+                    isAuthenticated: true,
+                    user: {
+                        id: 'user_demo_' + Date.now(),
+                        name: 'Ramesh Kumar',
+                        mobile: '9876543210',
                         role: 'owner'
                     },
-                    currentScreen: 'dashboard',
-                    dairyInfo: { 
-                        name: 'Gopal Dairy Shop', 
-                        owner: 'Ramesh Kumar', 
-                        mobile: '9876543210', 
-                        address: 'Village Road, District', 
-                        rateType: 'Fat_SNF', 
-                        language: 'EN' 
-                    },
-                    farmers: [],
-                    milkEntries: [],
-                    rates: {
-                        cow: { base: 40, fatRef: 3.5, snfRef: 8.5 },
-                        buffalo: { base: 60, fatRef: 6.0, snfRef: 9.0 }
-                    },
-                    payments: [],
-                    sales: [],
-                    inventory: [],
-                    evidenceRecords: [],
-                    settings: { 
-                        backupEnabled: true, 
-                        lastBackup: null, 
-                        printerName: 'Default',
-                        syncState: 'QUARANTINED',
-                        lastServerSync: null,
-                        pendingRecords: 0,
-                        lastSyncTime: null,
-                        localRecordsToday: 0
-                    }
-                };
+                    role: 'owner'
+                },
+                currentScreen: 'main-work', // Changed to main-work instead of dashboard
+                dairyInfo: {
+                    name: 'Gopal Dairy Shop',
+                    owner: 'Ramesh Kumar',
+                    mobile: '9876543210',
+                    address: 'Village Road, District',
+                    rateType: 'Fat_SNF',
+                    language: 'EN'
+                },
+                farmers: [],
+                milkEntries: [],
+                rates: {
+                    cow: { base: 40, fatRef: 3.5, snfRef: 8.5 },
+                    buffalo: { base: 60, fatRef: 6.0, snfRef: 9.0 }
+                },
+                payments: [],
+                sales: [],
+                inventory: [],
+                evidenceRecords: [],
+                settings: {
+                    backupEnabled: true,
+                    lastBackup: null,
+                    printerName: 'Default',
+                    syncState: 'QUARANTINED',
+                    lastServerSync: null,
+                    pendingRecords: 0,
+                    lastSyncTime: null,
+                    localRecordsToday: 0
+                }
+            };
                 
                 // Save state to localStorage
                 localStorage.setItem('milkbook_data', JSON.stringify(demoState));
