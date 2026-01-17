@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkBook - Inventory Stock Status</title>
+<!-- Fonts and Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a4a89",
+                        "primary-hover": "#13386b",
+                        "background-light": "#f5f5f4",
+                        "background-dark": "#0c0c0d",
+                        "surface-industrial": "#E6E6DF",
+                        "surface-industrial-dark": "#1f1f22",
+                        "amber-alert": "#FFA000",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem", // 2px - very square/industrial
+                        "lg": "0.25rem", // 4px
+                        "xl": "0.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Styles for "Industrial Humanism" feel */
+        .industrial-shadow {
+            box-shadow: 0 1px 0 0 rgba(0,0,0,0.1);
+        }
+        
+        .panel-border {
+            border: 1px solid #d1d5db; /* gray-300 */
+        }
+        .dark .panel-border {
+            border: 1px solid #404040;
+        }
+
+        /* Input specific styles to mimic physical controls */
+        .control-input {
+            transition: all 0.2s;
+            border: 2px solid #e5e7eb;
+        }
+        .control-input:focus {
+            border-color: #1a4a89;
+            box-shadow: 0 0 0 4px rgba(26, 74, 137, 0.1);
+            outline: none;
+        }
+        
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#121417] dark:text-gray-100 overflow-hidden h-screen flex transition-colors duration-200">
+<!-- Sidebar Navigation -->
+<aside class="w-64 bg-white dark:bg-surface-industrial-dark border-r border-gray-200 dark:border-gray-800 flex flex-col h-full shrink-0 z-20 hidden md:flex">
+<div class="p-6 flex items-center gap-3">
+<div class="size-8 rounded bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[20px]">water_drop</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-none tracking-tight">MilkBook</h1>
+<p class="text-gray-500 text-xs mt-1">Vadgaon Center</p>
+</div>
+</div>
+<nav class="flex-1 px-4 flex flex-col gap-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-3 rounded text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">grid_view</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded bg-primary/10 text-primary dark:text-white dark:bg-primary/20" href="#">
+<span class="material-symbols-outlined font-variation-settings-fill">inventory_2</span>
+<span class="text-sm font-bold">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">agriculture</span>
+<span class="text-sm font-medium">Procurement</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">groups</span>
+<span class="text-sm font-medium">Members</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-gray-200 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-gray-200 dark:bg-gray-700 bg-cover bg-center" data-alt="Profile picture of the center manager" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCs_slmjA3b2xvk7L48uH5aWplGU9ABap8LYgkFtP2uC8LQp5K7nSGKRZnMMMPxRbkocIN4qH9Ku3SkEtmwSk_f1mFJxblC9rzusuB4hdv2DU5BSyqw0wQMF4rlLDjYDjhz6BJHXDXGmBrJMLpuNjfd57LR-PjVI43wsnNZqi2PlH9jDokHfTOPChoEYQGxJUW4JY2PnpUiNPs9U9AJ-FIukd0SIYG7YXfbEHJHwP5AZ6j7SGyad-NtDNZwL-BuvcLYU1qBOzZhbg");'></div>
+<div class="flex flex-col">
+<p class="text-sm font-bold">Ramesh P.</p>
+<p class="text-xs text-gray-500">Manager</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Mobile Header (Visible only on small screens) -->
+<div class="md:hidden flex items-center justify-between p-4 bg-white dark:bg-surface-industrial-dark border-b border-gray-200 dark:border-gray-800">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">menu</span>
+<span class="font-bold">MilkBook</span>
+</div>
+<div class="size-8 rounded-full bg-gray-200" data-alt="User profile placeholder"></div>
+</div>
+<!-- Top Bar -->
+<header class="hidden md:flex items-center justify-between px-8 py-4 bg-white dark:bg-surface-industrial-dark border-b border-gray-200 dark:border-gray-800 shrink-0">
+<div class="flex flex-col">
+<h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Inventory Control</h2>
+<div class="flex items-center gap-2 mt-1">
+<div class="size-2 rounded-full bg-green-500 animate-pulse"></div>
+<span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">System Online</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center size-10 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
+<span class="material-symbols-outlined">wifi</span>
+</button>
+<button class="flex items-center justify-center size-10 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 rounded-full bg-red-500 border border-white dark:border-gray-800"></span>
+</button>
+<button class="px-4 py-2 bg-primary text-white text-sm font-bold rounded shadow-sm hover:bg-primary-hover transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                    Daily Report
+                </button>
+</div>
+</header>
+<!-- Scrollable Dashboard Content -->
+<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+<!-- Section 1: Stock Overview Grid -->
+<section aria-label="Stock Status Overview">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1: Milk (Standard) -->
+<div class="relative bg-surface-industrial dark:bg-surface-industrial-dark rounded p-6 panel-border flex flex-col justify-between h-56 group transition-transform hover:-translate-y-1 duration-200">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400">water_drop</span>
+</div>
+<span class="text-base font-bold text-gray-700 dark:text-gray-200">Raw Milk</span>
+</div>
+<span class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Tank 1</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[3.5rem] font-extrabold text-[#33333D] dark:text-white leading-none tracking-tight">450.5</span>
+<span class="text-lg font-medium text-gray-500 dark:text-gray-400">Liters</span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-gray-300 dark:border-gray-700 text-sm">
+<div class="flex items-center gap-1 text-green-700 dark:text-green-400">
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+<span class="font-bold">In: 500 L</span>
+</div>
+<div class="flex items-center gap-1 text-red-700 dark:text-red-400">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+<span class="font-bold">Out: 49.5 L</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Feed (Warning/Low Stock) -->
+<div class="relative bg-surface-industrial dark:bg-surface-industrial-dark rounded p-6 border-2 border-amber-alert flex flex-col justify-between h-56 shadow-[0_0_15px_rgba(255,160,0,0.15)]">
+<div class="absolute -top-3 left-6 px-3 py-1 bg-amber-alert text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                            Low Stock
+                        </div>
+<div class="flex justify-between items-start mt-2">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+<span class="material-symbols-outlined text-amber-600 dark:text-amber-500">grass</span>
+</div>
+<span class="text-base font-bold text-gray-700 dark:text-gray-200">Cattle Feed</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-[3.5rem] font-extrabold text-amber-700 dark:text-amber-500 leading-none tracking-tight">12</span>
+<span class="text-lg font-medium text-gray-500 dark:text-gray-400">Bags</span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-amber-200 dark:border-gray-700 text-sm">
+<div class="flex items-center gap-1 text-gray-500 dark:text-gray-400 opacity-50">
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+<span class="font-bold">In: 0</span>
+</div>
+<div class="flex items-center gap-1 text-gray-700 dark:text-gray-300">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+<span class="font-bold">Out: 2 Bags</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Ghee (Standard) -->
+<div class="relative bg-surface-industrial dark:bg-surface-industrial-dark rounded p-6 panel-border flex flex-col justify-between h-56 group transition-transform hover:-translate-y-1 duration-200">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+<span class="material-symbols-outlined text-yellow-600 dark:text-yellow-500">science</span>
+</div>
+<span class="text-base font-bold text-gray-700 dark:text-gray-200">Pure Ghee</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-[3.5rem] font-extrabold text-[#33333D] dark:text-white leading-none tracking-tight">8.5</span>
+<span class="text-lg font-medium text-gray-500 dark:text-gray-400">Kg</span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-gray-300 dark:border-gray-700 text-sm">
+<div class="flex items-center gap-1 text-green-700 dark:text-green-400">
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+<span class="font-bold">In: 2 Kg</span>
+</div>
+<div class="flex items-center gap-1 text-gray-500 dark:text-gray-400 opacity-50">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+<span class="font-bold">Out: 0</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Transaction Area & Recent History -->
+<div class="flex flex-col xl:flex-row gap-6">
+<!-- Transaction Control Panel -->
+<section aria-labelledby="transaction-header" class="flex-1 bg-white dark:bg-surface-industrial-dark rounded panel-border p-6 md:p-8">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2" id="transaction-header">
+<span class="material-symbols-outlined text-gray-400">tune</span>
+                            Record New Movement
+                        </h3>
+<span class="text-xs text-gray-400 uppercase tracking-widest font-bold">Manual Entry</span>
+</div>
+<form class="flex flex-col gap-8">
+<!-- Step 1: Select Item -->
+<div class="space-y-3">
+<label class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">1. Select Inventory Item</label>
+<div class="grid grid-cols-3 gap-4">
+<label class="cursor-pointer relative">
+<input checked="" class="peer sr-only" name="item" type="radio"/>
+<div class="h-24 rounded border-2 border-gray-200 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex flex-col items-center justify-center gap-2 text-gray-500 dark:text-gray-400 peer-checked:text-primary">
+<span class="material-symbols-outlined text-[28px]">water_drop</span>
+<span class="font-bold text-sm">Milk</span>
+</div>
+<div class="absolute top-2 right-2 size-4 rounded-full bg-primary text-white flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[12px]">check</span>
+</div>
+</label>
+<label class="cursor-pointer relative">
+<input class="peer sr-only" name="item" type="radio"/>
+<div class="h-24 rounded border-2 border-gray-200 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex flex-col items-center justify-center gap-2 text-gray-500 dark:text-gray-400 peer-checked:text-primary">
+<span class="material-symbols-outlined text-[28px]">grass</span>
+<span class="font-bold text-sm">Feed</span>
+</div>
+<div class="absolute top-2 right-2 size-4 rounded-full bg-primary text-white flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[12px]">check</span>
+</div>
+</label>
+<label class="cursor-pointer relative">
+<input class="peer sr-only" name="item" type="radio"/>
+<div class="h-24 rounded border-2 border-gray-200 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex flex-col items-center justify-center gap-2 text-gray-500 dark:text-gray-400 peer-checked:text-primary">
+<span class="material-symbols-outlined text-[28px]">science</span>
+<span class="font-bold text-sm">Ghee</span>
+</div>
+<div class="absolute top-2 right-2 size-4 rounded-full bg-primary text-white flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[12px]">check</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Step 2: Action Type -->
+<div class="space-y-3">
+<label class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">2. Action Type</label>
+<div class="flex rounded bg-gray-100 dark:bg-gray-800 p-1 border border-gray-200 dark:border-gray-700">
+<label class="flex-1 cursor-pointer">
+<input checked="" class="peer sr-only" name="action" type="radio"/>
+<div class="py-2 px-4 rounded text-center text-sm font-bold text-gray-500 dark:text-gray-400 peer-checked:bg-white dark:peer-checked:bg-gray-700 peer-checked:text-green-700 dark:peer-checked:text-green-400 peer-checked:shadow-sm transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+                                        Purchase
+                                    </div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="action" type="radio"/>
+<div class="py-2 px-4 rounded text-center text-sm font-bold text-gray-500 dark:text-gray-400 peer-checked:bg-white dark:peer-checked:bg-gray-700 peer-checked:text-blue-700 dark:peer-checked:text-blue-400 peer-checked:shadow-sm transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">exposure</span>
+                                        Adjust
+                                    </div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="action" type="radio"/>
+<div class="py-2 px-4 rounded text-center text-sm font-bold text-gray-500 dark:text-gray-400 peer-checked:bg-white dark:peer-checked:bg-gray-700 peer-checked:text-red-700 dark:peer-checked:text-red-400 peer-checked:shadow-sm transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">remove_circle</span>
+                                        Damage
+                                    </div>
+</label>
+</div>
+</div>
+<!-- Step 3: Quantity & Submit -->
+<div class="space-y-3">
+<label class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">3. Details &amp; Confirmation</label>
+<div class="flex flex-col md:flex-row gap-4 items-stretch">
+<div class="flex-1 relative">
+<input class="control-input w-full h-14 pl-4 pr-16 rounded text-2xl font-bold text-gray-900 dark:text-white bg-white dark:bg-gray-900" placeholder="0.00" type="number"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">Unit</span>
+</div>
+<div class="flex-[2] relative">
+<input class="control-input w-full h-14 px-4 rounded text-base text-gray-900 dark:text-white bg-white dark:bg-gray-900" placeholder="Remarks (Optional)" type="text"/>
+</div>
+</div>
+<button class="w-full h-14 mt-4 bg-primary hover:bg-primary-hover text-white rounded font-bold text-lg shadow-sm active:scale-[0.99] transition-all flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined">save</span>
+                                Update Stock Balance
+                            </button>
+</div>
+</form>
+</section>
+<!-- Recent Activity Mini-Table -->
+<section class="w-full xl:w-96 bg-white dark:bg-surface-industrial-dark rounded panel-border p-0 flex flex-col h-full overflow-hidden">
+<div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+<h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Recent Logs</h3>
+</div>
+<div class="overflow-y-auto flex-1">
+<table class="w-full text-left border-collapse">
+<thead class="bg-white dark:bg-gray-900 sticky top-0">
+<tr>
+<th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800">Time</th>
+<th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800">Action</th>
+<th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800 text-right">Qty</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+<tr class="group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+<td class="px-4 py-3 text-xs text-gray-500 font-mono">10:42 AM</td>
+<td class="px-4 py-3">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-gray-800 dark:text-gray-200">Purchase</span>
+<span class="text-xs text-gray-500">Milk • Vendor #42</span>
+</div>
+</td>
+<td class="px-4 py-3 text-right">
+<span class="text-sm font-bold text-green-600">+50 L</span>
+</td>
+</tr>
+<tr class="group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+<td class="px-4 py-3 text-xs text-gray-500 font-mono">09:15 AM</td>
+<td class="px-4 py-3">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-gray-800 dark:text-gray-200">Usage</span>
+<span class="text-xs text-gray-500">Feed • Internal</span>
+</div>
+</td>
+<td class="px-4 py-3 text-right">
+<span class="text-sm font-bold text-red-600">-2 Bags</span>
+</td>
+</tr>
+<tr class="group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+<td class="px-4 py-3 text-xs text-gray-500 font-mono">Yesterday</td>
+<td class="px-4 py-3">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-gray-800 dark:text-gray-200">Correction</span>
+<span class="text-xs text-gray-500">Ghee • Stock count</span>
+</div>
+</td>
+<td class="px-4 py-3 text-right">
+<span class="text-sm font-bold text-blue-600">+0.5 Kg</span>
+</td>
+</tr>
+<tr class="group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+<td class="px-4 py-3 text-xs text-gray-500 font-mono">Yesterday</td>
+<td class="px-4 py-3">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-gray-800 dark:text-gray-200">Dispatch</span>
+<span class="text-xs text-gray-500">Milk • To Hub</span>
+</div>
+</td>
+<td class="px-4 py-3 text-right">
+<span class="text-sm font-bold text-red-600">-400 L</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 text-center">
+<button class="text-primary text-sm font-bold hover:underline">View All History</button>
+</div>
+</section>
+</div>
+</div>
+</main>
+</body></html>

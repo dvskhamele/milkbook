@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bold Flat Reports V2</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Lexend -->
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#17a1cf",
+              "background-light": "#fcfcfd",
+              "background-dark": "#1d283a",
+            },
+            fontFamily: {
+              "display": ["Lexend", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .gauge-arc {
+        stroke-dasharray: 100 100;
+        stroke-linecap: round;
+      }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-100 min-h-screen">
+<!-- Main Container -->
+<div class="flex flex-col min-h-screen">
+<!-- Header Bar -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 md:px-10 py-4">
+<div class="max-w-[1200px] mx-auto flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-2 rounded-lg text-white">
+<span class="material-symbols-outlined block">analytics</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Reports</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-1.5 gap-2 border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined text-slate-500 text-sm">calendar_today</span>
+<span class="text-sm font-medium">Oct 12 - Oct 18, 2023</span>
+<span class="material-symbols-outlined text-slate-500 text-sm">expand_more</span>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+<span>Export PDF</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 bg-cover bg-center border-2 border-white dark:border-slate-800 shadow-sm" data-alt="Profile picture of shop owner" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB-3d6pQjnU5oL_PGyp312y47oORzDOIoJqb86HlbD1tZBG88IJu4ut32cN9_9y5vzH9-qN19lqDHZLBmEMOD2Ay8lxVO972hN2txoXTv7qw-8mKjakzZqphDDLFc8l5dIXWXnpxLYNNggere30JnlCEH4RDz7EDqlbAsxIeSRC8T1Pv0DarTLVgn-22rA65rxFMUPiAqaX9NsmDo_km5-XWY-22ywkmEa6Yc7dHyIXzv2Bp0Rwn9PCRAQ5TVjykLl4P-fgLXTroA')"></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-4 md:px-10 py-8">
+<div class="mb-8">
+<h2 class="text-3xl font-black text-slate-900 dark:text-white">Performance Insights</h2>
+<p class="text-slate-500 dark:text-slate-400 mt-1">Real-time overview of your dairy collection and financial efficiency.</p>
+</div>
+<!-- Vertical Insights Stack -->
+<div class="flex flex-col gap-6">
+<!-- Hero Metric Cards (Side by Side) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Total Procurement Card -->
+<div class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 dark:border-slate-700">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 dark:text-slate-400 font-semibold text-sm uppercase tracking-wider">Total Procurement</span>
+<div class="p-2 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+</div>
+<div class="flex items-baseline gap-3">
+<span class="text-5xl font-black text-slate-900 dark:text-white">1,240</span>
+<span class="text-xl font-bold text-slate-500 dark:text-slate-400">Liters</span>
+</div>
+<div class="mt-4 flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+5.2% vs last week</span>
+</div>
+</div>
+<!-- Total Cost Card -->
+<div class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 dark:border-slate-700">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 dark:text-slate-400 font-semibold text-sm uppercase tracking-wider">Total Procurement Cost</span>
+<div class="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-emerald-600 dark:text-emerald-400">
+<span class="material-symbols-outlined">payments</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-5xl font-black text-slate-900 dark:text-white">₹45,000</span>
+</div>
+<div class="mt-4 flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+2.1% (Market Variation)</span>
+</div>
+</div>
+</div>
+<!-- Trend Analysis Card (Line Graph) -->
+<div class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 dark:border-slate-700">
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+<div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Daily Collection Trend</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Volume distribution across the current week</p>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-xs font-bold text-slate-600 dark:text-slate-300">Volume (L)</span>
+</div>
+<div class="bg-slate-50 dark:bg-slate-700/50 px-3 py-1 rounded-md">
+<span class="text-xs font-bold text-slate-400">Avg: 177L/day</span>
+</div>
+</div>
+</div>
+<div class="h-[200px] w-full relative group">
+<!-- Simplified Line Chart SVG -->
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 700 200">
+<!-- Gradient Area -->
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#17a1cf" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#17a1cf" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,150 L116,130 L233,160 L350,80 L466,110 L583,40 L700,60 L700,200 L0,200 Z" fill="url(#chartGradient)"></path>
+<!-- Main Line -->
+<path d="M0,150 L116,130 L233,160 L350,80 L466,110 L583,40 L700,60" fill="none" stroke="#17a1cf" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path>
+<!-- Data Points -->
+<circle cx="0" cy="150" fill="#17a1cf" r="6"></circle>
+<circle cx="116" cy="130" fill="#17a1cf" r="6"></circle>
+<circle cx="233" cy="160" fill="#17a1cf" r="6"></circle>
+<circle cx="350" cy="80" fill="#17a1cf" r="6"></circle>
+<circle cx="466" cy="110" fill="#17a1cf" r="6"></circle>
+<circle cx="583" cy="40" fill="#17a1cf" r="6"></circle>
+<circle cx="700" cy="60" fill="#17a1cf" r="6"></circle>
+</svg>
+<!-- X-Axis Labels -->
+<div class="flex justify-between mt-6 text-xs font-bold text-slate-400 uppercase tracking-tighter">
+<span>Mon</span>
+<span>Tue</span>
+<span>Wed</span>
+<span>Thu</span>
+<span>Fri</span>
+<span>Sat</span>
+<span>Sun</span>
+</div>
+</div>
+</div>
+<!-- Shift Efficiency Section -->
+<div class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 dark:border-slate-700">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-8">Shift Performance Efficiency</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Morning Shift Meter -->
+<div class="flex flex-col items-center">
+<div class="relative w-48 h-32 flex justify-center overflow-hidden">
+<!-- Background Arc -->
+<svg class="w-48 h-48 -rotate-180" viewbox="0 0 100 100">
+<circle class="dark:stroke-slate-700" cx="50" cy="50" fill="transparent" r="40" stroke="#f1f5f9" stroke-dasharray="125 250" stroke-width="12"></circle>
+<!-- Foreground Progress Arc (85%) -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#17a1cf" stroke-dasharray="106 250" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<!-- Content -->
+<div class="absolute bottom-0 text-center">
+<span class="text-4xl font-black text-slate-900 dark:text-white">85%</span>
+</div>
+</div>
+<div class="text-center mt-4">
+<p class="font-bold text-slate-900 dark:text-white">Morning Shift</p>
+<p class="text-xs font-medium text-slate-500 uppercase mt-1">Target: 600L | Actual: 510L</p>
+</div>
+</div>
+<!-- Evening Shift Meter -->
+<div class="flex flex-col items-center">
+<div class="relative w-48 h-32 flex justify-center overflow-hidden">
+<!-- Background Arc -->
+<svg class="w-48 h-48 -rotate-180" viewbox="0 0 100 100">
+<circle class="dark:stroke-slate-700" cx="50" cy="50" fill="transparent" r="40" stroke="#f1f5f9" stroke-dasharray="125 250" stroke-width="12"></circle>
+<!-- Foreground Progress Arc (72%) -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#17a1cf" stroke-dasharray="90 250" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<!-- Content -->
+<div class="absolute bottom-0 text-center">
+<span class="text-4xl font-black text-slate-900 dark:text-white">72%</span>
+</div>
+</div>
+<div class="text-center mt-4">
+<p class="font-bold text-slate-900 dark:text-white">Evening Shift</p>
+<p class="text-xs font-medium text-slate-500 uppercase mt-1">Target: 600L | Actual: 432L</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Detail Insight Cards (Side by Side Grid) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Top Contributor -->
+<div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4">
+<div class="size-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
+<span class="material-symbols-outlined">person_pin</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase">Top Contributor</p>
+<p class="text-lg font-bold text-slate-900 dark:text-white leading-tight">Farmer Rajesh K.</p>
+<p class="text-xs text-slate-500">42L Today</p>
+</div>
+</div>
+<!-- Average Fat -->
+<div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4">
+<div class="size-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined">science</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase">Avg. Fat Content</p>
+<p class="text-lg font-bold text-slate-900 dark:text-white leading-tight">4.2%</p>
+<p class="text-xs text-emerald-600 font-bold">+0.1% Quality Increase</p>
+</div>
+</div>
+<!-- Spillage/Loss -->
+<div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4">
+<div class="size-12 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center text-rose-600">
+<span class="material-symbols-outlined">opacity</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase">Spillage / Loss</p>
+<p class="text-lg font-bold text-slate-900 dark:text-white leading-tight">2.4 Liters</p>
+<p class="text-xs text-slate-500">0.2% of total collection</p>
+</div>
+</div>
+</div>
+<!-- Actionable Footer -->
+<div class="mt-4 pb-12">
+<button class="w-full bg-slate-900 dark:bg-primary text-white py-5 rounded-xl font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.01] transition-transform shadow-xl">
+<span class="material-symbols-outlined">summarize</span>
+                        Generate Detailed Monthly Summary
+                    </button>
+<p class="text-center text-slate-400 text-sm mt-4 font-medium">Last synced: Today, 08:32 AM</p>
+</div>
+</div>
+</main>
+</div>
+</body></html>

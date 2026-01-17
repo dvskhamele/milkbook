@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Owner Peace-of-Mind Report</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136986",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111d21",
+                        "profit-green": "#10b981",
+                        "expense-red": "#ef4444",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "sans": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111617] antialiased">
+<div class="relative flex min-h-screen flex-col overflow-x-hidden">
+<!-- Navigation -->
+<header class="sticky top-0 z-50 w-full border-b border-[#e5e7eb] bg-white/90 backdrop-blur-md dark:bg-background-dark/90 dark:border-gray-800">
+<div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+<div class="flex items-center gap-4">
+<div class="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<h2 class="text-lg font-bold tracking-tight text-[#111617] dark:text-white">Dairy Manager <span class="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">Owner View</span></h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors dark:text-slate-400" href="#">Dashboard</a>
+<a class="text-sm font-bold text-primary dark:text-white" href="#">Reports</a>
+<a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors dark:text-slate-400" href="#">Farmers</a>
+<a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors dark:text-slate-400" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 shadow-sm dark:border-slate-700 dark:bg-background-dark">
+<div class="size-2 rounded-full bg-green-500 animate-pulse"></div>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">Synced</span>
+</div>
+<div class="size-9 rounded-full bg-gray-200 bg-cover bg-center ring-2 ring-white dark:ring-gray-800" data-alt="Portrait of the dairy farm owner" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAKqAQo0b55i8jMYny_KMWgdiO4PS21uHu9K8ouzE5ctGOk7s2GwNFycn8vpwpVQeC9ToKL8HAIfpN-SvI7jvqYfKr6U4mgR5d1VRPEFkMwKRU9MQDWHcYxSXZqszUn6d-A1ta1SZWDwKpmYV_HIMRGApICpWlGcQ46AxJ0DeajjLokSQ41jzUEsU66GkNk0sa_tlAhmUoGKPOdtnVBNYAKjIRuTs89_OSghQNTZMHlAx3N0Polvejsdm536WoQmqcLUTIPXrCzzQ");'></div>
+</div>
+</div>
+</header>
+<main class="flex-1 py-10">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<!-- Page Header -->
+<div class="mb-10 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+<div>
+<h1 class="text-4xl font-black tracking-tight text-[#111617] dark:text-white sm:text-5xl">Owner Peace-of-Mind Report</h1>
+<p class="mt-2 text-lg text-slate-500 dark:text-slate-400">Daily financial pulse &amp; critical actions.</p>
+</div>
+<div class="text-right hidden md:block">
+<p class="text-sm font-medium text-slate-400 dark:text-slate-500">Last updated: Today, 08:30 AM</p>
+</div>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+<!-- Metric 1: Milk Volume -->
+<div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all hover:shadow-lg dark:border-slate-800 dark:bg-background-dark">
+<div class="absolute right-0 top-0 -mr-4 -mt-4 size-32 rounded-full bg-primary/5 blur-2xl transition-all group-hover:bg-primary/10"></div>
+<div class="relative flex flex-col justify-between h-full gap-4">
+<div class="flex items-center gap-3 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[28px]">water_drop</span>
+<span class="text-sm font-bold uppercase tracking-widest">Total Milk Today</span>
+</div>
+<div>
+<div class="text-[56px] leading-none font-bold tracking-tighter text-[#111617] dark:text-white group-hover:text-primary transition-colors">2,450 <span class="text-2xl font-medium text-slate-400">L</span></div>
+<div class="mt-2 flex items-center gap-1 text-sm font-medium text-primary">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+12% vs yesterday</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Metric 2: Total Sales -->
+<div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all hover:shadow-lg dark:border-slate-800 dark:bg-background-dark">
+<div class="absolute right-0 top-0 -mr-4 -mt-4 size-32 rounded-full bg-profit-green/5 blur-2xl transition-all group-hover:bg-profit-green/10"></div>
+<div class="relative flex flex-col justify-between h-full gap-4">
+<div class="flex items-center gap-3 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[28px]">payments</span>
+<span class="text-sm font-bold uppercase tracking-widest">Total Sales</span>
+</div>
+<div>
+<div class="text-[56px] leading-none font-bold tracking-tighter text-profit-green">$3,200</div>
+<div class="mt-2 text-sm font-medium text-slate-400">
+                                    From 4 distributors
+                                </div>
+</div>
+</div>
+</div>
+<!-- Metric 3: Payments Out -->
+<div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all hover:shadow-lg dark:border-slate-800 dark:bg-background-dark">
+<div class="absolute right-0 top-0 -mr-4 -mt-4 size-32 rounded-full bg-expense-red/5 blur-2xl transition-all group-hover:bg-expense-red/10"></div>
+<div class="relative flex flex-col justify-between h-full gap-4">
+<div class="flex items-center gap-3 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[28px]">output</span>
+<span class="text-sm font-bold uppercase tracking-widest">Payments Out</span>
+</div>
+<div>
+<div class="text-[56px] leading-none font-bold tracking-tighter text-expense-red">$1,150</div>
+<div class="mt-2 text-sm font-medium text-slate-400">
+                                    Feed &amp; Logistics
+                                </div>
+</div>
+</div>
+</div>
+<!-- Metric 4: Net Profit -->
+<div class="group relative overflow-hidden rounded-2xl border-2 border-primary/20 bg-primary/5 p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all hover:border-primary/40 hover:bg-primary/10 dark:bg-primary/10 dark:border-primary/30">
+<div class="absolute right-0 top-0 -mr-4 -mt-4 size-32 rounded-full bg-white/20 blur-2xl"></div>
+<div class="relative flex flex-col justify-between h-full gap-4">
+<div class="flex items-center gap-3 text-primary dark:text-primary-300">
+<span class="material-symbols-outlined text-[28px] filled">account_balance_wallet</span>
+<span class="text-sm font-bold uppercase tracking-widest">Net Profit</span>
+</div>
+<div>
+<div class="text-[56px] leading-none font-bold tracking-tighter text-primary dark:text-white">$2,050</div>
+<div class="mt-2 inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary dark:bg-primary/20 dark:text-white">
+                                    Target Met
+                                </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacer -->
+<div class="my-12 h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800"></div>
+<!-- Table Section -->
+<div>
+<div class="mb-6 flex items-center justify-between">
+<h2 class="text-2xl font-bold tracking-tight text-[#111617] dark:text-white">Pending Payments <span class="text-slate-400 font-normal ml-2 text-lg">(Action Required)</span></h2>
+<button class="flex items-center gap-2 rounded-lg bg-background-light px-4 py-2 text-sm font-bold text-[#111617] transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                            Export List
+                        </button>
+</div>
+<div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-background-dark">
+<div class="overflow-x-auto">
+<table class="w-full min-w-[800px] text-left">
+<thead class="border-b border-slate-100 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/50">
+<tr>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Farmer ID</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Name</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Amount Due</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Days Outstanding</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Status</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Row 1: Urgent -->
+<tr class="group transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50">
+<td class="px-6 py-5 text-sm font-medium text-slate-500">#104</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-100 bg-cover bg-center" data-alt="Portrait of farmer John Doe" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAi5IK62foS9uE4rJE2F98-lOYBYkRRYt-DiwhSti_nnocq7NqcR23F_QkFWiBeOJ7jjWTN-0anrSmQ-Tb4rnWZ_DpnCFNG9rSSbVsBPsPOv8uOS8wXrP5yHbEfH6vfh7C_YNvwjjqfTebCQnhlbXm4zC6jqAIYpdhk8jrhALW7XpIKJ3FYg3njgijodd1dBPiOT3-m7LOY6a9tB9IcicqeAeHLSuOqgEnZpFZahqCngS9qPitizrDKgzWzP91fsBLmttPEnutHtQ");'></div>
+<span class="text-sm font-bold text-[#111617] dark:text-white">John Doe</span>
+</div>
+</td>
+<td class="px-6 py-5 text-lg font-bold text-expense-red">$450.00</td>
+<td class="px-6 py-5 text-sm font-medium text-slate-500">
+<span class="text-expense-red font-bold">5 Days</span> overdue
+                                        </td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center rounded-md bg-red-50 px-2.5 py-1 text-xs font-bold text-red-700 ring-1 ring-inset ring-red-600/10 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20">Overdue</span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-sm font-bold text-primary hover:underline dark:text-white">Pay Now</button>
+</td>
+</tr>
+<!-- Row 2: Urgent -->
+<tr class="group transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50">
+<td class="px-6 py-5 text-sm font-medium text-slate-500">#112</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-100 bg-cover bg-center" data-alt="Portrait of farmer Bob Brown" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDjYCLIClR4S55bPbyR4LeVBpjdJHHijLetEL-rGNLbgoD-u_kN4LcD2zRcPOag9AZcUADwnKngp0BFY3xdUImrhbtZxVApz69ngdeYZBcUsfDBMxMzecxP6mOY2afL4XufGH_HP50r13l0wpjZjAL8woBuL5SJaReh-SIvxiseByiVqFasFCiPFomTNmG35QYLXZ2-V7HrjiiCVEIMlj8KeQmS9v2x_VYFd3Wvq2YPeozm1R83rTJxEInZI_g-3LKTdozENVsgSA");'></div>
+<span class="text-sm font-bold text-[#111617] dark:text-white">Bob Brown</span>
+</div>
+</td>
+<td class="px-6 py-5 text-lg font-bold text-expense-red">$890.00</td>
+<td class="px-6 py-5 text-sm font-medium text-slate-500">
+<span class="text-expense-red font-bold">12 Days</span> overdue
+                                        </td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center rounded-md bg-red-50 px-2.5 py-1 text-xs font-bold text-red-700 ring-1 ring-inset ring-red-600/10 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20">Critical</span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-sm font-bold text-primary hover:underline dark:text-white">Pay Now</button>
+</td>
+</tr>
+<!-- Row 3: Pending -->
+<tr class="group transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50">
+<td class="px-6 py-5 text-sm font-medium text-slate-500">#109</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-100 bg-cover bg-center" data-alt="Portrait of farmer Jane Smith" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBOEhWcMTG1s6y92twrlobNkouPZeG-Z7YoaBvaQZFtHZ9rCcnw0uoFgnyT3UKTf2pibaFPDZNYTxUhXwNKQpwoPX20SGJh0_wXwsVwJKvRR9dgMIzsklxv7gVlNoDCVw5ADo-9CmA9P09x8hDBNgiMqYFCLylKKW85paRqMI6NXRANZL4XZfaFkqwscy-U4F8abFs-drfU5MWq-Kzb29zvdFqkUxKAfqEVkHveA73D6F-Qq825D9aw70eM3Nm529iydCnieNxeyw");'></div>
+<span class="text-sm font-bold text-[#111617] dark:text-white">Jane Smith</span>
+</div>
+</td>
+<td class="px-6 py-5 text-lg font-bold text-slate-700 dark:text-slate-300">$120.00</td>
+<td class="px-6 py-5 text-sm font-medium text-slate-500">
+                                            2 Days
+                                        </td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center rounded-md bg-yellow-50 px-2.5 py-1 text-xs font-bold text-yellow-700 ring-1 ring-inset ring-yellow-600/20 dark:bg-yellow-400/10 dark:text-yellow-400 dark:ring-yellow-400/20">Pending</span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-sm font-bold text-slate-400 hover:text-primary hover:underline dark:text-slate-500 dark:hover:text-white">Details</button>
+</td>
+</tr>
+<!-- Row 4: Pending -->
+<tr class="group transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50">
+<td class="px-6 py-5 text-sm font-medium text-slate-500">#115</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-100 bg-cover bg-center" data-alt="Portrait of farmer Alice Green" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBqn-cjlfhmrLjixOtt_3BWsHi2ZTnO31Oh-xkZJQelKge9YGDACRSmTb4SLzhyzIcXJZ6OarbJbFKvwf5dvZJvpQi56wCTqfltED8TWVTt252WjuoOIS8zYUdAy6yS7hNNOPVnUK4B-zsfkW0zWDRlaovzOFXDT2qh6vjzIKanpwFU2844e3dCbV48hazOp6PlHACf8fgaeJT3o5olUSqd66PXEupavJS74Ml0y2HM7sdKRZ4Fsts0mu6ufQUnLUV-RbwRK3Hhmg");'></div>
+<span class="text-sm font-bold text-[#111617] dark:text-white">Alice Green</span>
+</div>
+</td>
+<td class="px-6 py-5 text-lg font-bold text-slate-700 dark:text-slate-300">$200.00</td>
+<td class="px-6 py-5 text-sm font-medium text-slate-500">
+                                            1 Day
+                                        </td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center rounded-md bg-yellow-50 px-2.5 py-1 text-xs font-bold text-yellow-700 ring-1 ring-inset ring-yellow-600/20 dark:bg-yellow-400/10 dark:text-yellow-400 dark:ring-yellow-400/20">Pending</span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-sm font-bold text-slate-400 hover:text-primary hover:underline dark:text-slate-500 dark:hover:text-white">Details</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

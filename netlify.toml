@@ -1,6 +1,11 @@
 [build]
-  publish = "dist"
-  command = ""
+  publish = "."
+  command = "echo 'No build command needed for static files'"
 
-[build.environment]
-  NODE_VERSION = "22"
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[template.environment]
+  NODE_VERSION = "18"

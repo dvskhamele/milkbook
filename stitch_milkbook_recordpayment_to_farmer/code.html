@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkBook - Record Payment</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@300..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2563EB", // Brand Blue rgb(37, 99, 235)
+                        "brand-red": "#DB1B34",
+                        "surface": "#ffffff",
+                        "background-light": "#f8fafc", // Off-white (Slate 50)
+                        "soft-red-bg": "#FEF2F2", // Soft light red (Red 50)
+                        "soft-red-border": "#FECACA", // Red 200
+                        "border-blue-thin": "#BFDBFE", // Blue 200
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "mono": ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                    },
+                    boxShadow: {
+                        'glow-primary': '0 0 20px -5px rgba(37, 99, 235, 0.3)',
+                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen bg-background-light font-display text-slate-900 overflow-x-hidden selection:bg-primary selection:text-white">
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 bg-white px-6 py-4 lg:px-10 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-10 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-2xl">water_drop</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight text-slate-800">MilkBook</h2>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors" href="#">Farmers</a>
+<a class="text-sm font-medium text-primary" href="#">Payments</a>
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors" href="#">Settings</a>
+</nav>
+<button class="flex items-center justify-center size-10 rounded-full text-slate-600 hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-1 flex flex-col items-center justify-center p-4 md:p-8">
+<div class="w-full max-w-[640px] flex flex-col gap-6 animate-in fade-in zoom-in duration-500">
+<div class="flex flex-col items-center text-center space-y-2 mb-2">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-xs font-medium text-slate-500 uppercase tracking-widest shadow-sm">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                Terminal Active
+            </div>
+<h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">Farmer #1042</h1>
+<p class="text-slate-500 text-lg">John Doe</p>
+</div>
+<div class="relative overflow-hidden bg-soft-red-bg border border-soft-red-border rounded-xl p-8 text-center shadow-soft group">
+<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]" data-alt="Subtle geometric pattern"></div>
+<div class="relative z-10 flex flex-col items-center justify-center gap-2">
+<span class="text-red-800/70 text-sm font-bold tracking-[0.2em] uppercase">Current Total Due</span>
+<div class="flex items-baseline gap-1 text-red-700">
+<span class="text-3xl font-medium">$</span>
+<span class="text-6xl font-extrabold tracking-tighter drop-shadow-sm">1,250.00</span>
+</div>
+</div>
+</div>
+<form class="flex flex-col gap-6" onsubmit="event.preventDefault();">
+<div class="grid grid-cols-2 gap-4">
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only" name="payment_method" type="radio" value="cash"/>
+<div class="h-40 md:h-48 flex flex-col items-center justify-center gap-4 rounded-xl bg-white border border-blue-100 peer-checked:border-primary peer-checked:border-2 peer-checked:bg-blue-50/50 peer-checked:shadow-glow-primary transition-all duration-200 ease-out hover:border-blue-300 hover:shadow-md">
+<div class="size-16 rounded-full bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 peer-checked:bg-primary peer-checked:text-white text-primary">
+<span class="material-symbols-outlined text-4xl">payments</span>
+</div>
+<span class="text-2xl font-bold text-slate-600 peer-checked:text-primary">CASH</span>
+<div class="absolute top-4 right-4 opacity-0 peer-checked:opacity-100 transition-opacity text-primary">
+<span class="material-symbols-outlined fill-current">check_circle</span>
+</div>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only" name="payment_method" type="radio" value="bank"/>
+<div class="h-40 md:h-48 flex flex-col items-center justify-center gap-4 rounded-xl bg-white border border-blue-100 peer-checked:border-primary peer-checked:border-2 peer-checked:bg-blue-50/50 peer-checked:shadow-glow-primary transition-all duration-200 ease-out hover:border-blue-300 hover:shadow-md">
+<div class="size-16 rounded-full bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 peer-checked:bg-primary peer-checked:text-white text-primary">
+<span class="material-symbols-outlined text-4xl">account_balance</span>
+</div>
+<span class="text-2xl font-bold text-slate-600 peer-checked:text-primary">BANK</span>
+<div class="absolute top-4 right-4 opacity-0 peer-checked:opacity-100 transition-opacity text-primary">
+<span class="material-symbols-outlined fill-current">check_circle</span>
+</div>
+</div>
+</label>
+</div>
+<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-soft">
+<label class="block text-sm font-medium text-slate-500 mb-3 uppercase tracking-wider" for="amount">Amount to Pay</label>
+<div class="relative group">
+<span class="absolute left-6 top-1/2 -translate-y-1/2 text-4xl font-light text-slate-400 group-focus-within:text-primary transition-colors">$</span>
+<input autofocus="" class="w-full bg-slate-50 text-slate-900 text-5xl md:text-6xl font-mono font-bold py-6 pl-16 pr-6 rounded-lg border-2 border-transparent focus:bg-white focus:border-primary focus:ring-0 focus:outline-none placeholder-slate-300 transition-all" id="amount" placeholder="0.00" type="number"/>
+<div class="absolute right-6 top-1/2 -translate-y-1/2">
+<button class="text-slate-400 hover:text-slate-600 transition-colors" title="Clear" type="button">
+<span class="material-symbols-outlined text-3xl">backspace</span>
+</button>
+</div>
+</div>
+</div>
+<div class="h-4"></div>
+<button class="group relative w-full h-24 md:h-32 rounded-xl bg-primary overflow-hidden shadow-xl shadow-blue-500/30 hover:shadow-blue-600/40 transition-all duration-300 active:scale-[0.99]" type="submit">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+<div class="relative flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-3">
+<span class="text-2xl md:text-3xl font-bold text-white tracking-wide">CONFIRM PAYMENT</span>
+<span class="material-symbols-outlined text-3xl md:text-4xl text-white group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+<span class="text-blue-100 text-sm font-medium tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform -translate-y-1 group-hover:translate-y-0">Process Transaction Immediately</span>
+</div>
+</button>
+</form>
+<div class="text-center">
+<p class="text-xs text-slate-400 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">lock</span>
+                Secure Transaction • Session ID: 8832-TX
+            </p>
+</div>
+</div>
+</main>
+
+</body></html>

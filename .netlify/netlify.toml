@@ -1,17 +1,23 @@
+redirectsOrigin = "config"
 plugins = []
 headers = []
+
+[template]
+
+[template.environment]
+NODE_VERSION = "18"
 
 [functions]
 
 [functions."*"]
 
 [build]
-publish = "/Users/test/startups/milkbook/dist"
+publish = "/Users/test/startups/milkbook"
 publishOrigin = "config"
-commandOrigin = "ui"
+commandOrigin = "config"
+command = "echo 'No build command needed for static files'"
 
 [build.environment]
-NODE_VERSION = "22"
 
 [build.processing]
 
