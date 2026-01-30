@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title data-translate="Owner Peace-of-Mind Report">Owner Peace-of-Mind Report - MilkBook</title>
+    <title>Owner Peace-of-Mind Report - MilkBook</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <!-- Theme Configuration -->
+    <!-- Tailwind Configuration -->
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -26,72 +26,258 @@
                         "expense-red": "#ef4444",
                     },
                     fontFamily: {
-                        "display": ["Space Grotesk", "sans-serif"]
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "sans": ["Space Grotesk", "sans-serif"]
                     },
                     borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
                 },
             },
         }
     </script>
-    <style>
-        /* Custom scrollbar for cleaner look */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }.input-tile:focus-within {
-            border-color: #2563eb;
-            border-width: 3px;
-            background-color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.15), 0 8px 10px -6px rgba(37, 99, 235, 0.15);
-            z-index: 10;
-        }
-        .input-tile {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        body {
-            background-color: #f6f7f8;
-            color: #1e293b;
-        }
-    </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-[#111617] antialiased">
-    <script>
-        // Redirect to main work screen immediately
-        window.location.href = 'main-work.html';
-    </script>
+    <div class="relative flex min-h-screen flex-col overflow-x-hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="fixed left-0 top-0 z-20 hidden h-full w-64 flex-col border-r border-slate-200 bg-white p-6 pt-24 shadow-sm md:flex dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="mb-10 flex items-center gap-3">
+                <div class="flex size-10 items-center justify-center rounded-lg bg-primary">
+                    <img src="logo.jpg" alt="MilkBook Logo" class="text-white" style="width: 24px; height: 24px;">
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold uppercase tracking-tighter">MilkBook</h2>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Vadgaon Center</p>
+                </div>
+            </div>
+            <nav class="flex flex-1 flex-col gap-1">
+                <a href="dashboard.html" class="sidebar-item active">
+                    <i data-lucide="layout-dashboard" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Dashboard</span>
+                </a>
+                <a href="collection.html" class="sidebar-item">
+                    <i data-lucide="water_full" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Milk Collection</span>
+                </a>
+                <a href="farmers.html" class="sidebar-item">
+                    <i data-lucide="users" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Farmers</span>
+                </a>
+                <a href="ledger.html" class="sidebar-item">
+                    <i data-lucide="receipt_long" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Ledger</span>
+                </a>
+                <a href="payments.html" class="sidebar-item">
+                    <i data-lucide="payments" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Payments</span>
+                </a>
+                <a href="milk-sales.html" class="sidebar-item">
+                    <i data-lucide="shopping-bag" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Milk Sales</span>
+                </a>
+                <a href="inventory.html" class="sidebar-item">
+                    <i data-lucide="inventory" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Inventory</span>
+                </a>
+                <a href="reports.html" class="sidebar-item">
+                    <i data-lucide="bar-chart-3" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Reports</span>
+                </a>
+                <a href="milkledger-evidence.html" class="sidebar-item">
+                    <i data-lucide="shield-check" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">MilkLedger Evidence</span>
+                </a>
+                <a href="backup.html" class="sidebar-item">
+                    <i data-lucide="backup" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Backup</span>
+                </a>
+                <a href="settings.html" class="sidebar-item">
+                    <i data-lucide="settings" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Settings</span>
+                </a>
+                <a href="logout.html" class="sidebar-item">
+                    <i data-lucide="log-out" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                    <span class="font-bold text-sm tracking-tight">Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="md:ml-64">
+            <!-- Header -->
+            <header class="flex items-center justify-between border-b border-solid border-[#dce3e5] dark:border-gray-800 bg-white dark:bg-background-dark px-6 py-4 sticky top-0 z-50">
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-3">
+                        <div class="size-10 bg-primary flex items-center justify-center rounded-xl text-white shadow-lg shadow-primary/30">
+                            <span class="material-symbols-outlined text-2xl">water_drop</span>
+                        </div>
+                        <h2 class="text-xl font-extrabold tracking-tight" id="dairyName">Gopal Dairy Shop</h2>
+                    </div>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a class="text-primary font-bold border-b-2 border-primary pb-1" href="milk-sales.html">Sales</a>
+                        <a class="text-gray-500 dark:text-gray-400 font-medium hover:text-primary transition-colors" href="inventory.html">Inventory</a>
+                        <a class="text-gray-500 dark:text-gray-400 font-medium hover:text-primary transition-colors" href="farmers.html">Farmers</a>
+                        <a class="text-gray-500 dark:text-gray-400 font-medium hover:text-primary transition-colors" href="reports.html">Reports</a>
+                    </nav>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden sm:block">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                        <input class="pl-10 pr-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-primary w-64" placeholder="Search customer..." type="text">
+                    </div>
+                    <button class="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 transition-colors">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <div class="size-10 rounded-full bg-primary/20 border-2 border-primary overflow-hidden" data-alt="Profile avatar of the shop owner">
+                        <img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuf9ughrQNq15i7W0rdKfeX2VJNw5EFzy88vVyJnbImfXeCFoifjQK32iOXC43bLNKrSVh1rORDFRqlRoHtIaWW1qkLnERMw_EuLbffucnGzayRUfM4NrqlcbeEjrhmRZoCR-MOwQiB3UyZz2TEI_PgdwQJCUsP-BgDqWhNQHfzBAmiAAuoOfXdTIf_gdDaq7cmHnkGTM2LLIsqAzfsHbyXfQu9OcSfsL2cnFdTc0Cq5NF4S40FP41OSzpCdX_bf3tUc0-1z3ZJw">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="flex-1 py-10">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <!-- Page Header -->
+                    <div class="mb-10 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                        <div>
+                            <h1 class="text-4xl font-black tracking-tight text-[#111617] dark:text-white sm:text-5xl">Owner Peace-of-Mind Report</h1>
+                            <p class="mt-2 text-lg text-slate-500 dark:text-slate-400">Daily financial pulse & critical actions.</p>
+                        </div>
+                        <div class="text-right hidden md:block">
+                            <p class="text-sm font-medium text-slate-400 dark:text-slate-500">Last updated: Today, 08:30 AM</p>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <!-- Metric 1: Today's Milk -->
+                        <div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all hover:shadow-lg dark:border-slate-800 dark:bg-background-dark">
+                            <div class="absolute right-0 top-0 -mr-4 -mt-4 size-32 rounded-full bg-primary/5 blur-2xl transition-all group-hover:bg-primary/10"></div>
+                            <div class="relative flex flex-col justify-between h-full gap-4">
+                                <div class="flex items-center gap-3 text-slate-500 dark:text-slate-400">
+                                    <span class="material-symbols-outlined text-[28px]">water_drop</span>
+                                    <span class="text-sm font-bold uppercase tracking-widest">Today's Milk</span>
+                                </div>
+                                <div>
+                                    <div class="text-[56px] leading-none font-bold tracking-tighter text-[#111617] dark:text-white group-hover:text-primary transition-colors" id="todaysMilk">0.0 <span class="text-2xl font-medium text-slate-400">L</span></div>
+                                    <div class="mt-2 flex items-center gap-1 text-sm font-medium text-primary">
+                                        <span class="material-symbols-outlined text-sm">trending_up</span>
+                                        <span id="milkTrend">+0% vs yesterday</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metric 2: Total Sales -->
+                        <div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all hover:shadow-lg dark:border-slate-800 dark:bg-background-dark">
+                            <div class="absolute right-0 top-0 -mr-4 -mt-4 size-32 rounded-full bg-profit-green/5 blur-2xl transition-all group-hover:bg-profit-green/10"></div>
+                            <div class="relative flex flex-col justify-between h-full gap-4">
+                                <div class="flex items-center gap-3 text-slate-500 dark:text-slate-400">
+                                    <span class="material-symbols-outlined text-[28px]">payments</span>
+                                    <span class="text-sm font-bold uppercase tracking-widest">Total Sales</span>
+                                </div>
+                                <div>
+                                    <div class="text-[56px] leading-none font-bold tracking-tighter text-profit-green" id="totalSales">₹0.00</div>
+                                    <div class="mt-2 text-sm font-medium text-slate-400">
+                                        From <span id="distributorCount">0</span> distributors
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metric 3: Payments Out -->
+                        <div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all hover:shadow-lg dark:border-slate-800 dark:bg-background-dark">
+                            <div class="absolute right-0 top-0 -mr-4 -mt-4 size-32 rounded-full bg-expense-red/5 blur-2xl transition-all group-hover:bg-expense-red/10"></div>
+                            <div class="relative flex flex-col justify-between h-full gap-4">
+                                <div class="flex items-center gap-3 text-slate-500 dark:text-slate-400">
+                                    <span class="material-symbols-outlined text-[28px]">output</span>
+                                    <span class="text-sm font-bold uppercase tracking-widest">Payments Out</span>
+                                </div>
+                                <div>
+                                    <div class="text-[56px] leading-none font-bold tracking-tighter text-expense-red" id="paymentsOut">₹0.00</div>
+                                    <div class="mt-2 text-sm font-medium text-slate-400">
+                                        Feed & Logistics
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metric 4: Net Profit -->
+                        <div class="group relative overflow-hidden rounded-2xl border-2 border-primary/20 bg-primary/5 p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all hover:border-primary/40 hover:bg-primary/10 dark:bg-primary/10 dark:border-primary/30">
+                            <div class="absolute right-0 top-0 -mr-4 -mt-4 size-32 rounded-full bg-white/20 blur-2xl"></div>
+                            <div class="relative flex flex-col justify-between h-full gap-4">
+                                <div class="flex items-center gap-3 text-primary dark:text-primary-300">
+                                    <span class="material-symbols-outlined text-[28px] filled">account_balance_wallet</span>
+                                    <span class="text-sm font-bold uppercase tracking-widest">Net Profit</span>
+                                </div>
+                                <div>
+                                    <div class="text-[56px] leading-none font-bold tracking-tighter text-primary dark:text-white" id="netProfit">₹0.00</div>
+                                    <div class="mt-2 inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary dark:bg-primary/20 dark:text-white">
+                                        Target Met
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spacer -->
+                    <div class="my-12 h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800"></div>
+
+                    <!-- Pending Payments Section -->
+                    <div>
+                        <div class="mb-6 flex items-center justify-between">
+                            <h2 class="text-2xl font-bold tracking-tight text-[#111617] dark:text-white">Pending Payments <span class="text-slate-400 font-normal ml-2 text-lg">(Action Required)</span></h2>
+                            <button class="flex items-center gap-2 rounded-lg bg-background-light px-4 py-2 text-sm font-bold text-[#111617] transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700">
+                                <span class="material-symbols-outlined text-[18px]">download</span>
+                                Export List
+                            </button>
+                        </div>
+                        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-background-dark">
+                            <div class="overflow-x-auto">
+                                <table class="w-full min-w-[800px] text-left">
+                                    <thead class="border-b border-slate-100 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/50">
+                                        <tr>
+                                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Farmer ID</th>
+                                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Name</th>
+                                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Amount Due</th>
+                                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Days Outstanding</th>
+                                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Status</th>
+                                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pendingPayments">
+                                        <tr>
+                                            <td colSpan="6" className="py-8 text-center text-slate-500">No pending payments found</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <footer class="print:hidden text-center py-4 text-slate-500 text-sm border-t bg-slate-50">
         Designed by <span class="font-bold text-slate-700">signimus</span>
     </footer>
 
-    <script src="dairy-manager.js"></script>
-    <script src="cycle-manager.js"></script>
-    <script src="translations.js"></script>
     <script src="state.js"></script>
     <script src="db.js"></script>
     <script src="utils.js"></script>
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
-        
+
         // Update header information
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN');
-        
+
         // Check authentication
         const session = sessionStorage.getItem('milkbook_session');
         if (!session) {
             window.location.href = 'index.html';
             return;
         }
-        
+
         // Load state from localStorage
         const STORAGE_KEY = 'milkbook_data';
         const INITIAL_STATE = {
@@ -130,9 +316,9 @@
                 localRecordsToday: 0
             }
         };
-        
+
         let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || JSON.stringify(INITIAL_STATE));
-        
+
         // Ensure state structure is correct
         if (!state.farmers) state.farmers = [];
         if (!state.milkEntries) state.milkEntries = [];
@@ -141,13 +327,13 @@
         if (!state.inventory) state.inventory = [];
         if (!state.evidenceRecords) state.evidenceRecords = [];
         if (!state.settings) state.settings = INITIAL_STATE.settings;
-        
+
         // Update header info
         document.getElementById('dairyName').textContent = state.dairyInfo?.name || 'Milk Collection Center';
         document.getElementById('userName').textContent = state.auth?.user?.name || 'User';
         document.getElementById('userInitial').textContent = (state.auth?.user?.name || 'U').charAt(0).toUpperCase();
         document.getElementById('pendingCount').textContent = state.settings?.pendingRecords || 0;
-        
+
         // Update dashboard metrics
         function updateDashboardMetrics() {
             const today = new Date().toISOString().split('T')[0];
@@ -161,22 +347,19 @@
 
             // Calculate total sales
             const totalSales = todaySales.reduce((sum, sale) => sum + parseFloat(sale.amount || 0), 0);
-            
-            // Calculate acquisition cost (total payments to farmers)
-            const totalAcquisition = todayEntries.reduce((sum, entry) => sum + parseFloat(entry.amount || 0), 0);
-            document.getElementById('acquisitionCost').textContent = `₹${totalAcquisition.toFixed(2)}`;
-            
-            // Calculate cost per liter
-            const costPerLiter = totalVolume > 0 ? totalAcquisition / totalVolume : 0;
-            document.getElementById('costPerLiter').textContent = `₹${costPerLiter.toFixed(2)}`;
+            document.getElementById('totalSales').textContent = `₹${totalSales.toFixed(2)}`;
 
-            // Calculate efficiency index (revenue per liter acquired)
-            const efficiencyIndex = totalVolume > 0 ? totalSales / totalVolume : 0;
-            document.getElementById('efficiencyIndex').innerHTML = `₹${efficiencyIndex.toFixed(2)}<span class="text-2xl font-medium text-slate-400">/L</span>`;
+            // Calculate payments out
+            const paymentsOut = todayPayments.reduce((sum, payment) => sum + parseFloat(payment.amount || 0), 0);
+            document.getElementById('paymentsOut').textContent = `₹${paymentsOut.toFixed(2)}`;
 
-            // Calculate active farmers
-            const activeFarmers = state.farmers.filter(f => f.active !== false).length;
-            document.getElementById('activeFarmers').textContent = activeFarmers;
+            // Calculate net profit
+            const netProfit = totalSales - paymentsOut;
+            document.getElementById('netProfit').textContent = `₹${netProfit.toFixed(2)}`;
+
+            // Calculate distributor count
+            const distributorCount = [...new Set(todaySales.map(s => s.customerId))].length;
+            document.getElementById('distributorCount').textContent = distributorCount;
 
             // Calculate milk trend (compare with yesterday)
             const yesterday = new Date();
@@ -192,78 +375,67 @@
                 document.getElementById('milkTrend').textContent = '+100% vs yesterday';
             }
 
-            // Update recent collections table
-            updateRecentCollections();
-            
-            // Update active farmers table
-            updateActiveFarmersList();
+            // Update pending payments table
+            updatePendingPayments();
         }
-        
-        // Update recent collections table
-        function updateRecentCollections() {
-            const recentCollections = document.getElementById('recentCollections');
-            if (recentCollections) {
-                recentCollections.innerHTML = '';
-                
-                const today = new Date().toISOString().split('T')[0];
-                const todayEntries = state.milkEntries.filter(e => e.date === today);
-                
-                if (todayEntries.length > 0) {
-                    todayEntries.slice(0, 10).forEach(entry => {
-                        const farmer = state.farmers.find(f => f.id === entry.farmerId);
+
+        // Update pending payments table
+        function updatePendingPayments() {
+            const pendingPayments = document.getElementById('pendingPayments');
+            if (pendingPayments) {
+                pendingPayments.innerHTML = '';
+
+                // Find farmers with outstanding payments
+                const outstandingFarmers = [];
+                state.farmers.forEach(farmer => {
+                    const totalMilkValue = state.milkEntries
+                        .filter(entry => entry.farmerId === farmer.id)
+                        .reduce((sum, entry) => sum + parseFloat(entry.amount || 0), 0);
+
+                    const totalPayments = state.payments
+                        .filter(payment => payment.farmerId === farmer.id && payment.type === 'Payment')
+                        .reduce((sum, payment) => sum + parseFloat(payment.amount || 0), 0);
+
+                    const outstanding = totalMilkValue - totalPayments;
+                    if (outstanding > 0) {
+                        outstandingFarmers.push({
+                            farmer: farmer,
+                            outstanding: outstanding,
+                            daysOutstanding: Math.floor(Math.random() * 10) // Sample data
+                        });
+                    }
+                });
+
+                if (outstandingFarmers.length > 0) {
+                    outstandingFarmers.forEach(item => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td class="px-6 py-4 font-bold text-slate-500">${entry.date}</td>
-                            <td class="px-6 py-4 font-black">${farmer?.name || 'Unknown'}</td>
-                            <td class="px-6 py-4 font-bold text-slate-500">${entry.shift}</td>
-                            <td class="px-6 py-4 font-black">${entry.type}</td>
-                            <td class="px-6 py-4 font-black text-slate-700">${entry.qty} L</td>
-                            <td class="px-6 py-4 font-black text-amber-600">${entry.fat}%</td>
-                            <td class="px-6 py-4 text-right font-black text-blue-600">₹${entry.amount}</td>
-                        `;
-                        recentCollections.appendChild(row);
-                    });
-                } else {
-                    const row = document.createElement('tr');
-                    row.innerHTML = '<td colSpan="7" className="py-8 text-center text-slate-500">No collections recorded today</td>';
-                    recentCollections.appendChild(row);
-                }
-            }
-        }
-        
-        // Update active farmers table
-        function updateActiveFarmersList() {
-            const activeFarmersList = document.getElementById('activeFarmersList');
-            if (activeFarmersList) {
-                activeFarmersList.innerHTML = '';
-                
-                const activeFarmers = state.farmers.filter(f => f.active !== false);
-                
-                if (activeFarmers.length > 0) {
-                    activeFarmers.slice(0, 10).forEach(farmer => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td class="px-6 py-4 font-bold">${farmer.name}</td>
-                            <td class="px-6 py-4 font-bold text-slate-500">${farmer.mobile}</td>
-                            <td class="px-6 py-4 font-bold text-amber-600">${farmer.type || 'Cow'}</td>
-                            <td class="px-6 py-4 font-bold text-emerald-600">₹${farmer.advance || 0}</td>
+                            <td class="px-6 py-4 font-bold text-slate-500">#${item.farmer.id.substring(0, 4)}</td>
+                            <td class="px-6 py-4 font-black">${item.farmer.name}</td>
+                            <td class="px-6 py-4 font-black text-expense-red">₹${item.outstanding.toFixed(2)}</td>
+                            <td class="px-6 py-4 font-bold text-slate-500">${item.daysOutstanding} days</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">Pending</span>
+                            </td>
                             <td class="px-6 py-4 text-right">
-                                <button class="text-blue-600 font-bold hover:underline text-sm">View</button>
+                                <button class="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 transition-colors">
+                                    Pay Now
+                                </button>
                             </td>
                         `;
-                        activeFarmersList.appendChild(row);
+                        pendingPayments.appendChild(row);
                     });
                 } else {
                     const row = document.createElement('tr');
-                    row.innerHTML = '<td colSpan="5" className="py-8 text-center text-slate-500">No farmers registered yet</td>';
-                    activeFarmersList.appendChild(row);
+                    row.innerHTML = '<td colSpan="6" className="py-8 text-center text-slate-500">No pending payments found</td>';
+                    pendingPayments.appendChild(row);
                 }
             }
         }
-        
+
         // Initial updates
         updateDashboardMetrics();
-        
+
         // Update metrics every 30 seconds
         setInterval(updateDashboardMetrics, 30000);
     </script>

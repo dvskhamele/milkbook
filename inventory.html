@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Stock Management - MilkBook</title>
+    <title>Inventory Management - MilkBook</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -62,9 +62,679 @@
     </style>
 </head>
 <body class="bg-background-main font-display h-screen flex flex-col overflow-hidden text-text-main selection:bg-primary/20 selection:text-primary">
+    <!-- Sidebar Navigation -->
+    <aside class="fixed left-0 top-0 z-20 hidden h-full w-64 flex-col border-r border-slate-200 bg-white p-6 pt-24 shadow-sm md:flex dark:border-zinc-800 dark:bg-zinc-900">
+        <div class="mb-10 flex items-center gap-3">
+            <div class="flex size-10 items-center justify-center rounded-lg bg-primary">
+                <img src="logo.jpg" alt="MilkBook Logo" class="text-white" style="width: 24px; height: 24px;">
+            </div>
+            <div>
+                <h2 class="text-xl font-bold uppercase tracking-tighter">MilkBook</h2>
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Vadgaon Center</p>
+            </div>
+        </div>
+        <nav class="flex flex-1 flex-col gap-1">
+            <a href="dashboard.html" class="sidebar-item">
+                <i data-lucide="layout-dashboard" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Dashboard</span>
+            </a>
+            <a href="collection.html" class="sidebar-item">
+                <i data-lucide="water_full" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Milk Collection</span>
+            </a>
+            <a href="farmers.html" class="sidebar-item">
+                <i data-lucide="users" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Farmers</span>
+            </a>
+            <a href="ledger.html" class="sidebar-item">
+                <i data-lucide="receipt_long" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Ledger</span>
+            </a>
+            <a href="payments.html" class="sidebar-item">
+                <i data-lucide="payments" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Payments</span>
+            </a>
+            <a href="milk-sales.html" class="sidebar-item">
+                <i data-lucide="shopping-bag" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Milk Sales</span>
+            </a>
+            <a href="inventory.html" class="sidebar-item active">
+                <i data-lucide="inventory" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Inventory</span>
+            </a>
+            <a href="reports.html" class="sidebar-item">
+                <i data-lucide="bar-chart-3" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Reports</span>
+            </a>
+            <a href="milkledger-evidence.html" class="sidebar-item">
+                <i data-lucide="shield-check" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">MilkLedger Evidence</span>
+            </a>
+            <a href="backup.html" class="sidebar-item">
+                <i data-lucide="backup" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Backup</span>
+            </a>
+            <a href="settings.html" class="sidebar-item">
+                <i data-lucide="settings" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Settings</span>
+            </a>
+            <a href="logout.html" class="sidebar-item">
+                <i data-lucide="log-out" class="shrink-0" style="width: 20px; height: 20px;"></i>
+                <span class="font-bold text-sm tracking-tight">Logout</span>
+            </a>
+        </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="md:ml-64">
+        <!-- Header -->
+        <header class="flex items-center justify-between border-b border-solid border-[#dce3e5] dark:border-gray-800 bg-white dark:bg-background-dark px-6 py-4 sticky top-0 z-50">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 bg-primary flex items-center justify-center rounded-xl text-white shadow-lg shadow-primary/30">
+                        <span class="material-symbols-outlined text-2xl">water_drop</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold tracking-tight" id="dairyName">Gopal Dairy Shop</h2>
+                </div>
+                <nav class="hidden md:flex items-center gap-6">
+                    <a class="text-primary font-bold border-b-2 border-primary pb-1" href="milk-sales.html">Sales</a>
+                    <a class="text-gray-500 dark:text-gray-400 font-medium hover:text-primary transition-colors" href="inventory.html">Inventory</a>
+                    <a class="text-gray-500 dark:text-gray-400 font-medium hover:text-primary transition-colors" href="farmers.html">Farmers</a>
+                    <a class="text-gray-500 dark:text-gray-400 font-medium hover:text-primary transition-colors" href="reports.html">Reports</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="relative hidden sm:block">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                    <input class="pl-10 pr-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-primary w-64" placeholder="Search customer..." type="text">
+                </div>
+                <button class="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div class="size-10 rounded-full bg-primary/20 border-2 border-primary overflow-hidden" data-alt="Profile avatar of the shop owner">
+                    <img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuf9ughrQNq15i7W0rdKfeX2VJNw5EFzy88vVyJnbImfXeCFoifjQK32iOXC43bLNKrSVh1rORDFRqlRoHtIaWW1qkLnERMw_EuLbffucnGzayRUfM4NrqlcbeEjrhmRZoCR-MOwQiB3UyZz2TEI_PgdwQJCUsP-BgDqWhNQHfzBAmiAAuoOfXdTIf_gdDaq7cmHnkGTM2LLIsqAzfsHbyXfQu9OcSfsL2cnFdTc0Cq5NF4S40FP41OSzpCdX_bf3tUc0-1z3ZJw">
+                </div>
+            </div>
+        </header>
+        
+        <!-- Content -->
+        <div class="flex-1 overflow-y-auto p-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col gap-3 mb-8">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Step 7 of 9</span>
+                        <span class="text-sm font-bold text-primary">Stock Management</span>
+                    </div>
+                    <div class="h-2.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-primary rounded-full transition-all duration-500 ease-out" style="width: 77%"></div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h1 class="text-3xl font-black tracking-tight uppercase">Inventory Management</h1>
+                        <p class="text-lg text-slate-500 dark:text-slate-400 mt-2">Track feed, ghee, milk, and other supplies.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="px-6 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold flex items-center gap-2 shadow-sm hover:bg-slate-50 transition-colors">
+                            <span class="material-symbols-outlined">history</span>
+                            History
+                        </button>
+                        <button class="px-6 py-3 bg-primary text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:bg-primary/90 transition-colors">
+                            <span class="material-symbols-outlined">add</span>
+                            New Item
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    <div class="lg:col-span-2">
+                        <div class="input-tile group relative flex flex-row items-stretch bg-surface-white border border-border-subtle rounded-2xl h-40 shadow-tile">
+                            <div class="w-32 bg-slate-50 rounded-l-2xl flex items-center justify-center border-r border-border-subtle group-focus-within:bg-primary/10 group-focus-within:border-primary/20 transition-colors">
+                                <span class="material-symbols-outlined text-7xl text-primary/80 group-focus-within:text-primary transition-colors">category</span>
+                            </div>
+                            <label class="flex-1 flex flex-col justify-center px-8 py-4 cursor-text relative">
+                                <span class="absolute top-4 left-8 text-xs font-bold text-text-secondary uppercase tracking-widest opacity-50">1</span>
+                                <div class="flex gap-4">
+                                    <select
+                                        id="itemSelect"
+                                        required
+                                        class="flex-1 text-7xl font-bold text-text-main placeholder-slate-200 border-none focus:ring-0 p-0 bg-transparent leading-tight tracking-tight mt-2"
+                                        onchange="focusNextField(this, 'actionSelect')"
+                                    >
+                                        <option value="">Select Item</option>
+                                        <option value="Milk">Milk</option>
+                                        <option value="Animal Feed">Animal Feed</option>
+                                        <option value="Ghee">Ghee</option>
+                                        <option value="Butter">Butter</option>
+                                        <option value="Curd">Curd</option>
+                                        <option value="Medicine">Medicine</option>
+                                    </select>
+                                    <button
+                                        onclick="openAddItemModal()"
+                                        class="px-4 py-2 bg-primary text-white rounded-xl font-bold flex items-center gap-1 shadow-sm hover:bg-primary/90 transition-colors"
+                                    >
+                                        <span class="material-symbols-outlined text-sm">add</span>
+                                        Add
+                                    </button>
+                                </div>
+                            </label>
+                            <div class="flex px-6 items-center border-l border-border-subtle">
+                                <button 
+                                    type="button"
+                                    class="h-16 w-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center group-focus-within:bg-primary group-focus-within:border-primary group-focus-within:shadow-lg transition-all hover:bg-slate-200"
+                                    onclick="focusNextField('itemSelect', 'actionSelect')"
+                                >
+                                    <span class="material-symbols-outlined text-4xl text-slate-400 group-focus-within:text-white">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="input-tile group relative flex flex-row items-stretch bg-surface-white border border-border-subtle rounded-2xl h-40 shadow-tile opacity-90 hover:opacity-100 focus-within:opacity-100 focus-within:ring-0">
+                            <div class="w-32 bg-slate-50 rounded-l-2xl flex items-center justify-center border-r border-border-subtle group-focus-within:bg-primary/10 group-focus-within:border-primary/20 transition-colors">
+                                <span class="material-symbols-outlined text-7xl text-primary/80 group-focus-within:text-primary transition-colors">inventory_2</span>
+                            </div>
+                            <label class="flex-1 flex flex-col justify-center px-8 py-4 cursor-text relative">
+                                <span class="absolute top-4 left-8 text-xs font-bold text-text-secondary uppercase tracking-widest opacity-50">2</span>
+                                <select 
+                                    id="actionSelect"
+                                    required 
+                                    class="w-full text-7xl font-bold text-text-main placeholder-slate-200 border-none focus:ring-0 p-0 bg-transparent leading-tight tracking-tight mt-2"
+                                    onchange="focusNextField(this, 'supplierInput')"
+                                >
+                                    <option value="Purchase">Purchase</option>
+                                    <option value="Sale">Sale</option>
+                                    <option value="Consumption">Consumption</option>
+                                    <option value="Wastage">Wastage</option>
+                                </select>
+                            </label>
+                            <div class="flex px-6 items-center border-l border-border-subtle">
+                                <button 
+                                    type="button"
+                                    class="h-16 w-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center group-focus-within:bg-primary group-focus-within:border-primary group-focus-within:shadow-lg transition-all hover:bg-slate-200"
+                                    onclick="focusNextField('actionSelect', 'supplierInput')"
+                                >
+                                    <span class="material-symbols-outlined text-4xl text-slate-400 group-focus-within:text-white">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="input-tile group relative flex flex-row items-stretch bg-surface-white border border-border-subtle rounded-2xl h-40 shadow-tile opacity-90 hover:opacity-100 focus-within:opacity-100 focus-within:ring-0">
+                            <div class="w-32 bg-slate-50 rounded-l-2xl flex items-center justify-center border-r border-border-subtle group-focus-within:bg-primary/10 group-focus-within:border-primary/20 transition-colors">
+                                <span class="material-symbols-outlined text-7xl text-primary/80 group-focus-within:text-primary transition-colors">person</span>
+                            </div>
+                            <label class="flex-1 flex flex-col justify-center px-8 py-4 cursor-text relative">
+                                <span class="absolute top-4 left-8 text-xs font-bold text-text-secondary uppercase tracking-widest opacity-50">3</span>
+                                <input 
+                                    id="supplierInput"
+                                    type="text" 
+                                    required 
+                                    class="w-full text-7xl font-bold text-text-main placeholder-slate-200 border-none focus:ring-0 p-0 bg-transparent leading-tight tracking-tight mt-2" 
+                                    placeholder="Supplier"
+                                    onchange="focusNextField(this, 'quantityInput')"
+                                />
+                            </label>
+                            <div class="flex px-6 items-center border-l border-border-subtle">
+                                <button 
+                                    type="button"
+                                    class="h-16 w-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center group-focus-within:bg-primary group-focus-within:border-primary group-focus-within:shadow-lg transition-all hover:bg-slate-200"
+                                    onclick="focusNextField('supplierInput', 'quantityInput')"
+                                >
+                                    <span class="material-symbols-outlined text-4xl text-slate-400 group-focus-within:text-white">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="input-tile group relative flex flex-row items-stretch bg-surface-white border border-border-subtle rounded-2xl h-40 shadow-tile opacity-90 hover:opacity-100 focus-within:opacity-100 focus-within:ring-0">
+                            <div class="w-32 bg-slate-50 rounded-l-2xl flex items-center justify-center border-r border-border-subtle group-focus-within:bg-primary/10 group-focus-within:border-primary/20 transition-colors">
+                                <span class="material-symbols-outlined text-7xl text-primary/80 group-focus-within:text-primary transition-colors">format_list_numbered</span>
+                            </div>
+                            <label class="flex-1 flex flex-col justify-center px-8 py-4 cursor-text relative">
+                                <span class="absolute top-4 left-8 text-xs font-bold text-text-secondary uppercase tracking-widest opacity-50">4</span>
+                                <input 
+                                    id="quantityInput"
+                                    type="number" 
+                                    step="0.01"
+                                    required 
+                                    class="w-full text-7xl font-bold text-text-main placeholder-slate-200 border-none focus:ring-0 p-0 bg-transparent leading-tight tracking-tight mt-2" 
+                                    placeholder="00.0"
+                                    oninput="focusNextFieldOnComplete(this, 'rateInput', 3)"
+                                    onchange="focusNextField(this, 'rateInput')"
+                                />
+                            </label>
+                            <div class="flex px-6 items-center border-l border-border-subtle">
+                                <button 
+                                    type="button"
+                                    class="h-16 w-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center group-focus-within:bg-primary group-focus-within:border-primary group-focus-within:shadow-lg transition-all hover:bg-slate-200"
+                                    onclick="focusNextField('quantityInput', 'rateInput')"
+                                >
+                                    <span class="material-symbols-outlined text-4xl text-slate-400 group-focus-within:text-white">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="input-tile group relative flex flex-row items-stretch bg-surface-white border border-border-subtle rounded-2xl h-40 shadow-tile opacity-90 hover:opacity-100 focus-within:opacity-100 focus-within:ring-0">
+                            <div class="w-32 bg-slate-50 rounded-l-2xl flex items-center justify-center border-r border-border-subtle group-focus-within:bg-primary/10 group-focus-within:border-primary/20 transition-colors">
+                                <span class="material-symbols-outlined text-7xl text-primary/80 group-focus-within:text-primary transition-colors">bolt</span>
+                            </div>
+                            <label class="flex-1 flex flex-col justify-center px-8 py-4 cursor-text relative">
+                                <span class="absolute top-4 left-8 text-xs font-bold text-text-secondary uppercase tracking-widest opacity-50">5</span>
+                                <input 
+                                    id="rateInput"
+                                    type="number" 
+                                    step="0.01"
+                                    required 
+                                    class="w-full text-7xl font-bold text-text-main placeholder-slate-200 border-none focus:ring-0 p-0 bg-transparent leading-tight tracking-tight mt-2" 
+                                    placeholder="0.00"
+                                    oninput="updateCalculatedAmount()"
+                                    onchange="focusNextField(this, 'recordInventoryBtn')"
+                                />
+                            </label>
+                            <div class="flex px-6 items-center border-l border-border-subtle">
+                                <button 
+                                    type="button"
+                                    class="h-16 w-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center group-focus-within:bg-primary group-focus-within:border-primary group-focus-within:shadow-lg transition-all hover:bg-slate-200"
+                                    onclick="focusNextField('rateInput', 'recordInventoryBtn')"
+                                >
+                                    <span class="material-symbols-outlined text-4xl text-slate-400 group-focus-within:text-white">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            id="recordInventoryBtn"
+                            onclick="recordInventory()" 
+                            class="w-full py-6 bg-primary hover:bg-primary/90 active:bg-primary/80 text-white rounded-3xl p-6 shadow-lg shadow-primary/20 transition-all transform hover:-translate-y-1 flex items-center justify-between group h-40 mb-8"
+                        >
+                            <div class="flex flex-col items-start">
+                                <span class="bg-primary/30 rounded-lg px-3 py-1 text-sm font-bold uppercase tracking-wider mb-2">Step 5</span>
+                                <span class="text-3xl font-bold uppercase tracking-wide">Update Stock</span>
+                            </div>
+                            <div class="h-24 w-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:bg-white/30 transition-colors">
+                                <span class="material-symbols-outlined text-6xl">done_all</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="relative bg-gradient-to-br from-primary to-blue-600 rounded-3xl p-8 text-white overflow-hidden group shadow-xl shadow-blue-200 flex flex-col items-center justify-center text-center h-40">
+                        <div class="absolute inset-0 opacity-20 mix-blend-overlay" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 20px 20px;"></div>
+                        <div class="absolute top-0 right-0 -mt-8 -mr-8 h-32 w-32 bg-white blur-3xl opacity-20 rounded-full group-hover:opacity-30 transition-opacity"></div>
+                        <span class="material-symbols-outlined text-6xl mb-2 text-blue-100 opacity-80">currency_rupee</span>
+                        <div class="relative z-10 flex items-baseline gap-1 justify-center w-full">
+                            <span class="text-7xl lg:text-8xl font-bold tracking-tight text-white drop-shadow-sm leading-none" id="calculatedAmountDisplay">0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-surface-light dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+                    <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                        <h3 class="text-xl font-bold">Current Inventory Levels</h3>
+                        <button class="text-sm font-bold text-primary hover:underline flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">download</span>
+                            Export
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50/50 dark:bg-slate-900/50 text-slate-500 text-xs uppercase tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4 font-bold">Item</th>
+                                    <th class="px-6 py-4 font-bold">Purchased</th>
+                                    <th class="px-6 py-4 font-bold">Sold/Consumed</th>
+                                    <th class="px-6 py-4 font-bold">Current Stock</th>
+                                    <th class="px-6 py-4 font-bold">Value</th>
+                                    <th class="px-6 py-4 font-bold text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="currentInventory">
+                                <tr>
+                                    <td colSpan="6" className="py-8 text-center text-slate-500">No inventory items recorded yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="print:hidden text-center py-4 text-slate-500 text-sm border-t bg-slate-50">
+        Designed by <span class="font-bold text-slate-700">signimus</span>
+    </footer>
+
+    <script src="state.js"></script>
+    <script src="db.js"></script>
+    <script src="utils.js"></script>
     <script>
-        // Redirect to main work screen immediately
-        window.location.href = 'main-work.html';
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Update header information
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN');
+        
+        // Check authentication
+        const session = sessionStorage.getItem('milkbook_session');
+        if (!session) {
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        // Load state from localStorage
+        const STORAGE_KEY = 'milkbook_data';
+        const INITIAL_STATE = {
+            auth: { 
+                isAuthenticated: true, 
+                user: { name: 'Ramesh Kumar', mobile: '9876543210', role: 'owner' },
+                role: 'owner'
+            },
+            currentScreen: 'inventory',
+            dairyInfo: { 
+                name: 'Gopal Dairy Shop', 
+                owner: 'Ramesh Kumar', 
+                mobile: '9876543210', 
+                address: '', 
+                rateType: 'Fat_SNF', 
+                language: 'EN' 
+            },
+            farmers: [],
+            milkEntries: [],
+            rates: {
+                cow: { base: 40, fatRef: 3.5, snfRef: 8.5 },
+                buffalo: { base: 60, fatRef: 6.0, snfRef: 9.0 }
+            },
+            payments: [],
+            sales: [],
+            inventory: [],
+            evidenceRecords: [], // For MilkLedger Transparent functionality
+            settings: { 
+                backupEnabled: true, 
+                lastBackup: null, 
+                printerName: 'Default',
+                syncState: 'QUARANTINED', // 'QUARANTINED' | 'SYNCED'
+                lastServerSync: null,
+                pendingRecords: 0,
+                lastSyncTime: null,
+                localRecordsToday: 0
+            }
+        };
+        
+        let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || JSON.stringify(INITIAL_STATE));
+        
+        // Ensure state structure is correct
+        if (!state.farmers) state.farmers = [];
+        if (!state.milkEntries) state.milkEntries = [];
+        if (!state.payments) state.payments = [];
+        if (!state.sales) state.sales = [];
+        if (!state.inventory) state.inventory = [];
+        if (!state.evidenceRecords) state.evidenceRecords = [];
+        if (!state.settings) state.settings = INITIAL_STATE.settings;
+        
+        // Update header info
+        document.getElementById('dairyName').textContent = state.dairyInfo?.name || 'Milk Collection Center';
+        document.getElementById('userName').textContent = state.auth?.user?.name || 'User';
+        document.getElementById('userInitial').textContent = (state.auth?.user?.name || 'U').charAt(0).toUpperCase();
+        document.getElementById('pendingCount').textContent = state.settings?.pendingRecords || 0;
+        
+        // Update calculated amount when inputs change
+        function updateCalculatedAmount() {
+            const qty = parseFloat(document.getElementById('quantityInput').value) || 0;
+            const rate = parseFloat(document.getElementById('rateInput').value) || 0;
+            
+            const amount = (qty * rate).toFixed(2);
+            document.getElementById('calculatedAmountDisplay').textContent = amount;
+        }
+        
+        // Record inventory transaction
+        function recordInventory() {
+            const form = {
+                itemId: document.getElementById('itemSelect').value,
+                action: document.getElementById('actionSelect').value,
+                supplier: document.getElementById('supplierInput').value,
+                qty: parseFloat(document.getElementById('quantityInput').value) || 0,
+                rate: parseFloat(document.getElementById('rateInput').value) || 0,
+                amount: parseFloat(document.getElementById('calculatedAmountDisplay').textContent) || 0,
+                date: new Date().toISOString().split('T')[0],
+                syncState: 'QUARANTINED', // Mark as quarantined until synced to server
+                createdAtLocal: new Date().toISOString(),
+                syncedAtServer: null,
+                id: Date.now().toString()
+            };
+            
+            // Validate required fields
+            if (!form.itemId || !form.action || form.qty <= 0 || form.rate <= 0) {
+                alert('Please fill all required fields');
+                return;
+            }
+            
+            // Add to state
+            state.inventory.push(form);
+            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            
+            // Update pending records count
+            state.settings.pendingRecords = (state.settings.pendingRecords || 0) + 1;
+            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            
+            // Update pending count display
+            document.getElementById('pendingCount').textContent = state.settings.pendingRecords;
+            
+            // Show notification
+            alert(`Inventory record created: ${form.action} of ${form.qty} units of ${form.itemId} from ${form.supplier} at ₹${form.rate}/unit. Total: ₹${form.amount}`);
+            
+            // Reset form
+            document.getElementById('quantityInput').value = '';
+            document.getElementById('rateInput').value = '';
+            document.getElementById('supplierInput').value = '';
+            
+            // Update calculated amount display
+            document.getElementById('calculatedAmountDisplay').textContent = '0.00';
+            
+            // Update inventory display
+            updateCurrentInventory();
+        }
+        
+        // Update current inventory display
+        function updateCurrentInventory() {
+            const currentInventory = document.getElementById('currentInventory');
+            if (currentInventory) {
+                currentInventory.innerHTML = '';
+                
+                // Group inventory by item
+                const inventoryByItem = {};
+                state.inventory.forEach(item => {
+                    if (!inventoryByItem[item.itemId]) {
+                        inventoryByItem[item.itemId] = { 
+                            purchased: 0, 
+                            consumed: 0, 
+                            value: 0 
+                        };
+                    }
+                    
+                    if (item.action === 'Purchase') {
+                        inventoryByItem[item.itemId].purchased += parseFloat(item.qty || 0);
+                        inventoryByItem[item.itemId].value += parseFloat(item.amount || 0);
+                    } else {
+                        inventoryByItem[item.itemId].consumed += parseFloat(item.qty || 0);
+                    }
+                });
+                
+                if (Object.keys(inventoryByItem).length > 0) {
+                    Object.entries(inventoryByItem).forEach(([itemId, data]) => {
+                        const currentStock = data.purchased - data.consumed;
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 font-bold">${itemId}</td>
+                            <td class="px-6 py-4 font-bold text-slate-500">${data.purchased.toFixed(2)}</td>
+                            <td class="px-6 py-4 font-bold text-slate-500">${data.consumed.toFixed(2)}</td>
+                            <td class="px-6 py-4 font-bold text-slate-700">${currentStock.toFixed(2)}</td>
+                            <td class="px-6 py-4 font-bold text-blue-600">₹${data.value.toFixed(2)}</td>
+                            <td class="px-6 py-4 text-right">
+                                <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${
+                                    currentStock > 10 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                                }">${currentStock > 10 ? 'In Stock' : 'Low Stock'}</span>
+                            </td>
+                        `;
+                        currentInventory.appendChild(row);
+                    });
+                } else {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colSpan="6" className="py-8 text-center text-slate-500">No inventory items recorded yet</td>';
+                    currentInventory.appendChild(row);
+                }
+            }
+        }
+        
+        // Update farmer dropdowns function
+        function updateFarmerDropdowns(newState) {
+            // Update dropdowns on current page if they exist
+            const farmerDropdowns = document.querySelectorAll('select[id*="farmer"], select[id*="Farmer"], select[name*="farmer"], select[name*="Farmer"]');
+            
+            farmerDropdowns.forEach(dropdown => {
+                // Save current selection if possible
+                const currentSelection = dropdown.value;
+                
+                // Clear existing options except the first placeholder
+                dropdown.innerHTML = '<option value="">Select Farmer</option>';
+                
+                // Add all active farmers
+                (newState?.farmers || []).filter(f => f.active !== false).forEach(farmer => {
+                    const option = document.createElement('option');
+                    option.value = farmer.id;
+                    option.textContent = farmer.name;
+                    dropdown.appendChild(option);
+                });
+                
+                // Restore previous selection if it still exists
+                if (currentSelection) {
+                    dropdown.value = currentSelection;
+                }
+            });
+            
+            // Also update farmer dropdowns in other open tabs/windows using storage event
+            localStorage.setItem('milkbook_data', JSON.stringify(newState));
+        }
+        
+        // Open add item modal
+        function openAddItemModal() {
+            document.getElementById('addItemModal').classList.remove('hidden');
+        }
+
+        // Close add item modal
+        function closeAddItemModal() {
+            document.getElementById('addItemModal').classList.add('hidden');
+        }
+
+        // Add new item function
+        function addNewItem() {
+            const itemName = document.getElementById('newItemName').value;
+            const category = document.getElementById('newItemCategory').value;
+
+            if (!itemName) {
+                alert('Please enter an item name');
+                return;
+            }
+
+            // Add to state
+            const newItem = {
+                id: Date.now().toString(),
+                name: itemName,
+                category: category,
+                active: true,
+                createdAt: new Date().toISOString(),
+                syncState: 'QUARANTINED', // Mark as quarantined until synced to server
+                syncedAtServer: null,
+                inputSource: 'keyboard',
+                deviceId: navigator.userAgent,
+                operatorId: state.auth.user?.id || 'current_user'
+            };
+
+            state.inventoryItems = state.inventoryItems || [];
+            state.inventoryItems.push(newItem);
+            localStorage.setItem('milkbook_data', JSON.stringify(state));
+
+            // Update pending records count
+            state.settings.pendingRecords = (state.settings.pendingRecords || 0) + 1;
+            localStorage.setItem('milkbook_data', JSON.stringify(state));
+
+            // Update pending count display
+            document.getElementById('pendingCount').textContent = state.settings.pendingRecords;
+
+            // Add to item dropdown
+            const itemSelect = document.getElementById('itemSelect');
+            const option = document.createElement('option');
+            option.value = newItem.id;
+            option.textContent = newItem.name;
+            itemSelect.appendChild(option);
+
+            // Select the new item
+            itemSelect.value = newItem.id;
+
+            // Show notification
+            alert(`✓ Item ${itemName} added successfully with ID: #${newItem.id.substring(0, 4)}`);
+
+            // Clear form
+            document.getElementById('newItemName').value = '';
+
+            // Close modal
+            closeAddItemModal();
+        }
+
+        // Initial updates
+        updateCurrentInventory();
+
+        // Update inventory every 30 seconds
+        setInterval(updateCurrentInventory, 30000);
     </script>
+
+    <!-- Add Item Modal -->
+    <div id="addItemModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl p-6 w-full max-w-md mx-4">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold">Add New Item</h3>
+                <button onclick="closeAddItemModal()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-500 mb-2">Item Name</label>
+                    <input
+                        id="newItemName"
+                        type="text"
+                        class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl font-bold focus:ring-2 focus:ring-primary"
+                        placeholder="Enter item name"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-500 mb-2">Category</label>
+                    <select
+                        id="newItemCategory"
+                        class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl font-bold focus:ring-2 focus:ring-primary"
+                    >
+                        <option value="Feed">Feed</option>
+                        <option value="Dairy">Dairy</option>
+                        <option value="Medicine">Medicine</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button
+                    onclick="closeAddItemModal()"
+                    class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold"
+                >
+                    Cancel
+                </button>
+                <button
+                    onclick="addNewItem()"
+                    class="flex-1 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold"
+                >
+                    Save Item
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
