@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+    <title>MilkRecord - Institutional Speed POS</title>
+    <style>
+      :root {
+        --bg: #f4f7fb; --panel: #ffffff; --line: #e5e7eb; --text: #0f172a; --muted: #64748b;
+        --blue: #2563eb; --blue2: #1d4ed8; --green: #16a34a; --red: #dc2626; --yellow: #f59e0b;
+        --shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
+      }
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; margin: 0; overflow: hidden; height: 100vh; }
+      .app { height: 100%; display: grid; grid-template-rows: 76px 1fr 96px; gap: 14px; padding: 14px; }
+      
+      /* --- HEADER --- */
+      .topbar { background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
+      .brand { display: flex; align-items: center; gap: 14px; }
+      .logo-box { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #e0f2fe, #dbeafe); border: 1px solid #c7d2fe; font-size: 22px; }
+      .brand-text .title { font-weight: 800; font-size: 17px; color: #0f172a; line-height: 1.2; }
+      .brand-text .sub-text { font-size: 12px; font-weight: 600; color: var(--muted); }
+      .hdr-actions { display: flex; align-items: center; gap: 10px; }
+      .pillbtn { height: 42px; padding: 0 16px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+
+      /* --- CORE LAYOUT --- */
+      .core { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 14px; overflow: hidden; }
+      .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; }
+      .panelHeader { padding: 12px 16px; border-bottom: 1px solid var(--line); font-weight: 1000; display: flex; justify-content: space-between; align-items: center; }
+
+      /* --- SEARCH & PERSISTENCE AREA --- */
+      .cust-control { padding: 10px 15px; background: #f8fafc; border-bottom: 1px solid var(--line); display: flex; gap: 10px; position: relative; }
+      .search-box { flex: 1; position: relative; }
+      .search-box input { width: 100%; height: 40px; border-radius: 10px; border: 1px solid var(--line); padding-left: 35px; outline: none; }
+      .search-box::before { content: '🔍'; position: absolute; left: 10px; top: 10px; font-size: 14px; }
+      
+      /* New Dropdown Style */
+      .search-dropdown { position: absolute; top: 45px; left: 0; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 10px; z-index: 100; display: none; box-shadow: var(--shadow); max-height: 150px; overflow-y: auto; }
+      .drop-item { padding: 10px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-weight: 700; font-size: 13px; }
+      .drop-item:hover { background: #f8fafc; color: var(--blue); }
+
+      .add-btn { height: 40px; padding: 0 15px; border-radius: 10px; border: none; background: var(--blue); color: #fff; font-weight: 1000; cursor: pointer; }
+
+      .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; overflow-y: auto; flex: 1; }
+      .p-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+      .p-card:active { transform: scale(0.95); background: #f8fafc; }
+      .p-card.cow { border-left: 6px solid var(--green); }
+      .p-card.buff { border-left: 6px solid var(--red); }
+      .p-card div { font-weight: 900; font-size: 14px; }
+      .p-card small { color: var(--muted); font-weight: 700; }
+
+      .qty-bar { display: flex; gap: 10px; padding: 12px 15px; background: #f8fafc; border-top: 1px solid var(--line); }
+      .qty-btn { flex: 1; height: 45px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-weight: 1000; cursor: pointer; }
+
+      .summary-box { background: linear-gradient(180deg, var(--blue), var(--blue2)); color: #fff; padding: 20px; border-radius: 18px; margin: 15px; text-align: center; }
+      .amt { font-size: 42px; font-weight: 1200; }
+      
+      .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 15px 15px; }
+      .pay-btn { height: 45px; border-radius: 12px; border: none; font-weight: 1000; cursor: pointer; }
+      .pay-btn.credit { grid-column: 1/-1; background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+
+      .recent-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      .recent-table td { padding: 10px; border-bottom: 1px solid var(--line); font-weight: 700; }
+
+      .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); display: none; align-items: center; justify-content: center; z-index: 100; }
+      .modal { width: min(800px, 95vw); height: min(600px, 90vh); background: #fff; border-radius: 22px; display: grid; grid-template-rows: 60px 1fr 70px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.3); }
+      .modalBody { padding: 20px; overflow-y: auto; background: #f8fafc; }
+      .cardRow { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+      
+      .bottom { display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 12px; height: 96px; }
+      .panicBtn { border: none; border-radius: 22px; font-size: 22px; font-weight: 1200; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+      .subnote { font-size: 11px; font-weight: 1000; opacity: 0.7; }
+      .badge { font-size: 10px; padding: 2px 6px; border-radius: 5px; background: #dcfce7; color: #166534; font-weight: 1000; }
+      .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 5px; }
+      .sync-msg { font-size: 10px; font-weight: 900; color: var(--muted); text-transform: uppercase; }
+      .toast { position: fixed; left: 50%; bottom: 116px; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 16px; font-weight: 1100; opacity: 0; transition: 0.3s; z-index: 200; }
+      .toast.show { opacity: 1; }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo-box">💧</div>
+          <div class="brand-text">
+            <div class="title" id="shopTitle">MilkRecord POS</div>
+            <div class="sub-text" id="todayLabel">—</div>
+          </div>
+        </div>
+        <div class="hdr-actions">
+          <div style="margin-right: 10px; text-align: right;">
+            <div class="sync-msg"><span class="status-dot"></span> Cloud Active</div>
+            <div style="font-size: 9px; color: var(--muted);">Offline-First Data</div>
+          </div>
+          <button class="pillbtn primary" onclick="location.href='purches.html'">🍼 <span id="btnIntakeText">Milk Intake</span></button>
+          <button class="pillbtn" id="btnMem" onclick="renderMemory()">🧠 Memory</button>
+          <button class="pillbtn" id="btnHist" onclick="openModal('historyModal')">🧾 History</button>
+          <button class="pillbtn" id="btnExp" style="background:#eef2ff;" onclick="exportDetailedExcel()">📊 Export</button>
+          
+          <button class="pillbtn" id="langSwitch" onclick="toggleLanguage()">🌐 HI/EN</button>
+        </div>
+      </div>
+
+      <div class="core">
+        <div class="panel">
+          <div class="panelHeader">
+            <span id="lblTerm">Terminal</span> 
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button onclick="openModal('convertModal')" id="btnConv" style="font-size:10px; font-weight:1000; background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 8px; cursor:pointer;">🔄 CONVERT</button>
+                <small id="activeCust" style="color:var(--blue); font-weight:1000;">Walking Customer</small>
+            </div>
+          </div>
+          
+          <div class="cust-control">
+            <div class="search-box">
+                <input type="text" id="custSearch" placeholder="Search customer..." oninput="handleSearch(this.value)">
+                <div id="searchDropdown" class="search-dropdown"></div>
+            </div>
+            <button class="add-btn" id="btnAdd" onclick="openModal('addCustModal')">+ Add New</button>
+          </div>
+
+          <div class="product-grid" id="productGrid">
+            <div class="p-card cow" onclick="tapAdd('Cow Milk', 64, 1)"><div data-en="Cow 1L" data-hi="गाय दूध 1L">Cow 1L</div><small>₹64</small></div>
+            <div class="p-card cow" onclick="tapAdd('Cow Milk', 32, 0.5)"><div data-en="Cow 0.5L" data-hi="गाय दूध 0.5L">Cow 0.5L</div><small>₹32</small></div>
+            <div class="p-card buff" onclick="tapAdd('Buff Milk', 100, 1)"><div data-en="Buff 1L" data-hi="भैंस दूध 1L">Buff thick 1L</div><small>₹100</small></div>
+            <div class="p-card buff" onclick="tapAdd('Buff Milk', 80, 1)"><div data-en="Buff 1L" data-hi="भैंस दूध 1L">Buff 1L</div><small>₹80</small></div>
+            <div class="p-card buff" onclick="tapAdd('Buff Milk', 40, 0.5)"><div data-en="Buff 0.5L" data-hi="भैंस दूध 0.5L">Buff 0.5L</div><small>₹40</small></div>
+            <div class="p-card" style="border-left:6px solid var(--yellow)" onclick="tapAdd('Paneer', 320, 1)"><div data-en="Paneer kg" data-hi="पनीर किलो">Paneer kg</div><small>₹320</small></div>
+            <div class="p-card" style="border-left:6px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)"><div data-en="Ghee 250g" data-hi="घी 250g">Ghee 250g</div><small>₹180</small></div>
+          </div>
+          
+          <div class="qty-bar">
+            <button class="qty-btn" onclick="adjustQty(0.25)">+0.25</button>
+            <button class="qty-btn" onclick="adjustQty(0.5)">+0.5</button>
+            <button class="qty-btn" onclick="adjustQty(1.0)">+1.0</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelHeader" id="lblSum">Summary</div>
+          <div class="summary-box">
+            <div style="font-size:12px; opacity:0.8;" id="lblPayable">TOTAL PAYABLE</div>
+            <div class="amt" id="totalAmt">₹0.00</div>
+          </div>
+          
+          <div class="pay-grid">
+            <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534;" onclick="saveEntry('Cash')">CASH</button>
+            <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af;" onclick="saveEntry('UPI')">UPI</button>
+            <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')">LIKH LO (Credit)</button>
+          </div>
+
+          <div style="padding:15px; flex:1; overflow-y:auto; border-top:1px solid var(--line);">
+            <table class="recent-table"><tbody id="cartItems"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom">
+        <button class="panicBtn" style="background:#fde68a; color:#78350f;"><span id="txtHold">🟡 HOLD</span> <span class="subnote">pause</span></button>
+        <button class="panicBtn" onclick="saveEntry('Quick')" style="background:#22c55e; color:#064e3b; font-size:30px;"><span id="txtDone">🟢 DONE</span> <span class="subnote">next customer</span></button>
+        <button class="panicBtn" onclick="resetCart()" style="background:#fecaca; color:#7f1d1d;"><span id="txtClear">🔴 CLEAR</span> <span class="subnote">trash</span></button>
+      </div>
+    </div>
+
+    <div class="overlay" id="addCustModal">
+        <div class="modal" style="width:450px; height:auto;">
+            <div class="panelHeader"><span>👤 Institutional Record</span> <button onclick="closeModal('addCustModal')">✖</button></div>
+            <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
+                <input type="text" id="newName" placeholder="Full Name" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
+                <select id="newType" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
+                    <option value="Retail">Retail Walk-in</option>
+                    <option value="PACS">PACS Member</option>
+                    <option value="FPO">FPO Shareholder</option>
+                </select>
+                <div style="background:#f8fafc; padding:10px; border-radius:10px; border:1px solid var(--line);">
+    <label style="font-size:11px; font-weight:1000; color:var(--muted);">SUBSCRIPTION PLAN (Point 17)</label>
+    <input type="number" id="subQty" placeholder="Daily Quantity (L)" style="width:100%; padding:10px; border:none; background:transparent; font-weight:1000;">
+</div>
+                <button class="add-btn" style="height:50px;" onclick="addCust()">Save & Link Identity</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="memoryModal">
+      <div class="modal" style="width:500px; height:auto;">
+        <div class="panelHeader"><span id="lblMemTitle">Customer Memory 🧠</span> <button onclick="closeModal('memoryModal')">✖</button></div>
+        <div class="modalBody" id="memoryList"></div>
+      </div>
+    </div>
+
+    <div class="overlay" id="historyModal">
+      <div class="modal">
+        <div class="panelHeader"><span id="lblHistTitle">Sales Detail & Audit Logs 🧾</span> <button onclick="closeModal('historyModal')">✖</button></div>
+        <div class="modalBody" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+            <div class="panel" style="padding:10px;"><h4>Today's Sales</h4><div id="historyToday"></div></div>
+            <div class="panel" style="padding:10px;"><h4>Audit Logic</h4><div class="cardRow"><div>PACS Mapping</div><span class="badge">Verified</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="convertModal">
+        <div class="modal" style="width:400px; height:auto;">
+            <div class="panelHeader"><span>🔄 Milk → Product Conversion</span> <button onclick="closeModal('convertModal')">✖</button></div>
+            <div style="padding:20px;"><input type="number" id="convQty" placeholder="Milk (L)" style="width:100%; padding:15px; border-radius:10px; border:1px solid var(--line); font-weight:1000;"><button class="add-btn" style="width:100%; background:var(--green); margin-top:10px;" onclick="closeModal('convertModal')">Update Stock</button></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const el = (id) => document.getElementById(id);
+      let cart = [], total = 0, exportHistory = [], currentLang = 'en';
+      // Load data from LocalStorage taaki refresh par na ude
+let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
+    { name: "Rahul Sharma", lastOrder: "1.5L Cow Milk", rate: 64, qty: 1.5, type: "Retail", sub: 1.5 },
+    { name: "Amit DCS", lastOrder: "1kg Paneer", rate: 320, qty: 1, type: "PACS", sub: 2 }
+];
+
+      // Logic: 4am-4pm Morning, 4pm-4am Evening
+      function updateShift() {
+          const now = new Date();
+          const hrs = now.getHours();
+          const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+          const shift = (hrs >= 4 && hrs < 16) ? (currentLang === 'en' ? 'Morning Shift' : 'सुबह की पाली') : (currentLang === 'en' ? 'Evening Shift' : 'शाम की पाली');
+          el("todayLabel").textContent = `${dateStr} | ${shift}`;
+      }
+
+      // Logic: Hindi Translation Dictionary
+      const langData = {
+          en: { shop:"MilkRecord POS", mem:"🧠 Memory", hist:"🧾 History", exp:"📊 Export", term:"Terminal", sum:"Summary", payable:"TOTAL PAYABLE", cash:"CASH", credit:"LIKH LO (Credit)", hold:"🟡 HOLD", done:"🟢 DONE", clear:"🔴 CLEAR" },
+          hi: { shop:"मिल्क-रिकॉर्ड", mem:"🧠 यादें", hist:"🧾 इतिहास", exp:"📊 एक्सपोर्ट", term:"टर्मिनल", sum:"सारांश", payable:"कुल देय राशि", cash:"नकद", credit:"लिख लो (उधार)", hold:"🟡 होल्ड", done:"🟢 पूर्ण", clear:"🔴 साफ़ करें" }
+      };
+
+      function toggleLanguage() {
+          currentLang = currentLang === 'en' ? 'hi' : 'en';
+          const t = langData[currentLang];
+          el("shopTitle").textContent = t.shop;
+          el("btnMem").innerHTML = t.mem; el("btnHist").innerHTML = t.hist; el("btnExp").innerHTML = t.exp;
+          el("lblTerm").textContent = t.term; el("lblSum").textContent = t.sum; el("lblPayable").textContent = t.payable;
+          el("btnCash").textContent = t.cash; el("btnCredit").textContent = t.credit;
+          el("txtHold").textContent = t.hold; el("txtDone").textContent = t.done; el("txtClear").textContent = t.clear;
+          
+          // Cards translation using data attributes
+          document.querySelectorAll("[data-en]").forEach(i => i.textContent = currentLang === 'en' ? i.dataset.en : i.dataset.hi);
+          updateShift();
+          showToast(currentLang === 'en' ? "English Enabled" : "हिंदी सक्रिय");
+      }
+
+      // Logic: Persistent Search Dropdown
+      function handleSearch(val) {
+          const drop = el("searchDropdown");
+          if(!val) { drop.style.display = "none"; return; }
+          const filtered = customers.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
+          if(filtered.length) {
+              drop.innerHTML = filtered.map(c => `<div class="drop-item" onclick="selectCust('${c.name}')">${c.name}</div>`).join('');
+              drop.style.display = "block";
+          } else { drop.style.display = "none"; }
+      }
+      function addCust() {
+    const name = el("newName").value;
+    const type = el("newType").value;
+    const sub = el("subQty").value || 0; // Subscription value lena
+    if(!name) return showToast("Name required!");
+    
+    customers.push({ name, lastOrder: "No order yet", rate: 0, qty: 0, type, sub });
+    localStorage.setItem('mr_pos_customers', JSON.stringify(customers)); // Storage save
+    
+    selectCust(name); 
+    closeModal('addCustModal'); 
+    el("newName").value = ""; 
+    el("subQty").value = "";
+    showToast(name + " Added!");
+}
+
+      function selectCust(name) {
+          el("activeCust").innerText = name;
+          el("custSearch").value = name;
+          el("searchDropdown").style.display = "none";
+          showToast("Customer: " + name);
+      }
+
+      // Existing Code Logic (Untouched)
+      function tapAdd(name, rate, qty) { cart.push({name, rate, qty, id: Date.now()}); updateUI(); showToast(name + " added"); }
+      function adjustQty(val) { if(cart.length > 0) { cart[cart.length-1].qty += val; updateUI(); } }
+      function updateUI() {
+        const tbody = el("cartItems"); tbody.innerHTML = ""; total = 0;
+        cart.forEach(i => { total += (i.rate * i.qty); tbody.innerHTML += `<tr><td>${i.name}</td><td>${i.qty}</td><td style="text-align:right">₹${(i.rate*i.qty).toFixed(2)}</td></tr>`; });
+        el("totalAmt").textContent = `₹${total.toFixed(2)}`;
+      }
+
+     function saveEntry(mode) {
+    if(total === 0) return showToast("Cart empty");
+    const custName = el("activeCust").innerText;
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const itemsDetail = cart.map(i => `${i.qty}x ${i.name}`).join(" | ");
+
+    const newSale = { date: new Date().toLocaleDateString(), time, customer: custName, products: itemsDetail, amount: total.toFixed(2), method: mode };
+    
+    // 1. Array mein add karo
+    exportHistory.push(newSale);
+
+    // ✅ 2. FIX: Browser memory mein History save karo (Ye line zaroori hai)
+    localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
+
+    // 3. UI update
+    const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px;"><div style="width:100%; display:flex; justify-content:space-between;"><b>${custName}</b><b>₹${total.toFixed(2)}</b></div><div style="font-size:11px; color:var(--muted); font-weight:700;">${time} • 🛒 ${itemsDetail} • ${mode}</div></div>`;
+    el("historyToday").innerHTML = entry + el("historyToday").innerHTML;
+
+    // Customer persistence (Aapka logic sahi hai)
+    let cIdx = customers.findIndex(c => c.name === custName);
+    if(cIdx !== -1) { 
+        customers[cIdx].lastOrder = itemsDetail; 
+        customers[cIdx].rate = cart[0].rate; 
+        customers[cIdx].qty = cart[0].qty;
+        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+    }
+
+    showToast(`Saved ✅`); 
+    resetCart();
+}
+
+      function exportDetailedExcel() {
+    // 1. Check if history exists
+    if(exportHistory.length === 0) return showToast("No sales to export!");
+
+    // 2. CSV Header (Point 21: Institutional Export)
+    let csv = "Date,Time,Customer,Products,Amount,Payment Method\n";
+
+    // 3. Row Logic
+    exportHistory.forEach(r => {
+        // Customer ya Product name mein agar comma ho toh use clean karna
+        let safeCust = r.customer.replace(/,/g, "");
+        let safeProd = r.products.replace(/,/g, " | "); // Comma handling
+        
+        csv += `${r.date},${r.time},${safeCust},"${safeProd}",${r.amount},${r.method}\n`;
+    });
+
+    // --- ✅ 4. ADDED: File Creation & Auto-Download Logic ---
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    
+    // File name format (e.g., MilkRecord_Report_2026-02-16.csv)
+    const fileName = `MilkRecord_Report_${new Date().toISOString().split('T')[0]}.csv`;
+    
+    a.setAttribute("href", url);
+    a.setAttribute("download", fileName);
+    document.body.appendChild(a); // Temporary addition
+    a.click(); // Trigger click to download
+    document.body.removeChild(a); // Cleanup
+    
+    showToast("Excel Exported! 📊✅");
+}
+      function addCust() {
+          const name = el("newName").value;
+          if(!name) return showToast("Name required!");
+          customers.push({ name: name, lastOrder: "New Customer", rate: 0, qty: 0, type: el("newType").value });
+          el("activeCust").innerText = name;
+          closeModal('addCustModal'); el("newName").value = "";
+          showToast(name + " Added!");
+      }
+
+      function renderMemory() {
+    const list = el("memoryList");
+    list.innerHTML = "";
+    customers.forEach(c => {
+        list.innerHTML += `
+        <div class="cardRow">
+            <div style="flex:1">
+                <b>${c.name}</b><br>
+                <small>Last: ${c.lastOrder} ${c.sub > 0 ? '| Subscribed: '+c.sub+'L' : ''}</small>
+            </div>
+            <button class="pillbtn primary" onclick="repeatOrder('${c.name}', ${c.rate}, ${c.qty})">Repeat</button>
+        </div>`;
+    });
+    openModal('memoryModal');
+}
+
+      function repeatOrder(name, rate, qty) { el("activeCust").innerText = name; if(rate > 0) { cart = [{name: "Frequent Item", rate, qty, id: Date.now()}]; updateUI(); } closeModal('memoryModal'); }
+      function resetCart() { cart = []; updateUI(); el("activeCust").innerText = "Walking Customer"; el("custSearch").value = ""; }
+      function openModal(id) { el(id).style.display = "flex"; }
+      function closeModal(id) { el(id).style.display = "none"; }
+      function showToast(msg) { const t = el("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1500); }
+      
+      window.onload = () => { 
+    updateShift(); 
+    loadHistoryOnStart(); // Ye function history ke cards wapas banayega
+    setInterval(updateShift, 60000); 
+}
+
+function loadHistoryOnStart() {
+    const historyContainer = document.getElementById("historyToday");
+    if(!historyContainer) return;
+    historyContainer.innerHTML = ""; 
+    exportHistory.forEach(sale => {
+        // Purane records ko screen par wapas dikhana
+        const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px;">
+            <div style="width:100%; display:flex; justify-content:space-between;">
+              <b>${sale.customer}</b><b>₹${sale.amount}</b>
+            </div>
+            <small style="color:var(--muted); font-weight:700;">${sale.time} • 🛒 ${sale.products} • ${sale.method}</small>
+          </div>`;
+        historyContainer.insertAdjacentHTML('afterbegin', entry);
+    });
+}
+    </script>
+  </body>
+</html>

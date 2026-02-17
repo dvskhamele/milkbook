@@ -1,0 +1,3706 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1"
+    />
+
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --panel: #ffffff;
+        --line: #e5e7eb;
+        --text: #0f172a;
+        --muted: #64748b;
+
+        --blue: #2563eb;
+        --blue2: #1d4ed8;
+
+        --green: #16a34a;
+        --red: #dc2626;
+        --yellow: #f59e0b;
+
+        --soft-green: #ecfdf5;
+        --soft-yellow: #fffbeb;
+        --soft-blue: #eff6ff;
+        --soft-pink: #fff1f2;
+
+        --shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
+        --r: 18px;
+
+        --tile: 78px;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        overflow: hidden;
+      } /* no scroll */
+
+      /* APP FRAME */
+      .app {
+        height: 100%;
+        display: grid;
+        grid-template-rows: 70px 1fr 96px;
+        gap: 14px;
+        padding: 14px;
+      }
+
+      /* HEADER */
+      .topbar {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 70px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 260px;
+      }
+      .logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #e0f2fe, #dbeafe);
+        border: 1px solid #c7d2fe;
+        font-weight: 1000;
+      }
+      .brand .title {
+        font-weight: 1000;
+        font-size: 16px;
+        line-height: 1.1;
+      }
+      .brand .sub {
+        font-weight: 800;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      .hdr-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .pillbtn {
+        height: 44px;
+        padding: 0 16px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 900;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      }
+      .pillbtn.primary {
+        background: var(--blue);
+        color: #fff;
+        border-color: transparent;
+      }
+      .pillbtn.warn {
+        background: #fbbf24;
+        color: #78350f;
+        border-color: transparent;
+      }
+      .pillbtn:active {
+        transform: translateY(1px);
+      }
+
+      .hdr-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: 14px;
+      }
+      .timer {
+        height: 44px;
+        padding: 0 14px;
+        border-radius: 14px;
+        border: 1px dashed #cbd5e1;
+        background: #fff;
+        font-weight: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
+      }
+      .iconbtn {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        font-size: 18px;
+      }
+      .iconbtn:active {
+        transform: translateY(1px);
+      }
+
+      /* CORE */
+      .core {
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 14px;
+        overflow: hidden;
+        min-height: 0;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .panelHeader {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+        font-weight: 1000;
+        background: #fff;
+      }
+      .panelHeader small {
+        color: var(--muted);
+        font-weight: 900;
+      }
+
+      /* LEFT BODY */
+      .actionBody {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        max-height: calc(100vh - 140px); /* header ke baad fit */
+        overflow-y: auto; /* 👈 MAIN SCROLL */
+        padding-right: 6px;
+      }
+
+      /* FARMER PICK */
+      .farmerPick {
+        display: flex;
+        flex-direction: column;
+        gap: 12px; /* sabke beech gap */
+      }
+
+      .farmerTop {
+        position: static !important; /* ❗ absolute / sticky cancel */
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap; /* chhoti screen pe break ho sake */
+      }
+
+      .searchBox {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #fff;
+        padding: 10px 12px;
+        height: 48px;
+      }
+      .searchBox input {
+        width: 100%;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        font-weight: 900;
+        color: var(--text);
+        background: transparent;
+      }
+      .addNewBtn {
+        height: 48px;
+        padding: 0 16px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #eef2ff;
+        font-weight: 1000;
+        cursor: pointer;
+      }
+      .miniTag {
+        height: 48px;
+        min-width: 92px;
+        padding: 0 12px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 1000;
+        color: var(--muted);
+      }
+      .farmerGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+
+        max-height: 240px; /* 👈 yahin se scroll start */
+        overflow-y: auto;
+        padding-right: 6px;
+
+        position: relative;
+      }
+
+      .fcard {
+        height: var(--tile);
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+      .fcard:active {
+        transform: translateY(1px);
+      }
+      .fimg {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #f1f5f9;
+        border: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex: 0 0 auto;
+        overflow: hidden;
+      }
+      .fimg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .fname {
+        font-weight: 1000;
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
+      }
+      .fsub {
+        color: var(--muted);
+        font-weight: 900;
+        font-size: 12px;
+        margin-top: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 210px;
+      }
+      .fsel {
+        outline: 3px solid rgba(22, 163, 74, 0.45);
+        box-shadow: 0 0 0 6px rgba(22, 163, 74, 0.1);
+      }
+      .badge {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        padding: 6px 8px;
+        border-radius: 12px;
+        background: rgba(22, 163, 74, 0.12);
+        border: 1px solid rgba(22, 163, 74, 0.25);
+        font-weight: 1000;
+        color: #166534;
+        font-size: 12px;
+      }
+      .farmerNav {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .navBtn {
+        width: 48%;
+        height: 44px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1000;
+        cursor: pointer;
+      }
+      .navBtn:active {
+        transform: translateY(1px);
+      }
+      .navBtn[disabled] {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      /* INPUTS GRID */
+      .inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .control {
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        padding: 12px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 10px;
+        min-height: 154px;
+      }
+      .control.green {
+        background: var(--soft-green);
+      }
+      .control.yellow {
+        background: var(--soft-yellow);
+      }
+      .control.blue {
+        background: var(--soft-blue);
+      }
+      .ctrlTop {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 1000;
+      }
+      .ctrlTop .muted {
+        color: var(--muted);
+        font-weight: 900;
+      }
+      .numBig {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 44px;
+        font-weight: 1100;
+        letter-spacing: 0.3px;
+        color: #334155;
+      }
+
+      .numInput {
+        width: 100%;
+        text-align: center;
+        font-size: 44px;
+        font-weight: 1100;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: #334155;
+      }
+      .numInput::-webkit-outer-spin-button,
+      .numInput::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .pmRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .pm {
+        height: 50px;
+        border: none;
+        border-radius: 16px;
+        background: #fff;
+        border: 1px solid var(--line);
+        font-size: 26px;
+        font-weight: 1100;
+        cursor: pointer;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.06);
+      }
+      .pm:active {
+        transform: translateY(1px);
+      }
+
+      /* ANIMAL + RATE MODE ROW */
+      .row3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .animalCard {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 18px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 96px;
+      }
+      .animalCard label {
+        font-weight: 1000;
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+      }
+      .animalCard select {
+        height: 52px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1000;
+        font-size: 16px;
+        padding: 0 12px;
+        outline: none;
+      }
+
+      .rateCard {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 18px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 96px;
+      }
+      .modeRow {
+        display: flex;
+        gap: 10px;
+      }
+      .modeBtn {
+        flex: 1;
+        height: 52px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #f1f5f9;
+        font-weight: 1100;
+        cursor: pointer;
+      }
+      .modeBtn.active {
+        background: #fef3c7;
+        border-color: #fcd34d;
+      }
+      .modeBtn:active {
+        transform: translateY(1px);
+      }
+
+      /* MANUAL RATE OVERRIDE */
+      .manualOverride {
+        border: 2px dashed #cbd5e1;
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .manualOverride .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 1000;
+        color: var(--muted);
+      }
+      .manualRateRow {
+        display: none;
+        gap: 10px;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+      }
+      .manualRateRow input {
+        height: 52px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1100;
+        font-size: 20px;
+        padding: 0 12px;
+        outline: none;
+        width: 220px;
+      }
+      .manualRateRow button {
+        height: 52px;
+        width: 68px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1100;
+        cursor: pointer;
+      }
+
+      /* RIGHT BODY */
+      .trustBody {
+        padding: 14px;
+        display: grid;
+        grid-template-rows: auto auto 1fr;
+        gap: 14px;
+        min-height: 0;
+      }
+      .amountBox {
+        background: linear-gradient(180deg, var(--blue), var(--blue2));
+        border-radius: 26px;
+        padding: 22px;
+        color: #fff;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .amountBox .label {
+        opacity: 0.8;
+        font-weight: 1000;
+        letter-spacing: 0.3px;
+        font-size: 12px;
+      }
+      .amountBox .amt {
+        font-size: 66px;
+        font-weight: 1200;
+        line-height: 1;
+        margin-top: 10px;
+        letter-spacing: 0.5px;
+      }
+      .amountBox .sub {
+        margin-top: 12px;
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.15);
+        font-weight: 1000;
+      }
+
+      .balances {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      
+      .balCard {
+        border-radius: 18px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        font-weight: 1100;
+      }
+      .balCard .t {
+        font-size: 12px;
+        font-weight: 1000;
+        color: var(--muted);
+      }
+      .balCard .v {
+        font-size: 26px;
+        font-weight: 1200;
+        margin-top: 6px;
+      }
+      .balOld {
+        background: var(--soft-pink);
+        color: #991b1b;
+      }
+      .balNew {
+        background: var(--soft-green);
+        color: #166534;
+      }
+
+      .recent {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #fff;
+        overflow: hidden;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .recentHead {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 1100;
+      }
+      .recentHead .muted {
+        color: var(--muted);
+        font-weight: 1000;
+        font-size: 12px;
+      }
+      .tableWrap {
+        padding: 10px 14px 14px;
+        min-height: 0;
+        overflow: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 10px 6px;
+        text-align: left;
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+      th {
+        color: var(--muted);
+        font-weight: 1100;
+        font-size: 12px;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      .tag {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 1000;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .tag.cow {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+      .tag.buff {
+        background: #ede9fe;
+        color: #6d28d9;
+      }
+      .rtag {
+        padding: 5px 8px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: #f8fafc;
+        font-weight: 1100;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      /* FOOTER BUTTONS */
+      .bottom {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr 1fr;
+        gap: 12px;
+        height: 96px;
+      }
+      .panicBtn {
+        border: none;
+        border-radius: 22px;
+        font-size: 22px;
+        font-weight: 1200;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        letter-spacing: 0.3px;
+      }
+      .panicBtn:active {
+        transform: translateY(1px);
+      }
+      .hold {
+        background: #fde68a;
+        color: #78350f;
+      }
+      .save {
+        background: #22c55e;
+        color: #064e3b;
+        font-size: 30px;
+      }
+      .undo {
+        background: #fecaca;
+        color: #7f1d1d;
+      }
+      .subnote {
+        font-size: 12px;
+        font-weight: 1100;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      /* TOAST */
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 116px;
+        transform: translateX(-50%);
+        background: rgba(15, 23, 42, 0.92);
+        color: #fff;
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-weight: 1100;
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease;
+        max-width: 92vw;
+        text-align: center;
+        z-index: 70;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+
+      /* MODALS */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 14px;
+        z-index: 60;
+      }
+      .modal {
+        width: min(980px, 98vw);
+        height: min(640px, 92vh);
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        background: #fff;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: 62px 1fr 72px;
+      }
+      .modalHead {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1100;
+      }
+      .modalHead .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .closeBtn {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 1100;
+      }
+      .modalBody {
+        padding: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        min-height: 0;
+      }
+      .modalBody.onecol {
+        grid-template-columns: 1fr;
+      }
+      .modalCol {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #f8fafc;
+        padding: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .modalCol h3 {
+        margin: 0 0 10px 0;
+        font-size: 14px;
+        font-weight: 1200;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .listArea {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 10px;
+      }
+      .pageInfo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted);
+        font-weight: 1000;
+        font-size: 12px;
+      }
+      .pageBtns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .pageBtns button {
+        height: 50px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1100;
+        cursor: pointer;
+      }
+      .pageBtns button[disabled] {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .cardRow {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 16px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        min-height: 64px;
+      }
+      .cardRow .title {
+        font-weight: 1200;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 70%;
+      }
+      .cardRow .meta {
+        color: var(--muted);
+        font-weight: 1000;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+      .cardRow .val {
+        font-weight: 1200;
+        font-size: 14px;
+        white-space: nowrap;
+        color: #0f172a;
+      }
+
+      .modalFoot {
+        padding: 10px 12px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+      }
+      .footBtn {
+        height: 50px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1100;
+        cursor: pointer;
+        padding: 0 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .footBtn.good {
+        background: #dcfce7;
+        border-color: #bbf7d0;
+        color: #14532d;
+      }
+      .footBtn.warn {
+        background: #fef3c7;
+        border-color: #fde68a;
+        color: #78350f;
+      }
+      .footBtn.bad {
+        background: #fee2e2;
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+
+      /* FORMS */
+      .formGrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .field {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 16px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .field label {
+        color: var(--muted);
+        font-weight: 1100;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+      }
+      .field input,
+      .field textarea,
+      .field select {
+        border: none;
+        outline: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 16px;
+        font-weight: 1100;
+        resize: none;
+      }
+      .field textarea {
+        min-height: 84px;
+      }
+      .field.full {
+        grid-column: 1/-1;
+      }
+
+      .receiptBox {
+        border: 2px dashed #cbd5e1;
+        background: #fff;
+        border-radius: 18px;
+        padding: 12px;
+        font-weight: 1100;
+        line-height: 1.35;
+        white-space: pre-wrap;
+        min-height: 0;
+        color: #0f172a;
+      }
+
+      /* Small screens */
+      @media (max-width: 980px) {
+        body {
+          overflow: auto;
+        } /* allow in small */
+        .app {
+          overflow: auto;
+          height: auto;
+          min-height: 100%;
+        }
+        .core {
+          grid-template-columns: 1fr;
+        }
+        .bottom {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+        .save {
+          font-size: 22px;
+        }
+        .modalBody {
+          grid-template-columns: 1fr;
+        }
+        .amountBox .amt {
+          font-size: 54px;
+        }
+        .manualRateRow input {
+          width: 100%;
+        }
+      }
+      /* 1. Main Screen aur Form ke sabhi bade dabbe (Boxes) */
+.field:focus-within, .fcard:focus {
+    outline: none !important;
+    /* background-color: #fff9c4 !important; Mast Peela Background */
+    border: 3px solid #000000 !important; /* Moti Kaali Border */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2) !important; /* Halka shadow taaki box utha hua dikhe */
+    transition: all 0.15s ease-in-out;
+    transform: translateY(-2px); /* Box thoda upar uthega focus hone par */
+}
+
+/* 2. Farmer Card (Kisan ka dabba) jab keyboard se select ho */
+.fcard:focus {
+    /* background-color: #fff9c4 !important; */
+    border: 3px solid #000000 !important;
+}
+
+/* 3. Andar ke input boxes ko clean rakhein taaki background poora dikhe */
+.field:focus-within input, 
+.field:focus-within textarea, 
+.field:focus-within select {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+/* Entry Save hone par Green Flash effect */
+.flash-success {
+    animation: flashGreen 0.6s ease-out;
+}
+
+@keyframes flashGreen {
+    0% { background-color: transparent; }
+    30% { background-color: rgba(37, 211, 102, 0.4); } /* WhatsApp Green color */
+    100% { background-color: transparent; }
+}
+/* Edit Button Style in Table */
+.edit-btn {
+    padding: 4px 8px;
+    background: #f1f5f9;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 8px;
+    transition: all 0.2s;
+}
+.edit-btn:hover { background: #e2e8f0; }
+
+/* Edit Note Style */
+.edit-note {
+    font-size: 10px;
+    color: var(--muted);
+    font-style: italic;
+    display: block;
+    margin-top: 2px;
+}
+.hdr-actions { display: flex; align-items: center; gap: 10px; }
+/* Right Panel ko scrollable banane ke liye */
+.panel:has(.trustBody) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.trustBody {
+    flex: 1;
+    overflow-y: auto; /* 👈 Right panel mein scroll add ho jayega */
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Har section ka size fix rahega */
+.amountBox, .balances, #dailySummaryWrapper, .recent, #eodSnapshot, .pay-mode-container {
+    flex-shrink: 0; 
+}
+
+/* Table area thoda chota rakhenge taaki baki cheezein dikhein */
+.tableWrap {
+    max-height: 200px;
+    overflow-y: auto;
+}
+.orange-dot {
+    height: 8px; width: 8px; background-color: #f97316;
+    border-radius: 50%; display: inline-block; margin-left: 5px;
+    box-shadow: 0 0 5px #f97316;
+}
+    </style>
+  </head>
+  <div class="overlay" id="overlayFarmerDetail">
+  <div class="modal" style="height: auto; align-self: flex-end; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+    <div class="modalHead">
+      <div class="left">
+        <button class="closeBtn" data-close="overlayFarmerDetail">✖</button>
+        <div id="detailFarmerName" style="font-weight: 1200;">Farmer Name</div>
+      </div>
+      <div class="muted">Advance Management</div>
+    </div>
+    <div class="modalBody onecol" style="padding: 20px;">
+        <div class="balances" style="margin-bottom: 15px;">
+            <div class="balCard balNew" style="background:#eff6ff; color:#1e40af;">
+                <div style="font-size:12px;">TOTAL MILK (MONTH)</div>
+                <div class="v" id="detailMonthlyMilk">0.0 L</div>
+            </div>
+            <div class="balCard balOld" style="background:#fff7ed; color:#9a3412;">
+                <div style="font-size:12px;">CURRENT ADVANCE</div>
+                <div class="v" id="detailAdvance">₹0.00</div>
+            </div>
+        </div>
+        <div class="formGrid">
+            <div class="field">
+                <label>Amount (₹)</label>
+                <input id="advAmount" type="number" placeholder="Enter Amount" class="numInput" style="font-size: 24px; text-align: left;">
+            </div>
+            <div class="field">
+                <label>Action</label>
+                <div class="modeRow" style="gap: 10px;">
+                    <button class="footBtn good" id="btnAddAdv" style="flex:1; height: 50px;">➕ Give</button>
+                    <button class="footBtn bad" id="btnCutAdv" style="flex:1; height: 50px;">➖ Cut</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modalFoot">
+        <button class="pillbtn primary" id="btnDetailWhatsApp" style="width:100%; justify-content: center;">💬 Send Monthly Summary</button>
+    </div>
+  </div>
+</div>
+  <body>
+    <div class="app">
+      <!-- HEADER -->
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">💧</div>
+          <div>
+            <div class="title" id="shopTitle">Gopal Dairy Shop</div>
+            <div class="sub" id="todayLabel">—</div>
+          </div>
+        </div>
+         <div class="hdr-actions">
+          <button class="pillbtn primary" onclick="location.href='purchase2.html'">
+            <span>🍼</span> <span id="btnIntakeText">Milk sales</span>
+          </button>
+          </div>
+        <div id="ratePillContainer" style="display: flex; align-items: center; gap: 8px; margin-left: 15px;">
+    <div id="ratePill" onclick="openRateEditor()" style="background: #e3f2fd; color: #1565c0; padding: 8px 16px; border-radius: 999px; font-weight: 1000; cursor: pointer; border: 1px solid #bbdefb; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+        <span id="rateDisplay">Rate: ₹0.00</span>
+        <span style="font-size: 10px; opacity: 0.6;">✏️</span>
+    </div>
+
+    <div id="rateEditor" style="display: none; align-items: center; gap: 8px; background: #fff; padding: 4px; border-radius: 12px; border: 1px solid var(--blue); box-shadow: var(--shadow);">
+        <input id="newRateInput" type="number" step="0.1" style="width: 80px; border: none; outline: none; font-weight: bold; padding: 4px 8px; font-size: 16px;" placeholder="₹0.00">
+        <button onclick="updateActiveRate()" style="background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 6px 10px; cursor: pointer; font-weight: bold;">Set</button>
+        <button onclick="closeRateEditor()" style="background: #f1f5f9; border: none; border-radius: 8px; padding: 6px 10px; cursor: pointer;">✖</button>
+    </div>
+</div>
+<button onclick="openRateTable()" style="background: #f1f5f9; border: 1px solid var(--line); padding: 8px 12px; border-radius: 999px; font-weight: 1000; cursor: pointer; font-size: 12px; margin-left: 10px; color: var(--muted);">
+    📋 रेट लिस्ट (Chart)
+</button>
+
+<div id="rateTableOverlay" class="overlay" style="display:none; align-items: center; justify-content: center;">
+    <div class="modal" style="width: 400px; height: auto; max-height: 80vh; overflow: hidden;">
+        <div class="modalHead">
+            <div class="left">आज की रेट लिस्ट (₹<span id="chartBaseRate">0</span>)</div>
+            <button class="closeBtn" onclick="closeRateTable()">✖</button>
+        </div>
+        <div class="modalBody onecol" style="overflow-y: auto; padding: 15px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: center;">
+                <thead style="position: sticky; top: 0; background: #fff;">
+                    <tr style="background: #f8fafc;">
+                        <th style="padding: 10px; border: 1px solid #e2e8f0;">FAT %</th>
+                        <th style="padding: 10px; border: 1px solid #e2e8f0;">RATE (₹/L)</th>
+                    </tr>
+                </thead>
+                <tbody id="rateTableBody">
+                    </tbody>
+            </table>
+        </div>
+        <div class="modalFoot">
+            <button class="pillbtn primary" onclick="sendRateChartWhatsApp()" style="width: 100%; justify-content: center;">
+                💬 WhatsApp पर भेजें
+            </button>
+        </div>
+    </div>
+</div>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <div class="hdr-actions">
+            <button class="pillbtn" id="btnHistoryMain">🧾 History</button>
+            <button class="pillbtn" id="langSwitch" style="background: #f1f5f9">
+              🌐 HI/EN
+            </button>
+          </div>
+
+          <div class="hdr-right">
+            <!-- <div class="timer" id="timerBox">⏱ 00:00</div> -->
+            <button class="iconbtn" id="btnLeader" title="Leader (Weekly)">
+              🏆
+            </button>
+            <button class="iconbtn" id="btnSettings" title="Settings">
+              ⚙️
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CORE -->
+      <div class="core">
+        <!-- LEFT -->
+        <div class="panel">
+          <div class="panelHeader">
+            <div id="stationTitle">Milk Intake Station</div>
+            <small id="holdBadge"></small>
+          </div>
+
+          <div class="actionBody">
+            <!-- Farmer selection -->
+            <div class="farmerPick">
+              <div class="farmerTop">
+                <div class="searchBox">
+                  🔎
+                  <input
+                    id="searchInput"
+                    inputmode="search"
+                    autocomplete="off"
+                    placeholder="Search name…"
+                  />
+                </div>
+                <button class="addNewBtn" id="btnAddFarmerMain">
+                  ＋ Add New
+                </button>
+                <div class="miniTag" id="farmerCount">0 👤</div>
+              </div>
+
+              <div class="farmerGrid" id="farmerGrid"></div>
+
+              <div class="farmerNav">
+                <button class="navBtn" id="prevFarmers">⬅️</button>
+                <button class="navBtn" id="nextFarmers">➡️</button>
+              </div>
+            </div>
+
+            <!-- Inputs -->
+            <div class="inputs">
+              <div class="control green">
+                <div class="ctrlTop">
+                  <div id="qtyLabel">2. Liters (L)</div>
+                  <!-- <div class="muted" id="qtyStep">±0.5</div> -->
+                </div>
+                <div class="numBig">
+                  <input
+                    id="qtyInput"
+                    class="numInput"
+                    type="number"
+                    step="0.1"
+                    placeholder="0"
+                  />
+                </div>
+                <!-- <div class="pmRow">
+                  <button class="pm" id="qtyMinus">−</button>
+                  <button class="pm" id="qtyPlus">+</button>
+                </div> -->
+              </div>
+
+              <div class="control yellow">
+                <div class="ctrlTop">
+  <div id="fatLabel">3. Fat %</div>
+  
+  <label for="fImageEntry" style="cursor:pointer; font-size: 1.2rem; margin-left: auto;" title="Capture Proof">
+    📷
+  </label>
+  <input type="file" id="fImageEntry" accept="image/*" capture="camera" style="display:none;">
+
+  <div class="muted" id="fatStep" style="margin-left: 10px;">±0.1</div>
+</div>
+<div class="numBig">
+  <input
+    id="fatInput"
+    class="numInput"
+    type="number"
+    step="0.1"
+    placeholder="0"
+  />
+</div>
+                <!-- <div class="pmRow">
+                  <button class="pm" id="fatMinus">−</button>
+                  <button class="pm" id="fatPlus">+</button>
+                </div> -->
+              </div>
+              <div class="control blue" style="background: #fdf2f8; border-color: #fbcfe8;">
+  <div class="ctrlTop">
+    <div id="densityLabel">Density (CLR)</div>
+  </div>
+  <div class="numBig">
+    <input id="densityInput" class="numInput" type="number" step="any" placeholder="0">
+  </div>
+</div>
+
+              <div class="control blue">
+                <div class="ctrlTop">
+                  <div id="snfLabel">4. SNF</div>
+                  <div class="muted" id="snfStep">±0.1</div>
+                </div>
+                <div class="numBig">
+                  <input
+                    id="snfInput"
+                    class="numInput"
+                    type="number"
+                    step="0.1"
+                    placeholder="0"
+                  />
+                </div>
+                <!-- <div class="pmRow">
+                  <button class="pm" id="snfMinus">−</button>
+                  <button class="pm" id="snfPlus">+</button>
+                </div> -->
+              </div>
+
+              <div class="row3" style="grid-column: 1/-1">
+                <div class="animalCard">
+                  <label>5. Animal Type</label>
+                  <select id="animalSelect">
+                    <option value="cow">🐄 Cow</option>
+                    <option value="buffalo">🐃 Buffalo</option>
+                  </select>
+                </div>
+
+                <div class="rateCard">
+                  <label>Rate Mode</label>
+                  <div class="modeRow">
+                    <button class="modeBtn active" id="btnRateModeAuto">
+                      💰 Auto
+                    </button>
+                    <button class="modeBtn" id="btnRateModeManual">
+                      ✍️ Manual
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Manual Rate Override -->
+            <div class="manualOverride">
+              <div class="left">📷 Manual Rate Override</div>
+              <div style="display: flex; align-items: center; gap: 12px">
+                <div class="rtag" id="rateTypeLabel">Rate: Auto</div>
+                <div class="manualRateRow" id="manualRateRow">
+                  <input
+                    id="manualRateInput"
+                    inputmode="decimal"
+                    placeholder="Rate/L"
+                  />
+                  <button id="manualRateApply">✔️</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex: 1"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="panel">
+          <div class="panelHeader">
+            <div>Summary</div>
+            <small id="selectedName">—</small>
+          </div>
+
+          <div class="trustBody">
+            <div class="amountBox">
+              <div class="label" id="amtLabel">TOTAL AMOUNT</div>
+              <div class="amt" id="amountView">₹0.00</div>
+              <div class="sub" id="trailMini">0.0 L × ₹0.00/L</div>
+            </div>
+
+            <div class="balances">
+              <div class="balCard balOld">
+                <div class="t" id="oldBalLabel">OLD BALANCE</div>
+                <div class="v" id="balBefore">₹0.00</div>
+              </div>
+              <div class="balCard balNew">
+                <div class="t" id="newBalLabel">NEW BALANCE</div>
+                <div class="v" id="balAfter">₹0.00</div>
+              </div>
+              <div style="padding: 12px; background: #f8fafc; border-radius: 18px; margin: 10px 0; border: 1px solid var(--line);">
+    <div style="font-weight: 1000; font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.5px;">भुगतान (PAYMENT MODE)</div>
+    <div style="display: flex; gap: 8px;">
+        <label style="flex: 1; cursor: pointer;">
+            <input type="radio" name="payMode" value="Cash" checked style="display: none;" onchange="updatePayUI()">
+            <div id="optCash" style="text-align: center; padding: 12px; border-radius: 12px; border: 2px solid var(--green); background: var(--soft-green); font-weight: 1000; font-size: 14px; transition: 0.2s;">आज नकद</div>
+        </label>
+        <label style="flex: 1; cursor: pointer;">
+            <input type="radio" name="payMode" value="Credit" style="display: none;" onchange="updatePayUI()">
+            <div id="optCredit" style="text-align: center; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font-weight: 1000; font-size: 14px; transition: 0.2s;">उधार</div>
+        </label>
+    </div>
+</div>
+            </div>
+            <div id="dailySummaryWrapper" style="display: none; margin-top: 15px;">
+        <button class="pillbtn" id="btnDailySummary" style="width: 100%; background: #25d366; color: white; border: none; font-weight: bold; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+             💬 Send Today's Summary
+        </button>
+    </div>
+            <div class="recent">
+              <div class="recentHead">
+                <div class="t" id="newBalLabel">NEW BALANCE</div>
+                <div class="muted" id="recentMeta">0 records</div>
+              </div>
+              <div class="tableWrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>DATE</th>
+                      <th>FARMER</th>
+                      <th>SESSION</th>
+                      <th>TYPE</th>
+                      <th>QTY</th>
+                      <th>FAT</th>
+                      <th>SNF</th>
+                      <th>AMT</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentTbody">
+                    <tr>
+                      <td
+                        colspan="8"
+                        style="color: var(--muted); font-weight: 1100"
+                      >
+                        No records recorded today
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- hidden trail values (logic keeps) -->
+            <div style="display: block">
+              <span id="rateView"></span>
+              <span id="trailQF"></span>
+              <span id="trailRateType"></span>
+              <span id="trailFormula"></span>
+              <span id="trailTime"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="bottom">
+        <button class="panicBtn hold" id="btnHold">
+          🟡 HOLD <span class="subnote">pause</span>
+        </button>
+        <button class="panicBtn save" id="btnSave">🟢 SAVE ENTRY</button>
+        <button class="panicBtn undo" id="btnUndo">
+          🔴 UNDO <span class="subnote">last</span>
+        </button>
+      </div>
+    </div>
+    
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- HISTORY MODAL -->
+    <div class="overlay" id="overlayHistory">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayHistory">✖</button>
+            <div>🧾 History (Today + Weekly)</div>
+          </div>
+          <div class="muted" id="historyTitleRight">—</div>
+        </div>
+
+        <div class="modalBody">
+          <div class="modalCol">
+            <h3>📅 Today</h3>
+            <div class="listArea">
+              <div class="pageInfo">
+                <span id="todayPageInfo">—</span>
+                <span class="muted">No scroll • Pages</span>
+              </div>
+              <div
+                id="todayList"
+                style="display: grid; gap: 10px; align-content: start"
+              ></div>
+              <div class="pageBtns">
+                <button id="todayPrev">⬅️</button>
+                <button id="todayNext">➡️</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="modalCol">
+            <h3>🗓️ Weekly</h3>
+            <div class="listArea">
+              <div class="pageInfo">
+                <span id="weekPageInfo">—</span>
+                <span class="muted">Last 7 days</span>
+              </div>
+              <div
+                id="weekList"
+                style="display: grid; gap: 10px; align-content: start"
+              ></div>
+              <div class="pageBtns">
+                <button id="weekPrev">⬅️</button>
+                <button id="weekNext">➡️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn warn" id="btnReceipt">📩 Receipt</button>
+          <div style="display: flex; gap: 10px">
+            <button class="footBtn" id="btnExport">⬇️ Export</button>
+            <button class="footBtn bad" id="btnClearToday">
+              🗑️ Clear Today
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADER MODAL -->
+    <div class="overlay" id="overlayLeader">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayLeader">✖</button>
+            <div>🏆 Weekly Leader</div>
+          </div>
+          <div class="muted" id="leaderRight">—</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>Top Farmers (7 days)</h3>
+            <div class="listArea">
+              <div class="pageInfo">
+                <span id="leaderPageInfo">—</span>
+                <span class="muted">By Amount</span>
+              </div>
+              <div
+                id="leaderList"
+                style="display: grid; gap: 10px; align-content: start"
+              ></div>
+              <div class="pageBtns">
+                <button id="leaderPrev">⬅️</button>
+                <button id="leaderNext">➡️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn" id="btnLeaderByAmt">💰 Amount</button>
+          <button class="footBtn" id="btnLeaderByLit">🥛 Liters</button>
+          <button class="footBtn" id="btnLeaderByCount">🧾 Entries</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="overlay" id="overlaySettings">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlaySettings">✖</button>
+            <div>⚙️ Settings</div>
+          </div>
+          <div class="muted">Offline • Saved</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>💰 Rate Formula (Simple, Visible)</h3>
+            <div class="formGrid">
+              <div class="field">
+                <label>🐄 Cow Base (₹)</label>
+                <input id="setCowBase" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label>🐄 Cow Factor (₹ per Fat)</label>
+                <input id="setCowFactor" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label>🐃 Buffalo Base (₹)</label>
+                <input id="setBuffBase" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label>🐃 Buffalo Factor (₹ per Fat)</label>
+                <input id="setBuffFactor" inputmode="decimal" />
+              </div>
+
+              <div class="field">
+                <label>Qty Step (L)</label>
+                <input id="setQtyStep" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label>Fat Step (%)</label>
+                <input id="setFatStep" inputmode="decimal" />
+              </div>
+
+              <div class="field">
+                <label>SNF Step</label>
+                <input id="setSnfStep" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label>UI Session Switch Hour</label>
+                <input id="setSessionHour" inputmode="numeric" />
+              </div>
+
+              <div class="field full">
+                <label>Formula Preview (Auto)</label>
+                <div
+                  style="font-weight: 1100; font-size: 15px; padding: 6px 0"
+                  id="formulaPreview"
+                >
+                  —
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" id="btnSaveSettings">✅ Save</button>
+          <button class="footBtn warn" id="btnResetSettings">♻️ Reset</button>
+          <button class="footBtn bad" id="btnFactoryReset">
+            🧨 Factory Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD FARMER MODAL -->
+    <div class="overlay" id="overlayFarmer">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayFarmer">✖</button>
+            <div>➕ Add Farmer</div>
+          </div>
+          <div class="muted">Photo optional</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>👤 Farmer Form</h3>
+            <div class="formGrid">
+              <div class="field">
+                <label>👤 Name</label>
+                <input id="fName" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label>📱 Number</label>
+                <input id="fPhone" inputmode="tel" autocomplete="off" />
+              </div>
+              <div class="field full">
+                <label>📍 Address</label>
+                <textarea id="fAddress"></textarea>
+              </div>
+              <div class="field full">
+                <label>🖼️ Image</label>
+                <input id="fImage" type="file" accept="image/*" />
+                <div
+                  style="
+                    color: var(--muted);
+                    font-size: 12px;
+                    font-weight: 1000;
+                  "
+                >
+                  Stored offline (small compressed)
+                </div>
+              </div>
+              <div class="field">
+                <label>₹ Opening Balance</label>
+                <input id="fBalance" inputmode="decimal" value="0" />
+              </div>
+              <div class="field">
+  <label>🥛 Milk Type</label>
+  <select id="fAnimalType">
+    <option value="cow">🐄 Cow Only</option>
+    <option value="buffalo">🐃 Buffalo Only</option>
+    <option value="both">🔄 Both (Selectable on Entry)</option>
+  </select>
+</div>
+              <div class="field">
+                <label>Status</label>
+                <select id="fActive">
+                  <option value="1">✅ Active</option>
+                  <option value="0">⛔ Inactive</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" id="btnCreateFarmer">✅ Create</button>
+          <button class="footBtn" id="btnDemoFarmers">🧪 Demo Farmers</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECEIPT MODAL -->
+    <div class="overlay" id="overlayReceipt">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayReceipt">✖</button>
+            <div>📩 Receipt (Locked)</div>
+          </div>
+          <div class="muted">Copy • WhatsApp</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>🧾 Message</h3>
+            <div class="receiptBox" id="receiptText">—</div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" id="btnCopyReceipt">📋 Copy</button>
+          <button class="footBtn warn" id="btnWhatsApp">💬 WhatsApp</button>
+          <button class="footBtn" id="btnCloseReceipt">✅ Done</button>
+        </div>
+      </div>
+    </div>
+    <div class="overlay" id="overlayEntryDetail">
+  <div class="modal" style="height: auto; align-self: flex-end; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+    <div class="modalHead">
+      <div class="left">
+        <button class="closeBtn" data-close="overlayEntryDetail">✖</button>
+        <div style="font-weight: 1200;">Entry Detail & Proof</div>
+      </div>
+    </div>
+    <div class="modalBody onecol" id="entryDetailContent" style="padding: 20px; font-weight: 900;">
+        </div>
+    <div class="modalFoot">
+        <button class="pillbtn primary" id="btnSendSingleProof" style="width:100%; justify-content: center;">📩 Send Entry Proof (WhatsApp)</button>
+    </div>
+  </div>
+</div>
+<button onclick="openKitchen()" style="background: #fff; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 999px; font-weight: 1000; cursor: pointer; font-size: 12px; margin-left: 10px;">♨️ Kitchen</button>
+
+<div id="kitchenOverlay" class="overlay" style="display:none; align-items: center; justify-content: center;">
+    <div class="modal" style="width: 350px;">
+        <div class="modalHead">
+            <div class="left">Yield Calculator (Paneer/Dahi)</div>
+            <button class="closeBtn" onclick="closeKitchen()">✖</button>
+        </div>
+        <div class="modalBody onecol" style="padding: 20px;">
+            <label>Kitna Doodh Use Hua? (Liters)</label>
+            <input id="kQty" type="number" oninput="calcYield()" placeholder="0.0" class="numInput" style="width:100%; font-size:24px; margin-bottom:15px;">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="background:#f0f9ff; padding:10px; border-radius:10px; text-align:center;">
+                    <div style="font-size:12px; color:#0369a1;">Buffalo Paneer</div>
+                    <div id="buffPaneer" style="font-size:20px; font-weight:1000; color:#0369a1;">0.00 kg</div>
+                </div>
+                <div style="background:#fff7ed; padding:10px; border-radius:10px; text-align:center;">
+                    <div style="font-size:12px; color:#9a3412;">Cow Paneer</div>
+                    <div id="cowPaneer" style="font-size:20px; font-weight:1000; color:#9a3412;">0.00 kg</div>
+                </div>
+            </div>
+            <p style="font-size:11px; color:var(--muted); margin-top:15px; line-height:1.4;">
+                *Standard Yield: Buffalo (22%), Cow (15%). Agar isse kam paneer nikal raha hai toh check karein.
+            </p>
+        </div>
+    </div>
+</div>
+    <script>
+      // Point 2.6: Success Sound Feedback Logic
+function playSuccessSound() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.type = 'sine'; // Soft sound
+    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // Pitch (High Note)
+    
+    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.1);
+}
+      /***********************
+       * OFFLINE DATA MODEL  *
+       ***********************/
+      const LS = {
+        farmers: "milkapp_farmers_v2",
+        entries: "milkapp_entries_v2",
+        settings: "milkapp_settings_v2",
+        hold: "milkapp_hold_v2",
+        lastUndo: "milkapp_lastundo_v2",
+      };
+
+      const defaultSettings = {
+        cowBase: 18.0,
+        cowFactor: 6.0, // rate/L = base + factor * fat
+        buffBase: 22.0,
+        buffFactor: 7.0,
+        qtyStep: 0.5,
+        fatStep: 0.1,
+        snfStep: 0.1,
+        sessionSwitchHour: 14, // before this -> Morning, after -> Evening
+      };
+
+      function loadSettings() {
+        try {
+          const s = JSON.parse(localStorage.getItem(LS.settings) || "null");
+          return { ...defaultSettings, ...(s || {}) };
+        } catch (e) {
+          return { ...defaultSettings };
+        }
+      }
+      function saveSettings(s) {
+        localStorage.setItem(LS.settings, JSON.stringify(s));
+      }
+
+      function loadFarmers() {
+        try {
+          return JSON.parse(localStorage.getItem(LS.farmers) || "[]") || [];
+        } catch (e) {
+          return [];
+        }
+      }
+      function saveFarmers(arr) {
+        localStorage.setItem(LS.farmers, JSON.stringify(arr));
+      }
+
+      function loadEntries() {
+        try {
+          return JSON.parse(localStorage.getItem(LS.entries) || "[]") || [];
+        } catch (e) {
+          return [];
+        }
+      }
+      function saveEntries(arr) {
+        localStorage.setItem(LS.entries, JSON.stringify(arr));
+      }
+
+      function uid(prefix = "id") {
+        return (
+          prefix +
+          "_" +
+          Math.random().toString(16).slice(2) +
+          "_" +
+          Date.now().toString(16)
+        );
+      }
+
+      /***********************
+       * TIME + DATE HELPERS *
+       ***********************/
+      function pad(n) {
+        return String(n).padStart(2, "0");
+      }
+      function fmtTime(d) {
+        return pad(d.getHours()) + ":" + pad(d.getMinutes());
+      }
+      function fmtDate(d) {
+        const y = d.getFullYear();
+        const m = pad(d.getMonth() + 1);
+        const da = pad(d.getDate());
+        return `${y}-${m}-${da}`;
+      }
+      function startOfDay(d) {
+        const x = new Date(d);
+        x.setHours(0, 0, 0, 0);
+        return x;
+      }
+      function daysAgo(n) {
+        const d = new Date();
+        d.setDate(d.getDate() - n);
+        return startOfDay(d);
+      }
+
+      function autoSessionLabel() {
+    const h = new Date().getHours();
+    // settings.sessionSwitchHour humne 14 (2 PM) rakha hai
+    // Agar ghanta 14 se kam hai toh Morning, varna Evening
+    return h < settings.sessionSwitchHour ? "Morning" : "Evening"; 
+}
+
+      /***********************
+       * APP STATE           *
+       ***********************/
+      let settings = loadSettings();
+      let farmers = loadFarmers();
+      let entries = loadEntries();
+
+      let selectedFarmerId = null;
+
+      let qty = 0.0;
+      let fat = 0.0;
+      let snf = 0.0;
+      let clr = 0.0; // Naya variable CLR ke liye
+
+      let animal = "cow"; // cow | buffalo
+      let rateMode = "auto"; // auto | manual
+      let manualRate = 0.0;
+
+      // Farmer paging
+      const FARMERS_PER_PAGE = 4; // 2x2 grid
+      let farmerPage = 0;
+      let farmerSearch = "";
+
+      // History paging
+      const LIST_PER_PAGE = 6;
+      let todayPage = 0,
+        weekPage = 0;
+
+      // Leader paging
+      const LEADER_PER_PAGE = 8;
+      let leaderPage = 0;
+      let leaderMode = "amount"; // amount | liters | count
+
+      // Timer
+      let timerStart = Date.now();
+      let timerInt = null;
+
+      /***********************
+       * UI HOOKS            *
+       ***********************/
+      const el = (id) => document.getElementById(id);
+
+      const farmerGrid = el("farmerGrid");
+      const searchInput = el("searchInput");
+      const farmerCount = el("farmerCount");
+
+      const amountView = el("amountView");
+      const rateView = el("rateView"); // hidden but used
+      const selectedName = el("selectedName");
+
+      const balBefore = el("balBefore");
+      const balAfter = el("balAfter");
+
+      const manualRateRow = el("manualRateRow");
+      const manualRateInput = el("manualRateInput");
+      const rateTypeLabel = el("rateTypeLabel");
+      const holdBadge = el("holdBadge");
+      const toast = el("toast");
+
+      const recentTbody = el("recentTbody");
+      const recentMeta = el("recentMeta");
+      const trailMini = el("trailMini");
+
+      const animalSelect = el("animalSelect");
+      const btnRateModeAuto = el("btnRateModeAuto");
+      const btnRateModeManual = el("btnRateModeManual");
+
+      const qtyInput = el("qtyInput");
+      const fatInput = el("fatInput");
+      const snfInput = el("snfInput");
+
+      /* Manual typing → state update */
+      qtyInput.addEventListener("input", (e) => {
+        qty = Number(e.target.value) || 0;
+        renderTrust();
+      });
+      fatInput.addEventListener("input", (e) => {
+        fat = Number(e.target.value) || 0;
+        renderTrust();
+      });
+      snfInput.addEventListener("input", (e) => {
+        snf = Number(e.target.value) || 0;
+        renderTrust();
+      });
+
+      /* + / − ke baad input sync */
+      function syncInputs() {
+  // Check karein: User jis dabba mein type kar raha hai, use refresh mat karo
+  if (document.activeElement !== el("qtyInput")) {
+    el("qtyInput").value = round2(qty).toFixed(1);
+  }
+  if (document.activeElement !== el("fatInput")) {
+    el("fatInput").value = round2(fat).toFixed(1);
+  }
+  if (document.activeElement !== el("snfInput")) {
+    el("snfInput").value = round2(snf).toFixed(1);
+  }
+  // Iske andar density update add karein
+  if (document.activeElement !== el("densityInput")) {
+  el("densityInput").value = clr;
+}
+}
+  function calculateSNFFromCLR() {
+  if (clr > 0) {
+    // Ye formula apne aap SNF calculate karke update kar dega
+    snf = round2((clr / 4) + (fat * 0.21) + 0.36);
+  }
+}
+      /***********************
+       * TOAST               *
+       ***********************/
+      let toastT = null;
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add("show");
+        clearTimeout(toastT);
+        toastT = setTimeout(() => toast.classList.remove("show"), 1200);
+      }
+
+      /***********************
+       * FARMER HELPERS      *
+       ***********************/
+      function getFarmerById(id) {
+        return farmers.find((f) => f.id === id) || null;
+      }
+      function activeFarmers() {
+        return farmers.filter((f) => f.active !== false);
+      }
+      function filterFarmers() {
+        const list = activeFarmers();
+        if (!farmerSearch.trim()) return list;
+        const q = farmerSearch.trim().toLowerCase();
+        return list.filter((f) => (f.name || "").toLowerCase().includes(q));
+      }
+      function ensureSelectedFarmer() {
+        const list = activeFarmers();
+        if (!selectedFarmerId && list.length) {
+          selectedFarmerId = list[0].id;
+        } else if (
+          selectedFarmerId &&
+          !list.some((f) => f.id === selectedFarmerId)
+        ) {
+          selectedFarmerId = list.length ? list[0].id : null;
+        }
+      }
+      function openKitchen() { el("kitchenOverlay").style.display = "flex"; el("kQty").focus(); }
+function closeKitchen() { el("kitchenOverlay").style.display = "none"; }
+
+function calcYield() {
+    const qty = Number(el("kQty").value) || 0;
+    // Standard Math: Buff 22%, Cow 15%
+    el("buffPaneer").textContent = (qty * 0.22).toFixed(2) + " kg";
+    el("cowPaneer").textContent = (qty * 0.15).toFixed(2) + " kg";
+}
+      /***********************
+       * CALCULATION         *
+       ***********************/
+      function round2(n) {
+        return Math.round((n + Number.EPSILON) * 100) / 100;
+      }
+
+      function getAutoRatePerLiter(fatVal, animalType) {
+        const f = Number(fatVal) || 0;
+        if (animalType === "buffalo") {
+          return round2(settings.buffBase + settings.buffFactor * f);
+        }
+        return round2(settings.cowBase + settings.cowFactor * f);
+      }
+
+      function getRatePerLiter() {
+    // 1. Check karo agar Manual mode on hai aur dabba khali nahi hai
+    if (rateMode === "manual") {
+        const mInput = el("manualRateInput").value;
+        if (mInput && Number(mInput) > 0) {
+            return round2(Number(mInput));
+        }
+    }
+    
+    // 2. Varna purana Auto logic chale
+    const f = Number(el("fatInput").value) || 0;
+    const a = el("animalSelect").value;
+    if (a === "buffalo") {
+        return round2(settings.buffBase + (settings.buffFactor * f));
+    }
+    return round2(settings.cowBase + (settings.cowFactor * f));
+}
+      function getAmount() {
+        const r = getRatePerLiter();
+        const q = Number(qty) || 0;
+        return round2(q * r);
+      }
+
+      function farmerBalanceBefore(farmer) {
+        return round2(Number(farmer.balance || 0));
+      }
+
+      /***********************
+       * RENDER FARMERS      *
+       ***********************/
+      function escapeHtml(s) {
+        return String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#039;",
+            })[c],
+        );
+      }
+
+      // Global variable photo store karne ke liye
+let currentEntryImage = null;
+
+// Photo khinchne par use capture karein
+document.getElementById("fImageEntry").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            currentEntryImage = event.target.result; // Photo data tayyar hai
+            showToast("Photo Attached! 📷 ✅");
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+      function renderFarmers() {
+    farmerCount.textContent = `${activeFarmers().length} 👤`;
+
+    const list = filterFarmers();
+    const maxPage = Math.max(0, Math.ceil(list.length / FARMERS_PER_PAGE) - 1);
+    if (farmerPage > maxPage) farmerPage = maxPage;
+
+    const start = farmerPage * FARMERS_PER_PAGE;
+    const pageItems = list.slice(start, start + FARMERS_PER_PAGE);
+
+    farmerGrid.innerHTML = "";
+
+    const toShow = [...pageItems];
+    while (toShow.length < FARMERS_PER_PAGE) toShow.push(null);
+
+    toShow.forEach((f) => {
+        const card = document.createElement("div");
+        card.className = "fcard";
+
+        if (f) {
+            // --- 1. Focus & Double Click Support (NAYA) ---
+            card.setAttribute("tabindex", "0"); 
+            
+            // Double Click logic: Yahan kisan ke card par double tap karne se dabba khulega
+            card.ondblclick = (e) => { 
+                e.stopPropagation(); 
+                openFarmerDetail(f.id); 
+            };
+            // ----------------------------------------------
+
+            const isSel = f.id === selectedFarmerId;
+            if (isSel) card.classList.add("fsel");
+
+            const imgHTML = f.imageData ? `<img alt="" src="${f.imageData}">` : `👤`;
+
+            card.innerHTML = `
+                <div class="fimg">${imgHTML}</div>
+                <div style="min-width:0;">
+                    <div class="fname" title="${escapeHtml(f.name || "")}">${escapeHtml(f.name || "")}</div>
+                    <div class="fsub">${f.phone || ""} • ₹${round2(Number(f.balance || 0)).toFixed(2)}</div>
+                </div>
+                ${isSel ? `<div class="badge">Selected</div>` : ``}
+            `;
+
+            card.addEventListener("click", () => {
+                selectedFarmerId = f.id;
+                //  ✅ SOUND UNLOCK LOGIC 
+    // Jab operator kisan ko touch karega, browser sound bajane ki permission de dega
+    const dummyCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (dummyCtx.state === 'suspended') dummyCtx.resume();
+    // ----------------------------
+                renderAll();
+                el("qtyInput").focus();
+                el("qtyInput").select();
+            });
+
+        } else {
+            // "Add Farmer" wala card (Empty Slot)
+            card.style.opacity = 0.4;
+            card.innerHTML = `
+                <div class="fimg">➕</div>
+                <div style="min-width:0;">
+                  <div class="fname">Add Farmer</div>
+                  <div class="fsub">Click to create new</div>
+                </div>
+            `;
+            card.addEventListener("click", () => openOverlay("overlayFarmer"));
+        }
+
+        farmerGrid.appendChild(card);
+    });
+
+    el("prevFarmers").disabled = farmerPage <= 0;
+    el("nextFarmers").disabled = farmerPage >= maxPage;
+}
+
+      // Rate Editor kholne ke liye
+function openRateEditor() {
+    el("ratePill").style.display = "none";
+    el("rateEditor").style.display = "flex";
+    el("newRateInput").value = settings.cowBase; // Default current rate dikhao
+    el("newRateInput").focus();
+    el("newRateInput").select();
+}
+
+// Editor band karne ke liye
+function closeRateEditor() {
+    el("ratePill").style.display = "flex";
+    el("rateEditor").style.display = "none";
+}
+
+// 🎯 ACTIVE RATE UPDATE LOGIC
+function updateActiveRate() {
+    const val = Number(el("newRateInput").value);
+    if (val <= 0) {
+        showToast("Invalid Rate!");
+        return;
+    }
+
+    // Settings mein update (Sirf Base Rate badlega, deduction rules same rahenge)
+    settings.cowBase = val;
+    settings.buffBase = val + 5; // Buffalo rate hamesha Cow se thoda zyada (Dairy logic)
+    
+    saveSettings(settings);
+    
+    // UI Update
+    refreshRatePill();
+    renderTrust(); // Right panel turant refresh hoga
+    closeRateEditor();
+    
+    showToast(`Naya Rate Set: ₹${val.toFixed(2)} ✅`);
+}
+
+// Pill par rate dikhane ke liye
+function refreshRatePill() {
+    if (el("rateDisplay")) {
+        el("rateDisplay").textContent = `Rate: ₹${Number(settings.cowBase).toFixed(2)}`;
+    }
+}
+
+       /***********************
+       * RENDER RIGHT PANEL  *
+       ***********************/
+      function renderRecentToday() {
+        const today = fmtDate(new Date());
+        const todays = entries
+          .filter((e) => e.day === today)
+          .sort((a, b) => b.createdAt - a.createdAt);
+
+        recentMeta.textContent = `${todays.length} records`;
+
+        if (todays.length === 0) {
+          recentTbody.innerHTML = `<tr><td colspan="8" style="color:var(--muted);font-weight:1100;">No records recorded today</td></tr>`;
+          return;
+        }
+
+        const rows = todays
+          .slice(0, 25)
+          .map((e) => {
+            const typeTag =
+              e.animal === "buffalo"
+                ? `<span class="tag buff">🐃 Buffalo</span>`
+                : `<span class="tag cow">🐄 Cow</span>`;
+            console.log("Entry images:", e.images); // Agar ye khali [] aa raha hai, toh photo save nahi ho rahi
+            // Sirf ye 2 line add kar apne existing code mein
+            const photoIcon = (e.images && Array.isArray(e.images) && e.images.length > 0) 
+    ? ` <span onclick="viewProof('${e.images[0]}')" style="cursor:pointer;">📸</span>` 
+    : '';            
+            const f = getFarmerById(e.farmerId);
+            const phone = (f && f.phone) ? f.phone : "";
+        
+            const msg = `*Milk Receipt* 🥛\nDate: ${e.day} (${e.session})\nQty: ${e.qty}L | Fat: ${e.fat}\n*Amount: ₹${Number(e.amount).toFixed(2)}*\nGopal Dairy Shop`;
+            const wpLink = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+
+            // --- Point 7: Audit Trail & Edit UI logic ---
+            // renderRecentToday function ke andar rows loop mein ye paste karein:
+return `
+  <tr onclick="showAuditProof('${e.id}')" style="cursor:pointer;">
+    <td>${escapeHtml(e.day)}</td>
+    <td style="font-weight:1100;">
+        ${escapeHtml(e.farmerName || "")}
+        ${photoIcon} ${e.edited ? `<br><small class="edit-note" style="color:var(--muted); font-weight:normal; font-size:10px;">✏️ Sudhara gaya: ${fmtTime(new Date(e.editedAt))}</small>` : ''}
+    </td>
+    <td><span class="rtag">${escapeHtml(e.session || "")}</span></td>
+    <td>${typeTag}</td>
+    <td style="font-weight:1100;">${Number(e.qty || 0).toFixed(1)} L</td>
+    <td>${Number(e.fat || 0).toFixed(1)}%</td>
+    <td>${Number(e.snf || 0).toFixed(1)}</td>
+    <td style="color:var(--muted); font-size:11px;">
+        ₹${Number(e.rateSnapshot || e.ratePerL || 0).toFixed(2)}
+    </td>
+    <td style="font-weight:1200; color:#1d4ed8; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+        ₹${Number(e.amount || 0).toFixed(2)}
+        <button onclick="event.stopPropagation(); editEntry('${e.id}')" title="Edit" style="border:none; background:transparent; cursor:pointer; font-size:14px;">✏️</button>
+        ${phone ? `<a href="${wpLink}" target="_blank" onclick="event.stopPropagation();" title="Send WhatsApp" style="text-decoration:none; font-size:16px;">🟢</a>` : ''}
+    </td>
+  </tr>
+`;
+          })
+          .join("");
+
+        recentTbody.innerHTML = rows;
+      }
+      function viewProof(imgData) {
+    if(!imgData) return;
+    const w = window.open("");
+    w.document.write(`<img src="${imgData}" style="max-width:100%;">`);
+}
+
+      function editEntry(id) {
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+
+    // 1. Confirm karein (Trust Safe)
+    if (!confirm("Do you want to edit this entry? It will update farmer balance.")) return;
+
+    // 2. Pehle purani entry ka asar khatam karein (Balance reverse)
+    const farmer = getFarmerById(entry.farmerId);
+    if (farmer) {
+        farmer.balance = round2(farmer.balance - entry.amount);
+    }
+
+    // 3. Data ko wapas form mein load karein
+    selectedFarmerId = entry.farmerId;
+    qty = entry.qty;
+    fat = entry.fat;
+    snf = entry.snf;
+    animal = entry.animal;
+    
+    // 4. Entry ko mark karein taaki save hone par naya record na bane, purana update ho
+    // (Simple rasta: purani entry delete karke naya form bhardein)
+    entries = entries.filter(e => e.id !== id);
+    saveEntries(entries);
+    saveFarmers(farmers);
+
+    renderAll();
+    showToast("Editing: " + entry.farmerName + " ✏️");
+    el("qtyInput").focus();
+}
+      function renderTrust() {
+    const farmer = getFarmerById(selectedFarmerId);
+    // ✅ AUTO SELECT LOGIC:
+  if (farmer && farmer.animalType) {
+    if (farmer.animalType !== "both") {
+      animal = farmer.animalType; // Cow ya Buffalo fix ho jayega
+    }
+    // Note: Agar 'both' hai toh purana selection hi rahega
+  }
+
+    // --- YE WALA BLOCK UPDATE KIYA HAI ---
+    if (farmer) {
+        const stdSNF = 8.5; 
+        // 1. Kisan ka naam aur uska type (Cow/Buffalo) dikhao
+        const typeIcon = farmer.animalType === 'cow' ? '🐄' : '🐃';
+        const typeText = farmer.animalType === 'both' ? '🔄 Both' : (farmer.animalType === 'cow' ? 'Cow' : 'Buffalo');
+        
+        let nameHTML = `${farmer.name} <small style="color:var(--muted)">(${typeIcon} ${typeText})</small>`;
+
+        // 2. Agar Pani hai toh wo bhi dikhao
+        if (snf > 0 && snf < stdSNF) {
+            const waterPercent = round2(((stdSNF - snf) / stdSNF) * 100);
+            nameHTML += `<br><span style="color:red; font-size:11px; font-weight:bold;">⚠️ Pani: ${waterPercent}%</span>`;
+        }
+        
+        el("selectedName").innerHTML = nameHTML; 
+    } else {
+        el("selectedName").textContent = "—";
+    }
+    // --------------------------------------
+
+    const r = getRatePerLiter();
+    const a = getAmount();
+
+    rateView.textContent = `₹${r.toFixed(2)}`;
+    amountView.textContent = `₹${a.toFixed(2)}`;
+    trailMini.textContent = `${round2(qty).toFixed(1)} L × ₹${r.toFixed(2)}/L`;
+
+    const before = farmer ? farmerBalanceBefore(farmer) : 0;
+    const after = round2(before + a);
+
+    balBefore.textContent = `₹${before.toFixed(2)}`;
+    balAfter.textContent = `₹${after.toFixed(2)}`;
+
+    // steps + values
+    el("qtyStep").textContent = `±${settings.qtyStep}`;
+    el("fatStep").textContent = `±${settings.fatStep}`;
+    el("snfStep").textContent = `±${settings.snfStep}`;
+
+    // Density Sync (Agar density dabba add kiya hai toh ye line add karein)
+    if (el("densityInput") && document.activeElement !== el("densityInput")) {
+        el("densityInput").value = clr;
+    }
+
+    // animal dropdown sync
+    animalSelect.value = animal;
+
+    // rate mode UI
+    btnRateModeAuto.classList.toggle("active", rateMode === "auto");
+    btnRateModeManual.classList.toggle("active", rateMode === "manual");
+
+    if (rateMode === "manual") {
+        rateTypeLabel.textContent = "Rate: Manual";
+        manualRateRow.style.display = "grid";
+    } else {
+        rateTypeLabel.textContent = "Rate: Auto";
+        manualRateRow.style.display = "none";
+    }
+
+    // HOLD badge
+    const hold = loadHold();
+    holdBadge.textContent = hold ? "HOLD ✅" : "";
+
+    // recent today
+    renderRecentToday();
+
+    syncInputs();
+    updateDailySummaryButton();
+}
+
+      function renderTodayLabel() {
+        const d = new Date();
+        el("todayLabel").textContent = `${fmtDate(d)} • ${autoSessionLabel()}`;
+      }
+
+      function renderAll() {
+        ensureSelectedFarmer();
+        renderFarmers();
+        renderTrust();
+        renderTodayLabel();
+      }
+
+      /***********************
+       * HOLD + UNDO         *
+       ***********************/
+      function loadHold() {
+        try {
+          return JSON.parse(localStorage.getItem(LS.hold) || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+      function saveHold(obj) {
+        if (!obj) localStorage.removeItem(LS.hold);
+        else localStorage.setItem(LS.hold, JSON.stringify(obj));
+      }
+
+      function saveUndoToken(token) {
+        localStorage.setItem(LS.lastUndo, JSON.stringify(token));
+      }
+      function loadUndoToken() {
+        try {
+          return JSON.parse(localStorage.getItem(LS.lastUndo) || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+      function clearUndoToken() {
+        localStorage.removeItem(LS.lastUndo);
+      }
+      // Rate Chart kholne ka logic
+function openRateTable() {
+    const base = Number(settings.cowBase);
+    el("chartBaseRate").textContent = base.toFixed(2);
+    const tbody = el("rateTableBody");
+    tbody.innerHTML = "";
+
+    // FAT 4.0 se 9.0 tak ki list (0.1 ke gap par)
+    for (let f = 4.0; f <= 9.0; f = round2(f + 0.1)) {
+        const r = getAutoRatePerLiter(f, "cow"); // Default Cow rate dikhate hain chart mein
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td style="padding: 8px; border: 1px solid #f1f5f9; font-weight: bold;">${f.toFixed(1)}</td>
+            <td style="padding: 8px; border: 1px solid #f1f5f9; color: var(--blue2); font-weight: 1000;">₹${r.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+    }
+    el("rateTableOverlay").style.display = "flex";
+}
+
+function closeRateTable() {
+    el("rateTableOverlay").style.display = "none";
+}
+
+// 🎯 WHATSAPP PLAIN TEXT LOGIC
+function sendRateChartWhatsApp() {
+    const base = Number(settings.cowBase);
+    let msg = `*🥛 आज की रेट लिस्ट - गोपाल डेयरी*\n`;
+    msg += `Base Rate: ₹${base.toFixed(2)}\n`;
+    msg += `---------------------------\n`;
+    msg += `*FAT%* |   *RATE (₹/L)*\n`;
+    msg += `---------------------------\n`;
+
+    // Sirf main points bhejte hain taaki message zyada lamba na ho
+    for (let f = 4.0; f <= 8.5; f = round2(f + 0.5)) {
+        const r = getAutoRatePerLiter(f, "cow");
+        msg += `${f.toFixed(1)} fat   ->   ₹${r.toFixed(2)}\n`;
+    }
+
+    msg += `---------------------------\n`;
+    msg += `*यह रेट सिस्टम द्वारा जनरेटेड है*`;
+
+    const wpUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(wpUrl, '_blank');
+}
+      function holdCurrent() {
+        const h = {
+          selectedFarmerId,
+          qty,
+          fat,
+          snf,
+          animal,
+          rateMode,
+          manualRate,
+          at: Date.now(),
+        };
+        saveHold(h);
+        showToast("HOLD saved");
+        renderAll();
+      }
+
+      function restoreHoldIfAny() {
+        const h = loadHold();
+        if (!h) return;
+        selectedFarmerId = h.selectedFarmerId || selectedFarmerId;
+        qty = Number(h.qty) || 0;
+        fat = Number(h.fat) || 0;
+        snf = Number(h.snf) || 0;
+        animal = h.animal || "cow";
+        rateMode = h.rateMode || "auto";
+        manualRate = Number(h.manualRate) || 0;
+        manualRateInput.value = manualRate ? String(manualRate) : "";
+        saveHold(null);
+        showToast("HOLD restored");
+        renderAll();
+      }
+
+      /***********************
+       * SAVE ENTRY          *
+       ***********************/
+      function canSave() {
+        if (!selectedFarmerId) return false;
+        if (qty <= 0) return false;
+        if (fat <= 0) return false;
+        if (getRatePerLiter() <= 0) return false;
+        return true;
+      }
+      // Point 2.6: Success Sound Feedback (No external file needed)
+function playSuccessSound() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.type = 'sine'; 
+    oscillator.frequency.setValueAtTime(1000, audioCtx.currentTime); 
+    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.15);
+}
+      function saveEntry() {
+    if (!canSave()) {
+        showToast("Need: Farmer + Qty + Fat");
+        return;
+    }
+    const farmer = getFarmerById(selectedFarmerId);
+    if (!farmer) {
+        showToast("Select farmer");
+        return;
+    }
+    
+    const before = farmerBalanceBefore(farmer);
+    const ratePerL = getRatePerLiter();
+    const amount = getAmount();
+    const after = round2(before + amount);
+
+    // --- ✅ POINT 3.4: GET PAYMENT MODE FROM UI ---
+    const selectedPayMode = document.querySelector('input[name="payMode"]:checked').value;
+
+    const currentRate = getRatePerLiter(); // 👈 Usi second ka active rate uthao
+    const currentAmount = getAmount();
+
+    const entry = {
+        id: uid("e"),
+        farmerId: farmer.id,
+        farmerName: farmer.name || "",
+        qty: round2(qty),
+        fat: round2(fat),
+        snf: round2(snf),
+        paymentMode: document.querySelector('input[name="payMode"]:checked').value,
+        
+        // 🎯 SNAPSHOT LOGIC: Rate ko value ki tarah chipka do
+        rateSnapshot: round2(currentRate), 
+        amount: round2(currentAmount),
+        
+        // Audit Metadata
+        rateMode: rateMode, // auto ya manual
+        animal: animal,
+        session: autoSessionLabel(),
+        createdAt: Date.now(),
+        day: fmtDate(new Date()),
+        deviceId: navigator.userAgent.slice(0, 40)
+    };
+    // --- DATA SAVING ---
+    farmer.balance = after;
+    saveFarmers(farmers);
+
+    entries.push(entry);
+    saveEntries(entries);
+    playSuccessSound();
+    saveUndoToken({
+        entryId: entry.id,
+        farmerId: farmer.id,
+        prevBalance: before,
+    });
+
+    // --- ✅ RESET LOGIC FOR NEXT FARMER ---
+    qty = 0;
+    fat = 0;
+    snf = 0;
+    manualRate = 0;
+    if (el("manualRateInput")) el("manualRateInput").value = ""; 
+    
+    // Toggle ko wapas 'Cash' (आज नकद) par le aao
+    document.querySelector('input[name="payMode"][value="Cash"]').checked = true;
+    if (typeof updatePayUI === "function") updatePayUI(); 
+
+    currentEntryImage = null; 
+    const imgInput = document.getElementById("fImageEntry");
+    if(imgInput) imgInput.value = ""; 
+    
+    autoNextFarmer();
+    renderAll();
+    playSuccessSound(); // 🔊 Ye bajega har save par
+    // --- ✅ FEEDBACK ---
+    if (typeof playSuccessSound === "function") playSuccessSound(); // 🔊 Ting!
+    
+    document.body.classList.add("flash-success");
+    setTimeout(() => {
+        document.body.classList.remove("flash-success");
+    }, 600);
+
+    // Snapshot update (आज का हिसाब)
+    if (typeof updateSnapshotData === "function") updateSnapshotData();
+    
+    updateDailySummaryButton();
+    showToast(`Entry Saved (${selectedPayMode === 'Cash' ? 'नकद' : 'उधार'}) ✅`);
+}
+// Isse kisi bhi purani entry ka metadata check kar sakte hain
+function showAuditProof(entryId) {
+    const e = entries.find(x => x.id === entryId);
+    if(!e) return;
+
+    const content = el("entryDetailContent");
+    const isEdited = e.edited ? "Yes" : "No";
+    
+    content.innerHTML = `
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:14px;">
+            <div>Farmer: <br><span style="color:var(--blue)">${e.farmerName}</span></div>
+            <div>Amount: <br><span style="color:var(--green)">₹${e.amount}</span></div>
+            <hr style="grid-column: 1/-1; width:100%; opacity:0.2;">
+            <div>Qty: ${e.qty} L</div>
+            <div>Fat: ${e.fat}%</div>
+            <div>SNF: ${e.snf}</div>
+            <div>Rate Mode: ${e.rateMode.toUpperCase()}</div>
+            <hr style="grid-column: 1/-1; width:100%; opacity:0.2;">
+            <div style="font-size:11px; color:var(--muted);">Recorded: ${new Date(e.createdAt).toLocaleString()}</div>
+            <div style="font-size:11px; color:var(--muted);">Source: ${e.entrySource}</div>
+            <div style="font-size:11px; color:var(--muted);">Device ID: ${e.deviceId}</div>
+            <div style="font-size:11px; color:var(--muted);">Edited: ${isEdited}</div>
+        </div>
+        ${e.images && e.images.length > 0 ? `<div style="margin-top:15px;"><label>Photo Proof:</label><img src="${e.images[0]}" style="width:100%; border-radius:10px; margin-top:5px;"></div>` : ''}
+    `;
+
+    // WhatsApp Button Logic for this single entry
+    el("btnSendSingleProof").onclick = () => {
+        const f = getFarmerById(e.farmerId);
+        const msg = `*Milk Entry Proof* 🥛\nFarmer: ${e.farmerName}\nQty: ${e.qty}L | Fat: ${e.fat}%\nAmount: ₹${e.amount}\nTime: ${new Date(e.createdAt).toLocaleString()}\nSource: ${e.entrySource}\nGopal Dairy Shop`;
+        window.open(`https://wa.me/${f.phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+
+    openOverlay("overlayEntryDetail");
+}
+      function autoNextFarmer() {
+        const list = filterFarmers();
+        const idx = list.findIndex((f) => f.id === selectedFarmerId);
+        if (idx >= 0 && idx < list.length - 1) {
+          selectedFarmerId = list[idx + 1].id;
+        }
+      }
+
+      function undoLast() {
+        const token = loadUndoToken();
+        if (!token) {
+          showToast("Nothing to undo");
+          return;
+        }
+
+        const idx = entries.findIndex((e) => e.id === token.entryId);
+        if (idx < 0) {
+          clearUndoToken();
+          showToast("Undo not found");
+          return;
+        }
+
+        // Restore farmer balance
+        const farmer = getFarmerById(token.farmerId);
+        if (farmer) {
+          farmer.balance = round2(Number(token.prevBalance) || 0);
+          saveFarmers(farmers);
+        }
+
+        // Remove entry
+        entries.splice(idx, 1);
+        saveEntries(entries);
+
+        clearUndoToken();
+        showToast("UNDO ✅");
+        renderAll();
+      }
+
+      /***********************
+       * HISTORY + EXPORT     *
+       ***********************/
+      function entriesToday() {
+        const today = fmtDate(new Date());
+        return entries
+          .filter((e) => e.day === today)
+          .sort((a, b) => b.createdAt - a.createdAt);
+      }
+      function entriesWeek() {
+        const start = daysAgo(6).getTime();
+        return entries
+          .filter((e) => e.createdAt >= start)
+          .sort((a, b) => b.createdAt - a.createdAt);
+      }
+
+      function makeEntryCard(e) {
+        const t = fmtTime(new Date(e.createdAt));
+        const icon = e.animal === "buffalo" ? "🐃" : "🐄";
+        const rt = e.rateMode === "manual" ? "Manual" : "Auto";
+        return `
+    <div class="cardRow">
+      <div style="min-width:0;">
+        <div class="title">${escapeHtml(e.farmerName || "")}</div>
+        <div class="meta">${t} • ${icon} • ${e.qty}L • Fat ${e.fat}% • SNF ${e.snf} • ${rt}</div>
+      </div>
+      <div class="val">₹${Number(e.amount || 0).toFixed(2)}</div>
+    </div>
+  `;
+      }
+
+      function renderHistory() {
+        const today = entriesToday();
+        const week = entriesWeek();
+
+        el("historyTitleRight").textContent =
+          `${today.length} today • ${week.length} in 7d`;
+
+        const tMax = Math.max(0, Math.ceil(today.length / LIST_PER_PAGE) - 1);
+        if (todayPage > tMax) todayPage = tMax;
+        const tSlice = today.slice(
+          todayPage * LIST_PER_PAGE,
+          todayPage * LIST_PER_PAGE + LIST_PER_PAGE,
+        );
+        el("todayList").innerHTML =
+          tSlice.map(makeEntryCard).join("") ||
+          `<div style="color:var(--muted);font-weight:1100;">No entries</div>`;
+        el("todayPageInfo").textContent =
+          `Page ${today.length ? todayPage + 1 : 0}/${today.length ? tMax + 1 : 0}`;
+        el("todayPrev").disabled = todayPage <= 0;
+        el("todayNext").disabled = todayPage >= tMax;
+
+        const wMax = Math.max(0, Math.ceil(week.length / LIST_PER_PAGE) - 1);
+        if (weekPage > wMax) weekPage = wMax;
+        const wSlice = week.slice(
+          weekPage * LIST_PER_PAGE,
+          weekPage * LIST_PER_PAGE + LIST_PER_PAGE,
+        );
+        el("weekList").innerHTML =
+          wSlice.map(makeEntryCard).join("") ||
+          `<div style="color:var(--muted);font-weight:1100;">No entries</div>`;
+        el("weekPageInfo").textContent =
+          `Page ${week.length ? weekPage + 1 : 0}/${week.length ? wMax + 1 : 0}`;
+        el("weekPrev").disabled = weekPage <= 0;
+        el("weekNext").disabled = weekPage >= wMax;
+      }
+
+      function exportJSON() {
+        const payload = {
+          exportedAt: new Date().toISOString(),
+          settings,
+          farmers,
+          entries,
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `milkapp_export_${fmtDate(new Date())}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast("Exported ✅");
+      }
+
+      function clearToday() {
+        const today = fmtDate(new Date());
+        const beforeLen = entries.length;
+        entries = entries.filter((e) => e.day !== today);
+        saveEntries(entries);
+        showToast(
+          entries.length !== beforeLen ? "Today cleared" : "No entries today",
+        );
+        renderHistory();
+        renderAll();
+      }
+
+      /***********************
+       * LEADERBOARD         *
+       ***********************/
+      function buildLeader() {
+        const week = entriesWeek();
+        const map = new Map();
+        week.forEach((e) => {
+          const cur = map.get(e.farmerId) || {
+            farmerId: e.farmerId,
+            name: e.farmerName,
+            amount: 0,
+            liters: 0,
+            count: 0,
+          };
+          cur.amount = round2(cur.amount + Number(e.amount || 0));
+          cur.liters = round2(cur.liters + Number(e.qty || 0));
+          cur.count = cur.count + 1;
+          map.set(e.farmerId, cur);
+        });
+        let arr = Array.from(map.values());
+        arr.sort((a, b) => {
+          if (leaderMode === "amount") return b.amount - a.amount;
+          if (leaderMode === "liters") return b.liters - a.liters;
+          return b.count - a.count;
+        });
+        return arr;
+      }
+
+      function renderLeader() {
+        const leaders = buildLeader();
+        const maxPage = Math.max(
+          0,
+          Math.ceil(leaders.length / LEADER_PER_PAGE) - 1,
+        );
+        if (leaderPage > maxPage) leaderPage = maxPage;
+
+        const slice = leaders.slice(
+          leaderPage * LEADER_PER_PAGE,
+          leaderPage * LEADER_PER_PAGE + LEADER_PER_PAGE,
+        );
+
+        el("leaderRight").textContent =
+          `${leaders.length} farmers • sorted by ${leaderMode}`;
+
+        el("leaderPageInfo").textContent =
+          `Page ${leaders.length ? leaderPage + 1 : 0}/${leaders.length ? maxPage + 1 : 0}`;
+
+        el("leaderPrev").disabled = leaderPage <= 0;
+        el("leaderNext").disabled = leaderPage >= maxPage;
+
+        el("leaderList").innerHTML =
+          slice
+            .map(
+              (l) => `
+      <div class="cardRow">
+        <div style="min-width:0;">
+          <div class="title">${escapeHtml(l.name || "")}</div>
+          <div class="meta">
+            ₹${l.amount.toFixed(2)} • ${l.liters.toFixed(1)} L • ${l.count} entries
+          </div>
+        </div>
+        <div class="val">
+          ${
+            leaderMode === "amount"
+              ? "₹" + l.amount.toFixed(2)
+              : leaderMode === "liters"
+                ? l.liters.toFixed(1) + " L"
+                : l.count
+          }
+        </div>
+      </div>
+    `,
+            )
+            .join("") ||
+          `<div style="color:var(--muted);font-weight:1100;">No data</div>`;
+      }
+
+      /***********************
+       * OVERLAYS HELPERS    *
+       ***********************/
+      function openOverlay(id) {
+        document.getElementById(id).style.display = "flex";
+        if (id === "overlayHistory") renderHistory();
+        if (id === "overlayLeader") renderLeader();
+      }
+      function closeOverlay(id) {
+        document.getElementById(id).style.display = "none";
+      }
+
+      /***********************
+       * EVENTS              *
+       ***********************/
+      // Farmer search
+      searchInput.addEventListener("input", (e) => {
+        farmerSearch = e.target.value;
+        farmerPage = 0;
+        renderFarmers();
+      });
+
+      // Paging
+      el("prevFarmers").onclick = () => {
+        farmerPage--;
+        renderFarmers();
+      };
+      el("nextFarmers").onclick = () => {
+        farmerPage++;
+        renderFarmers();
+      };
+
+      // Qty / Fat / SNF controls
+      // };// Manual Typing Listener: Jaise hi dabba mein likhoge, summary badal jayegi
+el("qtyInput").oninput = (e) => { qty = Number(e.target.value) || 0; renderTrust(); };
+el("fatInput").oninput = (e) => { fat = Number(e.target.value) || 0; renderTrust(); };
+el("snfInput").oninput = (e) => { snf = Number(e.target.value) || 0; renderTrust(); };
+// --- YAHAN PASTE KAREIN ---
+el("qtyInput").oninput = (e) => {
+  qty = Number(e.target.value) || 0;
+  renderTrust();
+};
+
+// Density (CLR) Input Listener
+el("densityInput").oninput = (e) => {
+  clr = Number(e.target.value) || 0;
+  calculateSNFFromCLR(); // Ye SNF nikalega
+  renderTrust(); 
+};
+
+// Fat Input Listener
+el("fatInput").oninput = (e) => {
+  fat = Number(e.target.value) || 0;
+  calculateSNFFromCLR(); // Fat badla toh SNF bhi apne aap badlega
+  renderTrust();
+};
+
+el("snfInput").oninput = (e) => {
+  snf = Number(e.target.value) || 0;
+  renderTrust();
+};
+
+      // Animal
+      animalSelect.onchange = (e) => {
+        animal = e.target.value;
+        renderTrust();
+      };
+
+      // Rate mode
+      btnRateModeAuto.onclick = () => {
+        rateMode = "auto";
+        renderTrust();
+      };
+      btnRateModeManual.onclick = () => {
+        rateMode = "manual";
+        renderTrust();
+      };
+      el("manualRateApply").onclick = () => {
+        manualRate = Number(manualRateInput.value) || 0;
+        renderTrust();
+      };
+
+      // Save / Hold / Undo
+      el("btnSave").onclick = saveEntry;
+      el("btnHold").onclick = holdCurrent;
+      el("btnUndo").onclick = undoLast;
+
+      // History
+      el("btnHistoryMain").onclick = () => openOverlay("overlayHistory");
+      el("todayPrev").onclick = () => {
+        todayPage--;
+        renderHistory();
+      };
+      el("todayNext").onclick = () => {
+        todayPage++;
+        renderHistory();
+      };
+      el("weekPrev").onclick = () => {
+        weekPage--;
+        renderHistory();
+      };
+      el("weekNext").onclick = () => {
+        weekPage++;
+        renderHistory();
+      };
+      el("btnExport").onclick = exportJSON;
+      el("btnClearToday").onclick = clearToday;
+
+      // Leader
+      el("btnLeader").onclick = () => openOverlay("overlayLeader");
+      el("leaderPrev").onclick = () => {
+        leaderPage--;
+        renderLeader();
+      };
+      el("leaderNext").onclick = () => {
+        leaderPage++;
+        renderLeader();
+      };
+
+      el("btnLeaderByAmt").onclick = () => {
+        leaderMode = "amount";
+        leaderPage = 0;
+        renderLeader();
+      };
+      el("btnLeaderByLit").onclick = () => {
+        leaderMode = "liters";
+        leaderPage = 0;
+        renderLeader();
+      };
+      el("btnLeaderByCount").onclick = () => {
+        leaderMode = "count";
+        leaderPage = 0;
+        renderLeader();
+      };
+
+      // Settings
+      el("btnSettings").onclick = () => openOverlay("overlaySettings");
+      el("btnSaveSettings").onclick = () => {
+        settings.cowBase = Number(el("setCowBase").value) || settings.cowBase;
+        settings.cowFactor =
+          Number(el("setCowFactor").value) || settings.cowFactor;
+        settings.buffBase =
+          Number(el("setBuffBase").value) || settings.buffBase;
+        settings.buffFactor =
+          Number(el("setBuffFactor").value) || settings.buffFactor;
+        settings.qtyStep = Number(el("setQtyStep").value) || settings.qtyStep;
+        settings.fatStep = Number(el("setFatStep").value) || settings.fatStep;
+        settings.snfStep = Number(el("setSnfStep").value) || settings.snfStep;
+        settings.sessionSwitchHour =
+          Number(el("setSessionHour").value) || settings.sessionSwitchHour;
+        saveSettings(settings);
+        showToast("Settings saved");
+        renderAll();
+      };
+
+      // Add farmer modal
+      el("btnAddFarmerMain").onclick = () => openOverlay("overlayFarmer");
+      el("btnCreateFarmer").onclick = () => {
+        const f = {
+          id: uid("f"),
+          name: el("fName").value.trim(),
+          phone: el("fPhone").value.trim(),
+          address: el("fAddress").value.trim(),
+          balance: Number(el("fBalance").value) || 0,
+          active: el("fActive").value === "1",
+          animalType: el("fAnimalType").value // ✅ Ye line add karein
+        };
+        if (!f.name) {
+          showToast("Name required");
+          return;
+        }
+        farmers.push(f);
+        saveFarmers(farmers);
+        selectedFarmerId = f.id;
+        closeOverlay("overlayFarmer");
+        renderAll();
+      };
+
+      // Close overlays
+      document.querySelectorAll("[data-close]").forEach((b) => {
+        b.onclick = () => closeOverlay(b.dataset.close);
+      });
+      //  A. AUTO FOCUS: Load hote hi search par cursor
+      window.addEventListener("load", () => {
+        if (el("searchInput")) el("searchInput").focus();
+      });
+
+      // 1. Translation Map
+      const translations = {
+        en: {
+          station: "Milk Intake Station",
+          history: "History",
+          liters: "2. Liters (L)",
+          fat: "3. Fat %",
+          snf: "4. SNF",
+          animal: "5. Animal Type",
+          summary: "Summary",
+          totalAmt: "TOTAL AMOUNT",
+          oldBal: "OLD BALANCE",
+          newBal: "NEW BALANCE",
+          recent: "RECENT TODAY",
+          save: "SAVE ENTRY",
+          hold: "HOLD",
+          undo: "UNDO",
+        },
+        hi: {
+          station: "दूध संकलन स्टेशन",
+          history: "इतिहास",
+          liters: "2. लीटर (L)",
+          fat: "3. फैट %",
+          snf: "4. SNF",
+          animal: "5. पशु का प्रकार",
+          summary: "सारांश",
+          totalAmt: "कुल राशि",
+          oldBal: "पुराना बकाया",
+          newBal: "नया बकाया",
+          recent: "आज के रिकॉर्ड",
+          save: "रिकॉर्ड सेव करें",
+          hold: "होल्ड करें",
+          undo: "वापस (Undo)",
+        },
+      };
+
+      // 2. Language Toggle Function
+      el("langSwitch").onclick = () => {
+        currentLang = currentLang === "en" ? "hi" : "en";
+        const t = translations[currentLang];
+        const isHi = currentLang === "hi";
+         el("btnIntakeText").textContent = t.intake;
+        // UI Elements Update (Ensure these IDs exist in your HTML)
+        if (el("stationTitle")) el("stationTitle").textContent = t.station;
+        if (el("btnHistoryMain"))
+          el("btnHistoryMain").innerHTML = "🧾 " + t.history;
+
+        // Inputs Section
+        if (el("qtyLabel")) el("qtyLabel").textContent = t.liters; // HTML mein <div> ko id="qtyLabel" de dena
+        if (el("fatLabel")) el("fatLabel").textContent = t.fat;
+        if (el("snfLabel")) el("snfLabel").textContent = t.snf;
+
+        // Summary Section
+        if (el("summaryTitle")) el("summaryTitle").textContent = t.summary;
+        if (el("amtLabel")) el("amtLabel").textContent = t.totalAmt;
+        if (el("oldBalLabel")) el("oldBalLabel").textContent = t.oldBal;
+        if (el("newBalLabel")) el("newBalLabel").textContent = t.newBal;
+        if (el("recentTitle")) el("recentTitle").textContent = t.recent;
+
+        // Footer Buttons
+        if (el("btnSave"))
+          el("btnSave").innerHTML = (isHi ? "🟢 " : "") + t.save;
+        if (el("btnHold"))
+          el("btnHold").innerHTML =
+            (isHi ? "🟡 " : "") +
+            t.hold +
+            ' <span class="subnote">pause</span>';
+        if (el("btnUndo"))
+          el("btnUndo").innerHTML =
+            (isHi ? "🔴 " : "") + t.undo + ' <span class="subnote">last</span>';
+
+        showToast(isHi ? "भाषा: हिंदी" : "Language: English");
+      };
+      // 1. Language Toggle Logic (Add this fresh)
+      let currentLang = "en";
+
+      el("langSwitch").onclick = () => {
+        currentLang = currentLang === "en" ? "hi" : "en";
+        const isHi = currentLang === "hi";
+
+        // --- 1. Main Labels Update ---
+        // (In IDs ko apne HTML tags mein check kar lena, agar nahi hain toh add kar lena)
+        if (el("stationTitle"))
+          el("stationTitle").textContent = isHi
+            ? "दूध संकलन स्टेशन"
+            : "Milk Intake Station";
+        if (el("shopTitle"))
+          el("shopTitle").textContent = isHi
+            ? "गोपाल डेयरी शॉप"
+            : "Gopal Dairy Shop";
+
+        // Labels for Inputs
+        if (el("qtyLabel"))
+          el("qtyLabel").textContent = isHi ? "2. लीटर (L)" : "2. Liters (L)";
+        if (el("fatLabel"))
+          el("fatLabel").textContent = isHi ? "3. फैट %" : "3. Fat %";
+        if (el("snfLabel"))
+          el("snfLabel").textContent = isHi ? "4. SNF" : "4. SNF";
+        // --- 1. HISTORY MODAL ---
+        if (el("historyTitle"))
+          el("historyTitle").textContent = isHi
+            ? "इतिहास (आज + साप्ताहिक)"
+            : "History (Today + Weekly)";
+        document.querySelectorAll("#overlayHistory h3")[0].textContent = isHi
+          ? "📅 आज"
+          : "📅 Today";
+        document.querySelectorAll("#overlayHistory h3")[1].textContent = isHi
+          ? "🗓️ साप्ताहिक"
+          : "🗓️ Weekly";
+        if (el("btnReceipt"))
+          el("btnReceipt").innerHTML = isHi ? "📩 रसीद" : "📩 Receipt";
+        if (el("btnExport"))
+          el("btnExport").innerHTML = isHi ? "⬇️ एक्सपोर्ट" : "⬇️ Export";
+        if (el("btnClearToday"))
+          el("btnClearToday").innerHTML = isHi
+            ? "🗑️ आज का डेटा साफ करें"
+            : "🗑️ Clear Today";
+
+        // --- 2. LEADERBOARD MODAL ---
+        if (el("leaderTitle"))
+          el("leaderTitle").textContent = isHi
+            ? "🏆 साप्ताहिक लीडर"
+            : "🏆 Weekly Leader";
+        document.querySelector("#overlayLeader h3").textContent = isHi
+          ? "टॉप किसान (7 दिन)"
+          : "Top Farmers (7 days)";
+        if (el("btnLeaderByAmt"))
+          el("btnLeaderByAmt").innerHTML = isHi ? "💰 राशि" : "💰 Amount";
+        if (el("btnLeaderByLit"))
+          el("btnLeaderByLit").innerHTML = isHi ? "🥛 लीटर" : "🥛 Liters";
+        if (el("btnLeaderByCount"))
+          el("btnLeaderByCount").innerHTML = isHi
+            ? "🧾 एंट्री संख्या"
+            : "🧾 Entries";
+
+        // --- 3. SETTINGS MODAL ---
+        if (el("settingsTitle"))
+          el("settingsTitle").textContent = isHi
+            ? "⚙️ सेटिंग्स"
+            : "⚙️ Settings";
+        document.querySelector("#overlaySettings h3").textContent = isHi
+          ? "💰 रेट फार्मूला"
+          : "💰 Rate Formula";
+        /// --- Animal Selection Translation ---
+        const animalOptionCow = document.querySelector('option[value="cow"]');
+        const animalOptionBuff = document.querySelector(
+          'option[value="buffalo"]',
+        );
+
+        if (animalOptionCow) {
+          animalOptionCow.textContent = isHi ? "🐄 गाय (Cow)" : "🐄 Cow";
+        }
+        if (animalOptionBuff) {
+          animalOptionBuff.textContent = isHi
+            ? "🐃 भैंस (Buffalo)"
+            : "🐃 Buffalo";
+        }
+
+        // Agar aapne Radio buttons laga liye hain (jo maine pehle bataya tha), toh ye use karein:
+        if (el("labelCow"))
+          el("labelCow").textContent = isHi ? "🐄 गाय" : "🐄 Cow";
+        if (el("labelBuffalo"))
+          el("labelBuffalo").textContent = isHi ? "🐃 भैंस" : "🐃 Buffalo";
+
+        if (el("btnSaveSettings"))
+          el("btnSaveSettings").innerHTML = isHi ? "✅ सेव करें" : "✅ Save";
+        if (el("btnResetSettings"))
+          el("btnResetSettings").innerHTML = isHi ? "♻️ रिसेट" : "♻️ Reset";
+        if (el("btnFactoryReset"))
+          el("btnFactoryReset").innerHTML = isHi
+            ? "🧨 फैक्ट्री रिसेट"
+            : "🧨 Factory Reset";
+
+        // --- 4. ADD FARMER MODAL ---
+        if (el("addFarmerTitle"))
+          el("addFarmerTitle").textContent = isHi
+            ? "➕ किसान जोड़ें"
+            : "➕ Add Farmer";
+        document.querySelector("#overlayFarmer h3").textContent = isHi
+          ? "👤 किसान फॉर्म"
+          : "👤 Farmer Form";
+        const farmerLabels = document.querySelectorAll(
+          "#overlayFarmer .field label",
+        );
+        const farmerHindi = [
+          "👤 नाम",
+          "📱 नंबर",
+          "📍 पता",
+          "🖼️ फोटो",
+          "₹ ओपनिंग बैलेंस",
+          "स्टेटस",
+        ];
+        const farmerEng = [
+          "👤 Name",
+          "📱 Number",
+          "📍 Address",
+          "🖼️ Image",
+          "₹ Opening Balance",
+          "Status",
+        ];
+        farmerLabels.forEach(
+          (lbl, i) => (lbl.textContent = isHi ? farmerHindi[i] : farmerEng[i]),
+        );
+
+        if (el("btnCreateFarmer"))
+          el("btnCreateFarmer").innerHTML = isHi ? "✅ बनाएं" : "✅ Create";
+        if (el("btnDemoFarmers"))
+          el("btnDemoFarmers").innerHTML = isHi
+            ? "🧪 डेमो किसान"
+            : "🧪 Demo Farmers";
+
+        // --- 5. RECEIPT MODAL ---
+        if (el("receiptTitle"))
+          el("receiptTitle").textContent = isHi ? "📩 रसीद" : "📩 Receipt";
+        document.querySelector("#overlayReceipt h3").textContent = isHi
+          ? "🧾 संदेश"
+          : "🧾 Message";
+        if (el("btnCopyReceipt"))
+          el("btnCopyReceipt").innerHTML = isHi ? "📋 कॉपी" : "📋 Copy";
+        if (el("btnWhatsApp"))
+          el("btnWhatsApp").innerHTML = isHi ? "💬 व्हाट्सएप" : "💬 WhatsApp";
+        if (el("btnCloseReceipt"))
+          el("btnCloseReceipt").innerHTML = isHi ? "✅ पूर्ण" : "✅ Done";
+
+        // Summary Labels
+        if (el("amtLabel"))
+          el("amtLabel").textContent = isHi ? "कुल राशि" : "TOTAL AMOUNT";
+        if (el("oldBalLabel"))
+          el("oldBalLabel").textContent = isHi ? "पुराना बकाया" : "OLD BALANCE";
+        if (el("newBalLabel"))
+          el("newBalLabel").textContent = isHi ? "नया बकाया" : "NEW BALANCE";
+        if (el("recentTitle"))
+          el("recentTitle").textContent = isHi
+            ? "आज के रिकॉर्ड"
+            : "RECENT TODAY";
+
+        // --- 2. Buttons Update ---
+        if (el("btnSave"))
+          el("btnSave").innerHTML = isHi
+            ? "🟢 रिकॉर्ड सेव करें"
+            : "🟢 SAVE ENTRY";
+        if (el("btnHold"))
+          el("btnHold").innerHTML = isHi ? "🟡 होल्ड करें" : "🟡 HOLD";
+        if (el("btnUndo"))
+          el("btnUndo").innerHTML = isHi ? "🔴 वापस (Undo)" : "🔴 UNDO";
+
+        // --- 3. Table Headers Update (Jo tune pucha tha) ---
+        const ths = document.querySelectorAll("table thead th");
+        if (ths.length >= 8) {
+          const hindiHeaders = [
+            "तारीख",
+            "किसान",
+            "शिफ्ट",
+            "प्रकार",
+            "मात्रा",
+            "फैट",
+            "SNF",
+            "राशि",
+          ];
+          const engHeaders = [
+            "DATE",
+            "FARMER",
+            "SESSION",
+            "TYPE",
+            "QTY",
+            "FAT",
+            "SNF",
+            "AMT",
+          ];
+
+          ths.forEach((th, i) => {
+            th.textContent = isHi ? hindiHeaders[i] : engHeaders[i];
+          });
+        }
+
+        showToast(isHi ? "भाषा: हिंदी" : "Language: English");
+      };
+
+
+  // --- MASTER NAVIGATION: Arrows & Enter (Main Screen + Form) ---
+document.addEventListener('keydown', (e) => {
+    const active = document.activeElement;
+    const isFarmerModalOpen = el("overlayFarmer").style.display === "flex";
+
+    // 1. ADD FARMER FORM LOGIC (Sirf tab chalega jab Form khula ho)
+    if (isFarmerModalOpen) {
+        const formOrder = ["fName", "fPhone", "fAddress", "fImage", "fBalance", "fAnimalType", "fActive", "btnCreateFarmer"];
+        const curIdx = formOrder.indexOf(active.id);
+
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (curIdx !== -1 && curIdx < formOrder.length - 1) {
+                el(formOrder[curIdx + 1]).focus();
+                if (el(formOrder[curIdx + 1]).tagName === "INPUT") el(formOrder[curIdx + 1]).select();
+            } else if (active.id === "btnCreateFarmer" || active.id === "fActive") {
+                el("btnCreateFarmer").click();
+                setTimeout(() => el("searchInput").focus(), 150);
+            }
+        }
+
+        if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+            if (active.id === "fAddress") return; // Textarea mein typing ke liye arrows chhod do
+            e.preventDefault();
+            if (e.key === "ArrowRight" && curIdx < formOrder.length - 1) {
+                el(formOrder[curIdx + 1]).focus();
+            } else if (e.key === "ArrowLeft" && curIdx > 0) {
+                el(formOrder[curIdx - 1]).focus();
+            }
+        }
+        return; // Modal ka kaam khatam, niche wala main screen code nahi chalega
+    }
+
+    // 2. MAIN SCREEN LOGIC (Sirf tab chalega jab Form BAND ho)
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        if (active.classList.contains("fcard")) {
+            e.preventDefault();
+            const cards = Array.from(el("farmerGrid").children);
+            const list = filterFarmers();
+            const idx = cards.indexOf(active);
+            let nextIdx = e.key === "ArrowRight" ? idx + 1 : idx - 1;
+            
+            if (nextIdx >= 0 && nextIdx < cards.length && list[nextIdx]) {
+                cards[nextIdx].focus();
+                selectedFarmerId = list[nextIdx].id;
+                renderTrust(); 
+            }
+        }
+        // --- QTY INPUT PAR SHIFT + ENTER KA LOGIC ---
+else if (active.id === "qtyInput") {
+    // Agar Shift + Enter dabayein toh seedha Advance modal khule
+    if (e.shiftKey && e.key === "Enter") {
+        e.preventDefault();
+        if (selectedFarmerId) {
+            openFarmerDetail(selectedFarmerId);
+        }
+    } 
+    // Normal Enter se agle field (Fat) par jaye
+    else if (e.key === "Enter") {
+        e.preventDefault();
+        el("fatInput").focus();
+    }
+}
+    }
+
+    if (e.key === "Enter") {
+        e.preventDefault();
+        if (active.id === "searchInput") {
+            const firstCard = el("farmerGrid").querySelector('.fcard');
+            if (firstCard) firstCard.focus();
+        } 
+        else if (active.classList.contains("fcard")) {
+            const list = filterFarmers();
+            const cards = Array.from(el("farmerGrid").children);
+            const idx = cards.indexOf(active);
+            if (list[idx]) {
+                selectedFarmerId = list[idx].id;
+                renderAll(); 
+                setTimeout(() => {
+                    el("qtyInput").focus();
+                    el("qtyInput").select();
+                }, 50); 
+            }
+        }
+        else if (active.id === "qtyInput") el("fatInput").focus();
+        else if (active.id === "fatInput") el("densityInput").focus();
+        else if (active.id === "densityInput") el("snfInput").focus();
+        else if (active.id === "snfInput") el("btnRateModeAuto").focus();
+        else if (active.id === "btnRateModeAuto" || active.id === "btnRateModeManual") el("btnSave").focus();
+        else if (active.id === "btnSave") {
+            saveEntry();
+            el("searchInput").focus(); 
+            el("searchInput").value = "";
+        }
+    }
+});
+
+// --- FINANCIAL TRUST: ADVANCE LOGIC ---
+function openFarmerDetail(fId) {
+    const f = getFarmerById(fId);
+    if (!f) return;
+    selectedFarmerId = fId;
+    el("detailFarmerName").textContent = f.name;
+    el("detailAdvance").textContent = `₹${round2(f.advance || 0).toFixed(2)}`;
+    
+    const now = new Date();
+    const monthEntries = entries.filter(e => e.farmerId === fId && new Date(e.createdAt).getMonth() === now.getMonth());
+    const totalL = monthEntries.reduce((sum, e) => sum + Number(e.qty || 0), 0);
+    el("detailMonthlyMilk").textContent = `${totalL.toFixed(1)} L`;
+    openOverlay("overlayFarmerDetail");
+}
+
+el("btnAddAdv").onclick = () => handleAdvanceChange(true);
+el("btnCutAdv").onclick = () => handleAdvanceChange(false);
+
+function handleAdvanceChange(isAdding) {
+    const amt = Number(el("advAmount").value);
+    if (amt <= 0) return showToast("Enter valid amount");
+    const f = getFarmerById(selectedFarmerId);
+    if (!f) return;
+
+    if (isAdding) {
+        f.advance = (f.advance || 0) + amt;
+        f.balance = (f.balance || 0) - amt;
+        showToast(`₹${amt} Advance Added ✅`);
+    } else {
+        if ((f.advance || 0) < amt) return showToast("Not enough advance");
+        f.advance = (f.advance || 0) - amt;
+        f.balance = (f.balance || 0) + amt;
+        showToast(`₹${amt} Advance Cut ✂️`);
+    }
+    saveFarmers(farmers);
+    el("advAmount").value = "";
+    closeOverlay("overlayFarmerDetail");
+    renderAll();
+}
+// ... upar openFarmerDetail wala function khatam hone ke baad ...
+
+// --- WHATSAPP MONTHLY SUMMARY LOGIC (Yahan Paste Karein) ---
+el("btnDetailWhatsApp").onclick = () => {
+    const f = getFarmerById(selectedFarmerId);
+    if (!f) return;
+
+    // 1. Mahine ka data taiyar karein
+    const now = new Date();
+    const monthName = now.toLocaleString('default', { month: 'long' });
+    const totalMilk = el("detailMonthlyMilk").textContent;
+    const currentAdv = el("detailAdvance").textContent;
+    const currentBal = `₹${round2(f.balance || 0).toFixed(2)}`;
+
+    // 2. Message ka format (Plain Hindi + Numbers jaisa document mein likha hai)
+    const msg = `*Milk Summary - ${monthName}*
+---------------------------
+*Kisan:* ${f.name}
+*Total Milk:* ${totalMilk}
+*Current Advance:* ${currentAdv}
+*Net Balance:* ${currentBal}
+---------------------------
+Gopal Dairy Shop`;
+
+    // 3. WhatsApp link generate karein aur open karein
+    const wpUrl = `https://wa.me/${f.phone}?text=${encodeURIComponent(msg)}`;
+    window.open(wpUrl, '_blank');
+    
+    showToast("Monthly Summary Sent 💬");
+};
+// --- WHATSAPP DAILY SUMMARY LOGIC ---
+el("btnDailySummary").onclick = () => {
+    const today = fmtDate(new Date());
+    const todays = entries.filter(e => e.day === today);
+    
+    if (todays.length === 0) {
+        showToast("No entries for today!");
+        return;
+    }
+
+    // Aaj ka poora calculations
+    const totalMilk = todays.reduce((sum, e) => sum + Number(e.qty || 0), 0);
+    const totalAmt = todays.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+    const session = autoSessionLabel(); // Morning ya Evening automatic lega
+
+    // Message ka format (Professional Dairy Look)
+    const msg = `*🥛 Daily Milk Summary*
+*Date:* ${today} (${session})
+---------------------------
+✅ *Total Entries:* ${todays.length}
+✅ *Total Milk:* ${totalMilk.toFixed(1)} L
+✅ *Total Amount:* ₹${totalAmt.toFixed(2)}
+---------------------------
+*Gopal Dairy Shop*`;
+
+    // WhatsApp par share karne ka link
+    const wpUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(wpUrl, '_blank');
+};
+function sendDailySummary() {
+    const today = fmtDate(new Date());
+    // Aaj ki saari entries filter karein
+    const todays = entries.filter(e => e.day === today && e.farmerId === selectedFarmerId);
+
+    if (todays.length === 0) {
+        showToast("No records found for this farmer today!");
+        return;
+    }
+
+    // Total ka calculation karein
+    let totalQty = 0;
+    let totalAmt = 0;
+    let detailMsg = "";
+
+    todays.forEach((e, index) => {
+        totalQty += Number(e.qty);
+        totalAmt += Number(e.amount);
+        detailMsg += `\n${index + 1}. ${e.session}: ${e.qty}L | ₹${e.amount}`;
+    });
+
+    const farmer = getFarmerById(selectedFarmerId);
+    const phone = farmer ? farmer.phone : "";
+
+    // Naya Summary Message Template
+    const summaryMsg = `*DAIRY DAILY SUMMARY* 📊\n` +
+                       `Date: ${today}\n` +
+                       `Farmer: ${farmer.name}\n` +
+                       `--------------------------` +
+                       `${detailMsg}\n` +
+                       `--------------------------\n` +
+                       `*Total Milk: ${totalQty.toFixed(1)} L*\n` +
+                       `*Total Amount: ₹${totalAmt.toFixed(2)}*\n\n` +
+                       `Gopal Dairy Shop 🙏`;
+
+    if (phone) {
+        const wpLink = `https://wa.me/${phone}?text=${encodeURIComponent(summaryMsg)}`;
+        window.open(wpLink, '_blank');
+        showToast("Summary Sent! 📊✅");
+    } else {
+        showToast("Farmer phone number missing!");
+    }
+}
+function updatePayUI() {
+    // 1. Check karo kaunsa radio button select hua hai
+    const isCash = document.querySelector('input[name="payMode"]:checked').value === 'Cash';
+    
+    const cashDiv = el("optCash");
+    const creditDiv = el("optCredit");
+
+    if (isCash) {
+        // Cash select hone par Green
+        cashDiv.style.border = "2px solid var(--green)";
+        cashDiv.style.background = "var(--soft-green)";
+        creditDiv.style.border = "1px solid var(--line)";
+        creditDiv.style.background = "#fff";
+        showToast("Mode: नकद (Cash) 💰");
+    } else {
+        // Udhaar select hone par Red
+        creditDiv.style.border = "2px solid var(--red)";
+        creditDiv.style.background = "var(--soft-pink)";
+        cashDiv.style.border = "1px solid var(--line)";
+        cashDiv.style.background = "#fff";
+        showToast("Mode: उधार (Credit) ✍️");
+    }
+}
+// Button ko tabhi dikhana jab koi entry ho
+function updateDailySummaryButton() {
+    const today = fmtDate(new Date());
+    const hasEntries = entries.some(e => e.day === today);
+    const wrapper = el("dailySummaryWrapper");
+    if (wrapper) {
+        wrapper.style.display = hasEntries ? "block" : "none";
+    }
+}
+// ... iske niche init(); function hona chahiye ...
+      /***********************
+       * INIT                *
+       ***********************/
+      function init() {
+        // --- SIRF YE 2 LINE SABSE UPAR JODO ---
+    const today = fmtDate(new Date());
+    if (el("todayLabel")) el("todayLabel").textContent = `${today} | ${autoSessionLabel()}`;
+    // --------------------------------------
+    // --- YE 2 LINE BHI JODO (Table & Button ke liye) ---
+    renderRecentToday();
+    updateDailySummaryButton();
+    // --------------------------------------------------
+        restoreHoldIfAny();
+        renderAll();
+        refreshRatePill();
+        // timerInt = setInterval(() => {
+        //   const sec = Math.floor((Date.now() - timerStart) / 1000);
+        //   el("timerBox").textContent =
+        //     `⏱ ${pad(Math.floor(sec / 60))}:${pad(sec % 60)}`;
+        // }, 1000);
+      }
+
+      init();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkRecord Language Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3D9730",
+                        "secondary": "#0A64BC",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102212",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>.agri-watermark {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuAbiTAnscF7iFYND5dD-2Z8dESUoggQKyX7QspqeII780wSZeJ04uWwMNmknRtN8WZOzlcO6JTShLbjgzTO38NO7IBpppgpzDUoyvIW_1pxHCUZ_yGBAieOk67XnL7ajGNG0AbynG5w_lkJGIF6U0KZHVZKBPNgINt7X8NH8GJgvEaMxvcY-GS6EWHfvEI3wNiwaUGhroqjX-gnb6Aw_G3AzAOYnMioe--N7owaWVylD-KixJsTXyDca2PXQeYCz7z8aKkJ9u75pA);
+    background-size: cover;
+    background-attachment: fixed
+    }
+.dark .agri-watermark {
+    background-image: linear-gradient(rgba(16, 34, 18, 0.95), rgba(16, 34, 18, 0.95)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuAD6CkijTwOUy7haBczujrTkBodsXHrFlk_GCk20Ff2lzLskC8EntXOg4iX4n_DuEp_SVfnLWABrmxM7k7OUJz3chfJMIfbrcLO9EkWTEl33JtiH2pgi-GkrW8SKYrC0Dh0Rj9aSSkOKVqalLTial-fdeu5mgSelsYb3BIIFw-OR6Z4SBF2Jc2I-v9HTTg7fWgbhO-8fgZJ5XPStMH1Lzy676Hc6O1c9sa02oId7YMKGf-VMWvF7L0oH_XtpGKuKsZrbGFRHuHlHA)
+    }</style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark agri-watermark min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<div class="px-4 md:px-40 flex justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/10 px-4 md:px-10 py-3">
+<a href="../../index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined">agriculture</span>
+</div>
+<h2 class="text-secondary dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">MilkRecord</h2>
+</a>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="truncate">Help / सहायता</span>
+</button>
+</header>
+</div>
+</div>
+<!-- Headline Section -->
+<div class="px-4 md:px-40 flex justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<h1 class="text-secondary dark:text-white tracking-light text-[32px] md:text-[40px] font-bold leading-tight px-4 text-center pb-3 pt-6">
+                        Choose your language <br/>
+<span class="text-primary">अपनी भाषा चुनें</span>
+</h1>
+<p class="text-slate-600 dark:text-slate-400 text-center text-lg px-4 pb-8">Select a language to get started with your dairy management.</p>
+</div>
+</div>
+<!-- Language Cards Grid -->
+<div class="px-4 md:px-40 flex justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
+<!-- English Card -->
+<div class="group cursor-pointer bg-white dark:bg-slate-800 border-2 border-transparent hover:border-primary rounded-xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col items-center gap-4 aspect-square justify-center relative">
+<div class="bg-cover bg-center w-24 h-24 rounded-full mb-2" data-alt="Abstract green pattern for English language" style="background-image: linear-gradient(135deg, #0A64BC 0%, #3D9730 100%);"></div>
+<p class="text-secondary dark:text-white text-xl font-bold leading-tight">English</p>
+<button class="flex items-center gap-2 text-primary text-sm font-medium border border-primary/20 rounded-full px-3 py-1 hover:bg-primary/10">
+<span class="material-symbols-outlined text-sm">volume_up</span>
+                                Listen
+                            </button>
+</div>
+<!-- Hindi Card -->
+<div class="group cursor-pointer bg-white dark:bg-slate-800 border-2 border-primary rounded-xl p-6 shadow-md transition-all flex flex-col items-center gap-4 aspect-square justify-center relative">
+<div class="absolute top-4 right-4 text-primary">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div class="bg-cover bg-center w-24 h-24 rounded-full mb-2" data-alt="Abstract green pattern for Hindi language" style="background-image: linear-gradient(135deg, #3D9730 0%, #0A64BC 100%);"></div>
+<p class="text-secondary dark:text-white text-xl font-bold leading-tight">हिन्दी</p>
+<button class="flex items-center gap-2 text-primary text-sm font-medium border border-primary/20 rounded-full px-3 py-1 hover:bg-primary/10">
+<span class="material-symbols-outlined text-sm">volume_up</span>
+                                सुनें
+                            </button>
+</div>
+<!-- Punjabi Card -->
+<div class="group cursor-pointer bg-white dark:bg-slate-800 border-2 border-transparent hover:border-primary rounded-xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col items-center gap-4 aspect-square justify-center relative">
+<div class="bg-cover bg-center w-24 h-24 rounded-full mb-2" data-alt="Abstract green pattern for Punjabi language" style="background-image: linear-gradient(135deg, #0A64BC 50%, #3D9730 100%);"></div>
+<p class="text-secondary dark:text-white text-xl font-bold leading-tight">ਪੰਜਾਬੀ</p>
+<button class="flex items-center gap-2 text-primary text-sm font-medium border border-primary/20 rounded-full px-3 py-1 hover:bg-primary/10">
+<span class="material-symbols-outlined text-sm">volume_up</span>
+                                ਸੁਣੋ
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Audio Bar (Alternative Context) -->
+<div class="px-4 md:px-40 flex justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<div class="@container">
+<div class="gap-4 px-4 grid grid-cols-3">
+<div class="flex flex-col items-center gap-2 bg-white/50 dark:bg-slate-800/50 rounded-lg py-4 text-center">
+<div class="rounded-full bg-secondary/10 p-3">
+<span class="material-symbols-outlined text-secondary">hearing</span>
+</div>
+<p class="text-slate-600 dark:text-slate-300 text-xs font-medium uppercase tracking-wider">Audio Assist</p>
+</div>
+<div class="flex flex-col items-center gap-2 bg-white/50 dark:bg-slate-800/50 rounded-lg py-4 text-center border border-primary/20">
+<div class="rounded-full bg-primary/10 p-3">
+<span class="material-symbols-outlined text-primary">play_circle</span>
+</div>
+<p class="text-slate-600 dark:text-slate-300 text-xs font-medium uppercase tracking-wider">Selected</p>
+</div>
+<div class="flex flex-col items-center gap-2 bg-white/50 dark:bg-slate-800/50 rounded-lg py-4 text-center">
+<div class="rounded-full bg-secondary/10 p-3">
+<span class="material-symbols-outlined text-secondary">support_agent</span>
+</div>
+<p class="text-slate-600 dark:text-slate-300 text-xs font-medium uppercase tracking-wider">Get Help</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Continue Button -->
+<div class="px-4 md:px-40 flex justify-center py-10 mt-auto">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<div class="flex px-4 py-3 justify-center">
+<button class="flex min-w-[280px] md:min-w-[400px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-8 bg-primary text-white text-lg font-bold leading-normal tracking-[0.015em] shadow-lg hover:shadow-primary/20 hover:scale-[1.02] transition-all">
+<span class="truncate">Continue / आगे बढ़ें</span>
+</button>
+</div>
+<p class="text-slate-400 text-center text-sm pt-4">© 2024 MilkRecord. Designed for rural dairy progress.</p>
+</div>
+</div>
+</div>
+</div>
+</body></html>

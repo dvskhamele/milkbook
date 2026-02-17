@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkRecord Modern Progress Variant</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Khand:wght@600;700&amp;family=Hind:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#fb6d0e",
+                        "primary-dark": "#d15606",
+                        "secondary": "#0A64BC", // Trust Blue
+                        "secondary-dark": "#064c91",
+                        "success": "#3D9730", // Agri Green
+                        "background-light": "#f0f4f8",
+                        "background-dark": "#1a1e23",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "khand": ["Khand", "sans-serif"],
+                        "hind": ["Hind", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem", 
+                        "lg": "0.5rem", 
+                        "xl": "0.75rem", 
+                        "2xl": "1.5rem",
+                        "3xl": "2rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        '3d-button': '0 8px 0 #d15606, 0 15px 20px rgba(0,0,0,0.2)',
+                        '3d-button-hover': '0 4px 0 #d15606, 0 8px 10px rgba(0,0,0,0.2)',
+                        '3d-card': '0 12px 24px -4px rgba(10, 100, 188, 0.15), 0 8px 0 rgba(230, 230, 240, 1)',
+                        '3d-card-hover': '0 20px 30px -4px rgba(10, 100, 188, 0.2), 0 10px 0 rgba(230, 230, 240, 1)',
+                        'gamified': '0 10px 0 #3D9730, 0 20px 25px rgba(0,0,0,0.15)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .machine-bg {
+            background-color: #eef2f6;
+            background-image: radial-gradient(#0A64BC 0.5px, transparent 0.5px), radial-gradient(#0A64BC 0.5px, #eef2f6 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            opacity: 0.5;
+        }
+        .icon-box-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        .tactile-card:hover .icon-box-3d {
+            transform: scale(1.1) rotate(5deg);
+        }
+        .text-shadow-sm {
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .messy-line {
+            transform: rotate(-1deg);
+            border-bottom: 2px solid #a8a8a8;
+        }
+        .photo-frame {
+            border: 12px solid white;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            position: relative;
+        }
+        .photo-frame::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom right, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181411] dark:text-[#f8f7f5] overflow-x-hidden">
+<div class="fixed bottom-8 right-6 md:bottom-10 md:right-10 z-[100] animate-bounce hover:animate-none">
+<a class="group flex items-center gap-3 bg-[#25D366] text-white p-4 pr-6 rounded-full shadow-lg hover:scale-105 transition-transform border-4 border-white dark:border-gray-800" href="#">
+<span class="material-symbols-outlined text-3xl">mic</span>
+<div class="flex flex-col">
+<span class="text-[10px] font-bold uppercase tracking-widest text-green-100">Click to Chat</span>
+<span class="font-khand text-xl font-bold leading-none">Bol ke batao</span>
+</div>
+</a>
+</div>
+<header class="sticky top-0 z-50 w-full border-b-4 border-black/5 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md">
+<div class="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-4 md:px-10">
+<a href="../../index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-white shadow-[0_4px_0_#064c91]">
+<span class="material-symbols-outlined text-3xl">water_drop</span>
+</div>
+<h2 class="text-2xl font-khand font-bold leading-tight tracking-wide text-secondary dark:text-white uppercase">MilkRecord</h2>
+</a>
+<div class="hidden flex-1 justify-end gap-8 md:flex items-center">
+<nav class="flex items-center gap-8">
+<a class="text-base font-bold text-gray-600 hover:text-primary transition-colors uppercase tracking-wide" href="#">Home</a>
+<a class="text-base font-bold text-gray-600 hover:text-primary transition-colors uppercase tracking-wide" href="#">Features</a>
+<a class="text-base font-bold text-gray-600 hover:text-primary transition-colors uppercase tracking-wide" href="#">Pricing</a>
+</nav>
+<button class="group relative flex min-w-[160px] items-center justify-center rounded-xl bg-secondary px-6 py-3 text-sm font-bold text-white transition-all hover:translate-y-[4px] shadow-[0_6px_0_#064c91] hover:shadow-[0_2px_0_#064c91] active:translate-y-[6px] active:shadow-none">
+<span class="material-symbols-outlined mr-2 text-lg">login</span>
+                    LOGIN / SIGN UP
+                </button>
+</div>
+<button class="flex md:hidden text-secondary dark:text-white rounded-lg border-2 border-secondary p-1">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-grow">
+<section class="relative min-h-[750px] w-full overflow-hidden bg-[#F0F7FF] dark:bg-[#121619] py-12 md:py-20">
+<div class="absolute inset-0 machine-bg pointer-events-none opacity-30"></div>
+<div class="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-10">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<div class="flex flex-col gap-8 order-2 md:order-1">
+<div class="inline-flex items-center gap-2 self-start rounded-full bg-white px-4 py-1.5 shadow-sm border border-secondary/20">
+<span class="flex h-2 w-2 rounded-full bg-success animate-pulse"></span>
+<span class="text-xs font-bold text-secondary tracking-widest uppercase">Live: Modern Progress Update</span>
+</div>
+<div class="flex flex-col gap-2">
+<h1 class="font-khand text-6xl md:text-8xl font-bold leading-[0.9] text-gray-900 dark:text-white tracking-tight">
+                                DUDH KA HISAAB,<br/>
+<span class="text-secondary">AB MOBILE PAR!</span>
+</h1>
+<p class="font-hind text-xl font-medium leading-relaxed text-gray-600 dark:text-gray-300 md:text-2xl mt-4 max-w-lg">
+                                Stop losing 'Malaai' to bad math. Digital 'Parchi', clear 'Hisaab', and a legacy your children will be proud of.
+                            </p>
+</div>
+<div class="flex flex-col sm:flex-row gap-6 mt-4 items-start sm:items-center">
+<button class="group relative flex min-w-[280px] items-center justify-center gap-4 rounded-2xl bg-success px-8 py-5 text-left text-white transition-all hover:translate-y-[4px] shadow-3d-button hover:shadow-3d-button-hover active:translate-y-[8px] active:shadow-none">
+<span class="material-symbols-outlined text-4xl">smartphone</span>
+<div class="flex flex-col">
+<span class="text-sm font-hind font-semibold opacity-90">Install App</span>
+<span class="text-2xl font-khand font-bold uppercase leading-none tracking-wide">GET STARTED</span>
+</div>
+</button>
+<div class="relative group cursor-pointer">
+<div class="flex items-center gap-3 p-2">
+<span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Join 10,000+ Modern Farmers</span>
+</div>
+</div>
+</div>
+</div>
+<div class="relative order-1 md:order-2 flex items-center justify-center h-[400px] md:h-[600px]">
+<div class="relative w-full h-full max-w-md floating-element">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[500px] md:h-[500px] bg-secondary/10 rounded-full blur-3xl"></div>
+<div class="absolute inset-0 flex items-center justify-center transform rotate-3">
+<div class="photo-frame bg-gradient-to-br from-gray-100 to-gray-200 w-80 h-96 rounded-lg overflow-hidden flex flex-col relative">
+<div class="flex-grow bg-[#cce3de] flex items-center justify-center relative">
+<span class="material-symbols-outlined text-[150px] text-success opacity-80">diversity_3</span>
+<div class="absolute bottom-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-success uppercase shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">verified</span>
+                                            Legacy Secured
+                                        </div>
+</div>
+<div class="h-24 bg-white p-4 flex flex-col justify-center">
+<h3 class="font-khand text-2xl font-bold text-gray-800 leading-none">Ramesh &amp; Family</h3>
+<p class="font-hind text-sm text-gray-500 mt-1">"Finally, a business my son wants to join."</p>
+</div>
+<div class="absolute top-4 left-4 bg-primary text-white h-12 w-12 rounded-full flex items-center justify-center shadow-lg transform -rotate-12 z-10">
+<span class="font-khand font-bold text-lg">#1</span>
+</div>
+</div>
+</div>
+<div class="absolute top-20 -right-4 w-20 h-20 bg-secondary rounded-2xl rotate-12 shadow-gamified flex flex-col items-center justify-center z-30 animate-pulse text-white">
+<span class="material-symbols-outlined text-2xl mb-1">trending_up</span>
+<span class="font-khand font-bold text-sm">+40%</span>
+</div>
+<div class="absolute bottom-10 -left-4 w-auto px-6 py-3 bg-white rounded-full shadow-xl flex items-center gap-3 z-30 border-2 border-gray-100">
+<div class="w-2 h-2 rounded-full bg-success animate-ping"></div>
+<span class="font-khand font-bold text-gray-800 text-lg uppercase">Profit Tracking Active</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-white dark:bg-background-dark py-24 px-6 md:px-10 relative overflow-hidden border-t border-gray-100 dark:border-gray-800">
+<div class="mx-auto max-w-[1280px]">
+<div class="mb-16 text-center">
+<h2 class="font-khand text-5xl font-bold text-secondary dark:text-white uppercase tracking-tight mb-4">
+                        Gamify Your Growth
+                    </h2>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                        Track your progress. Every liter counts towards your 'Legacy Status'.
+                    </p>
+</div>
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div class="tactile-card group relative flex flex-col gap-4 rounded-3xl bg-[#F8FAFC] dark:bg-[#2a1e16] p-6 shadow-3d-card transition-all hover:translate-y-[-8px] hover:shadow-3d-card-hover border-2 border-transparent hover:border-success/20">
+<div class="flex justify-between items-start">
+<div class="h-14 w-14 rounded-xl bg-gradient-to-br from-[#E0F2FE] to-[#BAE6FD] flex items-center justify-center shadow-inner text-secondary">
+<span class="material-symbols-outlined text-3xl">verified</span>
+</div>
+<span class="bg-secondary/10 text-secondary text-[10px] font-bold px-2 py-1 rounded-full uppercase">Level 1</span>
+</div>
+<h3 class="font-khand text-2xl font-bold text-gray-900 dark:text-white uppercase mt-2">Accuracy Master</h3>
+<p class="text-sm font-hind text-gray-500">Eliminate manual errors completely.</p>
+<div class="mt-auto pt-4">
+<div class="flex justify-between text-xs font-bold mb-1 text-gray-400 uppercase">
+<span>Progress</span>
+<span>100%</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+<div class="bg-secondary h-2.5 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+</div>
+<div class="tactile-card group relative flex flex-col gap-4 rounded-3xl bg-[#F8FAFC] dark:bg-[#2a1e16] p-6 shadow-3d-card transition-all hover:translate-y-[-8px] hover:shadow-3d-card-hover border-2 border-transparent hover:border-success/20">
+<div class="flex justify-between items-start">
+<div class="h-14 w-14 rounded-xl bg-gradient-to-br from-[#DCFCE7] to-[#BBF7D0] flex items-center justify-center shadow-inner text-success">
+<span class="material-symbols-outlined text-3xl">chat_bubble</span>
+</div>
+<span class="bg-success/10 text-success text-[10px] font-bold px-2 py-1 rounded-full uppercase">Level 3</span>
+</div>
+<h3 class="font-khand text-2xl font-bold text-gray-900 dark:text-white uppercase mt-2">Trust Builder</h3>
+<p class="text-sm font-hind text-gray-500">Auto SMS 'Parchi' sent instantly.</p>
+<div class="mt-auto pt-4">
+<div class="flex justify-between text-xs font-bold mb-1 text-gray-400 uppercase">
+<span>Trust Score</span>
+<span>98%</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+<div class="bg-success h-2.5 rounded-full" style="width: 98%"></div>
+</div>
+</div>
+</div>
+<div class="tactile-card group relative flex flex-col gap-4 rounded-3xl bg-[#F8FAFC] dark:bg-[#2a1e16] p-6 shadow-3d-card transition-all hover:translate-y-[-8px] hover:shadow-3d-card-hover border-2 border-transparent hover:border-success/20">
+<div class="flex justify-between items-start">
+<div class="h-14 w-14 rounded-xl bg-gradient-to-br from-[#FEF3C7] to-[#FDE68A] flex items-center justify-center shadow-inner text-yellow-600">
+<span class="material-symbols-outlined text-3xl">wifi_off</span>
+</div>
+<span class="bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase">Unlock</span>
+</div>
+<h3 class="font-khand text-2xl font-bold text-gray-900 dark:text-white uppercase mt-2">Anytime Access</h3>
+<p class="text-sm font-hind text-gray-500">Offline mode for uninterrupted work.</p>
+<div class="mt-auto pt-4">
+<div class="flex justify-between text-xs font-bold mb-1 text-gray-400 uppercase">
+<span>Uptime</span>
+<span>24/7</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+<div class="bg-yellow-500 h-2.5 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+</div>
+<div class="tactile-card group relative flex flex-col gap-4 rounded-3xl bg-[#F8FAFC] dark:bg-[#2a1e16] p-6 shadow-3d-card transition-all hover:translate-y-[-8px] hover:shadow-3d-card-hover border-2 border-transparent hover:border-success/20">
+<div class="flex justify-between items-start">
+<div class="h-14 w-14 rounded-xl bg-gradient-to-br from-[#F3E8FF] to-[#E9D5FF] flex items-center justify-center shadow-inner text-purple-600">
+<span class="material-symbols-outlined text-3xl">bar_chart</span>
+</div>
+<span class="bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase">Max Level</span>
+</div>
+<h3 class="font-khand text-2xl font-bold text-gray-900 dark:text-white uppercase mt-2">Malaai Tracker</h3>
+<p class="text-sm font-hind text-gray-500">Watch your profits grow daily.</p>
+<div class="mt-auto pt-4">
+<div class="flex justify-between text-xs font-bold mb-1 text-gray-400 uppercase">
+<span>Profit</span>
+<span>+25%</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+<div class="bg-purple-500 h-2.5 rounded-full" style="width: 85%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#F8FAFC] dark:bg-[#121619] py-24 px-6 md:px-10 overflow-hidden relative">
+<div class="absolute inset-0 machine-bg pointer-events-none opacity-20"></div>
+<div class="mx-auto max-w-[1000px]">
+<div class="mb-16 text-center">
+<h2 class="font-khand text-5xl font-bold text-secondary dark:text-white uppercase tracking-tight mb-4">
+                        Real Stories, Real Pride
+                    </h2>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                        See how 'Khata' management is creating local heroes.
+                    </p>
+</div>
+<div class="flex flex-col gap-10">
+<div class="group relative bg-white dark:bg-[#1e2329] rounded-3xl shadow-3d-card p-0 overflow-hidden hover:transform hover:-translate-y-2 transition-all duration-300 flex flex-col md:flex-row">
+<div class="bg-blue-50 md:w-1/3 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-gray-100">
+<div class="h-24 w-24 rounded-full bg-secondary text-white flex items-center justify-center shadow-lg mb-4">
+<span class="material-symbols-outlined text-5xl">smartphone</span>
+</div>
+<div class="bg-secondary text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-2">Modern Status</div>
+<h4 class="font-khand text-2xl font-bold text-gray-900 dark:text-gray-800">Vikram Singh</h4>
+<p class="text-sm font-hind text-gray-500">The Aspiring Youth</p>
+</div>
+<div class="p-8 md:w-2/3 flex flex-col justify-center">
+<span class="text-6xl text-gray-200 font-serif absolute top-4 right-8">"</span>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300 italic mb-6 relative z-10">
+                                "My father used a notebook. I use MilkRecord. It gives our center a high-tech look. Now, even the young farmers trust our digital 'Hisaab' more than the old ways."
+                             </p>
+<div class="flex items-center gap-4">
+<div class="flex flex-col">
+<span class="text-xs font-bold text-gray-400 uppercase">Growth</span>
+<span class="text-xl font-khand font-bold text-secondary">Farmers +40%</span>
+</div>
+<div class="w-px h-10 bg-gray-200"></div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-gray-400 uppercase">Tech Level</span>
+<div class="flex text-secondary text-sm">
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="group relative bg-white dark:bg-[#1e2329] rounded-3xl shadow-3d-card p-0 overflow-hidden hover:transform hover:-translate-y-2 transition-all duration-300 flex flex-col md:flex-row">
+<div class="bg-orange-50 md:w-1/3 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-gray-100">
+<div class="h-24 w-24 rounded-full bg-primary text-white flex items-center justify-center shadow-lg mb-4">
+<span class="material-symbols-outlined text-5xl">face_3</span>
+</div>
+<div class="bg-primary text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-2">Empowerment</div>
+<h4 class="font-khand text-2xl font-bold text-gray-900 dark:text-gray-800">Savitri Devi</h4>
+<p class="text-sm font-hind text-gray-500">Widow Entrepreneur</p>
+</div>
+<div class="p-8 md:w-2/3 flex flex-col justify-center">
+<span class="text-6xl text-gray-200 font-serif absolute top-4 right-8">"</span>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300 italic mb-6 relative z-10">
+                                "Running the center alone was hard. Men would question my calculations. Now, the machine speaks the truth. Every drop of 'Malaai' is accounted for, and my earnings support my kids."
+                             </p>
+<div class="flex items-center gap-4">
+<div class="flex flex-col">
+<span class="text-xs font-bold text-gray-400 uppercase">Monthly Profit</span>
+<span class="text-xl font-khand font-bold text-primary">₹ 5,000 Extra</span>
+</div>
+<div class="w-px h-10 bg-gray-200"></div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-gray-400 uppercase">Badge</span>
+<span class="text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">Super Earner</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-white dark:bg-background-dark py-24 px-6 md:px-10 relative overflow-hidden border-t border-gray-100 dark:border-gray-800">
+<div class="mx-auto max-w-[1280px]">
+<div class="mb-16 text-center">
+<h2 class="font-khand text-5xl font-bold text-secondary dark:text-white uppercase tracking-tight mb-4">
+                        A Day in Your Life
+                    </h2>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                        We fit into your routine, from the 4 AM rush to the evening 'Hisaab'.
+                    </p>
+</div>
+<div class="relative">
+<div class="absolute left-1/2 top-0 bottom-0 w-1 bg-gray-200 dark:bg-gray-700 -translate-x-1/2 hidden md:block"></div>
+<div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12 md:mb-0 relative z-10">
+<div class="md:w-5/12 order-2 md:order-1 text-center md:text-right p-6 rounded-3xl bg-[#F0F7FF] dark:bg-[#1a2026] shadow-md border-l-4 border-primary">
+<h3 class="font-khand text-3xl font-bold text-gray-900 dark:text-white uppercase mb-2">4:00 AM</h3>
+<h4 class="font-hind text-xl font-bold text-secondary mb-2">Morning Rush</h4>
+<p class="font-hind text-gray-600 dark:text-gray-400">
+                                Weigh, test, and print 'Parchi' instantly. Handle the crowd like a pro.
+                            </p>
+</div>
+<div class="md:w-2/12 order-1 md:order-2 flex justify-center py-4 md:py-0">
+<div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center shadow-lg z-20 border-4 border-white dark:border-background-dark">
+<span class="material-symbols-outlined text-3xl">wb_twilight</span>
+</div>
+</div>
+<div class="md:w-5/12 order-3 md:order-3"></div>
+</div>
+<div class="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10 md:-mt-8">
+<div class="md:w-5/12 order-3 md:order-1"></div>
+<div class="md:w-2/12 order-1 md:order-2 flex justify-center py-4 md:py-0">
+<div class="w-16 h-16 rounded-full bg-success text-white flex items-center justify-center shadow-lg z-20 border-4 border-white dark:border-background-dark">
+<span class="material-symbols-outlined text-3xl">payments</span>
+</div>
+</div>
+<div class="md:w-5/12 order-2 md:order-3 text-center md:text-left p-6 rounded-3xl bg-[#F0FFF4] dark:bg-[#162118] shadow-md border-r-4 border-success">
+<h3 class="font-khand text-3xl font-bold text-gray-900 dark:text-white uppercase mb-2">7:00 PM</h3>
+<h4 class="font-hind text-xl font-bold text-secondary mb-2">Dispute-Free Payouts</h4>
+<p class="font-hind text-gray-600 dark:text-gray-400">
+                                Accurate ledgers mean no arguments over 'Hisaab' at payout time.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#F0F7FF] dark:bg-[#121619] py-24 px-6 md:px-10 relative overflow-hidden">
+<div class="absolute inset-0 machine-bg pointer-events-none opacity-30"></div>
+<div class="mx-auto max-w-[1280px]">
+<div class="mb-16 text-center">
+<h2 class="font-khand text-5xl font-bold text-secondary dark:text-white uppercase tracking-tight mb-4">Start Your Modern Journey</h2>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300">Choose the tool that fits your 'Khata'.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto mb-16">
+<div class="tactile-card flex flex-col rounded-3xl bg-white dark:bg-[#1e2329] p-6 shadow-3d-card border-t-8 border-secondary relative overflow-hidden">
+<div class="mb-4">
+<h3 class="font-khand text-3xl font-bold text-gray-900 dark:text-white uppercase">Free Web</h3>
+<p class="text-gray-500 dark:text-gray-400 font-hind mt-1 text-base">Perfect for new centers.</p>
+</div>
+<div class="text-4xl font-khand font-bold text-secondary mb-6">₹0<span class="text-lg text-gray-400 font-hind font-medium ml-1">/forever</span></div>
+<ul class="flex-col gap-4 mb-8 flex-1 flex">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-success text-xl">check_circle</span> <span class="font-hind text-base font-bold text-gray-700 dark:text-gray-300">Digital 'Parchi'</span></li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-success text-xl">check_circle</span> <span class="font-hind text-base font-bold text-gray-700 dark:text-gray-300">Basic Ledger</span></li>
+</ul>
+<button class="w-full rounded-xl border-2 border-secondary text-secondary hover:text-white hover:bg-secondary font-bold font-khand text-xl uppercase py-3 transition-colors">Start Free</button>
+</div>
+<div class="tactile-card flex flex-col rounded-3xl bg-white dark:bg-[#1e2329] p-6 shadow-3d-card border-t-8 border-yellow-500 relative overflow-hidden transform md:-translate-y-4 z-10">
+<div class="absolute top-0 right-0 bg-yellow-500 text-white text-xs font-bold px-4 py-1 rounded-bl-xl uppercase font-khand tracking-widest shadow-lg">Popular</div>
+<div class="mb-4">
+<h3 class="font-khand text-3xl font-bold text-gray-900 dark:text-white uppercase">Daily Wallet</h3>
+<p class="text-gray-500 dark:text-gray-400 font-hind mt-1 text-base">Pay as you go.</p>
+</div>
+<div class="flex items-center gap-3 mb-6">
+<div class="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-yellow-600 text-3xl">account_balance_wallet</span>
+</div>
+<div class="text-4xl font-khand font-bold text-yellow-600">₹3<span class="text-lg text-gray-400 font-hind font-medium ml-1">/day</span></div>
+</div>
+<ul class="flex-col gap-4 mb-8 flex-1 flex">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-success text-xl">check_circle</span> <span class="font-hind text-base font-bold text-gray-700 dark:text-gray-300">Wallet Recharge</span></li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-success text-xl">check_circle</span> <span class="font-hind text-base font-bold text-gray-700 dark:text-gray-300">All Features</span></li>
+</ul>
+<button class="group relative w-full flex items-center justify-center rounded-xl bg-yellow-500 text-white font-bold font-khand text-xl uppercase py-3 shadow-md hover:translate-y-[2px] active:translate-y-[4px] transition-all">Recharge Now</button>
+</div>
+<div class="tactile-card flex flex-col rounded-3xl bg-white dark:bg-[#1e2329] p-6 shadow-3d-card border-t-8 border-primary relative overflow-hidden">
+<div class="mb-4">
+<h3 class="font-khand text-3xl font-bold text-gray-900 dark:text-white uppercase">Premium Pro</h3>
+<p class="text-gray-500 dark:text-gray-400 font-hind mt-1 text-base">For serious growth.</p>
+</div>
+<div class="text-4xl font-khand font-bold text-primary mb-6">₹499<span class="text-lg text-gray-400 font-hind font-medium ml-1">/month</span></div>
+<ul class="flex-col gap-4 mb-8 flex-1 flex">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-success text-xl">check_circle</span> <span class="font-hind text-base font-bold text-gray-700 dark:text-gray-300">Everything in Free</span></li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-success text-xl">check_circle</span> <span class="font-hind text-base font-bold text-gray-700 dark:text-gray-300">Offline App</span></li>
+</ul>
+<button class="group relative w-full flex items-center justify-center rounded-xl bg-primary text-white font-bold font-khand text-xl uppercase py-3 shadow-3d-button hover:translate-y-[2px] hover:shadow-3d-button-hover active:translate-y-[4px] active:shadow-none transition-all">Go Premium</button>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-secondary py-24 px-6 md:px-10 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+<div class="absolute bottom-0 right-0 w-96 h-96 bg-primary opacity-10 rounded-full translate-x-1/3 translate-y-1/3"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="flex flex-col items-center gap-10 text-center rounded-3xl bg-secondary-dark/50 p-12 border border-white/10 backdrop-blur-sm">
+<div class="flex flex-col gap-4">
+<h2 class="font-khand text-5xl md:text-7xl font-bold leading-tight text-white uppercase text-shadow-sm">
+                            Ready to Upgrade?
+                        </h2>
+<p class="mx-auto max-w-[720px] font-hind text-xl text-white/90">
+                            Join thousands of smart farmers. Make your 'Khata' bulletproof.
+                        </p>
+</div>
+<div class="flex flex-col items-center gap-6 w-full">
+<button class="group relative flex w-full max-w-md items-center justify-center gap-4 rounded-2xl bg-success px-10 py-6 text-2xl font-khand font-bold text-white transition-all hover:translate-y-[4px] shadow-3d-button hover:shadow-3d-button-hover active:translate-y-[8px] active:shadow-none uppercase tracking-wide">
+<span class="material-symbols-outlined text-4xl">rocket_launch</span>
+<span>Get Started Free</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-[#053b70] text-white border-t-8 border-primary py-16 px-6 md:px-10">
+<div class="mx-auto max-w-[1280px]">
+<div class="flex flex-col items-center gap-12 text-center md:flex-row md:justify-between md:text-left">
+<div class="flex flex-col gap-6 items-center md:items-start">
+<div class="flex items-center justify-center gap-3 md:justify-start">
+<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-secondary shadow-lg">
+<span class="material-symbols-outlined text-3xl">water_drop</span>
+</div>
+<h2 class="text-3xl font-khand font-bold text-white uppercase tracking-wide">MilkRecord</h2>
+</div>
+<p class="max-w-xs text-base text-blue-200 font-hind">
+                        Modern tech for Bharat's dairy farmers.
+                    </p>
+<div class="flex gap-4 mt-2">
+<div class="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-lg border border-secondary">
+<span class="material-symbols-outlined text-lg">sync_alt</span>
+<span class="font-khand font-bold uppercase text-sm">Offline Sync</span>
+</div>
+<div class="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-lg border border-secondary">
+<span class="material-symbols-outlined text-lg">lock</span>
+<span class="font-khand font-bold uppercase text-sm">Data Safe</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-12 sm:grid-cols-3">
+<div class="flex flex-col gap-4">
+<h4 class="font-bold text-lg text-white uppercase tracking-wider border-b-2 border-primary/50 pb-2 w-max">Product</h4>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Features</a>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Pricing</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-bold text-lg text-white uppercase tracking-wider border-b-2 border-primary/50 pb-2 w-max">Company</h4>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">About Us</a>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Contact</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-bold text-lg text-white uppercase tracking-wider border-b-2 border-primary/50 pb-2 w-max">Legal</h4>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Privacy</a>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Terms</a>
+</div>
+</div>
+</div>
+<div class="mt-16 flex flex-col items-center justify-between gap-6 border-t border-blue-800 pt-8 md:flex-row">
+<p class="text-sm text-blue-300 font-medium">© 2024 MilkRecord. Made for Bharat <span class="text-primary">♥</span></p>
+<div class="flex gap-6">
+<a class="text-white hover:text-primary hover:scale-110 transition-all bg-white/10 p-2 rounded-lg" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-white hover:text-primary hover:scale-110 transition-all bg-white/10 p-2 rounded-lg" href="#"><span class="material-symbols-outlined">share</span></a>
+<a class="text-white hover:text-primary hover:scale-110 transition-all bg-white/10 p-2 rounded-lg" href="#"><span class="material-symbols-outlined">mail</span></a>
+</div>
+</div>
+</div>
+</footer>
+
+</body></html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkBook PIN Access Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "rgb(37, 99, 235)",
+                        "background-light": "#f8fafc",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+            }
+        }
+        .pin-dot {
+            @apply w-4 h-4 rounded-full border-2 border-slate-300 transition-all duration-200;
+        }
+        .pin-dot.filled {
+            @apply bg-primary border-primary scale-110;
+        }
+        .keypad-btn {
+            @apply flex items-center justify-center bg-white border border-slate-200 text-3xl font-bold py-6 rounded-2xl shadow-sm hover:bg-slate-50 active:bg-slate-100 active:scale-95 transition-all text-slate-800;
+        }
+    </style>
+</head>
+<body class="bg-background-light font-display min-h-screen flex flex-col items-center justify-center p-4 selection:bg-primary/30">
+<div class="mb-10 text-center">
+<div class="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-3xl shadow-xl shadow-primary/20 mb-4">
+<span class="material-symbols-outlined text-white text-5xl">water_drop</span>
+</div>
+<h1 class="text-3xl font-black text-slate-900 tracking-tight">MilkBook</h1>
+<p class="text-slate-500 font-medium mt-1 uppercase tracking-widest text-xs">Village Level Collection Center</p>
+</div>
+<div class="w-full max-w-md">
+<div class="bg-surface-light rounded-[2.5rem] shadow-2xl shadow-slate-200/60 p-8 md:p-10 border border-white">
+<div class="text-center mb-8">
+<h2 class="text-2xl font-extrabold text-slate-800 mb-2">Enter Access PIN</h2>
+<p class="text-slate-400">Step 1 of 9: Security Check</p>
+</div>
+<div class="flex justify-center gap-6 mb-12">
+<div class="pin-dot filled"></div>
+<div class="pin-dot filled"></div>
+<div class="pin-dot"></div>
+<div class="pin-dot"></div>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<button class="keypad-btn">1</button>
+<button class="keypad-btn">2</button>
+<button class="keypad-btn">3</button>
+<button class="keypad-btn">4</button>
+<button class="keypad-btn">5</button>
+<button class="keypad-btn">6</button>
+<button class="keypad-btn">7</button>
+<button class="keypad-btn">8</button>
+<button class="keypad-btn">9</button>
+<button class="keypad-btn bg-slate-50 border-transparent text-slate-400">
+<span class="material-symbols-outlined text-3xl">backspace</span>
+</button>
+<button class="keypad-btn">0</button>
+<button class="keypad-btn bg-primary text-white border-transparent hover:bg-primary/90">
+<span class="material-symbols-outlined text-3xl">arrow_forward</span>
+</button>
+</div>
+<div class="mt-8 text-center">
+<button class="text-primary font-bold text-sm hover:underline underline-offset-4">
+                    Forgot PIN? Contact Admin
+                </button>
+</div>
+</div>
+<div class="mt-8 flex items-center justify-center gap-2 text-slate-400 text-sm font-medium">
+<span class="material-symbols-outlined text-lg">cloud_off</span>
+            Offline Mode Ready
+        </div>
+</div>
+<div class="fixed bottom-8 flex gap-1">
+<div class="w-8 h-1.5 rounded-full bg-primary"></div>
+<div class="w-2 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-2 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-2 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-2 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-2 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-2 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-2 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-2 h-1.5 rounded-full bg-slate-200"></div>
+</div>
+
+</body></html>

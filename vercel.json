@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "name": "milkrecord",
+  "builds": [
+    {
+      "src": "**/*.{html,css,js,json,png,jpg,jpeg,svg,webp,ico}",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "public": true,
+  "github": {
+    "silent": true
+  }
+}

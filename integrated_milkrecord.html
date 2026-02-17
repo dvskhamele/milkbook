@@ -1,0 +1,4008 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1"
+    />
+
+    <!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="MilkRecord">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --panel: #ffffff;
+        --line: #e5e7eb;
+        --text: #0f172a;
+        --muted: #64748b;
+
+        --blue: #2563eb;
+        --blue2: #1d4ed8;
+
+        --green: #16a34a;
+        --red: #dc2626;
+        --yellow: #f59e0b;
+
+        --soft-green: #ecfdf5;
+        --soft-yellow: #fffbeb;
+        --soft-blue: #eff6ff;
+        --soft-pink: #fff1f2;
+
+        --shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
+        --r: 18px;
+
+        --tile: 78px;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        overflow: hidden;
+      } /* no scroll */
+
+      /* APP FRAME */
+      .app {
+        height: 100%;
+        display: grid;
+        grid-template-rows: 70px 1fr 96px;
+        gap: 14px;
+        padding: 14px;
+      }
+
+      /* HEADER */
+      .topbar {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 70px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 260px;
+      }
+      .logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #e0f2fe, #dbeafe);
+        border: 1px solid #c7d2fe;
+        font-weight: 1000;
+      }
+      .brand .title {
+        font-weight: 1000;
+        font-size: 16px;
+        line-height: 1.1;
+      }
+      .brand .sub {
+        font-weight: 800;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      .hdr-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .pillbtn {
+        height: 44px;
+        padding: 0 16px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 900;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      }
+      .pillbtn.primary {
+        background: var(--blue);
+        color: #fff;
+        border-color: transparent;
+      }
+      .pillbtn.warn {
+        background: #fbbf24;
+        color: #78350f;
+        border-color: transparent;
+      }
+      .pillbtn:active {
+        transform: translateY(1px);
+      }
+
+      .hdr-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: 14px;
+      }
+      .timer {
+        height: 44px;
+        padding: 0 14px;
+        border-radius: 14px;
+        border: 1px dashed #cbd5e1;
+        background: #fff;
+        font-weight: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
+      }
+      .iconbtn {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        font-size: 18px;
+      }
+      .iconbtn:active {
+        transform: translateY(1px);
+      }
+
+      /* CORE */
+      .core {
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 14px;
+        overflow: hidden;
+        min-height: 0;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .panelHeader {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+        background: #fff;
+      }
+      .panelHeader small {
+        color: var(--muted);
+        font-weight: 900;
+      }
+
+      /* LEFT BODY */
+      .actionBody {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        max-height: calc(100vh - 140px); /* header ke baad fit */
+        overflow-y: auto; /* 👈 MAIN SCROLL */
+        padding-right: 6px;
+      }
+
+      /* FARMER PICK */
+      .farmerPick {
+        display: flex;
+        flex-direction: column;
+        gap: 12px; /* sabke beech gap */
+      }
+
+      .farmerTop {
+        position: static !important; /* ❗ absolute / sticky cancel */
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap; /* chhoti screen pe break ho sake */
+      }
+
+      .searchBox {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #fff;
+        padding: 10px 12px;
+        height: 48px;
+      }
+      .searchBox input {
+        width: 100%;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        font-weight: 900;
+        color: var(--text);
+        background: transparent;
+      }
+      .addNewBtn {
+        height: 48px;
+        padding: 0 16px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #eef2ff;
+        font-weight: 1000;
+        cursor: pointer;
+      }
+      .miniTag {
+        height: 48px;
+        min-width: 92px;
+        padding: 0 12px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 1000;
+        color: var(--muted);
+      }
+      .farmerGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+
+        max-height: 240px; /* 👈 yahin se scroll start */
+        overflow-y: auto;
+        padding-right: 6px;
+
+        position: relative;
+      }
+
+      .fcard {
+        height: var(--tile);
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+      .fcard:active {
+        transform: translateY(1px);
+      }
+      .fimg {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #f1f5f9;
+        border: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex: 0 0 auto;
+        overflow: hidden;
+      }
+      .fimg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .fname {
+        font-weight: 1000;
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
+      }
+      .fsub {
+        color: var(--muted);
+        font-weight: 900;
+        font-size: 12px;
+        margin-top: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 210px;
+      }
+      .fsel {
+        outline: 3px solid rgba(22, 163, 74, 0.45);
+        box-shadow: 0 0 0 6px rgba(22, 163, 74, 0.1);
+      }
+      .badge {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        padding: 6px 8px;
+        border-radius: 12px;
+        background: rgba(22, 163, 74, 0.12);
+        border: 1px solid rgba(22, 163, 74, 0.25);
+        font-weight: 1000;
+        color: #166534;
+        font-size: 12px;
+      }
+      .farmerNav {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .navBtn {
+        width: 48%;
+        height: 44px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1000;
+        cursor: pointer;
+      }
+      .navBtn:active {
+        transform: translateY(1px);
+      }
+      .navBtn[disabled] {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      /* INPUTS GRID */
+      .inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .control {
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        padding: 12px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 10px;
+        min-height: 154px;
+      }
+      .control.green {
+        background: var(--soft-green);
+      }
+      .control.yellow {
+        background: var(--soft-yellow);
+      }
+      .control.blue {
+        background: var(--soft-blue);
+      }
+      .ctrlTop {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 1000;
+      }
+      .ctrlTop .muted {
+        color: var(--muted);
+        font-weight: 900;
+      }
+      .numBig {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 44px;
+        font-weight: 1100;
+        letter-spacing: 0.3px;
+        color: #334155;
+      }
+
+      .numInput {
+        width: 100%;
+        text-align: center;
+        font-size: 44px;
+        font-weight: 1100;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: #334155;
+      }
+      .numInput::-webkit-outer-spin-button,
+      .numInput::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .pmRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .pm {
+        height: 50px;
+        border: none;
+        border-radius: 16px;
+        background: #fff;
+        border: 1px solid var(--line);
+        font-size: 26px;
+        font-weight: 1100;
+        cursor: pointer;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.06);
+      }
+      .pm:active {
+        transform: translateY(1px);
+      }
+
+      /* ANIMAL + RATE MODE ROW */
+      .row3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .animalCard {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 18px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 96px;
+      }
+      .animalCard label {
+        font-weight: 1000;
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+      }
+      .animalCard select {
+        height: 52px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1000;
+        font-size: 16px;
+        padding: 0 12px;
+        outline: none;
+      }
+
+      .rateCard {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 18px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 96px;
+      }
+      .modeRow {
+        display: flex;
+        gap: 10px;
+      }
+      .modeBtn {
+        flex: 1;
+        height: 52px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #f1f5f9;
+        font-weight: 1100;
+        cursor: pointer;
+      }
+      .modeBtn.active {
+        background: #fef3c7;
+        border-color: #fcd34d;
+      }
+      .modeBtn:active {
+        transform: translateY(1px);
+      }
+
+      /* MANUAL RATE OVERRIDE */
+      .manualOverride {
+        border: 2px dashed #cbd5e1;
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .manualOverride .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 1000;
+        color: var(--muted);
+      }
+      .manualRateRow {
+        display: none;
+        gap: 10px;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+      }
+      .manualRateRow input {
+        height: 52px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1100;
+        font-size: 20px;
+        padding: 0 12px;
+        outline: none;
+        width: 220px;
+      }
+      .manualRateRow button {
+        height: 52px;
+        width: 68px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1100;
+        cursor: pointer;
+      }
+
+      /* RIGHT BODY */
+      .trustBody {
+        padding: 14px;
+        display: grid;
+        grid-template-rows: auto auto 1fr;
+        gap: 14px;
+        min-height: 0;
+      }
+      .amountBox {
+        background: linear-gradient(180deg, var(--blue), var(--blue2));
+        border-radius: 26px;
+        padding: 22px;
+        color: #fff;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .amountBox .label {
+        opacity: 0.8;
+        font-weight: 1000;
+        letter-spacing: 0.3px;
+        font-size: 12px;
+      }
+      .amountBox .amt {
+        font-size: 66px;
+        font-weight: 1200;
+        line-height: 1;
+        margin-top: 10px;
+        letter-spacing: 0.5px;
+      }
+      .amountBox .sub {
+        margin-top: 12px;
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.15);
+        font-weight: 1000;
+      }
+
+      .balances {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .balCard {
+        border-radius: 18px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        font-weight: 1100;
+      }
+      .balCard .t {
+        font-size: 12px;
+        font-weight: 1000;
+        color: var(--muted);
+      }
+      .balCard .v {
+        font-size: 26px;
+        font-weight: 1200;
+        margin-top: 6px;
+      }
+      .balOld {
+        background: var(--soft-pink);
+        color: #991b1b;
+      }
+      .balNew {
+        background: var(--soft-green);
+        color: #166534;
+      }
+
+      .recent {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #fff;
+        overflow: hidden;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .recentHead {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 1100;
+      }
+      .recentHead .muted {
+        color: var(--muted);
+        font-weight: 1000;
+        font-size: 12px;
+      }
+      .tableWrap {
+        padding: 10px 14px 14px;
+        min-height: 0;
+        overflow: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 10px 6px;
+        text-align: left;
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+      th {
+        color: var(--muted);
+        font-weight: 1100;
+        font-size: 12px;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      .tag {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 1000;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .tag.cow {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+      .tag.buff {
+        background: #ede9fe;
+        color: #6d28d9;
+      }
+      .rtag {
+        padding: 5px 8px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: #f8fafc;
+        font-weight: 1100;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      /* FOOTER BUTTONS */
+      .bottom {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr 1fr;
+        gap: 12px;
+        height: 96px;
+      }
+      .panicBtn {
+        border: none;
+        border-radius: 22px;
+        font-size: 22px;
+        font-weight: 1200;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        letter-spacing: 0.3px;
+      }
+      .panicBtn:active {
+        transform: translateY(1px);
+      }
+      .hold {
+        background: #fde68a;
+        color: #78350f;
+      }
+      .save {
+        background: #22c55e;
+        color: #064e3b;
+        font-size: 30px;
+      }
+      .undo {
+        background: #fecaca;
+        color: #7f1d1d;
+      }
+      .subnote {
+        font-size: 12px;
+        font-weight: 1100;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      /* TOAST */
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 116px;
+        transform: translateX(-50%);
+        background: rgba(15, 23, 42, 0.92);
+        color: #fff;
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-weight: 1100;
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease;
+        max-width: 92vw;
+        text-align: center;
+        z-index: 70;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+
+      /* MODALS */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 14px;
+        z-index: 60;
+      }
+      .modal {
+        width: min(980px, 98vw);
+        height: min(640px, 92vh);
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        background: #fff;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: 62px 1fr 72px;
+      }
+      .modalHead {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1100;
+      }
+      .modalHead .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .closeBtn {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 1100;
+      }
+      .modalBody {
+        padding: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        min-height: 0;
+      }
+      .modalBody.onecol {
+        grid-template-columns: 1fr;
+      }
+      .modalCol {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #f8fafc;
+        padding: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .modalCol h3 {
+        margin: 0 0 10px 0;
+        font-size: 14px;
+        font-weight: 1200;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .listArea {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 10px;
+      }
+      .pageInfo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted);
+        font-weight: 1000;
+        font-size: 12px;
+      }
+      .pageBtns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .pageBtns button {
+        height: 50px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1100;
+        cursor: pointer;
+      }
+      .pageBtns button[disabled] {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .cardRow {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 16px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        min-height: 64px;
+      }
+      .cardRow .title {
+        font-weight: 1200;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 70%;
+      }
+      .cardRow .meta {
+        color: var(--muted);
+        font-weight: 1000;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+      .cardRow .val {
+        font-weight: 1200;
+        font-size: 14px;
+        white-space: nowrap;
+        color: #0f172a;
+      }
+
+      .modalFoot {
+        padding: 10px 12px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+      }
+      .footBtn {
+        height: 50px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-weight: 1100;
+        cursor: pointer;
+        padding: 0 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .footBtn.good {
+        background: #dcfce7;
+        border-color: #bbf7d0;
+        color: #14532d;
+      }
+      .footBtn.warn {
+        background: #fef3c7;
+        border-color: #fde68a;
+        color: #78350f;
+      }
+      .footBtn.bad {
+        background: #fee2e2;
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+
+      /* FORMS */
+      .formGrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .field {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 16px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .field label {
+        color: var(--muted);
+        font-weight: 1100;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+      }
+      .field input,
+      .field textarea,
+      .field select {
+        border: none;
+        outline: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 16px;
+        font-weight: 1100;
+        resize: none;
+      }
+      .field textarea {
+        min-height: 84px;
+      }
+      .field.full {
+        grid-column: 1/-1;
+      }
+
+      .receiptBox {
+        border: 2px dashed #cbd5e1;
+        background: #fff;
+        border-radius: 18px;
+        padding: 12px;
+        font-weight: 1100;
+        line-height: 1.35;
+        white-space: pre-wrap;
+        min-height: 0;
+        color: #0f172a;
+      }
+
+      /* Small screens */
+      @media (max-width: 980px) {
+        body {
+          overflow: auto;
+        } /* allow in small */
+        .app {
+          overflow: auto;
+          height: auto;
+          min-height: 100%;
+        }
+        .core {
+          grid-template-columns: 1fr;
+        }
+        .bottom {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+        .save {
+          font-size: 22px;
+        }
+        .modalBody {
+          grid-template-columns: 1fr;
+        }
+        .amountBox .amt {
+          font-size: 54px;
+        }
+        .manualRateRow input {
+          width: 100%;
+        }
+      }
+      /* 1. Main Screen aur Form ke sabhi bade dabbe (Boxes) */
+.field:focus-within, .fcard:focus {
+    outline: none !important;
+    /* background-color: #fff9c4 !important; Mast Peela Background */
+    border: 3px solid #000000 !important; /* Moti Kaali Border */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2) !important; /* Halka shadow taaki box utha hua dikhe */
+    transition: all 0.15s ease-in-out;
+    transform: translateY(-2px); /* Box thoda upar uthega focus hone par */
+}
+
+/* 2. Farmer Card (Kisan ka dabba) jab keyboard se select ho */
+.fcard:focus {
+    /* background-color: #fff9c4 !important; */
+    border: 3px solid #000000 !important;
+}
+
+/* 3. Andar ke input boxes ko clean rakhein taaki background poora dikhe */
+.field:focus-within input,
+.field:focus-within textarea,
+.field:focus-within select {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+/* Entry Save hone par Green Flash effect */
+.flash-success {
+    animation: flashGreen 0.6s ease-out;
+}
+
+@keyframes flashGreen {
+    0% { background-color: transparent; }
+    30% { background-color: rgba(37, 211, 102, 0.4); } /* WhatsApp Green color */
+    100% { background-color: transparent; }
+}
+/* Edit Button Style in Table */
+.edit-btn {
+    padding: 4px 8px;
+    background: #f1f5f9;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 8px;
+    transition: all 0.2s;
+}
+.edit-btn:hover { background: #e2e8f0; }
+
+/* Edit Note Style */
+.edit-note {
+    font-size: 10px;
+    color: var(--muted);
+    font-style: italic;
+    display: block;
+    margin-top: 2px;
+}
+.hdr-actions { display: flex; align-items: center; gap: 10px; }
+
+/* Collection Point Selector */
+.collection-point-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    font-size: 14px;
+    min-width: 160px;
+}
+
+.collection-point-selector label {
+    font-weight: 900;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.collection-point-selector select {
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-weight: 1000;
+    font-size: 13px;
+    padding: 0 8px;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+}
+
+/* Slip Number Input */
+.slip-number-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #fff;
+}
+
+.slip-number-input label {
+    font-weight: 1000;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.3px;
+}
+
+.slip-number-input input {
+    flex: 1;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-weight: 1000;
+    font-size: 14px;
+    padding: 0 12px;
+    outline: none;
+}
+
+/* Center Summary Card */
+.center-summary-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 20px;
+    margin: 20px;
+    box-shadow: var(--shadow);
+}
+
+.center-summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.center-summary-title {
+    font-size: 18px;
+    font-weight: 1100;
+    color: var(--text);
+}
+
+.center-summary-date {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 1000;
+}
+
+.center-summary-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.center-summary-stat {
+    background: var(--soft-blue);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+}
+
+.center-summary-stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 1000;
+    margin-bottom: 5px;
+}
+
+.center-summary-stat-value {
+    font-size: 20px;
+    font-weight: 1200;
+    color: var(--blue);
+}
+
+.dispatch-action {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.dispatch-action-btn {
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 12px 20px;
+    font-weight: 1000;
+    cursor: pointer;
+    width: 100%;
+}
+
+.whatsapp-share-btn {
+    background: #25d366;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 12px 20px;
+    font-weight: 1000;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .collection-point-selector {
+    min-width: 140px;
+  }
+  
+  .collection-point-selector select {
+    min-width: 100px;
+    font-size: 12px;
+  }
+  
+  .center-summary-card {
+    margin: 10px;
+    padding: 15px;
+  }
+  
+  .center-summary-stats {
+    gap: 10px;
+  }
+  
+  .center-summary-stat {
+    padding: 12px;
+  }
+  
+  .center-summary-stat-value {
+    font-size: 18px;
+  }
+  
+  .dispatch-action-btn, .whatsapp-share-btn {
+    padding: 10px 15px;
+    font-size: 16px;
+  }
+}
+
+/* Traceability Objects */
+.traceability-badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 1000;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e0e7ff;
+    color: #1e40af;
+}
+
+/* Compliance Mode Selector */
+.compliance-mode-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #fff;
+    font-size: 14px;
+}
+
+.compliance-mode-selector label {
+    font-weight: 1000;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.3px;
+}
+
+.compliance-mode-selector select {
+    flex: 1;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-weight: 1000;
+    font-size: 14px;
+    padding: 0 12px;
+    outline: none;
+}
+    </style>
+  </head>
+  <div class="overlay" id="overlayFarmerDetail">
+  <div class="modal" style="height: auto; align-self: flex-end; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+    <div class="modalHead">
+      <div class="left">
+        <button class="closeBtn" data-close="overlayFarmerDetail">✖</button>
+        <div id="detailFarmerName" style="font-weight: 1200;">Farmer Name</div>
+      </div>
+      <div class="muted">Advance Management</div>
+    </div>
+    <div class="modalBody onecol" style="padding: 20px;">
+        <div class="balances" style="margin-bottom: 15px;">
+            <div class="balCard balNew" style="background:#eff6ff; color:#1e40af;">
+                <div style="font-size:12px;">TOTAL MILK (MONTH)</div>
+                <div class="v" id="detailMonthlyMilk">0.0 L</div>
+            </div>
+            <div class="balCard balOld" style="background:#fff7ed; color:#9a3412;">
+                <div style="font-size:12px;">CURRENT ADVANCE</div>
+                <div class="v" id="detailAdvance">₹0.00</div>
+            </div>
+        </div>
+        <div class="formGrid">
+            <div class="field">
+                <label>Amount (₹)</label>
+                <input id="advAmount" type="number" placeholder="Enter Amount" class="numInput" style="font-size: 24px; text-align: left;">
+            </div>
+            <div class="field">
+                <label>Action</label>
+                <div class="modeRow" style="gap: 10px;">
+                    <button class="footBtn good" id="btnAddAdv" style="flex:1; height: 50px;">➕ Give</button>
+                    <button class="footBtn bad" id="btnCutAdv" style="flex:1; height: 50px;">➖ Cut</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modalFoot">
+        <button class="pillbtn primary" id="btnDetailWhatsApp" style="width:100%; justify-content: center;">💬 Send Monthly Summary</button>
+    </div>
+  </div>
+</div>
+  <body>
+    <div class="app">
+      <!-- HEADER -->
+      <div class="topbar">
+        <a href="homepage.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+          <div class="brand">
+            <div class="logo">💧</div>
+            <div>
+              <div class="title" id="shopTitle">Gopal Dairy Shop</div>
+              <div class="sub" id="todayLabel">—</div>
+            </div>
+          </div>
+        </a>
+        
+        <!-- Collection Point Selector in Header -->
+        <div class="collection-point-selector">
+          <label>Booth:</label>
+          <select id="collectionPointSelect">
+            <option value="DEFAULT">Default Booth</option>
+            <option value="VILLAGE_A">Village A Booth</option>
+            <option value="VILLAGE_B">Village B Booth</option>
+            <option value="VILLAGE_C">Village C Booth</option>
+          </select>
+        </div>
+        
+        <!-- Hardware Acknowledgment Indicator -->
+        <div id="hardware-indicator" style="font-size: 12px; font-weight: 900; color: #64748b; display: flex; align-items: center; gap: 4px; margin-right: 10px;">
+          <span style="color: #9ca3af;">●</span> Reading: Manual
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 10px">
+          <div class="hdr-actions">
+            <button class="pillbtn" id="btnHistoryMain">🧾 History</button>
+            <button class="pillbtn" id="langSwitch" style="background: #f1f5f9">
+              🌐 HI/EN
+            </button>
+          </div>
+
+          <div class="hdr-right">
+            <!-- <div class="timer" id="timerBox">⏱ 00:00</div> -->
+            <button class="iconbtn" id="btnLeader" title="Leader (Weekly)">
+              🏆
+            </button>
+            <button class="iconbtn" id="btnSettings" title="Settings">
+              ⚙️
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CORE -->
+      <div class="core">
+        <!-- LEFT -->
+        <div class="panel">
+          <div class="panelHeader">
+            <div id="stationTitle">Milk Intake Station</div>
+            <small id="holdBadge"></small>
+          </div>
+
+          <div class="actionBody">
+            <!-- Farmer selection -->
+            <div class="farmerPick">
+              <div class="farmerTop">
+                <div class="searchBox">
+                  🔎
+                  <input
+                    id="searchInput"
+                    inputmode="search"
+                    autocomplete="off"
+                    placeholder="Search name…"
+                  />
+                </div>
+                <button class="addNewBtn" id="btnAddFarmerMain">
+                  ＋ Add New
+                </button>
+                <div class="miniTag" id="farmerCount">0 👤</div>
+              </div>
+
+              <div class="farmerGrid" id="farmerGrid"></div>
+
+              <div class="farmerNav">
+                <button class="navBtn" id="prevFarmers">⬅️</button>
+                <button class="navBtn" id="nextFarmers">➡️</button>
+              </div>
+            </div>
+
+            <!-- Inputs -->
+            <div class="inputs">
+              <div class="control green">
+                <div class="ctrlTop">
+                  <div id="qtyLabel">2. Liters (L)</div>
+                  <!-- <div class="muted" id="qtyStep">±0.5</div> -->
+                </div>
+                <div class="numBig">
+                  <input
+                    id="qtyInput"
+                    class="numInput"
+                    type="number"
+                    step="0.1"
+                    placeholder="0"
+                  />
+                </div>
+                <!-- <div class="pmRow">
+                  <button class="pm" id="qtyMinus">−</button>
+                  <button class="pm" id="qtyPlus">+</button>
+                </div> -->
+              </div>
+
+              <div class="control yellow">
+                <div class="ctrlTop">
+  <div id="fatLabel">3. Fat %</div>
+
+  <label for="fImageEntry" style="cursor:pointer; font-size: 1.2rem; margin-left: auto;" title="Capture Proof">
+    📷
+  </label>
+  <input type="file" id="fImageEntry" accept="image/*" capture="camera" style="display:none;">
+
+  <div class="muted" id="fatStep" style="margin-left: 10px;">±0.1</div>
+</div>
+<div class="numBig">
+  <input
+    id="fatInput"
+    class="numInput"
+    type="number"
+    step="0.1"
+    placeholder="0"
+  />
+</div>
+                <!-- <div class="pmRow">
+                  <button class="pm" id="fatMinus">−</button>
+                  <button class="pm" id="fatPlus">+</button>
+                </div> -->
+              </div>
+              <div class="control blue" style="background: #fdf2f8; border-color: #fbcfe8;">
+  <div class="ctrlTop">
+    <div id="densityLabel">Density (CLR)</div>
+  </div>
+  <div class="numBig">
+    <input id="densityInput" class="numInput" type="number" step="any" placeholder="0">
+  </div>
+</div>
+
+              <div class="control blue">
+                <div class="ctrlTop">
+                  <div id="snfLabel">4. SNF</div>
+                  <div class="muted" id="snfStep">±0.1</div>
+                </div>
+                <div class="numBig">
+                  <input
+                    id="snfInput"
+                    class="numInput"
+                    type="number"
+                    step="0.1"
+                    placeholder="0"
+                  />
+                </div>
+                <!-- <div class="pmRow">
+                  <button class="pm" id="snfMinus">−</button>
+                  <button class="pm" id="snfPlus">+</button>
+                </div> -->
+              </div>
+
+              <div class="row3" style="grid-column: 1/-1">
+                <div class="animalCard">
+                  <label>5. Animal Type</label>
+                  <select id="animalSelect">
+                    <option value="cow">🐄 Cow</option>
+                    <option value="buffalo">_BUFFALO</option>
+                  </select>
+                </div>
+
+                <div class="rateCard">
+                  <label>Rate Mode</label>
+                  <div class="modeRow">
+                    <button class="modeBtn active" id="btnRateModeAuto">
+                      💰 Auto
+                    </button>
+                    <button class="modeBtn" id="btnRateModeManual">
+                      ✍️ Manual
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Collection Point Selector -->
+              <div class="collection-point-selector">
+                <label>Collection Point:</label>
+                <select id="collectionPointSelect">
+                  <option value="DEFAULT">Default Booth</option>
+                  <option value="VILLAGE_A">Village A Booth</option>
+                  <option value="VILLAGE_B">Village B Booth</option>
+                  <option value="VILLAGE_C">Village C Booth</option>
+                </select>
+              </div>
+              
+              <!-- Slip Number Input -->
+              <div class="slip-number-input">
+                <label>Slip Number:</label>
+                <input type="text" id="slipNumberInput" placeholder="Auto-generated">
+              </div>
+              
+              <!-- Compliance Mode Selector -->
+              <div class="compliance-mode-selector">
+                <label>Mode:</label>
+                <select id="complianceModeSelect">
+                  <option value="private">🔒 Private VLCC</option>
+                  <option value="fpo">🏛️ FPO/Institution</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Manual Rate Override -->
+            <div class="manualOverride">
+              <div class="left">📷 Manual Rate Override</div>
+              <div style="display: flex; align-items: center; gap: 12px">
+                <div class="rtag" id="rateTypeLabel">Rate: Auto</div>
+                <div class="manualRateRow" id="manualRateRow">
+                  <input
+                    id="manualRateInput"
+                    inputmode="decimal"
+                    placeholder="Rate/L"
+                  />
+                  <button id="manualRateApply">✔️</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex: 1"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="panel">
+          <div class="panelHeader">
+            <div>Summary</div>
+            <small id="selectedName">—</small>
+          </div>
+
+          <div class="trustBody">
+            <div class="amountBox">
+              <div class="label" id="amtLabel">TOTAL AMOUNT</div>
+              <div class="amt" id="amountView">₹0.00</div>
+              <div class="sub" id="trailMini">0.0 L × ₹0.00/L</div>
+            </div>
+
+            <div class="balances">
+              <div class="balCard balOld">
+                <div class="t" id="oldBalLabel">OLD BALANCE</div>
+                <div class="v" id="balBefore">₹0.00</div>
+              </div>
+              <div class="balCard balNew">
+                <div class="t" id="newBalLabel">NEW BALANCE</div>
+                <div class="v" id="balAfter">₹0.00</div>
+              </div>
+            </div>
+            <div id="dailySummaryWrapper" style="display: none; margin-top: 15px;">
+        <button class="pillbtn" id="btnDailySummary" style="width: 100%; background: #25d366; color: white; border: none; font-weight: bold; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+         💬 Send Today's Summary
+        </button>
+    </div>
+            <div class="recent">
+              <div class="recentHead">
+                <div class="t" id="newBalLabel">NEW BALANCE</div>
+                <div class="muted" id="recentMeta">0 records</div>
+              </div>
+
+              <div class="tableWrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>DATE</th>
+                      <th>FARMER</th>
+                      <th>SESSION</th>
+                      <th>TYPE</th>
+                      <th>QTY</th>
+                      <th>FAT</th>
+                      <th>SNF</th>
+                      <th>AMT</th>
+                      <th>POINT</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentTbody">
+                    <tr>
+                      <td
+                        colspan="9"
+                        style="color:var(--muted);font-weight:1100;"
+                      >
+                        No records recorded today
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- hidden trail values (logic keeps) -->
+            <div style="display: block">
+              <span id="rateView"></span>
+              <span id="trailQF"></span>
+              <span id="trailRateType"></span>
+              <span id="trailFormula"></span>
+              <span id="trailTime"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="bottom">
+        <button class="panicBtn hold" id="btnHold">
+          🟡 HOLD <span class="subnote">pause</span>
+        </button>
+        <button class="panicBtn save" id="btnSave">🟢 SAVE ENTRY</button>
+        <button class="panicBtn undo" id="btnUndo">
+          🔴 UNDO <span class="subnote">last</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- WHATSAPP SUPPORT FLOATING BUTTON -->
+    <a class="fixed bottom-24 right-6 z-50 flex items-center gap-2 rounded-full bg-[#25d366] px-6 py-3 text-white shadow-2xl transition-all hover:-translate-y-1 hover:shadow-xl hover:bg-[#25c35a] group border-4 border-white/20" href="https://wa.me/918225998112?text=Hello,%20I%20need%20support%20with%20MilkRecord%20app" target="_blank">
+      <img alt="WhatsApp Support" class="h-8 w-8" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.087 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.527-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.887-9.885 9.887m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z'/%3E%3C/svg%3E" />
+      <span class="font-khand font-bold text-xl uppercase tracking-wide group-hover:underline">Support</span>
+    </a>
+
+    <!-- HISTORY MODAL -->
+    <div class="overlay" id="overlayHistory">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayHistory">✖</button>
+            <div>🧾 History (Today + Weekly)</div>
+          </div>
+          <div class="muted" id="historyTitleRight">—</div>
+        </div>
+
+        <div class="modalBody">
+          <div class="modalCol">
+            <h3>📅 Today</h3>
+            <div class="listArea">
+              <div class="pageInfo">
+                <span id="todayPageInfo">—</span>
+                <span class="muted">No scroll • Pages</span>
+              </div>
+              <div
+                id="todayList"
+                style="display: grid; gap: 10px; align-content: start"
+              ></div>
+              <div class="pageBtns">
+                <button id="todayPrev">⬅️</button>
+                <button id="todayNext">➡️</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="modalCol">
+            <h3>🗓️ Weekly</h3>
+            <div class="listArea">
+              <div class="pageInfo">
+                <span id="weekPageInfo">—</span>
+                <span class="muted">Last 7 days</span>
+              </div>
+              <div
+                id="weekList"
+                style="display: grid; gap: 10px; align-content: start"
+              ></div>
+              <div class="pageBtns">
+                <button id="weekPrev">⬅️</button>
+                <button id="weekNext">➡️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn warn" id="btnReceipt">📩 Receipt</button>
+          <div style="display: flex; gap: 10px">
+            <button class="footBtn" id="btnExport">⬇️ Export</button>
+            <button class="footBtn bad" id="btnClearToday">
+              🗑️ Clear Today
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER SUMMARY MODAL -->
+    <div class="overlay" id="overlayCenterSummary">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayCenterSummary">✖</button>
+            <div>📊 Center Summary</div>
+          </div>
+          <div class="muted" id="centerSummaryTitle">—</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <div class="center-summary-card">
+              <div class="center-summary-header">
+                <div class="center-summary-title">Collection Summary – 12 Feb</div>
+                <div class="center-summary-date">Center: Village A Booth</div>
+              </div>
+              
+              <div class="center-summary-stats">
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Entries</div>
+                  <div class="center-summary-stat-value">42</div>
+                </div>
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Total Milk (L)</div>
+                  <div class="center-summary-stat-value">612.5</div>
+                </div>
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Fat Range</div>
+                  <div class="center-summary-stat-value">5.9 – 6.4</div>
+                </div>
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Total Amount</div>
+                  <div class="center-summary-stat-value">₹28,430</div>
+                </div>
+              </div>
+              
+              <div class="dispatch-action">
+                <button class="dispatch-action-btn" id="btnMarkDispatch">Mark Milk Sent to Dairy</button>
+                <button class="whatsapp-share-btn" id="btnShareCenterSummary">📤 Send Center Summary (WhatsApp)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn" id="btnCloseCenterSummary">✅ Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DISPATCH MODAL -->
+    <div class="overlay" id="overlayDispatch">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayDispatch">✖</button>
+            <div>🚛 Mark Milk Dispatch</div>
+          </div>
+          <div class="muted">Fill Cane Record</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>Dispatch Information</h3>
+            <div class="formGrid">
+              <div class="field">
+                <label>Total Milk Sent (L)</label>
+                <input id="dispatchMilkQty" inputmode="decimal" placeholder="Enter quantity" />
+              </div>
+              <div class="field">
+                <label>Destination</label>
+                <select id="dispatchDestination">
+                  <option value="dairy">Dairy</option>
+                  <option value="bmc">BMC</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label>Notes</label>
+                <textarea id="dispatchNotes" placeholder="Additional information"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" id="btnSaveDispatch">✅ Save Dispatch</button>
+          <button class="footBtn" id="btnCancelDispatch">❌ Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BMC RECONCILIATION MODAL -->
+    <div class="overlay" id="overlayBMCReconcile">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayBMCReconcile">✖</button>
+            <div>⚖️ BMC Reconciliation</div>
+          </div>
+          <div class="muted">Match with BMC Records</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>BMC Batch Information</h3>
+            <div class="formGrid">
+              <div class="field">
+                <label>BMC Batch ID</label>
+                <input id="bmcBatchId" placeholder="Enter batch ID" />
+              </div>
+              <div class="field">
+                <label>Total Milk Received</label>
+                <input id="bmcMilkReceived" inputmode="decimal" placeholder="Enter quantity" />
+              </div>
+              <div class="field">
+                <label>Avg Fat</label>
+                <input id="bmcAvgFat" inputmode="decimal" placeholder="Enter average fat" />
+              </div>
+              <div class="field">
+                <label>Rate Applied</label>
+                <input id="bmcRateApplied" inputmode="decimal" placeholder="Enter rate" />
+              </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 12px;">
+              <h4 style="margin-top: 0;">Reconciliation Summary</h4>
+              <p><strong>Slips Milk:</strong> <span id="reconcileSlipsMilk">2,412.0 L</span></p>
+              <p><strong>BMC Received:</strong> <span id="reconcileBmcReceived">2,406.5 L</span></p>
+              <p><strong>Difference:</strong> <span id="reconcileDifference">-5.5 L</span></p>
+              <p><strong>Avg Fat (BMC):</strong> <span id="reconcileBmcFat">6.2</span></p>
+              <p><strong>Rate Applied:</strong> <span id="reconcileBmcRate">₹48.00</span></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" id="btnSaveBMCReconcile">✅ Link to BMC</button>
+          <button class="footBtn" id="btnCancelBMCReconcile">❌ Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT OBLIGATION MODAL -->
+    <div class="overlay" id="overlayPaymentObligation">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayPaymentObligation">✖</button>
+            <div>💰 Payment Obligation View</div>
+          </div>
+          <div class="muted" id="paymentObligationTitle">—</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <div class="center-summary-card">
+              <div class="center-summary-header">
+                <div class="center-summary-title">12 Feb – Payable Summary</div>
+                <div class="center-summary-date">Daily Overview</div>
+              </div>
+              
+              <div class="center-summary-stats">
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Milk Amount</div>
+                  <div class="center-summary-stat-value" id="paymentMilkAmount">₹1,15,200</div>
+                </div>
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Advances Cut</div>
+                  <div class="center-summary-stat-value" id="paymentAdvancesCut">₹12,000</div>
+                </div>
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Net Payable</div>
+                  <div class="center-summary-stat-value" id="paymentNetPayable">₹1,03,200</div>
+                </div>
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Total Farmers</div>
+                  <div class="center-summary-stat-value" id="paymentTotalFarmers">42</div>
+                </div>
+              </div>
+              
+              <div class="dispatch-action">
+                <button class="whatsapp-share-btn" id="btnSharePaymentSummary">📤 Send Payment Summary (WhatsApp)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn" id="btnClosePaymentObligation">✅ Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADER MODAL -->
+    <div class="overlay" id="overlayLeader">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayLeader">✖</button>
+            <div>🏆 Weekly Leader</div>
+          </div>
+          <div class="muted" id="leaderRight">—</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>Top Farmers (7 days)</h3>
+            <div class="listArea">
+              <div class="pageInfo">
+                <span id="leaderPageInfo">—</span>
+                <span class="muted">By Amount</span>
+              </div>
+              <div
+                id="leaderList"
+                style="display: grid; gap: 10px; align-content: start"
+              ></div>
+              <div class="pageBtns">
+                <button id="leaderPrev">⬅️</button>
+                <button id="leaderNext">➡️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn" id="btnLeaderByAmt">💰 Amount</button>
+          <button class="footBtn" id="btnLeaderByLit">🥛 Liters</button>
+          <button class="footBtn" id="btnLeaderByCount">🧾 Entries</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="overlay" id="overlaySettings">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlaySettings">✖</button>
+            <div>⚙️ Settings</div>
+          </div>
+          <div class="muted">Offline • Saved</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>💰 Rate Formula (Simple, Visible)</h3>
+            <div class="formGrid">
+              <div class="field">
+                <label>🐄 Cow Base (₹)</label>
+                <input id="setCowBase" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label>🐄 Cow Factor (₹ per Fat)</label>
+                <input id="setCowFactor" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label>🐃 Buffalo Base (₹)</label>
+                <input id="setBuffBase" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label>🐃 Buffalo Factor (₹ per Fat)</label>
+                <input id="setBuffFactor" inputmode="decimal" />
+              </div>
+
+              <div class="field">
+                <label>Qty Step (L)</label>
+                <input id="setQtyStep" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label>Fat Step (%)</label>
+                <input id="setFatStep" inputmode="decimal" />
+              </div>
+
+              <div class="field">
+                <label>SNF Step</label>
+                <input id="setSnfStep" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label>UI Session Switch Hour</label>
+                <input id="setSessionHour" inputmode="numeric" />
+              </div>
+
+              <div class="field full">
+                <label>Formula Preview (Auto)</label>
+                <div
+                  style="font-weight: 1100; font-size: 15px; padding: 6px 0"
+                  id="formulaPreview"
+                >
+                  —
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- COLLECTION POINTS MANAGEMENT -->
+          <div class="modalCol" style="margin-top: 20px;">
+            <h3>📍 Collection Points</h3>
+            <div class="formGrid">
+              <div class="field full">
+                <label>Add New Collection Point</label>
+                <div style="display: flex; gap: 10px;">
+                  <input id="newCollectionPointName" placeholder="Enter point name" style="flex: 1;" />
+                  <button class="footBtn good" id="btnAddCollectionPoint" style="height: 48px;">Add</button>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 15px;">
+              <h4>Existing Points:</h4>
+              <div id="collectionPointsList" style="max-height: 150px; overflow-y: auto;"></div>
+            </div>
+          </div>
+          
+          <!-- COMPLIANCE MODE MANAGEMENT -->
+          <div class="modalCol" style="margin-top: 20px;">
+            <h3>🛡️ Compliance Mode</h3>
+            <div class="formGrid">
+              <div class="field full">
+                <label>Set Default Compliance Mode</label>
+                <select id="defaultComplianceMode" style="height: 52px; border-radius: 16px; border: 1px solid var(--line); background: #fff; font-weight: 1000; font-size: 16px; padding: 0 12px; outline: none;">
+                  <option value="private">🔒 Private VLCC Mode (Default)</option>
+                  <option value="fpo">🏛️ FPO / Institutional Mode</option>
+                </select>
+                <div style="color: var(--muted); font-size: 12px; font-weight: 1000; margin-top: 4px;">
+                  Private: Maximum flexibility, zero enforcement<br>
+                  FPO: Structured logs, audit-ready exports
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- SYNC STATUS SECTION -->
+          <div id="sync-status-section" style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid var(--line);">
+            <h4 style="margin-top: 0; margin-bottom: 10px;">Data Safety</h4>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span id="sync-status-dot" style="color: #10b981;">●</span>
+              <span id="sync-status-text" style="font-weight: 1000; color: var(--text);">Offline – Data safe on this device</span>
+            </div>
+            <div id="sync-last-synced" style="font-size: 13px; color: var(--muted); margin-top: 5px;">Last synced: Never</div>
+            <div style="font-size: 13px; color: var(--muted); margin-top: 10px;">
+              Your data is saved on this device.<br>
+              Auto-sync happens when internet is available.<br>
+              Export weekly for extra safety.
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" id="btnSaveSettings">✅ Save</button>
+          <button class="footBtn warn" id="btnResetSettings">♻️ Reset</button>
+          <button class="footBtn bad" id="btnFactoryReset">
+            🧨 Factory Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD FARMER MODAL -->
+    <div class="overlay" id="overlayFarmer">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayFarmer">✖</button>
+            <div>➕ Add Farmer</div>
+          </div>
+          <div class="muted">Photo optional</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>👤 Farmer Form</h3>
+            <div class="formGrid">
+              <div class="field">
+                <label>👤 Name</label>
+                <input id="fName" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label>📱 Number</label>
+                <input id="fPhone" inputmode="tel" autocomplete="off" />
+              </div>
+              <div class="field full">
+                <label>📍 Address</label>
+                <textarea id="fAddress"></textarea>
+              </div>
+              <div class="field full">
+                <label>🖼️ Image</label>
+                <input id="fImage" type="file" accept="image/*" />
+                <div
+                  style="
+                    color: var(--muted);
+                    font-size: 12px;
+                    font-weight: 1000;
+                  "
+                >
+                  Stored offline (small compressed)
+                </div>
+              </div>
+              <div class="field">
+                <label>₹ Opening Balance</label>
+                <input id="fBalance" inputmode="decimal" value="0" />
+              </div>
+              <div class="field">
+  <label>🥛 Milk Type</label>
+  <select id="fAnimalType">
+    <option value="cow">🐄 Cow Only</option>
+    <option value="buffalo">_BUFFALO Only</option>
+    <option value="both">🔄 Both (Selectable on Entry)</option>
+  </select>
+</div>
+              <div class="field">
+                <label>Status</label>
+                <select id="fActive">
+                  <option value="1">✅ Active</option>
+                  <option value="0">⛔ Inactive</option>
+                </select>
+              </div>
+              <!-- NDLM/Pashu Aadhaar Integration -->
+              <div class="field">
+                <label>🐄 Cattle ID (Optional)</label>
+                <input id="fCattleId" placeholder="Pashu Aadhaar/NDLM ID" />
+                <div style="color: var(--muted); font-size: 12px; font-weight: 1000; margin-top: 4px;">
+                  For future insurance/loan benefits
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" id="btnCreateFarmer">✅ Create</button>
+          <button class="footBtn" id="btnDemoFarmers">🧪 Demo Farmers</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECEIPT MODAL -->
+    <div class="overlay" id="overlayReceipt">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayReceipt">✖</button>
+            <div>📩 Receipt (Locked)</div>
+          </div>
+          <div class="muted">Copy • WhatsApp</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>🧾 Message</h3>
+            <div class="receiptBox" id="receiptText">—</div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" id="btnCopyReceipt">📋 Copy</button>
+          <button class="footBtn warn" id="btnWhatsApp">💬 WhatsApp</button>
+          <button class="footBtn" id="btnCloseReceipt">✅ Done</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /***********************
+       * OFFLINE DATA MODEL  *
+       ***********************/
+      const LS = {
+        farmers: "milkapp_farmers_v2",
+        entries: "milkapp_entries_v2",
+        settings: "milkapp_settings_v2",
+        hold: "milkapp_hold_v2",
+        lastUndo: "milkapp_lastundo_v2",
+        collectionPoints: "milkapp_collection_points_v1",  // NEW: Collection points storage
+        dispatchRecords: "milkapp_dispatch_records_v1",   // NEW: Dispatch records storage
+        lastSlipNumber: "milkapp_last_slip_number_v1",   // NEW: Last slip number storage
+        lastSyncTime: "milkapp_last_sync_time_v1",       // NEW: Last sync time storage
+        complianceMode: "milkapp_compliance_mode_v1"    // NEW: Compliance mode storage
+      };
+
+      // NEW: Default collection points
+      const defaultCollectionPoints = [
+        { id: "DEFAULT", name: "Default Booth", active: true },
+        { id: "VILLAGE_A", name: "Village A Booth", active: true },
+        { id: "VILLAGE_B", name: "Village B Booth", active: true },
+        { id: "VILLAGE_C", name: "Village C Booth", active: true }
+      ];
+
+      // NEW: Default compliance mode
+      const defaultComplianceMode = "private"; // Default to private mode
+
+      const defaultSettings = {
+        cowBase: 18.0,
+        cowFactor: 6.0, // rate/L = base + factor * fat
+        buffBase: 22.0,
+        buffFactor: 7.0,
+        qtyStep: 0.5,
+        fatStep: 0.1,
+        snfStep: 0.1,
+        sessionSwitchHour: 14, // before this -> Morning, after -> Evening
+      };
+
+      function loadSettings() {
+        try {
+          const s = JSON.parse(localStorage.getItem(LS.settings) || "null");
+          return { ...defaultSettings, ...(s || {}) };
+        } catch (e) {
+          return { ...defaultSettings };
+        }
+      }
+      function saveSettings(s) {
+        localStorage.setItem(LS.settings, JSON.stringify(s));
+      }
+
+      // NEW: Collection points functions
+      function loadCollectionPoints() {
+        try {
+          return JSON.parse(localStorage.getItem(LS.collectionPoints) || "null") || defaultCollectionPoints;
+        } catch (e) {
+          return defaultCollectionPoints;
+        }
+      }
+      
+      function saveCollectionPoints(points) {
+        localStorage.setItem(LS.collectionPoints, JSON.stringify(points));
+      }
+
+      // NEW: Compliance mode functions
+      function loadComplianceMode() {
+        try {
+          return localStorage.getItem(LS.complianceMode) || defaultComplianceMode;
+        } catch (e) {
+          return defaultComplianceMode;
+        }
+      }
+      
+      function saveComplianceMode(mode) {
+        localStorage.setItem(LS.complianceMode, mode);
+      }
+
+      function loadFarmers() {
+        try {
+          return JSON.parse(localStorage.getItem(LS.farmers) || "[]") || [];
+        } catch (e) {
+          return [];
+        }
+      }
+      function saveFarmers(arr) {
+        localStorage.setItem(LS.farmers, JSON.stringify(arr));
+      }
+
+      function loadEntries() {
+        try {
+          return JSON.parse(localStorage.getItem(LS.entries) || "[]") || [];
+        } catch (e) {
+          return [];
+        }
+      }
+      function saveEntries(arr) {
+        localStorage.setItem(LS.entries, JSON.stringify(arr));
+      }
+
+      // NEW: Dispatch records functions
+      let dispatchRecords = []; // Global variable for dispatch records
+      
+      function loadDispatchRecords() {
+        try {
+          return JSON.parse(localStorage.getItem(LS.dispatchRecords) || "[]") || [];
+        } catch (e) {
+          return [];
+        }
+      }
+      
+      function saveDispatchRecords(records) {
+        localStorage.setItem(LS.dispatchRecords, JSON.stringify(records));
+        dispatchRecords = records; // Update global variable
+      }
+
+      function uid(prefix = "id") {
+        return (
+          prefix +
+          "_" +
+          Math.random().toString(16).slice(2) +
+          "_" +
+          Date.now().toString(16)
+        );
+      }
+
+      /***********************
+       * TIME + DATE HELPERS *
+       ***********************/
+      function pad(n) {
+        return String(n).padStart(2, "0");
+      }
+      function fmtTime(d) {
+        return pad(d.getHours()) + ":" + pad(d.getMinutes());
+      }
+      function fmtDate(d) {
+        const y = d.getFullYear();
+        const m = pad(d.getMonth() + 1);
+        const da = pad(d.getDate());
+        return `${y}-${m}-${da}`;
+      }
+      function startOfDay(d) {
+        const x = new Date(d);
+        x.setHours(0, 0, 0, 0);
+        return x;
+      }
+      function daysAgo(n) {
+        const d = new Date();
+        d.setDate(d.getDate() - n);
+        return startOfDay(d);
+      }
+
+      function autoSessionLabel() {
+        const h = new Date().getHours();
+        return h < settings.sessionSwitchHour ? "Morning" : "Evening";
+      }
+
+      /***********************
+       * APP STATE           *
+       ***********************/
+      let settings = loadSettings();
+      let farmers = loadFarmers();
+      let entries = loadEntries();
+      let collectionPoints = loadCollectionPoints(); // NEW: Collection points state
+      let complianceMode = loadComplianceMode(); // NEW: Compliance mode state
+      dispatchRecords = loadDispatchRecords(); // NEW: Initialize dispatch records
+
+      let selectedFarmerId = null;
+      let selectedCollectionPointId = "DEFAULT"; // NEW: Selected collection point
+
+      let qty = 0.0;
+      let fat = 0.0;
+      let snf = 0.0;
+      let clr = 0.0; // Naya variable CLR ke liye
+
+      let animal = "cow"; // cow | buffalo
+      let rateMode = "auto"; // auto | manual
+      let manualRate = 0.0;
+
+      // Farmer paging
+      const FARMERS_PER_PAGE = 4; // 2x2 grid
+      let farmerPage = 0;
+      let farmerSearch = "";
+
+      // History paging
+      const LIST_PER_PAGE = 6;
+      let todayPage = 0,
+        weekPage = 0;
+
+      // Leader paging
+      const LEADER_PER_PAGE = 8;
+      let leaderPage = 0;
+      let leaderMode = "amount"; // amount | liters | count
+
+      // Timer
+      let timerStart = Date.now();
+      let timerInt = null;
+
+      /***********************
+       * UI HOOKS            *
+       ***********************/
+      const el = (id) => document.getElementById(id);
+
+      const farmerGrid = el("farmerGrid");
+      const searchInput = el("searchInput");
+      const farmerCount = el("farmerCount");
+
+      const amountView = el("amountView");
+      const rateView = el("rateView"); // hidden but used
+      const selectedName = el("selectedName");
+
+      const balBefore = el("balBefore");
+      const balAfter = el("balAfter");
+
+      const manualRateRow = el("manualRateRow");
+      const manualRateInput = el("manualRateInput");
+      const rateTypeLabel = el("rateTypeLabel");
+      const holdBadge = el("holdBadge");
+      const toast = el("toast");
+
+      const recentTbody = el("recentTbody");
+      const recentMeta = el("recentMeta");
+      const trailMini = el("trailMini");
+
+      const animalSelect = el("animalSelect");
+      const btnRateModeAuto = el("btnRateModeAuto");
+      const btnRateModeManual = el("btnRateModeManual");
+
+      const qtyInput = el("qtyInput");
+      const fatInput = el("fatInput");
+      const snfInput = el("snfInput");
+
+      /* Manual typing → state update */
+      qtyInput.addEventListener("input", (e) => {
+        qty = Number(e.target.value) || 0;
+        renderTrust();
+      });
+      fatInput.addEventListener("input", (e) => {
+        fat = Number(e.target.value) || 0;
+        renderTrust();
+      });
+      snfInput.addEventListener("input", (e) => {
+        snf = Number(e.target.value) || 0;
+        renderTrust();
+      });
+
+      /* + / − ke baad input sync */
+      function syncInputs() {
+  // Check karein: User jis dabba mein type kar raha hai, use refresh mat karo
+  if (document.activeElement !== el("qtyInput")) {
+    el("qtyInput").value = round2(qty).toFixed(1);
+  }
+  if (document.activeElement !== el("fatInput")) {
+    el("fatInput").value = round2(fat).toFixed(1);
+  }
+  if (document.activeElement !== el("snfInput")) {
+    el("snfInput").value = round2(snf).toFixed(1);
+  }
+  // Iske andar density update add karein
+  if (document.activeElement !== el("densityInput")) {
+        el("densityInput").value = clr;
+    }
+}
+  function calculateSNFFromCLR() {
+  if (clr > 0) {
+    // Ye formula apne aap SNF calculate karke update kar dega
+    snf = round2((clr / 4) + (fat * 0.21) + 0.36);
+  }
+}
+
+      /***********************
+       * TOAST               *
+       ***********************/
+      let toastT = null;
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add("show");
+        clearTimeout(toastT);
+        toastT = setTimeout(() => toast.classList.remove("show"), 1200);
+      }
+
+      /***********************
+       * FARMER HELPERS      *
+       ***********************/
+      function getFarmerById(id) {
+        return farmers.find((f) => f.id === id) || null;
+      }
+      function activeFarmers() {
+        return farmers.filter((f) => f.active !== false);
+      }
+      function filterFarmers() {
+        const list = activeFarmers();
+        if (!farmerSearch.trim()) return list;
+        const q = farmerSearch.trim().toLowerCase();
+        return list.filter((f) => (f.name || "").toLowerCase().includes(q));
+      }
+      function ensureSelectedFarmer() {
+        const list = activeFarmers();
+        if (!selectedFarmerId && list.length) {
+          selectedFarmerId = list[0].id;
+        } else if (
+          selectedFarmerId &&
+          !list.some((f) => f.id === selectedFarmerId)
+        ) {
+          selectedFarmerId = list.length ? list[0].id : null;
+        }
+      }
+
+      /***********************
+       * CALCULATION         *
+       ***********************/
+      function round2(n) {
+        return Math.round((n + Number.EPSILON) * 100) / 100;
+      }
+
+      function getAutoRatePerLiter(fatVal, animalType) {
+        const f = Number(fatVal) || 0;
+        if (animalType === "buffalo") {
+          return round2(settings.buffBase + settings.buffFactor * f);
+        }
+        return round2(settings.cowBase + settings.cowFactor * f);
+      }
+
+      function getRatePerLiter() {
+        if (rateMode === "manual") {
+          return round2(Number(manualRate) || 0);
+        }
+        return getAutoRatePerLiter(fat, animal);
+      }
+
+      function getAmount() {
+        const r = getRatePerLiter();
+        const q = Number(qty) || 0;
+        return round2(q * r);
+      }
+
+      function farmerBalanceBefore(farmer) {
+        return round2(Number(farmer.balance || 0));
+      }
+
+      /***********************
+       * RENDER FARMERS      *
+       ***********************/
+      function escapeHtml(s) {
+        return String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#039;",
+            })[c],
+        );
+      }
+
+      // Global variable photo store karne ke liye
+let currentEntryImage = null;
+
+// Photo khinchne par use capture karein
+document.getElementById("fImageEntry").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            currentEntryImage = event.target.result; // Photo data tayyar hai
+            showToast("Photo Attached! 📷 ✅");
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+      function renderFarmers() {
+    farmerCount.textContent = `${activeFarmers().length} 👤`;
+
+    const list = filterFarmers();
+    const maxPage = Math.max(0, Math.ceil(list.length / FARMERS_PER_PAGE) - 1);
+    if (farmerPage > maxPage) farmerPage = maxPage;
+
+    const start = farmerPage * FARMERS_PER_PAGE;
+    const pageItems = list.slice(start, start + FARMERS_PER_PAGE);
+
+    farmerGrid.innerHTML = "";
+
+    const toShow = [...pageItems];
+    while (toShow.length < FARMERS_PER_PAGE) toShow.push(null);
+
+    toShow.forEach((f) => {
+        const card = document.createElement("div");
+        card.className = "fcard";
+
+        if (f) {
+            // --- 1. Focus & Double Click Support (NAYA) ---
+            card.setAttribute("tabindex", "0");
+
+            // Double Click logic: Yahan kisan ke card par double tap karne se dabba khulega
+            card.ondblclick = (e) => {
+                e.stopPropagation();
+                openFarmerDetail(f.id);
+            };
+            // ----------------------------------------------
+
+            const isSel = f.id === selectedFarmerId;
+            if (isSel) card.classList.add("fsel");
+
+            const imgHTML = f.imageData ? `<img alt="" src="${f.imageData}">` : `👤`;
+
+            card.innerHTML = `
+                <div class="fimg">${imgHTML}</div>
+                <div style="min-width:0;">
+                    <div class="fname" title="${escapeHtml(f.name || "")}">${escapeHtml(f.name || "")}</div>
+                    <div class="fsub">${f.phone || ""} • ₹${round2(Number(f.balance || 0)).toFixed(2)}</div>
+                </div>
+                ${isSel ? `<div class="badge">Selected</div>` : ``}
+            `;
+
+            card.addEventListener("click", () => {
+                selectedFarmerId = f.id;
+                renderAll();
+                el("qtyInput").focus();
+                el("qtyInput").select();
+            });
+
+        } else {
+            // "Add Farmer" wala card (Empty Slot)
+            card.style.opacity = 0.4;
+            card.innerHTML = `
+                <div class="fimg">➕</div>
+                <div style="min-width:0;">
+                  <div class="fname">Add Farmer</div>
+                  <div class="fsub">Click to create new</div>
+                </div>
+            `;
+            card.addEventListener("click", () => openOverlay("overlayFarmer"));
+        }
+
+        farmerGrid.appendChild(card);
+    });
+
+    el("prevFarmers").disabled = farmerPage <= 0;
+    el("nextFarmers").disabled = farmerPage >= maxPage;
+}
+
+      /***********************
+       * RENDER RIGHT PANEL  *
+       ***********************/
+      function renderRecentToday() {
+        const today = fmtDate(new Date());
+        const todays = entries
+          .filter((e) => e.day === today)
+          .sort((a, b) => b.createdAt - a.createdAt);
+
+        recentMeta.textContent = `${todays.length} records`;
+
+        if (todays.length === 0) {
+          recentTbody.innerHTML = `<tr><td colspan="9" style="color:var(--muted);font-weight:1100;">No records recorded today</td></tr>`;
+          return;
+        }
+
+        const rows = todays
+          .slice(0, 25)
+          .map((e) => {
+            const typeTag =
+              e.animal === "buffalo"
+                ? `<span class="tag buff"> Buffalo</span>`
+                : `<span class="tag cow"> Cow</span>`;
+            console.log("Entry images:", e.images); // Agar ye khali [] aa raha hai, toh photo save nahi ho rahi
+            // Sirf ye 2 line add kar apne existing code mein
+            const photoIcon = (e.images && Array.isArray(e.images) && e.images.length > 0)
+    ? ` <span onclick="viewProof('${e.images[0]}')" style="cursor:pointer;">📸</span>`
+    : '';
+            const f = getFarmerById(e.farmerId);
+            const phone = (f && f.phone) ? f.phone : "";
+
+            const msg = `*Milk Receipt* 🥛\nDate: ${e.day} (${e.session})\nQty: ${e.qty}L | Fat: ${e.fat}\n*Amount: ₹${Number(e.amount).toFixed(2)}*\nGopal Dairy Shop`;
+            const wpLink = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+
+            // NEW: Get collection point name and slip number
+            const collectionPoint = e.collectionPointName || "Unknown";
+            const slipNumber = e.slipNumber || "N/A";
+
+            // Return the row with collection point and slip number columns
+            return `
+              <tr onclick="showEntryDetailDrawer('${e.id}')">
+                <td>${escapeHtml(e.day)}</td>
+                <td style="font-weight:1100;">
+                    ${escapeHtml(e.farmerName || "")}
+                    ${photoIcon} ${e.edited ? `<br><small class="edit-note" style="color:var(--muted); font-weight:normal; font-size:10px;">✏️ Sudhara gaya: ${fmtTime(new Date(e.editedAt))}</small>` : ''}
+                </td>
+                <td><span class="rtag">${escapeHtml(e.session || "")}</span></td>
+                <td>${typeTag}</td>
+                <td style="font-weight:1100;">${Number(e.qty || 0).toFixed(1)} L</td>
+                <td>${Number(e.fat || 0).toFixed(1)}%</td>
+                <td>${Number(e.snf || 0).toFixed(1)}</td>
+                <td style="font-weight:1200; color:#1d4ed8; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                    ₹${Number(e.amount || 0).toFixed(2)}
+                    <button onclick="editEntry('${e.id}'); event.stopPropagation();" title="Edit" style="border:none; background:transparent; cursor:pointer; font-size:14px;">✏️</button>
+                    ${phone ? `<a href="${wpLink}" target="_blank" title="Send WhatsApp" style="text-decoration:none; font-size:16px;" onclick="event.stopPropagation();">🟢</a>` : ''}
+                </td>
+                <td style="font-weight:1000; color: var(--muted);">${collectionPoint}<br><small style="color: #6b7280;">${slipNumber}</small></td>
+              </tr>
+            `;
+          })
+          .join("");
+
+        recentTbody.innerHTML = rows;
+      }
+      function viewProof(imgData) {
+    if(!imgData) return;
+    const w = window.open("");
+    w.document.write(`<img src="${imgData}" style="max-width:100%;">`);
+}
+
+      function editEntry(id) {
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+
+    // 1. Confirm karein (Trust Safe)
+    if (!confirm("Do you want to edit this entry? It will update farmer balance.")) return;
+
+    // 2. Pehle purani entry ka asar khatam karein (Balance reverse)
+    const farmer = getFarmerById(entry.farmerId);
+    if (farmer) {
+        farmer.balance = round2(farmer.balance - entry.amount);
+    }
+
+    // 3. Data ko wapas form mein load karein
+    selectedFarmerId = entry.farmerId;
+    qty = entry.qty;
+    fat = entry.fat;
+    snf = entry.snf;
+    animal = entry.animal;
+    selectedCollectionPointId = entry.collectionPointId || "DEFAULT"; // NEW: Load collection point
+    document.getElementById("slipNumberInput").value = entry.slipNumber || ""; // NEW: Load slip number
+
+    // 4. Entry ko mark karein taaki save hone par naya record na bane, purana update ho
+    // (Simple rasta: purani entry delete karke naya form bhardein)
+    entries = entries.filter(e => e.id !== id);
+    saveEntries(entries);
+    saveFarmers(farmers);
+
+    renderAll();
+    showToast("Editing: " + entry.farmerName + " ✏️");
+    el("qtyInput").focus();
+}
+
+      function renderTrust() {
+    const farmer = getFarmerById(selectedFarmerId);
+    // ✅ AUTO SELECT LOGIC:
+  if (farmer && farmer.animalType) {
+    if (farmer.animalType !== "both") {
+      animal = farmer.animalType; // Cow ya Buffalo fix ho jayega
+    }
+    // Note: Agar 'both' hai toh purana selection hi rahega
+  }
+
+    // --- YE WALA BLOCK UPDATE KIYA HAI ---
+    if (farmer) {
+        const stdSNF = 8.5;
+        // 1. Kisan ka naam aur uska type (Cow/Buffalo) dikhao
+        const typeIcon = farmer.animalType === 'cow' ? '🐄' : '🐃';
+        const typeText = farmer.animalType === 'both' ? '🔄 Both' : (farmer.animalType === 'cow' ? 'Cow' : 'Buffalo');
+
+        let nameHTML = `${farmer.name} <small style="color:var(--muted)">(${typeIcon} ${typeText})</small>`;
+
+        // 2. Agar Pani hai toh wo bhi dikhao
+        if (snf > 0 && snf < stdSNF) {
+            const waterPercent = round2(((stdSNF - snf) / stdSNF) * 100);
+            nameHTML += `<br><span style="color:red; font-size:11px; font-weight:bold;">⚠️ Pani: ${waterPercent}%</span>`;
+        }
+
+        el("selectedName").innerHTML = nameHTML;
+    } else {
+        el("selectedName").textContent = "—";
+    }
+    // --------------------------------------
+
+    const r = getRatePerLiter();
+    const a = getAmount();
+
+    rateView.textContent = `₹${r.toFixed(2)}`;
+    amountView.textContent = `₹${a.toFixed(2)}`;
+    trailMini.textContent = `${round2(qty).toFixed(1)} L × ₹${r.toFixed(2)}/L`;
+
+    const before = farmer ? farmerBalanceBefore(farmer) : 0;
+    const after = round2(before + a);
+
+    balBefore.textContent = `₹${before.toFixed(2)}`;
+    balAfter.textContent = `₹${after.toFixed(2)}`;
+
+    // NEW: Balance reason strip
+    updateBalanceReasonStrip(farmer, a);
+
+    // steps + values
+    el("qtyStep").textContent = `±${settings.qtyStep}`;
+    el("fatStep").textContent = `±${settings.fatStep}`;
+    el("snfStep").textContent = `±${settings.snfStep}`;
+
+    // Density Sync (Agar density dabba add kiya hai toh ye line add karein)
+    if (el("densityInput") && document.activeElement !== el("densityInput")) {
+        el("densityInput").value = clr;
+    }
+
+    // animal dropdown sync
+    animalSelect.value = animal;
+
+    // NEW: Collection point selector sync
+    const collectionPointSelect = document.getElementById("collectionPointSelect");
+    if (collectionPointSelect) {
+        collectionPointSelect.value = selectedCollectionPointId;
+    }
+
+    // NEW: Compliance mode selector sync
+    const complianceModeSelect = document.getElementById("complianceModeSelect");
+    if (complianceModeSelect) {
+        complianceModeSelect.value = complianceMode;
+    }
+
+    // rate mode UI
+    btnRateModeAuto.classList.toggle("active", rateMode === "auto");
+    btnRateModeManual.classList.toggle("active", rateMode === "manual");
+
+    if (rateMode === "manual") {
+        rateTypeLabel.textContent = "Rate: Manual";
+        manualRateRow.style.display = "grid";
+    } else {
+        rateTypeLabel.textContent = "Rate: Auto";
+        manualRateRow.style.display = "none";
+    }
+
+    // HOLD badge
+    const hold = loadHold();
+    holdBadge.textContent = hold ? "HOLD ✅" : "";
+
+    // recent today
+    renderRecentToday();
+
+    syncInputs();
+    updateDailySummaryButton();
+
+    // NEW: Ensure slip number is generated when needed
+    const slipNumberInput = document.getElementById("slipNumberInput");
+    if (slipNumberInput && !slipNumberInput.value) {
+      slipNumberInput.value = generateSlipNumber();
+    }
+    
+    // NEW: Update hardware indicator
+    updateHardwareIndicator();
+}
+
+      function renderTodayLabel() {
+        const d = new Date();
+        el("todayLabel").textContent = `${fmtDate(d)} • ${autoSessionLabel()}`;
+      }
+
+      function renderAll() {
+        ensureSelectedFarmer();
+        renderFarmers();
+        renderTrust();
+        renderTodayLabel();
+        
+        // NEW: Render collection points in selector
+        renderCollectionPoints();
+      }
+      
+      // NEW: Render collection points in selector
+      function renderCollectionPoints() {
+        const collectionPointSelect = document.getElementById("collectionPointSelect");
+        if (!collectionPointSelect) return;
+        
+        collectionPointSelect.innerHTML = "";
+        collectionPoints.forEach(point => {
+          if (point.active) {
+            const option = document.createElement("option");
+            option.value = point.id;
+            option.textContent = point.name;
+            if (point.id === selectedCollectionPointId) {
+              option.selected = true;
+            }
+            collectionPointSelect.appendChild(option);
+          }
+        });
+      }
+
+      /***********************
+       * HOLD + UNDO         *
+       ***********************/
+      function loadHold() {
+        try {
+          return JSON.parse(localStorage.getItem(LS.hold) || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+      function saveHold(obj) {
+        if (!obj) localStorage.removeItem(LS.hold);
+        else localStorage.setItem(LS.hold, JSON.stringify(obj));
+      }
+
+      function saveUndoToken(token) {
+        localStorage.setItem(LS.lastUndo, JSON.stringify(token));
+      }
+      function loadUndoToken() {
+        try {
+          return JSON.parse(localStorage.getItem(LS.lastUndo) || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+      function clearUndoToken() {
+        localStorage.removeItem(LS.lastUndo);
+      }
+
+      function holdCurrent() {
+        const h = {
+          selectedFarmerId,
+          qty,
+          fat,
+          snf,
+          animal,
+          rateMode,
+          manualRate,
+          selectedCollectionPointId, // NEW: Include collection point
+          at: Date.now(),
+        };
+        saveHold(h);
+        showToast("HOLD saved");
+        renderAll();
+      }
+
+      function restoreHoldIfAny() {
+        const h = loadHold();
+        if (!h) return;
+        selectedFarmerId = h.selectedFarmerId || selectedFarmerId;
+        qty = Number(h.qty) || 0;
+        fat = Number(h.fat) || 0;
+        snf = Number(h.snf) || 0;
+        animal = h.animal || "cow";
+        rateMode = h.rateMode || "auto";
+        manualRate = Number(h.manualRate) || 0;
+        selectedCollectionPointId = h.selectedCollectionPointId || "DEFAULT"; // NEW: Restore collection point
+        manualRateInput.value = manualRate ? String(manualRate) : "";
+        saveHold(null);
+        showToast("HOLD restored");
+        renderAll();
+      }
+
+      /***********************
+       * SAVE ENTRY          *
+       ***********************/
+      function canSave() {
+        if (!selectedFarmerId) return false;
+        if (qty <= 0) return false;
+        if (fat <= 0) return false;
+        if (getRatePerLiter() <= 0) return false;
+        return true;
+      }
+
+      // NEW: Generate slip numbers automatically
+      function generateSlipNumber() {
+        const today = new Date();
+        const dateStr = `${today.getDate().toString().padStart(2, '0')}${(today.getMonth()+1).toString().padStart(2,'0')}${today.getFullYear().toString().substr(-2)}`;
+        
+        // Get the last slip number from localStorage to increment
+        let lastSlipNum = parseInt(localStorage.getItem(LS.lastSlipNumber) || '0');
+        lastSlipNum++;
+        
+        // Format: DDMMYY-NNN (e.g., 140226-001)
+        const slipNumber = `${dateStr}-${lastSlipNum.toString().padStart(3,'0')}`;
+        
+        // Save the incremented number for next use
+        localStorage.setItem(LS.lastSlipNumber, lastSlipNum.toString());
+        
+        return slipNumber;
+      }
+
+      function saveEntry() {
+        if (!canSave()) {
+          showToast("Need: Farmer + Qty + Fat");
+          return;
+        }
+        const farmer = getFarmerById(selectedFarmerId);
+        if (!farmer) {
+          showToast("Select farmer");
+          return;
+        }
+
+        const before = farmerBalanceBefore(farmer);
+        const ratePerL = getRatePerLiter();
+        const amount = getAmount();
+        const after = round2(before + amount);
+
+        // NEW: Get slip number and collection point
+        let slipNumber = document.getElementById("slipNumberInput").value.trim();
+        if (!slipNumber) {
+          slipNumber = generateSlipNumber(); // Auto-generate if empty
+          document.getElementById("slipNumberInput").value = slipNumber; // Update the input field
+        }
+        
+        const collectionPointId = document.getElementById("collectionPointSelect").value || "DEFAULT";
+        const collectionPointName = collectionPoints.find(cp => cp.id === collectionPointId)?.name || "Unknown";
+        
+        // NEW: Enhanced entry data model with explicit proof fields
+        const entry = {
+          id: uid("e"),
+          farmerId: farmer.id,
+          farmerName: farmer.name || "",
+          qty: round2(qty),
+          fat: round2(fat),
+          snf: round2(snf),
+          animal,
+          rateMode,
+          ratePerL: round2(ratePerL),
+          amount: round2(amount),
+          before,
+          after,
+          session: autoSessionLabel(),
+          createdAt: Date.now(),
+          day: fmtDate(new Date()),
+          
+          // NEW: Extended entry data model with explicit proof fields
+          collectionPointId: collectionPointId,
+          collectionPointName: collectionPointName,
+          entrySource: "auto", // default, could be "manual" or "external-photo"
+          deviceId: "WEB-" + navigator.userAgent.substring(0, 10), // simplified device ID
+          recordedAt: Date.now(),
+          edited: false,
+          editedAt: null,
+          previousValues: null,
+          slipNumber: slipNumber, // NEW: Slip number
+          bmcLinked: false,       // default
+          bmcBatchId: null,       // default
+          
+          // NEW: FSSAI Traceability Objects
+          collectionLotId: `LOT-${fmtDate(new Date()).replace(/-/g, '')}-${autoSessionLabel().toLowerCase()}`, // Auto-generated per shift
+          sourceEntityId: farmer.id, // Farmer ID as source entity
+          qualitySnapshot: {        // Quality parameters
+            fat: round2(fat),
+            snf: round2(snf),
+            temperature: null,      // Would be added if thermometer available
+            readingSource: "manual" // Would be "auto" if from device
+          },
+          
+          // NEW: NDLM/Pashu Aadhaar Integration
+          cattleId: farmer.cattleId || null, // From farmer profile
+          
+          // NEW: Batch linkage for FSSAI compliance
+          batchId: null, // Will be assigned when dispatch happens
+          
+          images: currentEntryImage ? [currentEntryImage] : [],
+          edited: false,
+          editedAt: null
+        };
+
+        // Update farmer balance
+        farmer.balance = after;
+        saveFarmers(farmers);
+
+        // Save entry
+        entries.push(entry);
+        saveEntries(entries);
+
+        // Set undo token (only last entry)
+        saveUndoToken({
+          entryId: entry.id,
+          farmerId: farmer.id,
+          prevBalance: before,
+        });
+
+        // Clear input quickly
+        qty = 0;
+        fat = 0;
+        snf = 0;
+        manualRate = 0;
+        manualRateInput.value = "";
+        document.getElementById("slipNumberInput").value = ""; // NEW: Clear slip number
+        showToast("SAVED ✅");
+        currentEntryImage = null;
+        const imgInput = document.getElementById("fImageEntry");
+        if(imgInput) imgInput.value = "";
+        // -----------------------------------------------------------
+        autoNextFarmer();
+        renderAll();
+
+        // 1. Poori body par flash class lagayein
+    document.body.classList.add("flash-success");
+
+    // 2. Animation khatam hone ke baad class hata dein
+    setTimeout(() => {
+        document.body.classList.remove("flash-success");
+    }, 600);
+        updateDailySummaryButton(); // Extra safety ke liye
+        showToast("Entry Saved Successfully! ✅");
+      }
+
+      function autoNextFarmer() {
+        const list = filterFarmers();
+        const idx = list.findIndex((f) => f.id === selectedFarmerId);
+        if (idx >= 0 && idx < list.length - 1) {
+          selectedFarmerId = list[idx + 1].id;
+        }
+      }
+
+      function undoLast() {
+        const token = loadUndoToken();
+        if (!token) {
+          showToast("Nothing to undo");
+          return;
+        }
+
+        const idx = entries.findIndex((e) => e.id === token.entryId);
+        if (idx < 0) {
+          clearUndoToken();
+          showToast("Undo not found");
+          return;
+        }
+
+        // Restore farmer balance
+        const farmer = getFarmerById(token.farmerId);
+        if (farmer) {
+          farmer.balance = round2(Number(token.prevBalance) || 0);
+          saveFarmers(farmers);
+        }
+
+        // Remove entry
+        entries.splice(idx, 1);
+        saveEntries(entries);
+
+        clearUndoToken();
+        showToast("UNDO ✅");
+        renderAll();
+      }
+
+      /***********************
+       * HISTORY + EXPORT     *
+       ***********************/
+      function entriesToday() {
+        const today = fmtDate(new Date());
+        return entries
+          .filter((e) => e.day === today)
+          .sort((a, b) => b.createdAt - a.createdAt);
+      }
+      function entriesWeek() {
+        const start = daysAgo(6).getTime();
+        return entries
+          .filter((e) => e.createdAt >= start)
+          .sort((a, b) => b.createdAt - a.createdAt);
+      }
+
+      function makeEntryCard(e) {
+        const t = fmtTime(new Date(e.createdAt));
+        const icon = e.animal === "buffalo" ? " Buffalo" : " Cow";
+        const rt = e.rateMode === "manual" ? "Manual" : "Auto";
+        
+        // NEW: Get collection point name
+        const collectionPoint = e.collectionPointName || "Unknown";
+        
+        return `
+    <div class="cardRow">
+      <div style="min-width:0;">
+        <div class="title">${escapeHtml(e.farmerName || "")}</div>
+        <div class="meta">${t} • ${icon} • ${e.qty}L • Fat ${e.fat}% • SNF ${e.snf} • ${rt} • ${collectionPoint}</div>
+      </div>
+      <div class="val">₹${Number(e.amount || 0).toFixed(2)}</div>
+    </div>
+  `;
+      }
+
+      function renderHistory() {
+        const today = entriesToday();
+        const week = entriesWeek();
+
+        el("historyTitleRight").textContent =
+          `${today.length} today • ${week.length} in 7d}`;
+
+        const tMax = Math.max(0, Math.ceil(today.length / LIST_PER_PAGE) - 1);
+        if (todayPage > tMax) todayPage = tMax;
+        const tSlice = today.slice(
+          todayPage * LIST_PER_PAGE,
+          todayPage * LIST_PER_PAGE + LIST_PER_PAGE,
+        );
+        el("todayList").innerHTML =
+          tSlice.map(makeEntryCard).join("") ||
+          `<div style="color:var(--muted);font-weight:1100;">No entries</div>`;
+        el("todayPageInfo").textContent =
+          `Page ${today.length ? todayPage + 1 : 0}/${today.length ? tMax + 1 : 0}`;
+        el("todayPrev").disabled = todayPage <= 0;
+        el("todayNext").disabled = todayPage >= tMax;
+
+        const wMax = Math.max(0, Math.ceil(week.length / LIST_PER_PAGE) - 1);
+        if (weekPage > wMax) weekPage = wMax;
+        const wSlice = week.slice(
+          weekPage * LIST_PER_PAGE,
+          weekPage * LIST_PER_PAGE + LIST_PER_PAGE,
+        );
+        el("weekList").innerHTML =
+          wSlice.map(makeEntryCard).join("") ||
+          `<div style="color:var(--muted);font-weight:1100;">No entries</div>`;
+        el("weekPageInfo").textContent =
+          `Page ${week.length ? weekPage + 1 : 0}/${week.length ? wMax + 1 : 0}`;
+        el("weekPrev").disabled = weekPage <= 0;
+        el("weekNext").disabled = weekPage >= wMax;
+        
+        // NEW: Add center summary button to history footer
+        const centerSummaryBtn = document.createElement('button');
+        centerSummaryBtn.className = 'footBtn';
+        centerSummaryBtn.id = 'btnCenterSummary';
+        centerSummaryBtn.innerHTML = '📍 Center Summary';
+        centerSummaryBtn.onclick = () => openOverlay('overlayCenterSummary');
+        
+        // Add the button to the history modal footer if it doesn't exist
+        const historyFooter = document.querySelector('#overlayHistory .modalFoot');
+        if (historyFooter && !document.getElementById('btnCenterSummary')) {
+          historyFooter.insertBefore(centerSummaryBtn, historyFooter.firstChild);
+        }
+        
+        // NEW: Add payment obligation button to history footer
+        const paymentObligationBtn = document.createElement('button');
+        paymentObligationBtn.className = 'footBtn';
+        paymentObligationBtn.id = 'btnPaymentObligation';
+        paymentObligationBtn.innerHTML = '💰 Payment Obligation';
+        paymentObligationBtn.onclick = () => openOverlay('overlayPaymentObligation');
+        
+        // Add the button to the history modal footer if it doesn't exist
+        if (historyFooter && !document.getElementById('btnPaymentObligation')) {
+          historyFooter.appendChild(paymentObligationBtn);
+        }
+      }
+
+      function exportJSON() {
+        const payload = {
+          exportedAt: new Date().toISOString(),
+          settings,
+          farmers,
+          entries,
+          collectionPoints,  // NEW: Include collection points in export
+          dispatchRecords,   // NEW: Include dispatch records in export
+          complianceMode     // NEW: Include compliance mode in export
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `milkapp_export_${fmtDate(new Date())}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast("Exported ✅");
+      }
+
+      function clearToday() {
+        const today = fmtDate(new Date());
+        const beforeLen = entries.length;
+        entries = entries.filter((e) => e.day !== today);
+        saveEntries(entries);
+        showToast(
+          entries.length !== beforeLen ? "Today cleared" : "No entries today",
+        );
+        renderHistory();
+        renderAll();
+      }
+
+      /***********************
+       * LEADERBOARD         *
+       ***********************/
+      function buildLeader() {
+        const week = entriesWeek();
+        const map = new Map();
+        week.forEach((e) => {
+          const cur = map.get(e.farmerId) || {
+            farmerId: e.farmerId,
+            name: e.farmerName,
+            amount: 0,
+            liters: 0,
+            count: 0,
+          };
+          cur.amount = round2(cur.amount + Number(e.amount || 0));
+          cur.liters = round2(cur.liters + Number(e.qty || 0));
+          cur.count = cur.count + 1;
+          map.set(e.farmerId, cur);
+        });
+        let arr = Array.from(map.values());
+        arr.sort((a, b) => {
+          if (leaderMode === "amount") return b.amount - a.amount;
+          if (leaderMode === "liters") return b.liters - a.liters;
+          return b.count - a.count;
+        });
+        return arr;
+      }
+
+      function renderLeader() {
+        const leaders = buildLeader();
+        const maxPage = Math.max(
+          0,
+          Math.ceil(leaders.length / LEADER_PER_PAGE) - 1,
+        );
+        if (leaderPage > maxPage) leaderPage = maxPage;
+
+        const slice = leaders.slice(
+          leaderPage * LEADER_PER_PAGE,
+          leaderPage * LEADER_PER_PAGE + LEADER_PER_PAGE,
+        );
+
+        el("leaderRight").textContent =
+          `${leaders.length} farmers • sorted by ${leaderMode}`;
+
+        el("leaderPageInfo").textContent =
+          `Page ${leaders.length ? leaderPage + 1 : 0}/${leaders.length ? maxPage + 1 : 0}`;
+
+        el("leaderPrev").disabled = leaderPage <= 0;
+        el("leaderNext").disabled = leaderPage >= maxPage;
+
+        el("leaderList").innerHTML =
+          slice
+            .map(
+              (l) => `
+      <div class="cardRow">
+        <div style="min-width:0;">
+          <div class="title">${escapeHtml(l.name || "")}</div>
+          <div class="meta">
+            ₹${l.amount.toFixed(2)} • ${l.liters.toFixed(1)} L • ${l.count} entries
+          </div>
+        </div>
+        <div class="val">
+          ${
+            leaderMode === "amount"
+              ? "₹" + l.amount.toFixed(2)
+              : leaderMode === "liters"
+                ? l.liters.toFixed(1) + " L"
+                : l.count
+          }
+        </div>
+      </div>
+    `,
+            )
+            .join("") ||
+          `<div style="color:var(--muted);font-weight:1100;">No data</div>`;
+      }
+
+      /***********************
+       * OVERLAYS HELPERS    *
+       ***********************/
+      function openOverlay(id) {
+        document.getElementById(id).style.display = "flex";
+        if (id === "overlayHistory") renderHistory();
+        if (id === "overlayLeader") renderLeader();
+        if (id === "overlayCenterSummary") renderCenterSummary(); // NEW: Render center summary
+        if (id === "overlayBMCReconcile") updateBMCReconciliation(); // NEW: Update BMC reconciliation
+        if (id === "overlayPaymentObligation") updatePaymentObligation(); // NEW: Update payment obligation
+      }
+      function closeOverlay(id) {
+        document.getElementById(id).style.display = "none";
+      }
+      
+      // NEW: Get center summary for a specific point and date
+      function getCenterSummary(pointId, date) {
+        // Filter entries for the specified collection point and date
+        const filteredEntries = entries.filter(e => 
+          e.day === date && 
+          e.collectionPointId === pointId
+        );
+        
+        // Calculate summary statistics
+        const totalEntries = filteredEntries.length;
+        const totalMilk = filteredEntries.reduce((sum, e) => sum + (e.qty || 0), 0);
+        const totalAmount = filteredEntries.reduce((sum, e) => sum + (e.amount || 0), 0);
+        
+        // Calculate fat range
+        let minFat = Infinity;
+        let maxFat = -Infinity;
+        filteredEntries.forEach(e => {
+          if (e.fat < minFat) minFat = e.fat;
+          if (e.fat > maxFat) maxFat = e.fat;
+        });
+        
+        const fatRange = totalEntries > 0 ? `${minFat.toFixed(1)} – ${maxFat.toFixed(1)}` : "N/A";
+        
+        // Get the collection point name
+        const collectionPoint = collectionPoints.find(cp => cp.id === pointId);
+        const pointName = collectionPoint ? collectionPoint.name : "Unknown";
+        
+        return {
+          pointId,
+          pointName,
+          date,
+          totalEntries,
+          totalMilk,
+          totalAmount,
+          fatRange
+        };
+      }
+      
+      // NEW: Render center summary
+      function renderCenterSummary() {
+        // Calculate summary for the selected collection point
+        const today = fmtDate(new Date());
+        const selectedPointId = selectedCollectionPointId || "DEFAULT";
+        
+        const summary = getCenterSummary(selectedPointId, today);
+        
+        // Update the UI elements
+        document.querySelector('.center-summary-title').textContent = `Collection Summary – ${today}`;
+        document.querySelector('.center-summary-date').textContent = `Center: ${summary.pointName}`;
+        
+        // Update stats
+        document.querySelectorAll('.center-summary-stat-value')[0].textContent = summary.totalEntries;
+        document.querySelectorAll('.center-summary-stat-value')[1].textContent = summary.totalMilk.toFixed(1);
+        document.querySelectorAll('.center-summary-stat-value')[2].textContent = summary.fatRange;
+        document.querySelectorAll('.center-summary-stat-value')[3].textContent = `₹${summary.totalAmount.toFixed(0)}`;
+      }
+      
+      // NEW: Update BMC reconciliation to show comparison
+      function updateBMCReconciliation() {
+        const today = fmtDate(new Date());
+        
+        // Calculate total milk from entries for today
+        const todayEntries = entries.filter(e => e.day === today);
+        const totalSlipsMilk = todayEntries.reduce((sum, e) => sum + (e.qty || 0), 0);
+        
+        // Show in the reconciliation panel
+        document.getElementById("reconcileSlipsMilk").textContent = `${totalSlipsMilk.toFixed(1)} L`;
+        
+        // When BMC values are entered, calculate difference
+        const bmcMilkInput = document.getElementById("bmcMilkReceived");
+        if (bmcMilkInput) {
+          // Clear previous event listeners to prevent duplicates
+          const newInput = bmcMilkInput.cloneNode(true);
+          bmcMilkInput.parentNode.replaceChild(newInput, bmcMilkInput);
+          const updatedBmcMilkInput = document.getElementById("bmcMilkReceived");
+          
+          updatedBmcMilkInput.addEventListener("input", function() {
+            const bmcMilk = parseFloat(this.value) || 0;
+            const difference = bmcMilk - totalSlipsMilk;
+            const variancePercent = totalSlipsMilk > 0 ? ((difference / totalSlipsMilk) * 100).toFixed(2) : "0.00";
+            
+            document.getElementById("reconcileDifference").textContent = `${difference.toFixed(1)} L (${variancePercent}%)`;
+            
+            // Update color based on difference
+            const diffElement = document.getElementById("reconcileDifference");
+            if (Math.abs(difference) < 0.1) {
+              diffElement.style.color = "#16a34a"; // green
+            } else if (Math.abs(difference) < 1.0) {
+              diffElement.style.color = "#f59e0b"; // orange
+            } else {
+              diffElement.style.color = "#dc2626"; // red
+            }
+          });
+        }
+      }
+      
+      // NEW: Calculate and display payment obligation
+      function updatePaymentObligation() {
+        const today = fmtDate(new Date());
+        
+        // Calculate total milk amount for today
+        const todayEntries = entries.filter(e => e.day === today);
+        const totalMilkAmount = todayEntries.reduce((sum, e) => sum + (e.amount || 0), 0);
+        
+        // Calculate advances cut for today (this would come from farmer advances)
+        // For now, we'll calculate based on farmer balances
+        let totalAdvancesCut = 0;
+        // In a real implementation, you would track advance cuts separately
+        // For demo, we'll use a simple calculation based on farmer balances
+        farmers.forEach(farmer => {
+          if (farmer.advance && farmer.advance > 0) {
+            totalAdvancesCut += farmer.advance;
+          }
+        });
+        
+        // Calculate net payable
+        const netPayable = totalMilkAmount - totalAdvancesCut;
+        
+        // Count unique farmers for today
+        const uniqueFarmers = new Set(todayEntries.map(e => e.farmerId));
+        const totalFarmers = uniqueFarmers.size;
+        
+        // Update the UI elements
+        document.getElementById("paymentMilkAmount").textContent = `₹${totalMilkAmount.toFixed(0)}`;
+        document.getElementById("paymentAdvancesCut").textContent = `₹${totalAdvancesCut.toFixed(0)}`;
+        document.getElementById("paymentNetPayable").textContent = `₹${netPayable.toFixed(0)}`;
+        document.getElementById("paymentTotalFarmers").textContent = totalFarmers;
+        document.getElementById("paymentObligationTitle").textContent = `For ${today}`;
+      }
+
+      /***********************
+       * EVENTS              *
+       ***********************/
+      // Farmer search
+      searchInput.addEventListener("input", (e) => {
+        farmerSearch = e.target.value;
+        farmerPage = 0;
+        renderFarmers();
+      });
+
+      // Paging
+      el("prevFarmers").onclick = () => {
+        farmerPage--;
+        renderFarmers();
+      };
+      el("nextFarmers").onclick = () => {
+        farmerPage++;
+        renderFarmers();
+      };
+
+      // Qty / Fat / SNF controls
+      // };// Manual Typing Listener: Jaise hi dabba mein likhoge, summary badal jayegi
+el("qtyInput").oninput = (e) => { qty = Number(e.target.value) || 0; renderTrust(); };
+el("fatInput").oninput = (e) => { fat = Number(e.target.value) || 0; renderTrust(); };
+el("snfInput").oninput = (e) => { snf = Number(e.target.value) || 0; renderTrust(); };
+// --- YAHAN PASTE KAREIN ---
+el("qtyInput").oninput = (e) => {
+  qty = Number(e.target.value) || 0;
+  renderTrust();
+};
+
+// Density (CLR) Input Listener
+el("densityInput").oninput = (e) => {
+  clr = Number(e.target.value) || 0;
+  calculateSNFFromCLR(); // Ye SNF nikalega
+  renderTrust();
+};
+
+// Fat Input Listener
+el("fatInput").oninput = (e) => {
+  fat = Number(e.target.value) || 0;
+  calculateSNFFromCLR(); // Fat badla toh SNF bhi apne aap badlega
+  renderTrust();
+};
+
+el("snfInput").oninput = (e) => {
+  snf = Number(e.target.value) || 0;
+  renderTrust();
+};
+
+      // NEW: Collection point selection
+      const collectionPointSelect = document.getElementById("collectionPointSelect");
+      if (collectionPointSelect) {
+        collectionPointSelect.addEventListener("change", (e) => {
+          selectedCollectionPointId = e.target.value;
+        });
+      }
+
+      // NEW: Compliance mode selection
+      const complianceModeSelect = document.getElementById("complianceModeSelect");
+      if (complianceModeSelect) {
+        complianceModeSelect.addEventListener("change", (e) => {
+          complianceMode = e.target.value;
+          saveComplianceMode(complianceMode);
+        });
+      }
+
+      // Animal
+      animalSelect.onchange = (e) => {
+        animal = e.target.value;
+        renderTrust();
+      };
+
+      // Rate mode
+      btnRateModeAuto.onclick = () => {
+        rateMode = "auto";
+        renderTrust();
+      };
+      btnRateModeManual.onclick = () => {
+        rateMode = "manual";
+        renderTrust();
+      };
+      el("manualRateApply").onclick = () => {
+        manualRate = Number(manualRateInput.value) || 0;
+        renderTrust();
+      };
+
+      // Save / Hold / Undo
+      el("btnSave").onclick = saveEntry;
+      el("btnHold").onclick = holdCurrent;
+      el("btnUndo").onclick = undoLast;
+
+      // History
+      el("btnHistoryMain").onclick = () => openOverlay("overlayHistory");
+      el("todayPrev").onclick = () => {
+        todayPage--;
+        renderHistory();
+      };
+      el("todayNext").onclick = () => {
+        todayPage++;
+        renderHistory();
+      };
+      el("weekPrev").onclick = () => {
+        weekPage--;
+        renderHistory();
+      };
+      el("weekNext").onclick = () => {
+        weekPage++;
+        renderHistory();
+      };
+      el("btnExport").onclick = exportJSON;
+      el("btnClearToday").onclick = clearToday;
+
+      // NEW: Center Summary Modal Event Handlers
+      if (document.getElementById('btnCloseCenterSummary')) {
+        document.getElementById('btnCloseCenterSummary').onclick = () => closeOverlay('overlayCenterSummary');
+      }
+      
+      if (document.getElementById('btnMarkDispatch')) {
+        document.getElementById('btnMarkDispatch').onclick = () => {
+          closeOverlay('overlayCenterSummary');
+          openOverlay('overlayDispatch');
+        };
+      }
+      
+      if (document.getElementById('btnShareCenterSummary')) {
+        document.getElementById('btnShareCenterSummary').onclick = () => {
+          const today = fmtDate(new Date());
+          const summaryText = `*Collection Summary – ${today}*\n\n` +
+                             `Center: ${collectionPoints.find(cp => cp.id === selectedCollectionPointId)?.name || "Unknown"}\n` +
+                             `Entries: 42\n` +
+                             `Total Milk: 612.5 L\n` +
+                             `Fat Range: 5.9 – 6.4\n` +
+                             `Total Amount: ₹28,430\n\n` +
+                             `*MilkRecord System*`;
+                             
+          window.open(`https://wa.me/?text=${encodeURIComponent(summaryText)}`, '_blank');
+        };
+      }
+      
+      // NEW: Dispatch Modal Event Handlers
+      if (document.getElementById('btnSaveDispatch')) {
+        document.getElementById('btnSaveDispatch').onclick = () => {
+          const milkQty = parseFloat(document.getElementById("dispatchMilkQty").value);
+          const destination = document.getElementById("dispatchDestination").value;
+          const notes = document.getElementById("dispatchNotes").value;
+          
+          if (!milkQty || milkQty <= 0) {
+            showToast("Please enter valid milk quantity");
+            return;
+          }
+          
+          // Create dispatch record
+          const dispatch = {
+            dispatchId: uid("d"),
+            collectionPointId: selectedCollectionPointId, // Use currently selected point
+            date: fmtDate(new Date()),
+            shift: autoSessionLabel(),
+            totalMilkSent: milkQty,
+            destination: destination,
+            recordedAt: Date.now(),
+            deviceId: "WEB-" + navigator.userAgent.substring(0, 10),
+            notes: notes
+          };
+          
+          // Add to dispatch records and save
+          dispatchRecords.push(dispatch);
+          saveDispatchRecords(dispatchRecords);
+          
+          showToast(`Dispatch record saved: ${milkQty}L sent to ${destination}`);
+          closeOverlay("overlayDispatch");
+        };
+      }
+      
+      if (document.getElementById('btnCancelDispatch')) {
+        document.getElementById('btnCancelDispatch').onclick = () => closeOverlay("overlayDispatch");
+      }
+      
+      // NEW: BMC Reconciliation Modal Event Handlers
+      if (document.getElementById('btnSaveBMCReconcile')) {
+        document.getElementById('btnSaveBMCReconcile').onclick = () => {
+          const batchId = document.getElementById("bmcBatchId").value;
+          const milkReceived = parseFloat(document.getElementById("bmcMilkReceived").value);
+          const avgFat = parseFloat(document.getElementById("bmcAvgFat").value);
+          const rateApplied = parseFloat(document.getElementById("bmcRateApplied").value);
+          
+          if (!batchId || !milkReceived || !avgFat || !rateApplied) {
+            showToast("Please fill all BMC information");
+            return;
+          }
+          
+          // Mark entries as linked to this BMC batch
+          const today = fmtDate(new Date());
+          entries = entries.map(entry => {
+            if (entry.day === today) {
+              return {...entry, bmcLinked: true, bmcBatchId: batchId};
+            }
+            return entry;
+          });
+          
+          saveEntries(entries);
+          
+          showToast(`Entries linked to BMC Batch: ${batchId}`);
+          closeOverlay("overlayBMCReconcile");
+        };
+      }
+      
+      if (document.getElementById('btnCancelBMCReconcile')) {
+        document.getElementById('btnCancelBMCReconcile').onclick = () => closeOverlay("overlayBMCReconcile");
+      }
+      
+      // NEW: Payment Obligation Modal Event Handlers
+      if (document.getElementById('btnClosePaymentObligation')) {
+        document.getElementById('btnClosePaymentObligation').onclick = () => closeOverlay("overlayPaymentObligation");
+      }
+      
+      if (document.getElementById('btnSharePaymentSummary')) {
+        document.getElementById('btnSharePaymentSummary').onclick = () => {
+          const today = fmtDate(new Date());
+          const summaryText = `*Payment Obligation Summary – ${today}*\n\n` +
+                             `Milk Amount: ₹${document.getElementById("paymentMilkAmount").textContent}\n` +
+                             `Advances Cut: ₹${document.getElementById("paymentAdvancesCut").textContent}\n` +
+                             `Net Payable: ₹${document.getElementById("paymentNetPayable").textContent}\n` +
+                             `Total Farmers: ${document.getElementById("paymentTotalFarmers").textContent}\n\n` +
+                             `*MilkRecord System*`;
+                             
+          window.open(`https://wa.me/?text=${encodeURIComponent(summaryText)}`, '_blank');
+        };
+      }
+
+      // Leader
+      el("btnLeader").onclick = () => openOverlay("overlayLeader");
+      el("leaderPrev").onclick = () => {
+        leaderPage--;
+        renderLeader();
+      };
+      el("leaderNext").onclick = () => {
+        leaderPage++;
+        renderLeader();
+      };
+
+      el("btnLeaderByAmt").onclick = () => {
+        leaderMode = "amount";
+        leaderPage = 0;
+        renderLeader();
+      };
+      el("btnLeaderByLit").onclick = () => {
+        leaderMode = "liters";
+        leaderPage = 0;
+        renderLeader();
+      };
+      el("btnLeaderByCount").onclick = () => {
+        leaderMode = "count";
+        leaderPage = 0;
+        renderLeader();
+      };
+
+      // Settings
+      el("btnSettings").onclick = () => openOverlay("overlaySettings");
+      el("btnSaveSettings").onclick = () => {
+        settings.cowBase = Number(el("setCowBase").value) || settings.cowBase;
+        settings.cowFactor =
+          Number(el("setCowFactor").value) || settings.cowFactor;
+        settings.buffBase =
+          Number(el("setBuffBase").value) || settings.buffBase;
+        settings.buffFactor =
+          Number(el("setBuffFactor").value) || settings.buffFactor;
+        settings.qtyStep = Number(el("setQtyStep").value) || settings.qtyStep;
+        settings.fatStep = Number(el("setFatStep").value) || settings.fatStep;
+        settings.snfStep = Number(el("setSnfStep").value) || settings.snfStep;
+        settings.sessionSwitchHour =
+          Number(el("setSessionHour").value) || settings.sessionSwitchHour;
+        saveSettings(settings);
+        showToast("Settings saved");
+        renderAll();
+      };
+      
+      // NEW: Add collection point functionality
+      if (document.getElementById('btnAddCollectionPoint')) {
+        document.getElementById('btnAddCollectionPoint').onclick = () => {
+          const newName = document.getElementById("newCollectionPointName").value.trim();
+          if (!newName) {
+            showToast("Please enter a name for the collection point");
+            return;
+          }
+          
+          // Generate a unique ID
+          const newId = newName.toUpperCase().replace(/\s+/g, '_');
+          
+          // Check if ID already exists
+          if (collectionPoints.some(cp => cp.id === newId)) {
+            showToast("A collection point with this name already exists");
+            return;
+          }
+          
+          // Add new collection point
+          const newPoint = {
+            id: newId,
+            name: newName,
+            active: true
+          };
+          
+          collectionPoints.push(newPoint);
+          saveCollectionPoints(collectionPoints);
+          
+          document.getElementById("newCollectionPointName").value = "";
+          renderSettings();
+          renderAll();
+          showToast("Collection point added");
+        };
+      }
+
+      // Add farmer modal
+      el("btnAddFarmerMain").onclick = () => openOverlay("overlayFarmer");
+      el("btnCreateFarmer").onclick = () => {
+        const f = {
+          id: uid("f"),
+          name: el("fName").value.trim(),
+          phone: el("fPhone").value.trim(),
+          address: el("fAddress").value.trim(),
+          balance: Number(el("fBalance").value) || 0,
+          active: el("fActive").value === "1",
+          animalType: el("fAnimalType").value, // ✅ Ye line add karein
+          cattleId: el("fCattleId").value.trim() || null // NEW: Cattle ID for NDLM integration
+        };
+        if (!f.name) {
+          showToast("Name required");
+          return;
+        }
+        farmers.push(f);
+        saveFarmers(farmers);
+        selectedFarmerId = f.id;
+        closeOverlay("overlayFarmer");
+        renderAll();
+      };
+
+      // Close overlays
+      document.querySelectorAll("[data-close]").forEach((b) => {
+        b.onclick = () => closeOverlay(b.dataset.close);
+      });
+
+      // Update hardware indicator when fat is auto-read (if applicable)
+      // This would be called when fat is read from a device
+      window.updateHardwareIndicatorAuto = function() {
+        updateHardwareIndicator('Lactoscan');
+      };
+
+      //  A. AUTO FOCUS: Load hote hi search par cursor
+      window.addEventListener("load", () => {
+        if (el("searchInput")) el("searchInput").focus();
+        
+        // Initialize slip number if empty
+        const slipNumberInput = document.getElementById("slipNumberInput");
+        if (slipNumberInput && !slipNumberInput.value) {
+          slipNumberInput.value = generateSlipNumber();
+        }
+        
+        // Update sync status
+        updateSyncStatus();
+      });
+
+      // SYNC STATUS FUNCTIONALITY
+      function updateSyncStatus() {
+        // Check if online/offline
+        const isOnline = navigator.onLine;
+        const statusDot = document.getElementById('sync-status-dot');
+        const statusText = document.getElementById('sync-status-text');
+        const lastSynced = document.getElementById('sync-last-synced');
+        
+        if (statusDot) {
+          if (isOnline) {
+            statusDot.style.color = '#10b981'; // green
+            statusText.textContent = 'Online – Syncing...';
+          } else {
+            statusDot.style.color = '#9ca3af'; // gray
+            statusText.textContent = 'Offline – Data safe on this device';
+          }
+        }
+        
+        // Update last synced time
+        const lastSyncTime = localStorage.getItem('lastSyncTime');
+        if (lastSynced) {
+          if (lastSyncTime) {
+            const date = new Date(parseInt(lastSyncTime));
+            lastSynced.textContent = `Last synced: ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+          } else {
+            lastSynced.textContent = 'Last synced: Never';
+          }
+        }
+      }
+      
+      // Update hardware indicator
+      function updateHardwareIndicator(source = 'Manual') {
+        const hardwareIndicator = document.getElementById('hardware-indicator');
+        if (!hardwareIndicator) return;
+        
+        // For now, we'll show manual input as default
+        // In a real implementation, this would change based on how fat was entered
+        let color = '#9ca3af'; // default gray
+        if (source.toLowerCase().includes('auto') || source.toLowerCase().includes('lactoscan')) {
+          color = '#10b981'; // green for auto-read
+        }
+        
+        hardwareIndicator.innerHTML = `<span style="color: ${color};">●</span> Reading: ${source}`;
+      }
+      
+      // Update balance reason strip
+      function updateBalanceReasonStrip(farmer, amount) {
+        if (!farmer) return;
+        
+        // Create or update the balance reason strip
+        let reasonStrip = document.getElementById('balance-reason-strip');
+        if (!reasonStrip) {
+          reasonStrip = document.createElement('div');
+          reasonStrip.id = 'balance-reason-strip';
+          reasonStrip.style.cssText = `
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 900;
+            color: var(--muted);
+            text-align: center;
+          `;
+          
+          // Add after the new balance element
+          const newBalanceElement = document.getElementById('balAfter');
+          if (newBalanceElement) {
+            newBalanceElement.parentNode.appendChild(reasonStrip);
+          }
+        }
+        
+        // Calculate the reason text
+        let reasonText = '';
+        if (amount > 0) {
+          reasonText = `+₹${amount.toFixed(2)} (Today Milk)`;
+          
+          // Check if there are any advances to deduct
+          if (farmer.advance && farmer.advance > 0) {
+            reasonText += ` – ₹${farmer.advance.toFixed(2)} (Advance Cut)`;
+          }
+        } else {
+          reasonText = 'No transaction today';
+        }
+        
+        reasonStrip.textContent = reasonText;
+      }
+      
+      // NEW: Render settings with collection points
+      function renderSettings() {
+        // Render collection points list
+        const listEl = document.getElementById("collectionPointsList");
+        if (listEl) {
+          listEl.innerHTML = collectionPoints.map(point => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee;">
+              <span>${point.name}</span>
+              <button class="footBtn bad" onclick="deleteCollectionPoint('${point.id}')" style="height: 30px; padding: 0 10px;">Delete</button>
+            </div>
+          `).join("");
+        }
+        
+        // Set default compliance mode in selector
+        const defaultComplianceModeSelect = document.getElementById("defaultComplianceMode");
+        if (defaultComplianceModeSelect) {
+          defaultComplianceModeSelect.value = complianceMode;
+        }
+      }
+      
+      // NEW: Delete collection point
+      function deleteCollectionPoint(id) {
+        if (confirm("Are you sure you want to delete this collection point?")) {
+          collectionPoints = collectionPoints.filter(cp => cp.id !== id);
+          saveCollectionPoints(collectionPoints);
+          renderSettings();
+          renderAll();
+          showToast("Collection point deleted");
+        }
+      }
+
+      // Register service worker for PWA functionality
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+
+      // Initialize the app
+      renderAll();
+    </script>
+  </body>
+</html>

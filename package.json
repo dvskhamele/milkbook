@@ -1,0 +1,32 @@
+{
+  "name": "milkrecord",
+  "version": "1.0.0",
+  "description": "MilkRecord - Offline-first dairy collection system for Indian VLCCs, FPOs, and semi-organized dairies",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build required'",
+    "deploy": "vercel --prod",
+    "preview": "vercel"
+  },
+  "keywords": [
+    "milkrecord",
+    "dairy",
+    "milk-collection",
+    "vlcc",
+    "fpo",
+    "india",
+    "pwa",
+    "offline-first",
+    "vercel"
+  ],
+  "author": "MilkRecord Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/milkrecord.git"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
+}
