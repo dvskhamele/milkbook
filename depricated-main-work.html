@@ -394,6 +394,20 @@
                                 </div>
                             </button>
                         </div>
+                        
+                        <!-- Milk Dispatch Button -->
+                        <button 
+                            onclick="markMilkSent()" 
+                            class="w-full py-6 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white rounded-3xl p-6 shadow-lg shadow-amber-200 transition-all transform hover:-translate-y-1 flex items-center justify-between group h-40 mt-6"
+                        >
+                            <div class="flex flex-col items-start">
+                                <span class="bg-amber-600/30 rounded-lg px-3 py-1 text-sm font-bold uppercase tracking-wider mb-2">Dispatch</span>
+                                <span class="text-3xl font-bold uppercase tracking-wide">Mark Milk Sent to Dairy</span>
+                            </div>
+                            <div class="h-24 w-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:bg-white/30 transition-colors">
+                                <span class="material-symbols-outlined text-6xl">local_shipping</span>
+                            </div>
+                        </button>
                     </div>
                     
                     <!-- Right Side: Calculation Display -->
@@ -461,6 +475,20 @@
     </main>
 
     <footer class="print:hidden text-center py-4 text-slate-500 text-sm border-t bg-slate-50">
+        <div class="flex flex-wrap justify-center gap-4 mb-2">
+            <a href="dashboard.html" class="text-primary font-bold hover:underline">Dashboard</a>
+            <a href="collection.html" class="text-primary font-bold hover:underline">Collection</a>
+            <a href="farmers.html" class="text-primary font-bold hover:underline">Farmers</a>
+            <a href="ledger.html" class="text-primary font-bold hover:underline">Ledger</a>
+            <a href="payments.html" class="text-primary font-bold hover:underline">Payments</a>
+            <a href="milk-sales.html" class="text-primary font-bold hover:underline">Sales</a>
+            <a href="inventory.html" class="text-primary font-bold hover:underline">Inventory</a>
+            <a href="reports.html" class="text-primary font-bold hover:underline">Reports</a>
+            <a href="milkledger-evidence.html" class="text-primary font-bold hover:underline">Evidence</a>
+            <a href="backup.html" class="text-primary font-bold hover:underline">Backup</a>
+            <a href="settings.html" class="text-primary font-bold hover:underline">Settings</a>
+            <a href="logout.html" class="text-primary font-bold hover:underline">Logout</a>
+        </div>
         Designed by <span class="font-bold text-slate-700">signimus</span>
     </footer>
 
@@ -1044,6 +1072,100 @@
                     recentCollections.appendChild(row);
                 }
             }
+        }
+        
+        // Initialize dispatch records if not exists
+        if (!state.dispatchRecords) {
+            state.dispatchRecords = [];
+            localStorage.setItem('milkbook_data', JSON.stringify(state));
+        }
+        
+        // Function to mark milk sent to dairy
+        function markMilkSent() {
+            const totalMilk = state.milkEntries
+                .filter(e => e.date === new Date().toISOString().split('T')[0])
+                .reduce((sum, entry) => sum + parseFloat(entry.qty || 0), 0);
+            
+            const dispatchForm = {
+                dispatchId: 'DISPATCH_' + Date.now().toString(),
+                collectionPointId: state.currentCollectionPoint?.id || 'MAIN_CENTER',
+                collectionPointName: state.currentCollectionPoint?.name || 'Main Collection Center',
+                date: new Date().toISOString().split('T')[0],
+                shift: shift, // Auto-detected from time
+                totalMilkSent: totalMilk,
+                destination: 'BMC', // Default to BMC
+                note: '',
+                recordedAt: new Date().toISOString(),
+                deviceId: navigator.userAgent,
+                operatorId: state.auth.user?.id || 'current_user',
+                syncState: 'QUARANTINED' // Mark as quarantined until synced to server
+            };
+            
+            state.dispatchRecords.push(dispatchForm);
+            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            
+            // Update pending records count
+            state.settings.pendingRecords = (state.settings.pendingRecords || 0) + 1;
+            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            
+            // Update pending count display
+            document.getElementById('pendingCount').textContent = state.settings.pendingRecords;
+            
+            alert(`Milk dispatch recorded: ${totalMilk.toFixed(2)} L sent to ${dispatchForm.destination}`);
+        }
+        
+        // Function to get center summary
+        function getCenterSummary(centerId, date) {
+            const entries = state.milkEntries.filter(e => 
+                e.collectionPointId === centerId && e.date === date
+            );
+            
+            const totalEntries = entries.length;
+            const totalMilk = entries.reduce((sum, entry) => sum + parseFloat(entry.qty || 0), 0);
+            const totalAmount = entries.reduce((sum, entry) => sum + parseFloat(entry.amount || 0), 0);
+            
+            let avgFat = 0;
+            let fatRange = 'N/A';
+            if (entries.length > 0) {
+                const totalFat = entries.reduce((sum, entry) => sum + parseFloat(entry.fat || 0), 0);
+                avgFat = totalFat / entries.length;
+                
+                const fats = entries.map(e => parseFloat(e.fat || 0)).filter(f => f > 0);
+                if (fats.length > 0) {
+                    const minFat = Math.min(...fats);
+                    const maxFat = Math.max(...fats);
+                    fatRange = `${minFat.toFixed(1)} – ${maxFat.toFixed(1)}`;
+                }
+            }
+            
+            return {
+                centerId,
+                date,
+                totalEntries,
+                totalMilk,
+                avgFat,
+                fatRange,
+                totalAmount,
+                entries
+            };
+        }
+        
+        // Function to show center summary
+        function showCenterSummary() {
+            const summary = getCenterSummary(
+                state.currentCollectionPoint?.id || 'MAIN_CENTER',
+                new Date().toISOString().split('T')[0]
+            );
+            
+            const summaryText = `Collection Summary – ${summary.date}
+Center: ${state.currentCollectionPoint?.name || 'Main Collection Center'}
+
+Entries: ${summary.totalEntries}
+Total Milk: ${summary.totalMilk.toFixed(1)} L
+Fat Range: ${summary.fatRange}
+Total Amount: ₹${summary.totalAmount.toFixed(2)}`;
+            
+            alert(summaryText);
         }
         
         // Initial updates

@@ -612,7 +612,6 @@
         grid-template-columns: 1fr 1fr;
         gap: 12px;
       }
-      
       .balCard {
         border-radius: 18px;
         padding: 16px;
@@ -1038,104 +1037,9 @@
           width: 100%;
         }
       }
-      /* 1. Main Screen aur Form ke sabhi bade dabbe (Boxes) */
-.field:focus-within, .fcard:focus {
-    outline: none !important;
-    /* background-color: #fff9c4 !important; Mast Peela Background */
-    border: 3px solid #000000 !important; /* Moti Kaali Border */
-    box-shadow: 0 6px 15px rgba(0,0,0,0.2) !important; /* Halka shadow taaki box utha hua dikhe */
-    transition: all 0.15s ease-in-out;
-    transform: translateY(-2px); /* Box thoda upar uthega focus hone par */
-}
-
-/* 2. Farmer Card (Kisan ka dabba) jab keyboard se select ho */
-.fcard:focus {
-    /* background-color: #fff9c4 !important; */
-    border: 3px solid #000000 !important;
-}
-
-/* 3. Andar ke input boxes ko clean rakhein taaki background poora dikhe */
-.field:focus-within input, 
-.field:focus-within textarea, 
-.field:focus-within select {
-    background: transparent !important;
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-}
-/* Entry Save hone par Green Flash effect */
-.flash-success {
-    animation: flashGreen 0.6s ease-out;
-}
-
-@keyframes flashGreen {
-    0% { background-color: transparent; }
-    30% { background-color: rgba(37, 211, 102, 0.4); } /* WhatsApp Green color */
-    100% { background-color: transparent; }
-}
-/* Edit Button Style in Table */
-.edit-btn {
-    padding: 4px 8px;
-    background: #f1f5f9;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-left: 8px;
-    transition: all 0.2s;
-}
-.edit-btn:hover { background: #e2e8f0; }
-
-/* Edit Note Style */
-.edit-note {
-    font-size: 10px;
-    color: var(--muted);
-    font-style: italic;
-    display: block;
-    margin-top: 2px;
-}
-.hdr-actions { display: flex; align-items: center; gap: 10px; }
     </style>
   </head>
-  <div class="overlay" id="overlayFarmerDetail">
-  <div class="modal" style="height: auto; align-self: flex-end; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
-    <div class="modalHead">
-      <div class="left">
-        <button class="closeBtn" data-close="overlayFarmerDetail">✖</button>
-        <div id="detailFarmerName" style="font-weight: 1200;">Farmer Name</div>
-      </div>
-      <div class="muted">Advance Management</div>
-    </div>
-    <div class="modalBody onecol" style="padding: 20px;">
-        <div class="balances" style="margin-bottom: 15px;">
-            <div class="balCard balNew" style="background:#eff6ff; color:#1e40af;">
-                <div style="font-size:12px;">TOTAL MILK (MONTH)</div>
-                <div class="v" id="detailMonthlyMilk">0.0 L</div>
-            </div>
-            <div class="balCard balOld" style="background:#fff7ed; color:#9a3412;">
-                <div style="font-size:12px;">CURRENT ADVANCE</div>
-                <div class="v" id="detailAdvance">₹0.00</div>
-            </div>
-        </div>
-        <div class="formGrid">
-            <div class="field">
-                <label>Amount (₹)</label>
-                <input id="advAmount" type="number" placeholder="Enter Amount" class="numInput" style="font-size: 24px; text-align: left;">
-            </div>
-            <div class="field">
-                <label>Action</label>
-                <div class="modeRow" style="gap: 10px;">
-                    <button class="footBtn good" id="btnAddAdv" style="flex:1; height: 50px;">➕ Give</button>
-                    <button class="footBtn bad" id="btnCutAdv" style="flex:1; height: 50px;">➖ Cut</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modalFoot">
-        <button class="pillbtn primary" id="btnDetailWhatsApp" style="width:100%; justify-content: center;">💬 Send Monthly Summary</button>
-    </div>
-  </div>
-</div>
+
   <body>
     <div class="app">
       <!-- HEADER -->
@@ -1147,11 +1051,6 @@
             <div class="sub" id="todayLabel">—</div>
           </div>
         </div>
-         <div class="hdr-actions">
-          <button class="pillbtn primary" onclick="location.href='purchase2.html'">
-            <span>🍼</span> <span id="btnIntakeText">Milk sales</span>
-          </button>
-          </div>
 
         <div style="display: flex; align-items: center; gap: 10px">
           <div class="hdr-actions">
@@ -1162,7 +1061,7 @@
           </div>
 
           <div class="hdr-right">
-            <!-- <div class="timer" id="timerBox">⏱ 00:00</div> -->
+            <div class="timer" id="timerBox">⏱ 00:00</div>
             <button class="iconbtn" id="btnLeader" title="Leader (Weekly)">
               🏆
             </button>
@@ -1178,16 +1077,8 @@
         <!-- LEFT -->
         <div class="panel">
           <div class="panelHeader">
-            <div>
-              <div id="stationTitle">Milk Intake Station</div>
-              <small id="collectionPointDisplay" style="color: var(--muted); font-weight: 900;">Main Collection Center</small>
-            </div>
-            <div class="flex gap-2">
-              <button onclick="showCenterSummary()" class="text-xs font-bold text-primary hover:underline" title="View center summary">
-                Summary
-              </button>
-              <small id="holdBadge"></small>
-            </div>
+            <div id="stationTitle">Milk Intake Station</div>
+            <small id="holdBadge"></small>
           </div>
 
           <div class="actionBody">
@@ -1222,7 +1113,7 @@
               <div class="control green">
                 <div class="ctrlTop">
                   <div id="qtyLabel">2. Liters (L)</div>
-                  <!-- <div class="muted" id="qtyStep">±0.5</div> -->
+                  <div class="muted" id="qtyStep">±0.5</div>
                 </div>
                 <div class="numBig">
                   <input
@@ -1230,48 +1121,34 @@
                     class="numInput"
                     type="number"
                     step="0.1"
-                    placeholder="0"
+                    value="0.0"
                   />
                 </div>
-                <!-- <div class="pmRow">
+                <div class="pmRow">
                   <button class="pm" id="qtyMinus">−</button>
                   <button class="pm" id="qtyPlus">+</button>
-                </div> -->
+                </div>
               </div>
 
               <div class="control yellow">
                 <div class="ctrlTop">
-  <div id="fatLabel">3. Fat %</div>
-  
-  <label for="fImageEntry" style="cursor:pointer; font-size: 1.2rem; margin-left: auto;" title="Capture Proof">
-    📷
-  </label>
-  <input type="file" id="fImageEntry" accept="image/*" capture="camera" style="display:none;">
-
-  <div class="muted" id="fatStep" style="margin-left: 10px;">±0.1</div>
-</div>
-<div class="numBig">
-  <input
-    id="fatInput"
-    class="numInput"
-    type="number"
-    step="0.1"
-    placeholder="0"
-  />
-</div>
-                <!-- <div class="pmRow">
+                  <div id="fatLabel">3. Fat %</div>
+                  <div class="muted" id="fatStep">±0.1</div>
+                </div>
+                <div class="numBig">
+                  <input
+                    id="fatInput"
+                    class="numInput"
+                    type="number"
+                    step="0.1"
+                    value="0.0"
+                  />
+                </div>
+                <div class="pmRow">
                   <button class="pm" id="fatMinus">−</button>
                   <button class="pm" id="fatPlus">+</button>
-                </div> -->
+                </div>
               </div>
-              <div class="control blue" style="background: #fdf2f8; border-color: #fbcfe8;">
-  <div class="ctrlTop">
-    <div id="densityLabel">Density (CLR)</div>
-  </div>
-  <div class="numBig">
-    <input id="densityInput" class="numInput" type="number" step="any" placeholder="0">
-  </div>
-</div>
 
               <div class="control blue">
                 <div class="ctrlTop">
@@ -1284,13 +1161,13 @@
                     class="numInput"
                     type="number"
                     step="0.1"
-                    placeholder="0"
+                    value="0.0"
                   />
                 </div>
-                <!-- <div class="pmRow">
+                <div class="pmRow">
                   <button class="pm" id="snfMinus">−</button>
                   <button class="pm" id="snfPlus">+</button>
-                </div> -->
+                </div>
               </div>
 
               <div class="row3" style="grid-column: 1/-1">
@@ -1360,11 +1237,7 @@
                 <div class="v" id="balAfter">₹0.00</div>
               </div>
             </div>
-            <div id="dailySummaryWrapper" style="display: none; margin-top: 15px;">
-        <button class="pillbtn" id="btnDailySummary" style="width: 100%; background: #25d366; color: white; border: none; font-weight: bold; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-             💬 Send Today's Summary
-        </button>
-    </div>
+
             <div class="recent">
               <div class="recentHead">
                 <div class="t" id="newBalLabel">NEW BALANCE</div>
@@ -1399,7 +1272,7 @@
             </div>
 
             <!-- hidden trail values (logic keeps) -->
-            <div style="display: block">
+            <div style="display: none">
               <span id="rateView"></span>
               <span id="trailQF"></span>
               <span id="trailRateType"></span>
@@ -1643,14 +1516,6 @@
                 <input id="fBalance" inputmode="decimal" value="0" />
               </div>
               <div class="field">
-  <label>🥛 Milk Type</label>
-  <select id="fAnimalType">
-    <option value="cow">🐄 Cow Only</option>
-    <option value="buffalo">🐃 Buffalo Only</option>
-    <option value="both">🔄 Both (Selectable on Entry)</option>
-  </select>
-</div>
-              <div class="field">
                 <label>Status</label>
                 <select id="fActive">
                   <option value="1">✅ Active</option>
@@ -1804,7 +1669,6 @@
       let qty = 0.0;
       let fat = 0.0;
       let snf = 0.0;
-      let clr = 0.0; // Naya variable CLR ke liye
 
       let animal = "cow"; // cow | buffalo
       let rateMode = "auto"; // auto | manual
@@ -1879,27 +1743,11 @@
 
       /* + / − ke baad input sync */
       function syncInputs() {
-  // Check karein: User jis dabba mein type kar raha hai, use refresh mat karo
-  if (document.activeElement !== el("qtyInput")) {
-    el("qtyInput").value = round2(qty).toFixed(1);
-  }
-  if (document.activeElement !== el("fatInput")) {
-    el("fatInput").value = round2(fat).toFixed(1);
-  }
-  if (document.activeElement !== el("snfInput")) {
-    el("snfInput").value = round2(snf).toFixed(1);
-  }
-  // Iske andar density update add karein
-  if (document.activeElement !== el("densityInput")) {
-  el("densityInput").value = clr;
-}
-}
-  function calculateSNFFromCLR() {
-  if (clr > 0) {
-    // Ye formula apne aap SNF calculate karke update kar dega
-    snf = round2((clr / 4) + (fat * 0.21) + 0.36);
-  }
-}
+        qtyInput.value = round2(qty).toFixed(1);
+        fatInput.value = round2(fat).toFixed(1);
+        snfInput.value = round2(snf).toFixed(1);
+      }
+
       /***********************
        * TOAST               *
        ***********************/
@@ -1987,92 +1835,71 @@
         );
       }
 
-      // Global variable photo store karne ke liye
-let currentEntryImage = null;
-
-// Photo khinchne par use capture karein
-document.getElementById("fImageEntry").addEventListener("change", function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            currentEntryImage = event.target.result; // Photo data tayyar hai
-            showToast("Photo Attached! 📷 ✅");
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
       function renderFarmers() {
-    farmerCount.textContent = `${activeFarmers().length} 👤`;
+        farmerCount.textContent = `${activeFarmers().length} 👤`;
 
-    const list = filterFarmers();
-    const maxPage = Math.max(0, Math.ceil(list.length / FARMERS_PER_PAGE) - 1);
-    if (farmerPage > maxPage) farmerPage = maxPage;
+        const list = filterFarmers();
+        const maxPage = Math.max(
+          0,
+          Math.ceil(list.length / FARMERS_PER_PAGE) - 1,
+        );
+        if (farmerPage > maxPage) farmerPage = maxPage;
 
-    const start = farmerPage * FARMERS_PER_PAGE;
-    const pageItems = list.slice(start, start + FARMERS_PER_PAGE);
+        const start = farmerPage * FARMERS_PER_PAGE;
+        const pageItems = list.slice(start, start + FARMERS_PER_PAGE);
 
-    farmerGrid.innerHTML = "";
+        farmerGrid.innerHTML = "";
 
-    const toShow = [...pageItems];
-    while (toShow.length < FARMERS_PER_PAGE) toShow.push(null);
+        const toShow = [...pageItems];
+        while (toShow.length < FARMERS_PER_PAGE) toShow.push(null);
 
-    toShow.forEach((f) => {
-        const card = document.createElement("div");
-        card.className = "fcard";
+        toShow.forEach((f) => {
+          const card = document.createElement("div");
+          card.className = "fcard";
 
-        if (f) {
-            // --- 1. Focus & Double Click Support (NAYA) ---
-            card.setAttribute("tabindex", "0"); 
-            
-            // Double Click logic: Yahan kisan ke card par double tap karne se dabba khulega
-            card.ondblclick = (e) => { 
-                e.stopPropagation(); 
-                openFarmerDetail(f.id); 
-            };
-            // ----------------------------------------------
-
-            const isSel = f.id === selectedFarmerId;
-            if (isSel) card.classList.add("fsel");
-
-            const imgHTML = f.imageData ? `<img alt="" src="${f.imageData}">` : `👤`;
-
-            card.innerHTML = `
-                <div class="fimg">${imgHTML}</div>
-                <div style="min-width:0;">
-                    <div class="fname" title="${escapeHtml(f.name || "")}">${escapeHtml(f.name || "")}</div>
-                    <div class="fsub">${f.phone || ""} • ₹${round2(Number(f.balance || 0)).toFixed(2)}</div>
-                </div>
-                ${isSel ? `<div class="badge">Selected</div>` : ``}
-            `;
-
-            card.addEventListener("click", () => {
-                selectedFarmerId = f.id;
-                renderAll();
-                el("qtyInput").focus();
-                el("qtyInput").select();
-            });
-
-        } else {
-            // "Add Farmer" wala card (Empty Slot)
+          if (!f) {
             card.style.opacity = 0.4;
             card.innerHTML = `
-                <div class="fimg">➕</div>
-                <div style="min-width:0;">
-                  <div class="fname">Add Farmer</div>
-                  <div class="fsub">Click to create new</div>
-                </div>
-            `;
+        <div class="fimg">➕</div>
+        <div style="min-width:0;">
+          <div class="fname">Add Farmer</div>
+          <div class="fsub">Click to create new</div>
+        </div>
+      `;
             card.addEventListener("click", () => openOverlay("overlayFarmer"));
-        }
+            farmerGrid.appendChild(card);
+            return;
+          }
 
-        farmerGrid.appendChild(card);
-    });
+          const isSel = f.id === selectedFarmerId;
+          if (isSel) card.classList.add("fsel");
 
-    el("prevFarmers").disabled = farmerPage <= 0;
-    el("nextFarmers").disabled = farmerPage >= maxPage;
-}/***********************
+          const imgHTML = f.imageData
+            ? `<img alt="" src="${f.imageData}">`
+            : `👤`;
+
+          card.innerHTML = `
+      <div class="fimg">${imgHTML}</div>
+      <div style="min-width:0;">
+        <div class="fname" title="${escapeHtml(f.name || "")}">${escapeHtml(f.name || "")}</div>
+        <div class="fsub">${f.phone || ""} • ₹${round2(Number(f.balance || 0)).toFixed(2)}</div>
+      </div>
+      ${isSel ? `<div class="badge">Selected</div>` : ``}
+    `;
+
+          card.addEventListener("click", () => {
+            selectedFarmerId = f.id;
+            renderAll();
+          });
+
+          farmerGrid.appendChild(card);
+        });
+
+        el("prevFarmers").disabled = farmerPage <= 0;
+        el("nextFarmers").disabled = farmerPage >= maxPage;
+      }
+
+      /***********************
        * RENDER RIGHT PANEL  *
        ***********************/
       function renderRecentToday() {
@@ -2095,157 +1922,72 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
               e.animal === "buffalo"
                 ? `<span class="tag buff">🐃 Buffalo</span>`
                 : `<span class="tag cow">🐄 Cow</span>`;
-            console.log("Entry images:", e.images); // Agar ye khali [] aa raha hai, toh photo save nahi ho rahi
-            // Sirf ye 2 line add kar apne existing code mein
-            const photoIcon = (e.images && Array.isArray(e.images) && e.images.length > 0) 
-    ? ` <span onclick="viewProof('${e.images[0]}')" style="cursor:pointer;">📸</span>` 
-    : '';            
-            const f = getFarmerById(e.farmerId);
-            const phone = (f && f.phone) ? f.phone : "";
-        
-            const msg = `*Milk Receipt* 🥛\nDate: ${e.day} (${e.session})\nQty: ${e.qty}L | Fat: ${e.fat}\n*Amount: ₹${Number(e.amount).toFixed(2)}*\nGopal Dairy Shop`;
-            const wpLink = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 
-            // --- Point 7: Audit Trail & Edit UI logic ---
             return `
-              <tr>
-                <td>${escapeHtml(e.day)}</td>
-                <td style="font-weight:1100;">
-                    ${escapeHtml(e.farmerName || "")}
-                    ${photoIcon} ${e.edited ? `<br><small class="edit-note" style="color:var(--muted); font-weight:normal; font-size:10px;">✏️ Sudhara gaya: ${fmtTime(new Date(e.editedAt))}</small>` : ''}
-                </td>
-                <td><span class="rtag">${escapeHtml(e.session || "")}</span></td>
-                <td>${typeTag}</td>
-                <td style="font-weight:1100;">${Number(e.qty || 0).toFixed(1)} L</td>
-                <td>${Number(e.fat || 0).toFixed(1)}%</td>
-                <td>${Number(e.snf || 0).toFixed(1)}</td>
-                <td style="font-weight:1200; color:#1d4ed8; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
-                    ₹${Number(e.amount || 0).toFixed(2)}
-                    <button onclick="editEntry('${e.id}')" title="Edit" style="border:none; background:transparent; cursor:pointer; font-size:14px;">✏️</button>
-                    ${phone ? `<a href="${wpLink}" target="_blank" title="Send WhatsApp" style="text-decoration:none; font-size:16px;">🟢</a>` : ''}
-                </td>
-              </tr>
-            `;
+      <tr>
+        <td>${escapeHtml(e.day)}</td>
+        <td style="font-weight:1100;">${escapeHtml(e.farmerName || "")}</td>
+        <td><span class="rtag">${escapeHtml(e.session || "")}</span></td>
+        <td>${typeTag}</td>
+        <td style="font-weight:1100;">${Number(e.qty || 0).toFixed(1)} L</td>
+        <td>${Number(e.fat || 0).toFixed(1)}%</td>
+        <td>${Number(e.snf || 0).toFixed(1)}</td>
+        <td style="font-weight:1200; color:#1d4ed8;">₹${Number(e.amount || 0).toFixed(2)}</td>
+      </tr>
+    `;
           })
           .join("");
 
         recentTbody.innerHTML = rows;
       }
-      function viewProof(imgData) {
-    if(!imgData) return;
-    const w = window.open("");
-    w.document.write(`<img src="${imgData}" style="max-width:100%;">`);
-}
 
-      function editEntry(id) {
-    const entry = entries.find(e => e.id === id);
-    if (!entry) return;
-
-    // 1. Confirm karein (Trust Safe)
-    if (!confirm("Do you want to edit this entry? It will update farmer balance.")) return;
-
-    // 2. Pehle purani entry ka asar khatam karein (Balance reverse)
-    const farmer = getFarmerById(entry.farmerId);
-    if (farmer) {
-        farmer.balance = round2(farmer.balance - entry.amount);
-    }
-
-    // 3. Data ko wapas form mein load karein
-    selectedFarmerId = entry.farmerId;
-    qty = entry.qty;
-    fat = entry.fat;
-    snf = entry.snf;
-    animal = entry.animal;
-    
-    // 4. Entry ko mark karein taaki save hone par naya record na bane, purana update ho
-    // (Simple rasta: purani entry delete karke naya form bhardein)
-    entries = entries.filter(e => e.id !== id);
-    saveEntries(entries);
-    saveFarmers(farmers);
-
-    renderAll();
-    showToast("Editing: " + entry.farmerName + " ✏️");
-    el("qtyInput").focus();
-}
       function renderTrust() {
-    const farmer = getFarmerById(selectedFarmerId);
-    // ✅ AUTO SELECT LOGIC:
-  if (farmer && farmer.animalType) {
-    if (farmer.animalType !== "both") {
-      animal = farmer.animalType; // Cow ya Buffalo fix ho jayega
-    }
-    // Note: Agar 'both' hai toh purana selection hi rahega
-  }
+        const farmer = getFarmerById(selectedFarmerId);
+        selectedName.textContent = farmer ? farmer.name : "—";
 
-    // --- YE WALA BLOCK UPDATE KIYA HAI ---
-    if (farmer) {
-        const stdSNF = 8.5; 
-        // 1. Kisan ka naam aur uska type (Cow/Buffalo) dikhao
-        const typeIcon = farmer.animalType === 'cow' ? '🐄' : '🐃';
-        const typeText = farmer.animalType === 'both' ? '🔄 Both' : (farmer.animalType === 'cow' ? 'Cow' : 'Buffalo');
-        
-        let nameHTML = `${farmer.name} <small style="color:var(--muted)">(${typeIcon} ${typeText})</small>`;
+        const r = getRatePerLiter();
+        const a = getAmount();
 
-        // 2. Agar Pani hai toh wo bhi dikhao
-        if (snf > 0 && snf < stdSNF) {
-            const waterPercent = round2(((stdSNF - snf) / stdSNF) * 100);
-            nameHTML += `<br><span style="color:red; font-size:11px; font-weight:bold;">⚠️ Pani: ${waterPercent}%</span>`;
+        rateView.textContent = `₹${r.toFixed(2)}`;
+        amountView.textContent = `₹${a.toFixed(2)}`;
+        trailMini.textContent = `${round2(qty).toFixed(1)} L × ₹${r.toFixed(2)}/L`;
+
+        const before = farmer ? farmerBalanceBefore(farmer) : 0;
+        const after = round2(before + a);
+
+        balBefore.textContent = `₹${before.toFixed(2)}`;
+        balAfter.textContent = `₹${after.toFixed(2)}`;
+
+        // steps + values
+        el("qtyStep").textContent = `±${settings.qtyStep}`;
+        el("fatStep").textContent = `±${settings.fatStep}`;
+        el("snfStep").textContent = `±${settings.snfStep}`;
+
+        // animal dropdown sync
+        animalSelect.value = animal;
+
+        // rate mode UI
+        btnRateModeAuto.classList.toggle("active", rateMode === "auto");
+        btnRateModeManual.classList.toggle("active", rateMode === "manual");
+
+        if (rateMode === "manual") {
+          rateTypeLabel.textContent = "Rate: Manual";
+          manualRateRow.style.display = "grid";
+        } else {
+          rateTypeLabel.textContent = "Rate: Auto";
+          manualRateRow.style.display = "none";
         }
-        
-        el("selectedName").innerHTML = nameHTML; 
-    } else {
-        el("selectedName").textContent = "—";
-    }
-    // --------------------------------------
 
-    const r = getRatePerLiter();
-    const a = getAmount();
+        // HOLD badge
+        const hold = loadHold();
+        holdBadge.textContent = hold ? "HOLD ✅" : "";
 
-    rateView.textContent = `₹${r.toFixed(2)}`;
-    amountView.textContent = `₹${a.toFixed(2)}`;
-    trailMini.textContent = `${round2(qty).toFixed(1)} L × ₹${r.toFixed(2)}/L`;
+        // recent today
+        renderRecentToday();
 
-    const before = farmer ? farmerBalanceBefore(farmer) : 0;
-    const after = round2(before + a);
+          syncInputs();
 
-    balBefore.textContent = `₹${before.toFixed(2)}`;
-    balAfter.textContent = `₹${after.toFixed(2)}`;
-
-    // steps + values
-    el("qtyStep").textContent = `±${settings.qtyStep}`;
-    el("fatStep").textContent = `±${settings.fatStep}`;
-    el("snfStep").textContent = `±${settings.snfStep}`;
-
-    // Density Sync (Agar density dabba add kiya hai toh ye line add karein)
-    if (el("densityInput") && document.activeElement !== el("densityInput")) {
-        el("densityInput").value = clr;
-    }
-
-    // animal dropdown sync
-    animalSelect.value = animal;
-
-    // rate mode UI
-    btnRateModeAuto.classList.toggle("active", rateMode === "auto");
-    btnRateModeManual.classList.toggle("active", rateMode === "manual");
-
-    if (rateMode === "manual") {
-        rateTypeLabel.textContent = "Rate: Manual";
-        manualRateRow.style.display = "grid";
-    } else {
-        rateTypeLabel.textContent = "Rate: Auto";
-        manualRateRow.style.display = "none";
-    }
-
-    // HOLD badge
-    const hold = loadHold();
-    holdBadge.textContent = hold ? "HOLD ✅" : "";
-
-    // recent today
-    renderRecentToday();
-
-    syncInputs();
-    updateDailySummaryButton();
-}
+      }
 
       function renderTodayLabel() {
         const d = new Date();
@@ -2341,7 +2083,7 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
           showToast("Select farmer");
           return;
         }
-        
+
         const before = farmerBalanceBefore(farmer);
         const ratePerL = getRatePerLiter();
         const amount = getAmount();
@@ -2363,20 +2105,6 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
           session: autoSessionLabel(),
           createdAt: Date.now(),
           day: fmtDate(new Date()),
-          collectionPointId: state.currentCollectionPoint?.id || 'MAIN_CENTER',
-          collectionPointName: state.currentCollectionPoint?.name || 'Main Collection Center',
-          entrySource: 'manual',
-          deviceId: navigator.userAgent,
-          recordedAt: new Date().toISOString(),
-          edited: false,
-          editedAt: null,
-          slipNumber: null,
-          bmcLinked: false,
-          bmcBatchId: null,
-          
-    images: currentEntryImage ? [currentEntryImage] : [], // 👈 Ye line zaroori hai
-    edited: false,
-    editedAt: null
         };
 
         // Update farmer balance
@@ -2401,22 +2129,9 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
         manualRate = 0;
         manualRateInput.value = "";
         showToast("SAVED ✅");
-        currentEntryImage = null; 
-        const imgInput = document.getElementById("fImageEntry");
-        if(imgInput) imgInput.value = ""; 
-        // -----------------------------------------------------------
+
         autoNextFarmer();
         renderAll();
-        
-        // 1. Poori body par flash class lagayein
-    document.body.classList.add("flash-success");
-
-    // 2. Animation khatam hone ke baad class hata dein
-    setTimeout(() => {
-        document.body.classList.remove("flash-success");
-    }, 600);
-        updateDailySummaryButton(); // Extra safety ke liye
-        showToast("Entry Saved Successfully! ✅");
       }
 
       function autoNextFarmer() {
@@ -2667,34 +2382,32 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
       };
 
       // Qty / Fat / SNF controls
-      // };// Manual Typing Listener: Jaise hi dabba mein likhoge, summary badal jayegi
-el("qtyInput").oninput = (e) => { qty = Number(e.target.value) || 0; renderTrust(); };
-el("fatInput").oninput = (e) => { fat = Number(e.target.value) || 0; renderTrust(); };
-el("snfInput").oninput = (e) => { snf = Number(e.target.value) || 0; renderTrust(); };
-// --- YAHAN PASTE KAREIN ---
-el("qtyInput").oninput = (e) => {
-  qty = Number(e.target.value) || 0;
-  renderTrust();
-};
+      el("qtyMinus").onclick = () => {
+        qty = Math.max(0, qty - settings.qtyStep);
+        renderTrust();
+      };
+      el("qtyPlus").onclick = () => {
+        qty += settings.qtyStep;
+        renderTrust();
+      };
 
-// Density (CLR) Input Listener
-el("densityInput").oninput = (e) => {
-  clr = Number(e.target.value) || 0;
-  calculateSNFFromCLR(); // Ye SNF nikalega
-  renderTrust(); 
-};
+      el("fatMinus").onclick = () => {
+        fat = Math.max(0, fat - settings.fatStep);
+        renderTrust();
+      };
+      el("fatPlus").onclick = () => {
+        fat += settings.fatStep;
+        renderTrust();
+      };
 
-// Fat Input Listener
-el("fatInput").oninput = (e) => {
-  fat = Number(e.target.value) || 0;
-  calculateSNFFromCLR(); // Fat badla toh SNF bhi apne aap badlega
-  renderTrust();
-};
-
-el("snfInput").oninput = (e) => {
-  snf = Number(e.target.value) || 0;
-  renderTrust();
-};
+      el("snfMinus").onclick = () => {
+        snf = Math.max(0, snf - settings.snfStep);
+        renderTrust();
+      };
+      el("snfPlus").onclick = () => {
+        snf += settings.snfStep;
+        renderTrust();
+      };
 
       // Animal
       animalSelect.onchange = (e) => {
@@ -2799,7 +2512,6 @@ el("snfInput").oninput = (e) => {
           address: el("fAddress").value.trim(),
           balance: Number(el("fBalance").value) || 0,
           active: el("fActive").value === "1",
-          animalType: el("fAnimalType").value // ✅ Ye line add karein
         };
         if (!f.name) {
           showToast("Name required");
@@ -2862,7 +2574,7 @@ el("snfInput").oninput = (e) => {
         currentLang = currentLang === "en" ? "hi" : "en";
         const t = translations[currentLang];
         const isHi = currentLang === "hi";
-         el("btnIntakeText").textContent = t.intake;
+
         // UI Elements Update (Ensure these IDs exist in your HTML)
         if (el("stationTitle")) el("stationTitle").textContent = t.station;
         if (el("btnHistoryMain"))
@@ -3099,313 +2811,20 @@ el("snfInput").oninput = (e) => {
         showToast(isHi ? "भाषा: हिंदी" : "Language: English");
       };
 
-
-  // --- MASTER NAVIGATION: Arrows & Enter (Main Screen + Form) ---
-document.addEventListener('keydown', (e) => {
-    const active = document.activeElement;
-    const isFarmerModalOpen = el("overlayFarmer").style.display === "flex";
-
-    // 1. ADD FARMER FORM LOGIC (Sirf tab chalega jab Form khula ho)
-    if (isFarmerModalOpen) {
-        const formOrder = ["fName", "fPhone", "fAddress", "fImage", "fBalance", "fAnimalType", "fActive", "btnCreateFarmer"];
-        const curIdx = formOrder.indexOf(active.id);
-
-        if (e.key === "Enter") {
-            e.preventDefault();
-            if (curIdx !== -1 && curIdx < formOrder.length - 1) {
-                el(formOrder[curIdx + 1]).focus();
-                if (el(formOrder[curIdx + 1]).tagName === "INPUT") el(formOrder[curIdx + 1]).select();
-            } else if (active.id === "btnCreateFarmer" || active.id === "fActive") {
-                el("btnCreateFarmer").click();
-                setTimeout(() => el("searchInput").focus(), 150);
-            }
-        }
-
-        if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-            if (active.id === "fAddress") return; // Textarea mein typing ke liye arrows chhod do
-            e.preventDefault();
-            if (e.key === "ArrowRight" && curIdx < formOrder.length - 1) {
-                el(formOrder[curIdx + 1]).focus();
-            } else if (e.key === "ArrowLeft" && curIdx > 0) {
-                el(formOrder[curIdx - 1]).focus();
-            }
-        }
-        return; // Modal ka kaam khatam, niche wala main screen code nahi chalega
-    }
-
-    // 2. MAIN SCREEN LOGIC (Sirf tab chalega jab Form BAND ho)
-    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-        if (active.classList.contains("fcard")) {
-            e.preventDefault();
-            const cards = Array.from(el("farmerGrid").children);
-            const list = filterFarmers();
-            const idx = cards.indexOf(active);
-            let nextIdx = e.key === "ArrowRight" ? idx + 1 : idx - 1;
-            
-            if (nextIdx >= 0 && nextIdx < cards.length && list[nextIdx]) {
-                cards[nextIdx].focus();
-                selectedFarmerId = list[nextIdx].id;
-                renderTrust(); 
-            }
-        }
-        // --- QTY INPUT PAR SHIFT + ENTER KA LOGIC ---
-else if (active.id === "qtyInput") {
-    // Agar Shift + Enter dabayein toh seedha Advance modal khule
-    if (e.shiftKey && e.key === "Enter") {
-        e.preventDefault();
-        if (selectedFarmerId) {
-            openFarmerDetail(selectedFarmerId);
-        }
-    } 
-    // Normal Enter se agle field (Fat) par jaye
-    else if (e.key === "Enter") {
-        e.preventDefault();
-        el("fatInput").focus();
-    }
-}
-    }
-
-    if (e.key === "Enter") {
-        e.preventDefault();
-        if (active.id === "searchInput") {
-            const firstCard = el("farmerGrid").querySelector('.fcard');
-            if (firstCard) firstCard.focus();
-        } 
-        else if (active.classList.contains("fcard")) {
-            const list = filterFarmers();
-            const cards = Array.from(el("farmerGrid").children);
-            const idx = cards.indexOf(active);
-            if (list[idx]) {
-                selectedFarmerId = list[idx].id;
-                renderAll(); 
-                setTimeout(() => {
-                    el("qtyInput").focus();
-                    el("qtyInput").select();
-                }, 50); 
-            }
-        }
-        else if (active.id === "qtyInput") el("fatInput").focus();
-        else if (active.id === "fatInput") el("densityInput").focus();
-        else if (active.id === "densityInput") el("snfInput").focus();
-        else if (active.id === "snfInput") el("btnRateModeAuto").focus();
-        else if (active.id === "btnRateModeAuto" || active.id === "btnRateModeManual") el("btnSave").focus();
-        else if (active.id === "btnSave") {
-            saveEntry();
-            el("searchInput").focus(); 
-            el("searchInput").value = "";
-        }
-    }
-});
-
-// --- FINANCIAL TRUST: ADVANCE LOGIC ---
-function openFarmerDetail(fId) {
-    const f = getFarmerById(fId);
-    if (!f) return;
-    selectedFarmerId = fId;
-    el("detailFarmerName").textContent = f.name;
-    el("detailAdvance").textContent = `₹${round2(f.advance || 0).toFixed(2)}`;
-    
-    const now = new Date();
-    const monthEntries = entries.filter(e => e.farmerId === fId && new Date(e.createdAt).getMonth() === now.getMonth());
-    const totalL = monthEntries.reduce((sum, e) => sum + Number(e.qty || 0), 0);
-    el("detailMonthlyMilk").textContent = `${totalL.toFixed(1)} L`;
-    openOverlay("overlayFarmerDetail");
-}
-
-el("btnAddAdv").onclick = () => handleAdvanceChange(true);
-el("btnCutAdv").onclick = () => handleAdvanceChange(false);
-
-function handleAdvanceChange(isAdding) {
-    const amt = Number(el("advAmount").value);
-    if (amt <= 0) return showToast("Enter valid amount");
-    const f = getFarmerById(selectedFarmerId);
-    if (!f) return;
-
-    if (isAdding) {
-        f.advance = (f.advance || 0) + amt;
-        f.balance = (f.balance || 0) - amt;
-        showToast(`₹${amt} Advance Added ✅`);
-    } else {
-        if ((f.advance || 0) < amt) return showToast("Not enough advance");
-        f.advance = (f.advance || 0) - amt;
-        f.balance = (f.balance || 0) + amt;
-        showToast(`₹${amt} Advance Cut ✂️`);
-    }
-    saveFarmers(farmers);
-    el("advAmount").value = "";
-    closeOverlay("overlayFarmerDetail");
-    renderAll();
-}
-// ... upar openFarmerDetail wala function khatam hone ke baad ...
-
-// --- WHATSAPP MONTHLY SUMMARY LOGIC (Yahan Paste Karein) ---
-el("btnDetailWhatsApp").onclick = () => {
-    const f = getFarmerById(selectedFarmerId);
-    if (!f) return;
-
-    // 1. Mahine ka data taiyar karein
-    const now = new Date();
-    const monthName = now.toLocaleString('default', { month: 'long' });
-    const totalMilk = el("detailMonthlyMilk").textContent;
-    const currentAdv = el("detailAdvance").textContent;
-    const currentBal = `₹${round2(f.balance || 0).toFixed(2)}`;
-
-    // 2. Message ka format (Plain Hindi + Numbers jaisa document mein likha hai)
-    const msg = `*Milk Summary - ${monthName}*
----------------------------
-*Kisan:* ${f.name}
-*Total Milk:* ${totalMilk}
-*Current Advance:* ${currentAdv}
-*Net Balance:* ${currentBal}
----------------------------
-Gopal Dairy Shop`;
-
-    // 3. WhatsApp link generate karein aur open karein
-    const wpUrl = `https://wa.me/${f.phone}?text=${encodeURIComponent(msg)}`;
-    window.open(wpUrl, '_blank');
-    
-    showToast("Monthly Summary Sent 💬");
-};
-// --- WHATSAPP DAILY SUMMARY LOGIC ---
-el("btnDailySummary").onclick = () => {
-    const today = fmtDate(new Date());
-    const todays = entries.filter(e => e.day === today);
-    
-    if (todays.length === 0) {
-        showToast("No entries for today!");
-        return;
-    }
-
-    // Aaj ka poora calculations
-    const totalMilk = todays.reduce((sum, e) => sum + Number(e.qty || 0), 0);
-    const totalAmt = todays.reduce((sum, e) => sum + Number(e.amount || 0), 0);
-    const session = autoSessionLabel(); // Morning ya Evening automatic lega
-
-    // Message ka format (Professional Dairy Look)
-    const msg = `*🥛 Daily Milk Summary*
-*Date:* ${today} (${session})
----------------------------
-✅ *Total Entries:* ${todays.length}
-✅ *Total Milk:* ${totalMilk.toFixed(1)} L
-✅ *Total Amount:* ₹${totalAmt.toFixed(2)}
----------------------------
-*Gopal Dairy Shop*`;
-
-    // WhatsApp par share karne ka link
-    const wpUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-    window.open(wpUrl, '_blank');
-};
-function sendDailySummary() {
-    const today = fmtDate(new Date());
-    // Aaj ki saari entries filter karein
-    const todays = entries.filter(e => e.day === today && e.farmerId === selectedFarmerId);
-
-    if (todays.length === 0) {
-        showToast("No records found for this farmer today!");
-        return;
-    }
-
-    // Total ka calculation karein
-    let totalQty = 0;
-    let totalAmt = 0;
-    let detailMsg = "";
-
-    todays.forEach((e, index) => {
-        totalQty += Number(e.qty);
-        totalAmt += Number(e.amount);
-        detailMsg += `\n${index + 1}. ${e.session}: ${e.qty}L | ₹${e.amount}`;
-    });
-
-    const farmer = getFarmerById(selectedFarmerId);
-    const phone = farmer ? farmer.phone : "";
-
-    // Naya Summary Message Template
-    const summaryMsg = `*DAIRY DAILY SUMMARY* 📊\n` +
-                       `Date: ${today}\n` +
-                       `Farmer: ${farmer.name}\n` +
-                       `--------------------------` +
-                       `${detailMsg}\n` +
-                       `--------------------------\n` +
-                       `*Total Milk: ${totalQty.toFixed(1)} L*\n` +
-                       `*Total Amount: ₹${totalAmt.toFixed(2)}*\n\n` +
-                       `Gopal Dairy Shop 🙏`;
-
-    if (phone) {
-        const wpLink = `https://wa.me/${phone}?text=${encodeURIComponent(summaryMsg)}`;
-        window.open(wpLink, '_blank');
-        showToast("Summary Sent! 📊✅");
-    } else {
-        showToast("Farmer phone number missing!");
-    }
-}
-// Button ko tabhi dikhana jab koi entry ho
-function updateDailySummaryButton() {
-    const today = fmtDate(new Date());
-    const hasEntries = entries.some(e => e.day === today);
-    const wrapper = el("dailySummaryWrapper");
-    if (wrapper) {
-        wrapper.style.display = hasEntries ? "block" : "none";
-    }
-}
-// ... iske niche init(); function hona chahiye ...
       /***********************
        * INIT                *
        ***********************/
       function init() {
-        // --- SIRF YE 2 LINE SABSE UPAR JODO ---
-    const today = fmtDate(new Date());
-    if (el("todayLabel")) el("todayLabel").textContent = `${today} | ${autoSessionLabel()}`;
-    // --------------------------------------
-    // --- YE 2 LINE BHI JODO (Table & Button ke liye) ---
-    renderRecentToday();
-    updateDailySummaryButton();
-    // --------------------------------------------------
         restoreHoldIfAny();
         renderAll();
-        // timerInt = setInterval(() => {
-        //   const sec = Math.floor((Date.now() - timerStart) / 1000);
-        //   el("timerBox").textContent =
-        //     `⏱ ${pad(Math.floor(sec / 60))}:${pad(sec % 60)}`;
-        // }, 1000);
-            const summary = getCenterSummary(
-                state.currentCollectionPoint?.id || 'MAIN_CENTER',
-                fmtDate(new Date())
-            );
-            
-            const summaryText = `Collection Summary – ${summary.date}
-Center: ${state.currentCollectionPoint?.name || 'Main Center'}
-
-Entries: ${summary.totalEntries}
-Total Milk: ${summary.totalMilk.toFixed(1)} L
-Fat Range: ${summary.fatRange}
-Total Amount: ₹${summary.totalAmount.toFixed(2)}`;
-            
-            alert(summaryText);
-        }
+        timerInt = setInterval(() => {
+          const sec = Math.floor((Date.now() - timerStart) / 1000);
+          el("timerBox").textContent =
+            `⏱ ${pad(Math.floor(sec / 60))}:${pad(sec % 60)}`;
+        }, 1000);
       }
 
       init();
     </script>
-    
-    <footer class="print:hidden text-center py-4 text-slate-500 text-sm border-t bg-slate-50 fixed bottom-0 left-0 right-0">
-        <div class="flex flex-wrap justify-center gap-4 mb-2">
-            <a href="dashboard.html" class="text-primary font-bold hover:underline">Dashboard</a>
-            <a href="main-work.html" class="text-primary font-bold hover:underline">Collection</a>
-            <a href="collection.html" class="text-primary font-bold hover:underline">Collection</a>
-            <a href="farmers.html" class="text-primary font-bold hover:underline">Farmers</a>
-            <a href="ledger.html" class="text-primary font-bold hover:underline">Ledger</a>
-            <a href="payments.html" class="text-primary font-bold hover:underline">Payments</a>
-            <a href="milk-sales.html" class="text-primary font-bold hover:underline">Sales</a>
-            <a href="inventory.html" class="text-primary font-bold hover:underline">Inventory</a>
-            <a href="reports.html" class="text-primary font-bold hover:underline">Reports</a>
-            <a href="milkledger-evidence.html" class="text-primary font-bold hover:underline">Evidence</a>
-            <a href="bmc-reconciliation.html" class="text-primary font-bold hover:underline">BMC Reconcile</a>
-            <a href="products-conversion.html" class="text-primary font-bold hover:underline">Products</a>
-            <a href="backup.html" class="text-primary font-bold hover:underline">Backup</a>
-            <a href="settings.html" class="text-primary font-bold hover:underline">Settings</a>
-            <a href="logout.html" class="text-primary font-bold hover:underline">Logout</a>
-        </div>
-        Designed by <span class="font-bold text-slate-700">signimus</span>
-    </footer>
   </body>
 </html>

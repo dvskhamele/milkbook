@@ -51,73 +51,8 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col selection:bg-primary/20">
     <div class="app-container">
-        <!-- Sidebar Navigation -->
-        <aside class="fixed left-0 top-0 z-20 hidden h-full w-64 flex-col border-r border-slate-200 bg-white p-6 pt-24 shadow-sm md:flex dark:border-zinc-800 dark:bg-zinc-900">
-            <div class="mb-10 flex items-center gap-3">
-                <div class="flex size-10 items-center justify-center rounded-lg bg-primary">
-                    <span class="material-symbols-outlined text-white">water_drop</span>
-                </div>
-                <div>
-                    <h2 class="text-xl font-bold uppercase tracking-tighter">MilkBook</h2>
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Vadgaon Center</p>
-                </div>
-            </div>
-            <nav class="flex flex-1 flex-col gap-1">
-                <a href="dashboard.html" class="sidebar-item">
-                    <i data-lucide="layout-dashboard" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                    <span class="font-bold text-sm tracking-tight">Dashboard</span>
-                </a>
-                <a href="collection.html" class="sidebar-item">
-                    <i data-lucide="water_full" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                    <span class="font-bold text-sm tracking-tight">Milk Collection</span>
-                </a>
-                <a href="farmers.html" class="sidebar-item">
-                    <i data-lucide="users" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                    <span class="font-bold text-sm tracking-tight">Farmers</span>
-                </a>
-                <a href="ledger.html" class="sidebar-item">
-                    <i data-lucide="receipt_long" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                    <span class="font-bold text-sm tracking-tight">Ledger</span>
-                </a>
-                <a href="payments.html" class="sidebar-item">
-                    <i data-lucide="payments" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                    <span class="font-bold text-sm tracking-tight">Payments</span>
-                </a>
-                <a href="milk-sales.html" class="sidebar-item">
-                    <i data-lucide="shopping-bag" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                    <span class="font-bold text-sm tracking-tight">Milk Sales</span>
-                </a>
-                <a href="inventory.html" class="sidebar-item active">
-                    <i data-lucide="inventory" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                    <span class="font-bold text-sm tracking-tight">Inventory</span>
-                </a>
-                <a href="reports.html" class="sidebar-item">
-                    <i data-lucide="bar-chart-3" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                    <span class="font-bold text-sm tracking-tight">Reports</span>
-                </a>
-                <a href="milkledger-evidence.html" class="sidebar-item">
-                    <i data-lucide="shield-check" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                    <span class="font-bold text-sm tracking-tight">MilkLedger Evidence</span>
-                </a>
-                <div class="pt-6 border-t border-slate-800 mt-6 space-y-1">
-                    <a href="backup.html" class="sidebar-item">
-                        <i data-lucide="backup" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                        <span class="font-bold text-sm tracking-tight">Backup</span>
-                    </a>
-                    <a href="settings.html" class="sidebar-item">
-                        <i data-lucide="settings" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                        <span class="font-bold text-sm tracking-tight">Settings</span>
-                    </a>
-                    <a href="logout.html" class="sidebar-item">
-                        <i data-lucide="log-out" class="shrink-0" style="width: 20px; height: 20px;"></i>
-                        <span class="font-bold text-sm tracking-tight">Logout</span>
-                    </a>
-                </div>
-            </nav>
-        </aside>
-
         <!-- Main Content -->
-        <main class="md:ml-64">
+        <main>
             <!-- Header -->
             <header class="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
                 <div class="flex items-center gap-6">

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliance & Audit Trail - MilkRecord</title>
+    <link rel="stylesheet" href="global-nav.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
+        
+        .hero {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .hero h1 { font-size: 42px; font-weight: 900; margin-bottom: 16px; }
+        .hero p { font-size: 18px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        
+        .content { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+        .section { margin-bottom: 60px; }
+        .section h2 { font-size: 32px; font-weight: 800; margin-bottom: 30px; color: #1e293b; }
+        
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .compliance-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-left: 4px solid #2563eb;
+        }
+        
+        .compliance-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 15px; color: #1e3a5f; }
+        .compliance-card p { color: #64748b; line-height: 1.7; }
+        
+        .audit-sample {
+            background: #1e293b;
+            color: #10b981;
+            font-family: monospace;
+            padding: 30px;
+            border-radius: 16px;
+            overflow-x: auto;
+            margin-top: 30px;
+        }
+        
+        .log-line { padding: 5px 0; border-bottom: 1px solid #334155; }
+        
+        .warning-box {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+        
+        .warning-box h3 { color: #92400e; margin-bottom: 15px; }
+        
+        .govt-reports {
+            background: #f0fdf4;
+            border: 2px solid #10b981;
+            border-radius: 16px;
+            padding: 30px;
+        }
+        
+        .govt-reports h3 { color: #047857; margin-bottom: 20px; }
+        .report-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .report-item { background: white; padding: 15px; border-radius: 8px; border: 1px solid #d1fae5; }
+    </style>
+</head>
+<body>
+    <div id="globalNavbar"></div>
+    <script src="global-nav.js"></script>
+    
+    <section class="hero">
+        <h1>🔒 Compliance & Audit Trail</h1>
+        <p>Built for regulatory requirements from day one. Every action tracked, every modification logged.</p>
+    </section>
+    
+    <div class="content">
+        <div class="section">
+            <h2>Core Compliance Features</h2>
+            <div class="compliance-grid">
+                <div class="compliance-card">
+                    <h3>🔐 Shift Lock</h3>
+                    <p>Once a shift is closed, no entries can be added or modified without supervisor override. Prevents back-dating and ensures data integrity.</p>
+                </div>
+                
+                <div class="compliance-card">
+                    <h3>📝 Modification Logs</h3>
+                    <p>Every change is logged with: User ID, Timestamp, Old Value, New Value, and Reason Code. Complete traceability for audits.</p>
+                </div>
+                
+                <div class="compliance-card">
+                    <h3>👤 User Authentication</h3>
+                    <p>Individual login required for all operators. No shared accounts. Role-based permissions (Operator, Supervisor, Admin).</p>
+                </div>
+                
+                <div class="compliance-card">
+                    <h3>⚠️ Supervisor Override</h3>
+                    <p>Critical modifications require supervisor credentials and mandatory reason code. All overrides logged separately.</p>
+                </div>
+                
+                <div class="compliance-card">
+                    <h3>📁 Data Retention</h3>
+                    <p>Automatic retention of 7+ years of historical data. Compliant with FSSAI and dairy cooperative requirements.</p>
+                </div>
+                
+                <div class="compliance-card">
+                    <h3>📤 Export Ready</h3>
+                    <p>One-click export in formats required by government authorities, dairy cooperatives, and auditors.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Audit Trail Sample</h2>
+            <div class="audit-sample">
+                <div class="log-line">[2024-01-15 08:30:15] USER_LOGIN: Operator Ramesh (ID: OP001) logged in</div>
+                <div class="log-line">[2024-01-15 08:35:22] MILK_ENTRY: Farmer #123, 15.5L, Fat: 3.8%, Amount: ₹892</div>
+                <div class="log-line">[2024-01-15 09:15:45] MODIFICATION: Entry #4567 - Fat changed from 3.8% to 4.0%</div>
+                <div class="log-line">[2024-01-15 09:15:45] REASON: "Analyzer recalibration" - Supervisor: Admin001</div>
+                <div class="log-line">[2024-01-15 14:00:00] SHIFT_CLOSE: Morning shift closed by Supervisor (ID: SV001)</div>
+                <div class="log-line">[2024-01-15 14:00:01] SHIFT_LOCK: Morning shift locked - no further modifications allowed</div>
+                <div class="log-line">[2024-01-15 18:30:00] REPORT_EXPORT: Daily report exported to PDF by Admin001</div>
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <h3>⚠️ Important for BMCs</h3>
+            <p style="color: #78350f;">Compliance features are <strong>mandatory</strong> for milk collection centers working with dairy cooperatives. MilkRecord ensures you meet all regulatory requirements out of the box.</p>
+        </div>
+        
+        <div class="section" style="margin-top: 60px;">
+            <div class="govt-reports">
+                <h3>📊 Government & Cooperative Reports</h3>
+                <div class="report-list">
+                    <div class="report-item">📄 FSSAI Compliance Report</div>
+                    <div class="report-item">📄 Daily Collection Summary</div>
+                    <div class="report-item">📄 Farmer Payment Register</div>
+                    <div class="report-item">📄 Shift-wise Milk Procurement</div>
+                    <div class="report-item">📄 Fat/SNF Analysis Report</div>
+                    <div class="report-item">📄 Monthly Cooperative Return</div>
+                    <div class="report-item">📄 GST Summary (if applicable)</div>
+                    <div class="report-item">📄 Audit Trail Export</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

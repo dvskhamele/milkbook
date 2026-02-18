@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+    <title>MilkApp - Sales Page</title>
+    <style>
+      :root {
+        --bg: #f4f7fb; --panel: #ffffff; --line: #e5e7eb; --text: #0f172a; --muted: #64748b;
+        --blue: #2563eb; --blue2: #1d4ed8; --green: #16a34a; --red: #dc2626; --shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
+      }
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; margin: 0; overflow: hidden; height: 100vh; }
+      .app { height: 100%; display: grid; grid-template-rows: auto 1fr auto; gap: 10px; padding: 10px; }
+
+      /* --- HEADER DESIGN --- */
+      .topbar { background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+      .brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+      .home-btn { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: var(--blue); color: #fff; border: none; font-size: 20px; cursor: pointer; flex-shrink: 0; }
+      .logo-box { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #e0f2fe, #dbeafe); border: 1px solid #c7d2fe; font-size: 20px; flex-shrink: 0; }
+      .brand-text { flex: 1; min-width: 0; }
+      .brand-text .title { font-weight: 800; font-size: 15px; color: #0f172a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .brand-text .sub-text { font-size: 11px; font-weight: 600; color: var(--muted); }
+      .hdr-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+      .pillbtn { height: 38px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; white-space: nowrap; }
+      .pillbtn.primary { background: var(--blue); color: #fff; border-color: var(--blue2); }
+      .iconbtn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+      /* --- CORE LAYOUT --- */
+      .core { display: grid; grid-template-columns: 1fr; gap: 10px; overflow: hidden; }
+      @media (min-width: 768px) {
+        .core { grid-template-columns: 1.2fr 0.8fr; }
+      }
+      .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; }
+      .panelHeader { padding: 10px 14px; border-bottom: 1px solid var(--line); font-weight: 1000; display: flex; justify-content: space-between; font-size: 14px; }
+
+      /* Product Grid Style */
+      .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; padding: 12px; overflow-y: auto; flex: 1; }
+      @media (min-width: 640px) {
+        .product-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; padding: 15px; }
+      }
+      .p-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; transition: all 0.2s; }
+      .p-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+      .p-card.selected { border: 3px solid var(--blue); background: #eff6ff; }
+      .p-card img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 6px; }
+      .p-card .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+      .p-card div { font-weight: 800; font-size: 12px; line-height: 1.3; }
+      .p-card small { font-size: 11px; color: var(--muted); }
+
+      /* Sales Inputs */
+      .sale-inputs { padding: 12px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8fafc; }
+      .input-box { display: flex; flex-direction: column; gap: 4px; }
+      .input-box label { font-weight: 800; font-size: 11px; color: var(--muted); }
+      .input-box input { height: 40px; border-radius: 8px; border: 1px solid var(--line); padding: 0 8px; font-weight: 1000; font-size: 16px; }
+
+      /* Summary Section */
+      .summary-box { background: linear-gradient(180deg, var(--blue), var(--blue2)); color: #fff; padding: 16px; border-radius: 16px; margin: 12px; text-align: center; }
+      .summary-box .amt { font-size: 32px; font-weight: 1200; }
+      @media (min-width: 640px) {
+        .summary-box { padding: 20px; border-radius: 18px; margin: 15px; }
+        .summary-box .amt { font-size: 40px; }
+      }
+
+      .recent-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+      .recent-table th { text-align: left; padding: 6px; color: var(--muted); border-bottom: 1px solid var(--line); }
+      .recent-table td { padding: 6px; border-bottom: 1px solid var(--line); font-weight: 700; }
+
+      /* Footer Buttons */
+      .bottom { display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 10px; min-height: 70px; }
+      @media (min-width: 640px) {
+        .bottom { gap: 12px; height: 96px; }
+      }
+      .panicBtn { border: none; border-radius: 16px; font-size: 16px; font-weight: 1200; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow); padding: 8px; }
+      @media (min-width: 640px) {
+        .panicBtn { font-size: 22px; border-radius: 22px; }
+      }
+
+      .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); display: none; align-items: center; justify-content: center; z-index: 60; }
+      .modal { width: min(800px, 95vw); height: min(600px, 90vh); background: #fff; border-radius: 22px; display: grid; grid-template-rows: 60px 1fr 70px; overflow: hidden; }
+      .modalHead { padding: 15px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; font-weight: 1100; }
+      .toast { position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%); background: rgba(15, 23, 42, 0.92); color: #fff; padding: 12px 14px; border-radius: 16px; font-weight: 1100; opacity: 0; transition: opacity 0.18s; z-index: 70; }
+      .toast.show { opacity: 1; }
+
+      /* Mobile menu */
+      .mobile-menu { display: none; position: fixed; top: 70px; left: 0; right: 0; background: #fff; border-bottom: 1px solid var(--line); padding: 12px; z-index: 50; box-shadow: var(--shadow); }
+      .mobile-menu.active { display: block; }
+      .mobile-menu a { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; text-decoration: none; color: var(--text); font-weight: 700; }
+      .mobile-menu a:hover { background: #f4f7fb; }
+    </style>
+  </head>
+  <body>
+    <!-- Global Navigation -->
+    <div id="globalNavbar"></div>
+    <script src="global-nav.js"></script>
+    
+    <div class="app">
+      <div class="topbar">
+        <div class="brand">
+          <a href="index.html" class="home-btn" title="Home">🏠</a>
+          <a href="index.html" class="logo-box" title="MilkBook Home">💧</a>
+          <div class="brand-text">
+            <div class="title" id="shopTitle">Gopal Dairy Shop</div>
+            <div class="sub-text" id="todayLabel">—</div>
+          </div>
+        </div>
+        <button class="iconbtn" style="display: none;" id="menuBtn" onclick="toggleMenu()">☰</button>
+        <div class="hdr-actions">
+          <button class="pillbtn primary" onclick="location.href='collection.html'">🍼 <span id="btnIntakeText" class="hidden-sm">Milk Intake</span></button>
+          <button class="pillbtn" onclick="openModal('historyModal')">🧾 <span id="btnHistoryText" class="hidden-sm">History</span></button>
+          <button class="pillbtn" id="langSwitch">🌐</button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">🏠 Home</a>
+        <a href="collection.html">🍼 Milk Intake</a>
+        <a href="#" onclick="openModal('historyModal'); return false;">🧾 History</a>
+        <a href="#" onclick="openModal('leaderModal'); return false;">🏆 Top Customers</a>
+      </div>
+
+      <div class="core">
+        <div class="panel">
+          <div class="panelHeader"><span id="lblSelectProduct">Select Product</span></div>
+          <div class="product-grid" id="productGrid"></div>
+          <div class="sale-inputs">
+            <div class="input-box">
+              <label id="lblQty">Quantity (kg/L)</label>
+              <input type="number" id="saleQty" value="1" oninput="calculateSale()">
+            </div>
+            <div class="input-box">
+              <label id="lblRate">Rate (per unit)</label>
+              <input type="number" id="saleRate" oninput="calculateSale()">
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelHeader"><span id="lblSummary">Sale Summary</span></div>
+          <div class="summary-box">
+            <div id="lblTotalAmt" style="font-size:11px; opacity:0.8;">TOTAL AMOUNT</div>
+            <div class="amt" id="totalAmt">₹0.00</div>
+            <div id="itemDetail" style="font-size:12px; margin-top:5px;">Select an item</div>
+          </div>
+          <div style="padding:12px; flex:1; overflow-y:auto;">
+            <div style="font-weight:1000; margin-bottom:10px; font-size:13px;" id="lblRecent">Today's Sales</div>
+            <table class="recent-table">
+              <thead><tr><th id="thItem">Item</th><th id="thQty">Qty</th><th id="thAmt">Amt</th></tr></thead>
+              <tbody id="salesTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom">
+        <button class="panicBtn" id="btnHold" style="background:#fde68a; color:#78350f;"><span class="hidden-sm">🟡 HOLD</span><span class="sm-only">HOLD</span></button>
+        <button class="panicBtn" id="btnSave" onclick="saveSale()" style="background:#22c55e; color:#064e3b; font-size:24px;"><span class="hidden-sm">🟢 SAVE</span><span class="sm-only">SAVE</span></button>
+        <button class="panicBtn" id="btnUndo" style="background:#fecaca; color:#7f1d1d;"><span class="hidden-sm">🔴 UNDO</span><span class="sm-only">UNDO</span></button>
+      </div>
+    </div>
+
+    <div class="overlay" id="historyModal"><div class="modal"><div class="modalHead"><span>🧾 Sales History</span> <button onclick="closeModal('historyModal')">✖</button></div><div id="historyList" style="padding:20px;"></div></div></div>
+    <div class="overlay" id="leaderModal"><div class="modal"><div class="modalHead"><span>🏆 Top Customers</span> <button onclick="closeModal('leaderModal')">✖</button></div><div id="leaderList" style="padding:20px;"></div></div></div>
+
+    <div class="toast" id="toast"></div>
+
+    <style>
+      .hidden-sm { display: inline; }
+      .sm-only { display: none; }
+      @media (max-width: 640px) {
+        .hidden-sm { display: none !important; }
+        .sm-only { display: inline !important; }
+        #menuBtn { display: flex !important; }
+      }
+    </style>
+
+    <script>
+      const el = (id) => document.getElementById(id);
+      let currentLang = "en";
+      let selectedItem = null;
+
+      const products = [
+        { id: 1, nameEn: "Full Cream Milk", nameHi: "फुल क्रीम दूध", rate: 64, img: "🥛" },
+        { id: 2, nameEn: "Paneer", nameHi: "पनीर", rate: 320, img: "🧀" },
+        { id: 3, nameEn: "Desi Ghee", nameHi: "देसी घी", rate: 650, img: "🍯" },
+        { id: 4, nameEn: "Curd (Dahi)", nameHi: "दही", rate: 80, img: "🥣" },
+        { id: 5, nameEn: "Buttermilk", nameHi: "छाछ", rate: 20, img: "🥛" },
+        { id: 6, nameEn: "Mawa (Khoa)", nameHi: "मावा", rate: 280, img: "🍰" }
+      ];
+
+      const translations = {
+        en: { shop: "Gopal Dairy Shop", intake: "Milk Intake", history: "History", save: "🟢 SAVE", hold: "🟡 HOLD", undo: "🔴 UNDO", select: "Select Product", qty: "Quantity (kg/L)", rate: "Rate", summary: "Sale Summary", recent: "Today's Sales", thItem: "Item", thQty: "Qty", thAmt: "Amt" },
+        hi: { shop: "गोपाल डेयरी शॉप", intake: "दूध संकलन", history: "इतिहास", save: "🟢 सेव करें", hold: "🟡 होल्ड करें", undo: "🔴 वापस", select: "प्रोडक्ट चुनें", qty: "मात्रा (किलो/लीटर)", rate: "भाव", summary: "बिक्री सारांश", recent: "आज की बिक्री", thItem: "आइटम", thQty: "मात्रा", thAmt: "कुल" }
+      };
+
+      function renderProducts() {
+        const grid = el("productGrid");
+        grid.innerHTML = "";
+        products.forEach(p => {
+          const card = document.createElement("div");
+          card.className = `p-card ${selectedItem?.id === p.id ? 'selected' : ''}`;
+          card.innerHTML = `<span class="emoji">${p.img}</span><div>${currentLang === 'en' ? p.nameEn : p.nameHi}</div><small>₹${p.rate}</small>`;
+          card.onclick = () => selectProduct(p);
+          grid.appendChild(card);
+        });
+      }
+
+      function selectProduct(p) {
+        selectedItem = p;
+        el("saleRate").value = p.rate;
+        renderProducts();
+        calculateSale();
+      }
+
+      function calculateSale() {
+        const q = el("saleQty").value;
+        const r = el("saleRate").value;
+        const total = q * r;
+        el("totalAmt").textContent = `₹${total.toFixed(2)}`;
+        if(selectedItem) {
+            el("itemDetail").textContent = `${q} x ₹${r} (${currentLang === 'en' ? selectedItem.nameEn : selectedItem.nameHi})`;
+        }
+      }
+
+      function saveSale() {
+        if(!selectedItem) return showToast("Select a product first!");
+        const q = el("saleQty").value;
+        const r = el("saleRate").value;
+        const total = q * r;
+
+        const row = `<tr><td>${selectedItem.nameEn}</td><td>${q}</td><td>₹${total}</td></tr>`;
+        el("salesTbody").innerHTML = row + el("salesTbody").innerHTML;
+
+        showToast("Sale Recorded! ✅");
+        selectedItem = null;
+        el("saleQty").value = 1;
+        el("saleRate").value = "";
+        el("totalAmt").textContent = "₹0.00";
+        el("itemDetail").textContent = "Select an item";
+        renderProducts();
+      }
+
+      el("langSwitch").onclick = () => {
+        currentLang = currentLang === "en" ? "hi" : "en";
+        const t = translations[currentLang];
+        el("shopTitle").textContent = t.shop;
+        el("btnIntakeText").textContent = t.intake;
+        el("btnHistoryText").textContent = t.history;
+        el("btnSave").textContent = t.save;
+        el("btnHold").textContent = t.hold;
+        el("btnUndo").textContent = t.undo;
+        el("lblSelectProduct").textContent = t.select;
+        el("lblQty").textContent = t.qty;
+        el("lblRate").textContent = t.rate;
+        el("lblSummary").textContent = t.summary;
+        el("lblRecent").textContent = t.recent;
+        el("thItem").textContent = t.thItem;
+        el("thQty").textContent = t.thQty;
+        el("thAmt").textContent = t.thAmt;
+        renderProducts();
+        showToast(currentLang === "hi" ? "भाषा: हिंदी" : "Language: English");
+      };
+
+      function openModal(id) { el(id).style.display = "flex"; }
+      function closeModal(id) { el(id).style.display = "none"; }
+      function showToast(msg) { el("toast").textContent = msg; el("toast").classList.add("show"); setTimeout(() => el("toast").classList.remove("show"), 1200); }
+      function toggleMenu() { el("mobileMenu").classList.toggle("active"); }
+
+      function init() {
+        el("todayLabel").textContent = new Date().toISOString().split('T')[0] + " | Morning";
+        renderProducts();
+      }
+      init();
+    </script>
+  </body>
+</html>

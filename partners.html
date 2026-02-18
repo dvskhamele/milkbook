@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Program - MilkRecord</title>
+    <link rel="stylesheet" href="global-nav.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
+        
+        .hero {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .hero h1 { font-size: 42px; font-weight: 900; margin-bottom: 16px; }
+        .hero p { font-size: 18px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        
+        .content { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+        .section { margin-bottom: 60px; }
+        .section h2 { font-size: 32px; font-weight: 800; margin-bottom: 30px; color: #1e293b; }
+        
+        .partner-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .partner-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 4px solid #7c3aed;
+        }
+        
+        .partner-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 15px; }
+        .partner-card .earnings { font-size: 28px; font-weight: 900; color: #10b981; margin: 15px 0; }
+        .partner-card ul { list-style: none; margin-top: 15px; }
+        .partner-card li { padding: 8px 0; color: #64748b; }
+        .partner-card li:before { content: '✓ '; color: #7c3aed; font-weight: 700; }
+        
+        .cta-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .cta-box h3 { font-size: 28px; font-weight: 800; color: #92400e; margin-bottom: 20px; }
+        
+        .cta-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(245, 158, 11, 0.4); }
+    </style>
+</head>
+<body>
+    <div id="globalNavbar"></div>
+    <script src="global-nav.js"></script>
+    
+    <section class="hero">
+        <h1>🤝 Partner Program</h1>
+        <p>Join our network of hardware sellers, technicians, and service providers. Earn per install with AMC opportunities.</p>
+    </section>
+    
+    <div class="content">
+        <div class="section">
+            <h2>Partner Types</h2>
+            <div class="partner-types">
+                <div class="partner-card">
+                    <h3>🔧 Installation Partner</h3>
+                    <div class="earnings">Earn ₹2,000-5,000/install</div>
+                    <p>Install and configure MilkRecord at dairy centers. Perfect for hardware technicians.</p>
+                    <ul>
+                        <li>Free training provided</li>
+                        <li>Certification after training</li>
+                        <li>Lead referrals from MilkRecord</li>
+                        <li>Technical support hotline</li>
+                        <li>AMC revenue share</li>
+                    </ul>
+                </div>
+                
+                <div class="partner-card">
+                    <h3>🖥️ Hardware Reseller</h3>
+                    <div class="earnings">20-30% margin on hardware</div>
+                    <p>Sell analyzers, scales, and printers with MilkRecord software bundle.</p>
+                    <ul>
+                        <li>Wholesale pricing on hardware</li>
+                        <li>Co-marketing support</li>
+                        <li>Demo units available</li>
+                        <li>Installation training</li>
+                        <li>Recurring AMC income</li>
+                    </ul>
+                </div>
+                
+                <div class="partner-card">
+                    <h3>📞 Service Provider</h3>
+                    <div class="earnings">₹500-1,500/service call</div>
+                    <p>Provide ongoing support and maintenance for installed centers.</p>
+                    <ul>
+                        <li>AMC ticket access</li>
+                        <li>Priority parts supply</li>
+                        <li>Remote support tools</li>
+                        <li>Training updates</li>
+                        <li>Performance bonuses</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta-box">
+            <h3>🚀 Ready to Get Started?</h3>
+            <p style="color: #78350f; font-size: 18px; margin-bottom: 20px;">Join 150+ partners already earning with MilkRecord</p>
+            <a href="mailto:partners@milkrecord.in" class="cta-btn">Become a Partner →</a>
+            <p style="color: #92400e; margin-top: 20px; font-size: 14px;">Or email us at partners@milkrecord.in</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MilkRecord - Dairy Management Software</title>
+    <link rel="stylesheet" href="global-nav.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
+        
+        .hero {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #059669 100%);
+            color: white;
+            padding: 120px 20px 80px;
+            text-align: center;
+        }
+        
+        .hero h1 { font-size: 56px; font-weight: 900; margin-bottom: 20px; letter-spacing: -2px; }
+        .hero p { font-size: 22px; opacity: 0.9; max-width: 700px; margin: 0 auto 50px; }
+        
+        .icp-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: -60px auto 0;
+            padding: 0 20px;
+        }
+        
+        .icp-card {
+            background: white;
+            border-radius: 24px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+        
+        .icp-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+        }
+        
+        .icp-card.bmc { border-color: #1e3a5f; }
+        .icp-card.pos { border-color: #10b981; }
+        
+        .icp-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin: 0 auto 25px;
+        }
+        
+        .icp-card.bmc .icp-icon { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); }
+        .icp-card.pos .icp-icon { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        
+        .icp-card h2 { font-size: 32px; font-weight: 800; margin-bottom: 15px; }
+        .icp-card.bmc h2 { color: #1e3a5f; }
+        .icp-card.pos h2 { color: #047857; }
+        
+        .icp-card p { font-size: 16px; color: #64748b; margin-bottom: 30px; line-height: 1.7; }
+        
+        .icp-features {
+            text-align: left;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 16px;
+        }
+        
+        .icp-features li {
+            list-style: none;
+            padding: 8px 0;
+            padding-left: 28px;
+            position: relative;
+            color: #475569;
+            font-size: 14px;
+        }
+        
+        .icp-features li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: 700;
+        }
+        
+        .icp-card.bmc .icp-features li:before { color: #1e3a5f; }
+        .icp-card.pos .icp-features li:before { color: #10b981; }
+        
+        .icp-btn {
+            display: inline-block;
+            padding: 18px 40px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .icp-card.bmc .icp-btn {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+        }
+        
+        .icp-card.pos .icp-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .icp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .secondary-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 60px;
+            padding: 40px 20px;
+        }
+        
+        .secondary-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 24px;
+            background: white;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+        
+        .secondary-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        
+        .footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 80px;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .hero p { font-size: 18px; }
+            .icp-selector { grid-template-columns: 1fr; margin-top: -40px; }
+            .icp-card { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Navigation -->
+    <div id="globalNavbar"></div>
+    <script src="global-nav.js"></script>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>MilkRecord</h1>
+        <p>Complete dairy management software for collection centers and retail shops.</p>
+    </section>
+    
+    <!-- ICP Selector -->
+    <section class="icp-selector">
+        <!-- BMC Card -->
+        <div class="icp-card bmc">
+            <div class="icp-icon">🏢</div>
+            <h2>Milk Collection Centers</h2>
+            <p>Professional procurement management for BMCs and dairy cooperatives.</p>
+            
+            <ul class="icp-features">
+                <li>Shift-based operations</li>
+                <li>Complete audit trail</li>
+                <li>Compliance ready</li>
+                <li>Analyzer integration</li>
+                <li>Government reports</li>
+            </ul>
+            
+            <a href="milk-collection-centers.html" class="icp-btn">Learn More →</a>
+        </div>
+        
+        <!-- POS Card -->
+        <div class="icp-card pos">
+            <div class="icp-icon">🏪</div>
+            <h2>Dairy Shops</h2>
+            <p>Fast billing and inventory management for retail dairy shops.</p>
+            
+            <ul class="icp-features">
+                <li>Lightning fast billing</li>
+                <li>Works offline</li>
+                <li>No installation</li>
+                <li>Free to start</li>
+                <li>WhatsApp bills</li>
+            </ul>
+            
+            <a href="dairy-shops.html" class="icp-btn">Learn More →</a>
+        </div>
+    </section>
+    
+    <!-- Secondary Links -->
+    <section class="secondary-links">
+        <a href="hardware.html" class="secondary-link">
+            🖥️ Hardware Support
+        </a>
+        <a href="compliance.html" class="secondary-link">
+            🔒 Compliance
+        </a>
+        <a href="partners.html" class="secondary-link">
+            🤝 Partner Program
+        </a>
+        <a href="demo-bmc.html" class="secondary-link">
+            🎮 BMC Demo
+        </a>
+        <a href="purchase2.html" class="secondary-link">
+            🛒 POS Demo
+        </a>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2024 MilkRecord. Built for Indian dairy industry.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milk Collection Centers (BMCs) - MilkRecord</title>
+    <link rel="stylesheet" href="global-nav.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: 100px 20px 80px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+        
+        .hero-badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* CTA Buttons */
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 900px;
+        }
+        
+        .cta-btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .cta-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(37, 99, 235, 0.5);
+        }
+        
+        .cta-secondary {
+            background: white;
+            color: #1e3a5f;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .cta-secondary:hover {
+            border-color: #2563eb;
+            background: #f8fafc;
+        }
+        
+        .cta-tertiary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .cta-tertiary:hover {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #1e293b;
+        }
+        
+        .section-title p {
+            font-size: 18px;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1e293b;
+        }
+        
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.7;
+        }
+        
+        /* Compliance Section */
+        .compliance {
+            background: #1e3a5f;
+            color: white;
+            padding: 80px 20px;
+        }
+        
+        .compliance-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .compliance-item {
+            text-align: center;
+        }
+        
+        .compliance-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .compliance-item h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .compliance-item p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        /* Demo Section */
+        .demo-section {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            text-align: center;
+        }
+        
+        .demo-box {
+            max-width: 800px;
+            margin: 40px auto 0;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-box h3 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #1e3a5f;
+        }
+        
+        .demo-box ul {
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto 30px;
+            list-style: none;
+        }
+        
+        .demo-box li {
+            padding: 8px 0;
+            padding-left: 28px;
+            position: relative;
+            color: #64748b;
+        }
+        
+        .demo-box li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: 700;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .cta-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Navigation -->
+    <div id="globalNavbar"></div>
+    <script src="global-nav.js"></script>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badges">
+            <span class="badge">🏢 Institutional Grade</span>
+            <span class="badge">📊 Compliance Ready</span>
+            <span class="badge">🔒 Audit Trail</span>
+            <span class="badge">📱 Offline First</span>
+        </div>
+        <h1>Milk Collection Centers (BMCs)</h1>
+        <p>Professional procurement management with shift-based operations, compliance tracking, and institutional-grade audit trails.</p>
+        
+        <div class="cta-group">
+            <a href="demo-bmc.html" class="cta-btn cta-primary">
+                🎯 Request Demo
+                <span>Web Simulation</span>
+            </a>
+            <a href="#" class="cta-btn cta-secondary">
+                📥 Download On-Prem Trial
+            </a>
+            <a href="partners.html" class="cta-btn cta-tertiary">
+                🤝 Talk to Installer
+            </a>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <div class="section-title">
+            <h2>Built for Scale & Compliance</h2>
+            <p>Everything you need to run a professional milk collection center with complete traceability.</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Shift-Based Operations</h3>
+                <p>Morning and evening shift management with automatic locking. Once a shift is closed, no modifications allowed without supervisor override.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Complete Audit Trail</h3>
+                <p>Every modification is logged with user, timestamp, and reason. Export-ready for compliance audits and regulatory inspections.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚖️</div>
+                <h3>Analyzer Integration</h3>
+                <p>Direct integration with milk analyzers (MilkoScan, Ekomilk, etc.) for automatic fat, SNF, and density readings.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Government Reports</h3>
+                <p>Pre-formatted reports for FSSAI, dairy cooperatives, and local authorities. One-click export in required formats.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3>Role-Based Access</h3>
+                <p>Operator, Supervisor, and Admin roles with granular permissions. Supervisor override for critical modifications.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📡</div>
+                <h3>Offline + Sync</h3>
+                <p>Works without internet. Automatic sync when connection restored. Conflict resolution for multi-device setups.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Compliance Section -->
+    <section class="compliance">
+        <div class="section-title">
+            <h2 style="color: white;">Compliance & Traceability</h2>
+            <p style="color: rgba(255,255,255,0.8);">Built for regulatory requirements from day one.</p>
+        </div>
+        
+        <div class="compliance-grid">
+            <div class="compliance-item">
+                <div class="compliance-icon">🔒</div>
+                <h3>Shift Lock</h3>
+                <p>Automatic locking after shift closure</p>
+            </div>
+            <div class="compliance-item">
+                <div class="compliance-icon">📝</div>
+                <h3>Modification Logs</h3>
+                <p>Every change tracked with reason</p>
+            </div>
+            <div class="compliance-item">
+                <div class="compliance-icon">📁</div>
+                <h3>Data Retention</h3>
+                <p>7+ years of historical data</p>
+            </div>
+            <div class="compliance-item">
+                <div class="compliance-icon">👤</div>
+                <h3>User Authentication</h3>
+                <p>Individual login for all operators</p>
+            </div>
+            <div class="compliance-item">
+                <div class="compliance-icon">⚠️</div>
+                <h3>Supervisor Override</h3>
+                <p>Controlled exception handling</p>
+            </div>
+            <div class="compliance-item">
+                <div class="compliance-icon">📤</div>
+                <h3>Export Ready</h3>
+                <p>Govt reporting formats</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Demo Section -->
+    <section class="demo-section">
+        <div class="section-title">
+            <h2>Try the BMC Procurement Demo</h2>
+            <p>Experience a real collection center workflow with sample data.</p>
+        </div>
+        
+        <div class="demo-box">
+            <h3>🎯 Interactive Web Demo</h3>
+            <ul>
+                <li>Pre-loaded with sample farmer data</li>
+                <li>Morning & Evening shift simulation</li>
+                <li>Locked flows for critical operations</li>
+                <li>Read-only audit log viewer</li>
+                <li>Force sync failure scenarios</li>
+                <li>Supervisor override demonstration</li>
+            </ul>
+            <a href="demo-bmc.html" class="cta-btn cta-primary">
+                Launch BMC Demo
+                <span>→</span>
+            </a>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="hardware.html">Hardware</a>
+            <a href="compliance.html">Compliance</a>
+            <a href="partners.html">Partners</a>
+            <a href="login-bmc.html">BMC Login</a>
+        </div>
+        <p>© 2024 MilkRecord. Built for professional milk collection centers.</p>
+    </footer>
+</body>
+</html>

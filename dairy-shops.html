@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dairy Shop POS - MilkRecord</title>
+    <link rel="stylesheet" href="global-nav.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0fdf4;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 100px 20px 80px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+        
+        .hero-badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* CTA Buttons */
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 900px;
+        }
+        
+        .cta-btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .cta-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5);
+        }
+        
+        .cta-secondary {
+            background: white;
+            color: #047857;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .cta-secondary:hover {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #1e293b;
+        }
+        
+        .section-title p {
+            font-size: 18px;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1e293b;
+        }
+        
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.7;
+        }
+        
+        /* Speed Section */
+        .speed-section {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .speed-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 40px auto 0;
+        }
+        
+        .stat {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 900;
+            color: #10b981;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        
+        /* Demo Section */
+        .demo-section {
+            padding: 80px 20px;
+            background: white;
+            text-align: center;
+        }
+        
+        .demo-box {
+            max-width: 800px;
+            margin: 40px auto 0;
+            background: #f0fdf4;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+            border: 2px solid #10b981;
+        }
+        
+        .demo-box h3 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #047857;
+        }
+        
+        .demo-box ul {
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto 30px;
+            list-style: none;
+        }
+        
+        .demo-box li {
+            padding: 8px 0;
+            padding-left: 28px;
+            position: relative;
+            color: #64748b;
+        }
+        
+        .demo-box li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: 700;
+        }
+        
+        /* Hardware Section */
+        .hardware {
+            background: #1e293b;
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .hardware p {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .hardware a {
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .cta-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .speed-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Navigation -->
+    <div id="globalNavbar"></div>
+    <script src="global-nav.js"></script>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badges">
+            <span class="badge">⚡ Lightning Fast</span>
+            <span class="badge">📱 Works Offline</span>
+            <span class="badge">🔧 No Install</span>
+            <span class="badge">💰 Free to Start</span>
+        </div>
+        <h1>Dairy Shop POS</h1>
+        <p>Quick billing, inventory tracking, and customer management for retail dairy shops. Start selling in 30 seconds.</p>
+        
+        <div class="cta-group">
+            <a href="purchase2.html" class="cta-btn cta-primary">
+                🚀 Try Free Web Demo
+                <span>No Login Required</span>
+            </a>
+            <a href="#" class="cta-btn cta-secondary">
+                ✨ Start Using (No Install)
+            </a>
+        </div>
+    </section>
+    
+    <!-- Speed Stats Section -->
+    <section class="speed-section">
+        <div class="section-title">
+            <h2>Built for Speed & Volume</h2>
+            <p>Handle rush hour crowds without breaking a sweat.</p>
+        </div>
+        
+        <div class="speed-stats">
+            <div class="stat">
+                <div class="stat-number">3s</div>
+                <div class="stat-label">Avg Billing Time</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Internet Required</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Products Supported</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Always Available</div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <div class="section-title">
+            <h2>Everything You Need to Sell</h2>
+            <p>Simple, fast, and reliable POS for daily dairy operations.</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🛒</div>
+                <h3>Quick Billing</h3>
+                <p>Select products, enter quantity, and bill in seconds. Touch-optimized for fast checkout during rush hours.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📦</div>
+                <h3>Inventory Tracking</h3>
+                <p>Auto-deduct stock on sale. Low-stock alerts. Know exactly when to reorder milk, paneer, or ghee.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Customer Memory</h3>
+                <p>Remember regular customers and their preferences. Quick select for frequent buyers.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Daily Reports</h3>
+                <p>End-of-day sales summary. Cash in hand. Product-wise sales. Everything at your fingertips.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>WhatsApp Preview</h3>
+                <p>Generate beautiful bills to share on WhatsApp. Professional look for your customers.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Works Everywhere</h3>
+                <p>Desktop, tablet, or mobile. Chrome, Firefox, or Safari. No installation, just open and sell.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Demo Section -->
+    <section class="demo-section">
+        <div class="section-title">
+            <h2>Try the POS Demo Now</h2>
+            <p>No signup. No credit card. Just start selling.</p>
+        </div>
+        
+        <div class="demo-box">
+            <h3>🎮 Fully Interactive Demo</h3>
+            <ul>
+                <li>Pre-loaded with common dairy products</li>
+                <li>Add/remove items from cart</li>
+                <li>Calculate totals instantly</li>
+                <li>Reset and start over anytime</li>
+                <li>See billing speed in action</li>
+                <li>WhatsApp bill preview</li>
+            </ul>
+            <a href="purchase2.html" class="cta-btn cta-primary">
+                Launch POS Demo
+                <span>→</span>
+            </a>
+        </div>
+    </section>
+    
+    <!-- Hardware Section -->
+    <section class="hardware">
+        <h2 style="margin-bottom: 20px;">🖥️ Works with Your Hardware</h2>
+        <p>MilkRecord works with standard dairy hardware including analyzers and weighing scales. 
+        Already have equipment? <a href="hardware.html">See supported devices →</a></p>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="hardware.html">Hardware</a>
+            <a href="purchase2.html">Free Demo</a>
+            <a href="partners.html">Partners</a>
+            <a href="login-pos.html">POS Login</a>
+        </div>
+        <p>© 2024 MilkRecord. Built for retail dairy shops.</p>
+    </footer>
+</body>
+</html>
