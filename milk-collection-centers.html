@@ -217,7 +217,103 @@
             font-size: 14px;
             opacity: 0.8;
         }
-        
+
+        /* Completeness Section */
+        .completeness-section {
+            padding: 80px 20px;
+            background: #f8fafc;
+        }
+
+        .completeness-table {
+            max-width: 900px;
+            margin: 40px auto 0;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .completeness-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .completeness-table th {
+            background: #1e3a5f;
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .completeness-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .completeness-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .completeness-table tr:hover {
+            background: #f1f5f9;
+        }
+
+        .status-green { color: #16a34a; font-weight: 700; }
+        .status-yellow { color: #d97706; font-weight: 700; }
+        .status-red { color: #dc2626; font-weight: 700; }
+
+        .completeness-footer {
+            max-width: 900px;
+            margin: 20px auto 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        /* Audit Expectations Section */
+        .audit-expectations {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .audit-list {
+            max-width: 800px;
+            margin: 40px auto 0;
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .audit-list li {
+            padding: 12px 0;
+            padding-left: 32px;
+            position: relative;
+            color: #92400e;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .audit-list li:before {
+            content: '❓';
+            position: absolute;
+            left: 0;
+        }
+
+        .audit-footer {
+            max-width: 800px;
+            margin: 20px auto 0;
+            text-align: center;
+            color: #78350f;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
         /* Demo Section */
         .demo-section {
             padding: 80px 20px;
@@ -433,6 +529,76 @@
         </div>
     </section>
     
+    <!-- Operational Completeness Section -->
+    <section class="completeness-section">
+        <div class="section-title">
+            <h2>Operational Completeness Status</h2>
+            <p>Milk collection is not judged by data entry. It is judged by explainability during audit, disputes, and inspection.</p>
+        </div>
+        
+        <div class="completeness-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Area</th>
+                        <th>Status in MilkRecord</th>
+                        <th>If Not Tracked</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Milk Quantity & Fat</strong></td>
+                        <td><span class="status-green">🟢 Fully Tracked</span></td>
+                        <td>Audit objections</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Variance Causes</strong></td>
+                        <td><span class="status-yellow">🟡 Conditionally Tracked</span></td>
+                        <td>"Cause not recorded"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Equipment Issues</strong></td>
+                        <td><span class="status-yellow">🟡 Service logs optional</span></td>
+                        <td>Repeat faults</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Farmer / Animal Identity</strong></td>
+                        <td><span class="status-yellow">🟡 Profile-linked</span></td>
+                        <td>Lab disputes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Loan / Deductions</strong></td>
+                        <td><span class="status-yellow">🟡 Classified</span></td>
+                        <td>Unexplained deductions</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <p class="completeness-footer">
+            MilkRecord clearly shows what is tracked and what is not — nothing is hidden.
+        </p>
+    </section>
+    
+    <!-- Audit Expectations Section -->
+    <section class="audit-expectations">
+        <div class="section-title">
+            <h2>What Auditors Look For (Simulation)</h2>
+        </div>
+        
+        <ul class="audit-list">
+            <li>Why did variance occur on this shift?</li>
+            <li>Why was net payable reduced?</li>
+            <li>Which equipment caused downtime?</li>
+            <li>Which animal produced this sample?</li>
+            <li>Who approved this override?</li>
+        </ul>
+        
+        <p class="audit-footer">
+            MilkRecord highlights when answers exist — and when they don't.
+        </p>
+    </section>
+    
     <!-- Demo Section -->
     <section class="demo-section">
         <div class="section-title">
@@ -451,7 +617,7 @@
                 <li>Supervisor override demonstration</li>
             </ul>
             <a href="demo-bmc-login.html" class="cta-btn cta-primary">
-                Launch BMC Demo
+                View Audit Simulator (Shows Explanation Gaps)
                 <span>→</span>
             </a>
         </div>

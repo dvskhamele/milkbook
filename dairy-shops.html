@@ -206,7 +206,112 @@
             color: #64748b;
             font-weight: 600;
         }
-        
+
+        /* Preparedness Section */
+        .preparedness-section {
+            padding: 80px 20px;
+            background: #f0fdf4;
+        }
+
+        .preparedness-table {
+            max-width: 900px;
+            margin: 40px auto 0;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .preparedness-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .preparedness-table th {
+            background: #047857;
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .preparedness-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .preparedness-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .preparedness-table tr:hover {
+            background: #f0fdf4;
+        }
+
+        .preparedness-footer {
+            max-width: 900px;
+            margin: 20px auto 0;
+            text-align: center;
+            color: #047857;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        /* Channel Bridge Section */
+        .channel-bridge {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .bridge-box {
+            max-width: 800px;
+            margin: 40px auto 0;
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .bridge-box ul {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .bridge-box li {
+            padding: 10px 0;
+            padding-left: 28px;
+            position: relative;
+            color: #92400e;
+            font-size: 15px;
+        }
+
+        .bridge-box li:before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        .bridge-footer {
+            text-align: center;
+            color: #78350f;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .pos-disclaimer {
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            font-style: italic;
+            margin-top: 40px;
+        }
+
         /* Demo Section */
         .demo-section {
             padding: 80px 20px;
@@ -429,6 +534,80 @@
                 <p>Desktop, tablet, or mobile. Chrome, Firefox, or Safari. No installation, just open and sell.</p>
             </div>
         </div>
+    </section>
+    
+    <!-- Preparedness Section -->
+    <section class="preparedness-section">
+        <div class="section-title">
+            <h2>Fast Billing. Clear Records. No Assumptions.</h2>
+            <p>Dairy shops don't face audits — but their records often become references for societies and BMCs.</p>
+        </div>
+        
+        <div class="preparedness-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Area</th>
+                        <th>POS Tracks</th>
+                        <th>Not Tracked</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Daily Sales</strong></td>
+                        <td><span class="status-green">🟢 Yes</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Customer Udhar</strong></td>
+                        <td><span class="status-green">🟢 Yes</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Source of Milk</strong></td>
+                        <td><span class="status-yellow">🟡 Optional</span></td>
+                        <td>Supplier ambiguity</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Quality Reference</strong></td>
+                        <td><span class="status-red">❌ No</span></td>
+                        <td>Needs BMC system</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Settlement Proof</strong></td>
+                        <td><span class="status-red">❌ No</span></td>
+                        <td>Needs society records</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <p class="preparedness-footer">
+            POS is for speed. BMC systems are for final truth.
+        </p>
+    </section>
+    
+    <!-- Channel Bridge Section -->
+    <section class="channel-bridge">
+        <div class="section-title">
+            <h2>When Dairy Shops Scale Up</h2>
+        </div>
+        
+        <div class="bridge-box">
+            <ul>
+                <li>Start with billing & udhar</li>
+                <li>Move to procurement</li>
+                <li>Require audit-safe records</li>
+                <li>Transition to MilkRecord BMC system</li>
+            </ul>
+            <p class="bridge-footer">
+                Same data mindset. Different responsibility level.
+            </p>
+        </div>
+        
+        <p class="pos-disclaimer">
+            POS demo shows retail speed. Audit completeness is demonstrated in BMC systems.
+        </p>
     </section>
     
     <!-- Demo Section -->
