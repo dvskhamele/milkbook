@@ -345,6 +345,82 @@
             margin-top: 40px;
         }
 
+        /* What POS Does/Does Not Section */
+        .pos-scope-section {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .pos-scope-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            max-width: 1100px;
+            margin: 40px auto 0;
+        }
+
+        .pos-scope-card {
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .pos-scope-card.does {
+            background: #f0fdf4;
+            border: 2px solid #10b981;
+        }
+
+        .pos-scope-card.does-not {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+        }
+
+        .pos-scope-card h3 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .pos-scope-card.does h3 {
+            color: #047857;
+        }
+
+        .pos-scope-card.does-not h3 {
+            color: #dc2626;
+        }
+
+        .pos-scope-card ul {
+            list-style: none;
+        }
+
+        .pos-scope-card li {
+            padding: 12px 0;
+            padding-left: 32px;
+            position: relative;
+            font-size: 15px;
+            color: #475569;
+        }
+
+        .pos-scope-card.does li:before {
+            content: '✅';
+            position: absolute;
+            left: 0;
+        }
+
+        .pos-scope-card.does-not li:before {
+            content: '❌';
+            position: absolute;
+            left: 0;
+        }
+
+        .pos-scope-footer {
+            max-width: 1100px;
+            margin: 20px auto 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            font-style: italic;
+        }
+
         /* Preparedness Section */
         .preparedness-section {
             padding: 80px 20px;
@@ -587,16 +663,16 @@
             <span class="badge">🔧 No Install</span>
             <span class="badge">💰 Free to Start</span>
         </div>
-        <h1>Dairy Shop POS</h1>
-        <p>Quick billing, inventory tracking, and customer management for retail dairy shops. Start selling in 30 seconds.</p>
-        
+        <h1>Milk Billing for Dairy Shops<br><span style="font-size: 24px; font-weight: 600; opacity: 0.8;">(Not a Procurement or Audit System)</span></h1>
+        <p>Built for speed, udhar tracking, and daily sales — not for quality disputes, audits, or settlements.</p>
+
         <div class="cta-group">
             <a href="pos-demo.html" class="cta-btn cta-primary">
-                🚀 Try Free Web Demo
+                🟢 Try Free Web POS
                 <span>No Login Required</span>
             </a>
-            <a href="pos-demo.html" class="cta-btn cta-secondary">
-                ✨ Start Using (No Install)
+            <a href="milk-collection-centers.html" class="cta-btn cta-secondary" style="opacity: 0.7;">
+                Running a collection center? → See BMC system
             </a>
         </div>
     </section>
@@ -674,6 +750,45 @@
         </div>
     </section>
     
+    <!-- What This POS Does/Does Not Section -->
+    <section class="pos-scope-section">
+        <div class="section-title">
+            <h2>Retail Truth (What This System Records)</h2>
+        </div>
+        
+        <div class="pos-scope-grid">
+            <!-- What POS Does -->
+            <div class="pos-scope-card does">
+                <h3>✅ What This POS DOES</h3>
+                <ul>
+                    <li>Milk & product sales</li>
+                    <li>Customer balances (Udhar / Likh Lo)</li>
+                    <li>Daily sales history</li>
+                    <li>Rate cards</li>
+                    <li>Cash / UPI / Credit tagging</li>
+                    <li>Export (CSV)</li>
+                </ul>
+            </div>
+            
+            <!-- What POS Does NOT Do -->
+            <div class="pos-scope-card does-not">
+                <h3>❌ What This POS Does NOT Answer</h3>
+                <ul>
+                    <li>Which farmer supplied this milk</li>
+                    <li>Fat / SNF verification</li>
+                    <li>Quality disputes</li>
+                    <li>Audit explanations</li>
+                    <li>Payment settlements to farmers</li>
+                    <li>Govt / union reporting</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p class="pos-scope-footer">
+            Retail speed ≠ Institutional accountability.
+        </p>
+    </section>
+    
     <!-- Retail vs Institutional Truth Section -->
     <section class="retail-truth-section">
         <div class="section-title">
@@ -736,19 +851,25 @@
     <!-- Upgrade Path Section -->
     <section class="upgrade-path-section">
         <div class="section-title">
-            <h2>When Shops Become Collection Points</h2>
+            <h2>When Shops Outgrow Retail POS</h2>
         </div>
         
         <div class="upgrade-path-box">
             <ul>
-                <li>POS handles billing</li>
-                <li>Procurement starts</li>
-                <li>Audit responsibility begins</li>
-                <li>MilkRecord BMC modules activate</li>
+                <li>Shop starts bulk buying milk</li>
+                <li>Suppliers ask for transparency</li>
+                <li>Fat / rate disputes begin</li>
+                <li>Payments questioned</li>
+                <li>Audit responsibility starts</li>
             </ul>
             <p class="upgrade-path-footer">
-                Same data mindset. Different responsibility level.
+                At this point, POS data is not enough.
             </p>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="milk-collection-centers.html" style="color: #047857; font-weight: 700; text-decoration: none; font-size: 15px;">
+                    See Milk Collection Center System →
+                </a>
+            </div>
         </div>
         
         <p class="pos-disclaimer">

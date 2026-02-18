@@ -100,6 +100,134 @@
       .toast { position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%); background: rgba(15, 23, 42, 0.92); color: #fff; padding: 12px 14px; border-radius: 16px; font-weight: 1100; opacity: 0; transition: opacity 0.18s; z-index: 70; }
       .toast.show { opacity: 1; }
 
+      /* Demo Header Banner */
+      .demo-banner {
+        background: #fef3c7;
+        border-bottom: 2px solid #f59e0b;
+        padding: 12px 20px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        color: #92400e;
+      }
+
+      /* Institutional Gaps Panel */
+      .institutional-gaps-panel {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 320px;
+        background: #f8fafc;
+        border-left: 2px solid #e2e8f0;
+        padding: 20px;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 100;
+      }
+
+      .institutional-gaps-panel.open {
+        transform: translateX(0);
+      }
+
+      .gaps-panel-toggle {
+        position: fixed;
+        right: 20px;
+        bottom: 100px;
+        background: #64748b;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 99;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .gaps-panel-toggle:hover {
+        background: #475569;
+      }
+
+      .gaps-panel-title {
+        font-size: 16px;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+      }
+
+      .gap-item {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 12px;
+        opacity: 0.6;
+      }
+
+      .gap-item-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .gap-item-title:before {
+        content: '🟡';
+        font-size: 12px;
+      }
+
+      .gap-item-desc {
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.5;
+      }
+
+      .gap-item-tooltip {
+        font-size: 11px;
+        color: #92400e;
+        background: #fef3c7;
+        padding: 8px;
+        border-radius: 6px;
+        margin-top: 8px;
+        font-style: italic;
+      }
+
+      /* Contextual Nudges */
+      .contextual-nudge {
+        background: #eff6ff;
+        border-left: 3px solid #2563eb;
+        padding: 10px 15px;
+        border-radius: 6px;
+        margin: 10px 0;
+        font-size: 13px;
+        color: #1e40af;
+      }
+
+      .contextual-nudge:before {
+        content: 'ℹ️ ';
+      }
+
+      /* Footer Truth Stamp */
+      .footer-truth-stamp {
+        background: #f1f5f9;
+        border-top: 1px solid #e2e8f0;
+        padding: 15px 20px;
+        text-align: center;
+        font-size: 13px;
+        color: #64748b;
+        font-weight: 600;
+      }
+
       /* Mobile menu */
       .mobile-menu { display: none; position: fixed; top: 70px; left: 0; right: 0; background: #fff; border-bottom: 1px solid var(--line); padding: 12px; z-index: 50; box-shadow: var(--shadow); }
       .mobile-menu.active { display: block; }
@@ -131,7 +259,13 @@
     <!-- Global Navigation -->
     <div id="globalNavbar"></div>
     <script src="global-nav.js"></script>
-    
+
+    <!-- Demo Header Banner -->
+    <div class="demo-banner">
+      🟡 Demo Mode — Retail POS<br>
+      This demo shows billing only, not procurement or audit modules.
+    </div>
+
     <div class="app">
       <div class="topbar">
         <div class="brand">
@@ -276,6 +410,48 @@
     </div>
 
     <div class="toast" id="toast"></div>
+
+    <!-- Institutional Gaps Panel -->
+    <button class="gaps-panel-toggle" onclick="toggleGapsPanel()" title="Institutional Records">📋</button>
+    
+    <div class="institutional-gaps-panel" id="gapsPanel">
+      <h3 class="gaps-panel-title">Institutional Records (Not Tracked)</h3>
+      
+      <div class="gap-item">
+        <div class="gap-item-title">Farmer source</div>
+        <div class="gap-item-desc">Not recorded</div>
+        <div class="gap-item-tooltip">These are required only for milk collection centers, not retail shops.</div>
+      </div>
+      
+      <div class="gap-item">
+        <div class="gap-item-title">Quality test (Fat/SNF)</div>
+        <div class="gap-item-desc">Not recorded</div>
+        <div class="gap-item-tooltip">These are required only for milk collection centers, not retail shops.</div>
+      </div>
+      
+      <div class="gap-item">
+        <div class="gap-item-title">Payment settlement</div>
+        <div class="gap-item-desc">Not recorded</div>
+        <div class="gap-item-tooltip">These are required only for milk collection centers, not retail shops.</div>
+      </div>
+      
+      <div class="gap-item">
+        <div class="gap-item-title">Deductions / loans</div>
+        <div class="gap-item-desc">Not recorded</div>
+        <div class="gap-item-tooltip">These are required only for milk collection centers, not retail shops.</div>
+      </div>
+      
+      <div class="gap-item">
+        <div class="gap-item-title">Equipment logs</div>
+        <div class="gap-item-desc">Not recorded</div>
+        <div class="gap-item-tooltip">These are required only for milk collection centers, not retail shops.</div>
+      </div>
+    </div>
+
+    <!-- Footer Truth Stamp -->
+    <div class="footer-truth-stamp">
+      This POS records retail transactions only. Procurement, quality, and audit explanations are out of scope.
+    </div>
 
     <script>
       const el = (id) => document.getElementById(id);
@@ -443,11 +619,11 @@
         const r = parseFloat(el("saleRate").value) || 0;
         const total = q * r;
         el("totalAmt").textContent = `₹${total.toFixed(2)}`;
-        
+
         if(selectedItem) {
             el("itemDetail").textContent = `${q} x ₹${r} (${currentLang === 'en' ? selectedItem.nameEn : selectedItem.nameHi})`;
         }
-        
+
         // Update balance
         const customer = customers.find(c => c.id === selectedCustomerId);
         if (customer) {
@@ -455,6 +631,9 @@
           const newBalance = currentPaymentMode === 'udhar' ? oldBalance + total : oldBalance;
           el("newBalance").textContent = `NEW BALANCE: ₹${newBalance.toFixed(2)}`;
         }
+
+        // Check for contextual nudges
+        checkContextualNudges();
       }
 
       function saveSale() {
@@ -567,9 +746,45 @@
       }
       
       function showToast(msg) { 
-        el("toast").textContent = msg; 
-        el("toast").classList.add("show"); 
+        el("toast").textContent = msg;
+        el("toast").classList.add("show");
         setTimeout(() => el("toast").classList.remove("show"), 1200);
+      }
+
+      function toggleGapsPanel() {
+        el("gapsPanel").classList.toggle("open");
+      }
+
+      // Contextual nudges
+      function checkContextualNudges() {
+        const qty = parseFloat(el("saleQty").value) || 0;
+        const customer = customers.find(c => c.id === selectedCustomerId);
+        
+        // Bulk quantity nudge
+        if (qty > 10) {
+          if (!el("bulkNudge")) {
+            const nudge = document.createElement("div");
+            nudge.className = "contextual-nudge";
+            nudge.id = "bulkNudge";
+            nudge.innerHTML = "Bulk milk sales usually require source & quality records<br><small>(Handled in Milk Collection Center system)</small>";
+            el("sale-inputs").parentNode.insertBefore(nudge, el("sale-inputs").nextSibling);
+          }
+        } else if (el("bulkNudge")) {
+          el("bulkNudge").remove();
+        }
+        
+        // Udhar accumulation nudge
+        if (customer && (customer.balance || 0) > 5000) {
+          if (!el("udharNudge")) {
+            const nudge = document.createElement("div");
+            nudge.className = "contextual-nudge";
+            nudge.id = "udharNudge";
+            nudge.innerHTML = "Retail credit ≠ farmer settlement<br><small>(Settlements require audit-grade records)</small>";
+            el("oldBalance").parentNode.insertBefore(nudge, el("oldBalance").nextSibling);
+          }
+        } else if (el("udharNudge")) {
+          el("udharNudge").remove();
+        }
       }
 
       init();
