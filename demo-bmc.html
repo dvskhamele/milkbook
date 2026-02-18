@@ -357,6 +357,11 @@
     </div>
     
     <script>
+        // Check if user logged in for demo
+        if (!localStorage.getItem('bmc_demo_logged_in')) {
+            window.location.href = 'demo-bmc-login.html';
+        }
+    
         // Sample farmer data
         const farmers = [
             { id: 1, name: 'Ramesh Kumar', mobile: '9876543210', animals: '5 Cows', avgFat: '3.8%' },

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMC Demo - Login Required | MilkRecord</title>
+    <link rel="stylesheet" href="global-nav.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        
+        .demo-login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+            padding: 50px 40px;
+        }
+        
+        .demo-badge {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .demo-header { text-align: center; margin-bottom: 30px; }
+        .demo-header h1 { font-size: 28px; font-weight: 800; color: #1e3a5f; margin-bottom: 12px; }
+        .demo-header p { color: #64748b; font-size: 14px; line-height: 1.6; }
+        
+        .feature-list {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .feature-list h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .feature-list ul {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: #475569;
+            font-size: 14px;
+        }
+        
+        .feature-list li:before {
+            content: '🔒';
+            position: absolute;
+            left: 0;
+            font-size: 12px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(30, 58, 95, 0.4);
+        }
+        
+        .skip-demo {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .skip-demo a {
+            color: #1e3a5f;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-link:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <a href="milk-collection-centers.html" class="back-link">← Back to BMC</a>
+    
+    <div class="demo-login-container">
+        <div class="demo-header">
+            <span class="demo-badge">🔒 Restricted Demo</span>
+            <h1>BMC Audit Simulator</h1>
+            <p>This demo requires login credentials. Experience shift-based operations with compliance features.</p>
+        </div>
+        
+        <div class="feature-list">
+            <h3>Demo Includes</h3>
+            <ul>
+                <li>Read-only audit trail viewer</li>
+                <li>Shift lock simulation</li>
+                <li>Modification logs with reason codes</li>
+                <li>Supervisor override workflow</li>
+                <li>Force sync failure scenarios</li>
+                <li>Government report exports</li>
+            </ul>
+        </div>
+        
+        <form onsubmit="handleDemoLogin(event)">
+            <div style="margin-bottom: 15px;">
+                <label style="display:block;font-weight:600;color:#475569;margin-bottom:8px;font-size:14px;">Demo Username</label>
+                <input type="text" value="demo_operator" readonly style="width:100%;padding:14px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;background:#f1f5f9;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display:block;font-weight:600;color:#475569;margin-bottom:8px;font-size:14px;">Demo Password</label>
+                <input type="password" value="demo123" readonly style="width:100%;padding:14px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;background:#f1f5f9;">
+            </div>
+            <button type="submit" class="login-btn">Enter BMC Demo →</button>
+        </form>
+        
+        <div class="skip-demo">
+            <p style="color:#64748b;font-size:14px;margin-bottom:10px;">Need full access?</p>
+            <a href="milk-collection-centers.html">Request System Demo →</a>
+        </div>
+    </div>
+    
+    <script>
+        function handleDemoLogin(e) {
+            e.preventDefault();
+            // Simulate login and redirect to restricted demo
+            localStorage.setItem('bmc_demo_logged_in', 'true');
+            window.location.href = 'demo-bmc.html';
+        }
+    </script>
+</body>
+</html>

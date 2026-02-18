@@ -44,13 +44,13 @@ const navConfig = {
       items: [
         {
           title: 'BMC Procurement Demo',
-          desc: 'Shift-based collection',
-          url: 'demo-bmc.html',
+          desc: 'Login required - Audit simulator',
+          url: 'demo-bmc-login.html',
           icp: 'bmc'
         },
         {
           title: 'Dairy Shop POS Demo',
-          desc: 'Quick billing & sales',
+          desc: 'Instant access - No login',
           url: 'pos-demo.html',
           icp: 'pos'
         }

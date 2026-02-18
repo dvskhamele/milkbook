@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MilkRecord - Choose your dairy management solution: Milk Collection Centers or Dairy Shops">
+    <title>MilkRecord - Select Your Solution</title>
+    <link rel="stylesheet" href="global-nav.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: white; min-height: 100vh; }
+        
+        /* Minimal Top Nav */
+        .top-nav {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        
+        .brand-logo {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #2563eb 0%, #10b981 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover { color: white; }
+        
+        /* Main Traffic Controller */
+        .traffic-controller {
+            min-height: calc(100vh - 85px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        
+        .choice-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .choice-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 50px 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .choice-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255,255,255,0.08);
+        }
+        
+        .choice-card.bmc {
+            border-color: #1e3a5f;
+        }
+        
+        .choice-card.bmc:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 20px 60px rgba(59, 130, 246, 0.3);
+        }
+        
+        .choice-card.pos {
+            border-color: #047857;
+        }
+        
+        .choice-card.pos:hover {
+            border-color: #10b981;
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+        }
+        
+        .choice-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+        }
+        
+        .choice-card.bmc .choice-icon {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+        }
+        
+        .choice-card.pos .choice-icon {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+        }
+        
+        .choice-card h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+        
+        .choice-card.bmc h2 { color: #60a5fa; }
+        .choice-card.pos h2 { color: #34d399; }
+        
+        .choice-card p {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+        
+        .choice-features {
+            text-align: left;
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+        
+        .choice-features li {
+            list-style: none;
+            padding: 10px 0;
+            padding-left: 28px;
+            position: relative;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+        
+        .choice-features li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: 700;
+        }
+        
+        .choice-card.bmc .choice-features li:before { color: #60a5fa; }
+        .choice-card.pos .choice-features li:before { color: #34d399; }
+        
+        .choice-btn {
+            display: inline-block;
+            padding: 18px 40px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .choice-card.bmc .choice-btn {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+        }
+        
+        .choice-card.pos .choice-btn {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            color: white;
+        }
+        
+        .choice-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+        
+        .choice-card.bmc .badge {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+        
+        .choice-card.pos .badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 20px;
+            list-style: none;
+        }
+        
+        .footer-links a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover { color: white; }
+        
+        /* Mobile Responsive */
+        @media (max-width: 900px) {
+            .choice-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .choice-card {
+                padding: 40px 30px;
+            }
+            
+            .top-nav {
+                padding: 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Minimal Top Navigation -->
+    <nav class="top-nav">
+        <a href="index.html" class="brand">
+            <div class="brand-logo">💧</div>
+            <span>MilkRecord</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="hardware.html">Hardware</a></li>
+            <li><a href="partners.html">Partners</a></li>
+            <li><a href="login-bmc.html">BMC Login</a></li>
+            <li><a href="login-pos.html">POS Login</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Traffic Controller - Force ICP Choice -->
+    <main class="traffic-controller">
+        <div class="choice-container">
+            <!-- BMC Path -->
+            <div class="choice-card bmc" onclick="location.href='milk-collection-centers.html'">
+                <span class="badge">For BMCs</span>
+                <div class="choice-icon">🏢</div>
+                <h2>Milk Collection Centers</h2>
+                <p>Institutional procurement management with compliance, audit trails, and shift-based operations.</p>
+                
+                <ul class="choice-features">
+                    <li>Shift Lock & Audit Trail</li>
+                    <li>Hardware Integration (Analyzers)</li>
+                    <li>Government Compliance Reports</li>
+                    <li>Multi-User Access Control</li>
+                    <li>Offline + Sync Capability</li>
+                </ul>
+                
+                <a href="milk-collection-centers.html" class="choice-btn">
+                    View BMC Solution →
+                </a>
+            </div>
+            
+            <!-- POS Path -->
+            <div class="choice-card pos" onclick="location.href='dairy-shops.html'">
+                <span class="badge">For Dairy Shops</span>
+                <div class="choice-icon">🏪</div>
+                <h2>Dairy Shops (Retail)</h2>
+                <p>Fast billing, customer balance tracking, and inventory management for retail dairy shops.</p>
+                
+                <ul class="choice-features">
+                    <li>Lightning-Fast Billing (3s)</li>
+                    <li>Customer Credit (Udhar) Tracking</li>
+                    <li>Works Offline - No Install</li>
+                    <li>Free Web POS Demo</li>
+                    <li>WhatsApp Bill Sharing</li>
+                </ul>
+                
+                <a href="dairy-shops.html" class="choice-btn">
+                    View POS Solution →
+                </a>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <ul class="footer-links">
+            <li><a href="hardware.html">Hardware Support</a></li>
+            <li><a href="compliance.html">Compliance (BMC)</a></li>
+            <li><a href="partners.html">Partner Program</a></li>
+        </ul>
+        <p>© 2024 MilkRecord. Built for Indian dairy industry.</p>
+    </footer>
+    
+    <script>
+        // Track which ICP user selects
+        document.querySelectorAll('.choice-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const icp = this.classList.contains('bmc') ? 'bmc' : 'pos';
+                localStorage.setItem('milkbook_icp_selected', icp);
+                
+                // Analytics event (when implemented)
+                console.log(`ICP Selected: ${icp.toUpperCase()}`);
+            });
+        });
+    </script>
+</body>
+</html>
