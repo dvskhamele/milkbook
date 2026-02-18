@@ -170,6 +170,14 @@ function renderNavLink(link, currentPage, icpType) {
   }
 }
 
+// Toggle cache help modal
+function toggleCacheHelp() {
+  const modal = document.getElementById('cacheHelpModal');
+  if (modal) {
+    modal.classList.toggle('active');
+  }
+}
+
 // Render mobile nav link
 function renderMobileNavLink(link, currentPage, icpType) {
   // Hide compliance link for POS
@@ -254,6 +262,29 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Render navigation
   renderGlobalNavbar(currentPage, icpType);
+  
+  // Add cache help modal
+  const cacheModal = document.createElement('div');
+  cacheModal.id = 'cacheHelpModal';
+  cacheModal.className = 'cache-help-modal';
+  cacheModal.innerHTML = `
+    <div class="cache-help-content">
+      <h3>Trouble seeing updates?</h3>
+      <p>If changes are not visible, your browser may be showing a cached version.</p>
+      <p><strong>How to refresh:</strong></p>
+      <ul>
+        <li><strong>Windows / Linux:</strong> Ctrl + Shift + R or Ctrl + F5</li>
+        <li><strong>Mac:</strong> Cmd + Shift + R</li>
+      </ul>
+      <p><strong>Alternative options:</strong></p>
+      <ul>
+        <li>Open this page in <strong>Incognito / Private window</strong></li>
+        <li>Add <code>?v=2</code> at the end of the URL</li>
+      </ul>
+      <button class="cache-help-close" onclick="toggleCacheHelp()">Got it</button>
+    </div>
+  `;
+  document.body.appendChild(cacheModal);
 });
 
 // Export for use in other scripts
