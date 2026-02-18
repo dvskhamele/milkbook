@@ -75,10 +75,6 @@
       .sync-msg { font-size: 10px; font-weight: 900; color: var(--muted); text-transform: uppercase; }
       .toast { position: fixed; left: 50%; bottom: 116px; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 16px; font-weight: 1100; opacity: 0; transition: 0.3s; z-index: 200; }
       .toast.show { opacity: 1; }
-      /* Card Image aur Selection Style */
-.p-card img { width: 45px; height: 45px; object-fit: cover; margin-bottom: 8px; border-radius: 10px; }
-.p-card.selected { border: 2px solid var(--blue) !important; background: #eff6ff; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15); }
-.price-input { width: 60px; border: 1px solid var(--line); border-radius: 5px; padding: 2px; font-weight: bold; text-align: center; }
     </style>
   </head>
   <body>
@@ -131,22 +127,6 @@
             <div class="p-card buff" onclick="tapAdd('Buff Milk', 40, 0.5)"><div data-en="Buff 0.5L" data-hi="भैंस दूध 0.5L">Buff 0.5L</div><small>₹40</small></div>
             <div class="p-card" style="border-left:6px solid var(--yellow)" onclick="tapAdd('Paneer', 320, 1)"><div data-en="Paneer kg" data-hi="पनीर किलो">Paneer kg</div><small>₹320</small></div>
             <div class="p-card" style="border-left:6px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)"><div data-en="Ghee 250g" data-hi="घी 250g">Ghee 250g</div><small>₹180</small></div>
-            <div class="p-card" style="border: 2px dashed var(--blue); background: #f8fafc;" onclick="openModal('addProductModal')">
-    <div style="font-size:30px; color:var(--blue);">➕</div>
-    <div style="font-weight:1000; color:var(--blue); font-size:12px;">ADD CARD</div>
-</div>
-
-<div class="overlay" id="addProductModal">
-    <div class="modal" style="width:400px; height:auto;">
-        <div class="panelHeader"><span>📦 Add New Card</span> <button onclick="closeModal('addProductModal')">✖</button></div>
-        <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
-            <input type="text" id="pName" placeholder="Product Name" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
-            <input type="number" id="pPrice" placeholder="Default Price (₹)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
-            <input type="text" id="pImage" placeholder="Image URL (Optionally paste link)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
-            <button class="add-btn" style="height:50px; background:var(--green);" onclick="addNewProduct()">Create Card</button>
-        </div>
-    </div>
-</div>
           </div>
           
           <div class="qty-bar">
@@ -230,13 +210,11 @@
     <script>
       const el = (id) => document.getElementById(id);
       let cart = [], total = 0, exportHistory = [], currentLang = 'en';
-      
       // Load data from LocalStorage taaki refresh par na ude
 let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
     { name: "Rahul Sharma", lastOrder: "1.5L Cow Milk", rate: 64, qty: 1.5, type: "Retail", sub: 1.5 },
     { name: "Amit DCS", lastOrder: "1kg Paneer", rate: 320, qty: 1, type: "PACS", sub: 2 }
 ];
-
 
       // Logic: 4am-4pm Morning, 4pm-4am Evening
       function updateShift() {

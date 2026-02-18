@@ -1,18 +1,32 @@
 {
-  "name": "milkbook-standalone",
-  "private": true,
+  "name": "milkrecord",
   "version": "1.0.0",
-  "description": "MilkBook - Automatic Milk Collection & Dairy Accounting System - Designed by signimus",
+  "description": "MilkRecord - Offline-first dairy collection system for Indian VLCCs, FPOs, and semi-organized dairies",
+  "main": "index.html",
   "scripts": {
-    "start": "serve public",
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build required'",
+    "deploy": "vercel --prod",
+    "preview": "vercel"
   },
-  "keywords": ["dairy", "milk", "accounting", "vlcc"],
-  "author": "signimus",
-  "license": "ISC",
+  "keywords": [
+    "milkrecord",
+    "dairy",
+    "milk-collection",
+    "vlcc",
+    "fpo",
+    "india",
+    "pwa",
+    "offline-first",
+    "vercel"
+  ],
+  "author": "MilkRecord Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/milkrecord.git"
+  },
   "devDependencies": {
-    "vite": "^5.0.0"
+    "vercel": "^32.0.0"
   }
 }

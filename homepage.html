@@ -1,239 +1,1208 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MilkRecord - Dairy Management Software</title>
-    <link rel="stylesheet" href="global-nav.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
-        
-        .hero {
-            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #059669 100%);
-            color: white;
-            padding: 120px 20px 80px;
-            text-align: center;
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkRecord Verified Bharat Landing Page</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Khand:wght@600;700&amp;family=Hind:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#fb6d0e",
+                        "primary-dark": "#d15606",
+                        "secondary": "#0A64BC",
+                        "secondary-dark": "#064c91",
+                        "success": "#3D9730",
+                        "background-light": "#f0f4f8",
+                        "background-dark": "#1a1e23",
+                        "whatsapp": "#25D366",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "khand": ["Khand", "sans-serif"],
+                        "hind": ["Hind", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem", 
+                        "lg": "0.5rem", 
+                        "xl": "0.75rem", 
+                        "2xl": "1.5rem",
+                        "3xl": "2rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        '3d-button': '0 8px 0 #d15606, 0 15px 20px rgba(0,0,0,0.2)',
+                        '3d-button-hover': '0 4px 0 #d15606, 0 8px 10px rgba(0,0,0,0.2)',
+                        '3d-card': '0 12px 24px -4px rgba(10, 100, 188, 0.15), 0 8px 0 rgba(230, 230, 240, 1)',
+                        '3d-card-hover': '0 20px 30px -4px rgba(10, 100, 188, 0.2), 0 10px 0 rgba(230, 230, 240, 1)',
+                        'machine-switch': 'inset 0 4px 8px rgba(0,0,0,0.2)',
+                    },
+                    animation: {
+                        'infinite-scroll': 'infinite-scroll 25s linear infinite',
+                    },
+                    keyframes: {
+                        'infinite-scroll': {
+                            from: { transform: 'translateX(0)' },
+                            to: { transform: 'translateX(-100%)' },
+                        }
+                    }
+                },
+            },
         }
-        
-        .hero h1 { font-size: 56px; font-weight: 900; margin-bottom: 20px; letter-spacing: -2px; }
-        .hero p { font-size: 22px; opacity: 0.9; max-width: 700px; margin: 0 auto 50px; }
-        
-        .icp-selector {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-            max-width: 1200px;
-            margin: -60px auto 0;
-            padding: 0 20px;
+    </script>
+<style>
+        .machine-bg {
+            background-color: #eef2f6;
+            background-image: radial-gradient(#0A64BC 0.5px, transparent 0.5px), radial-gradient(#0A64BC 0.5px, #eef2f6 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            opacity: 0.5;
         }
-        
-        .icp-card {
-            background: white;
-            border-radius: 24px;
-            padding: 50px 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 3px solid transparent;
-        }
-        
-        .icp-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
-        }
-        
-        .icp-card.bmc { border-color: #1e3a5f; }
-        .icp-card.pos { border-color: #10b981; }
-        
-        .icp-icon {
-            width: 100px;
-            height: 100px;
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 50px;
-            margin: 0 auto 25px;
-        }
-        
-        .icp-card.bmc .icp-icon { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); }
-        .icp-card.pos .icp-icon { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        
-        .icp-card h2 { font-size: 32px; font-weight: 800; margin-bottom: 15px; }
-        .icp-card.bmc h2 { color: #1e3a5f; }
-        .icp-card.pos h2 { color: #047857; }
-        
-        .icp-card p { font-size: 16px; color: #64748b; margin-bottom: 30px; line-height: 1.7; }
-        
-        .icp-features {
-            text-align: left;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 16px;
-        }
-        
-        .icp-features li {
-            list-style: none;
-            padding: 8px 0;
-            padding-left: 28px;
+        .icon-box-3d {
             position: relative;
-            color: #475569;
-            font-size: 14px;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
         }
-        
-        .icp-features li:before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            font-weight: 700;
+        .tactile-card:hover .icon-box-3d {
+            transform: scale(1.1) rotate(5deg);
         }
-        
-        .icp-card.bmc .icp-features li:before { color: #1e3a5f; }
-        .icp-card.pos .icp-features li:before { color: #10b981; }
-        
-        .icp-btn {
-            display: inline-block;
-            padding: 18px 40px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 16px;
-            text-decoration: none;
-            transition: all 0.3s;
-            width: 100%;
+        .text-shadow-sm {
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
         }
-        
-        .icp-card.bmc .icp-btn {
-            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
-            color: white;
+        .trust-badge {
+            background: linear-gradient(135deg, #0A64BC, #2587E8);
+            box-shadow: 0 8px 0 #064c91, 0 15px 20px rgba(0,0,0,0.2);
         }
-        
-        .icp-card.pos .icp-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
+        .scribble-text {
+            font-family: serif;
+            font-style: italic;
         }
-        
-        .icp-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        .messy-line {
+            transform: rotate(-1deg);
+            border-bottom: 2px solid #a8a8a8;
         }
-        
-        .secondary-links {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 60px;
-            padding: 40px 20px;
+        .skeuomorphic-btn {
+            background: linear-gradient(to bottom, #fb6d0e 0%, #d15606 100%);
+            border-top: 1px solid rgba(255,255,255,0.4);
+            border-bottom: 1px solid rgba(0,0,0,0.2);
         }
-        
-        .secondary-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 16px 24px;
-            background: white;
-            border-radius: 12px;
-            text-decoration: none;
-            color: #1e293b;
-            font-weight: 600;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: all 0.2s;
+        .skeuomorphic-icon {
+            filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.25));
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            border: 1px solid #e0e0e0;
         }
-        
-        .secondary-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        }
-        
-        .footer {
-            background: #0f172a;
-            color: #94a3b8;
-            padding: 40px 20px;
-            text-align: center;
-            margin-top: 80px;
-        }
-        
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 36px; }
-            .hero p { font-size: 18px; }
-            .icp-selector { grid-template-columns: 1fr; margin-top: -40px; }
-            .icp-card { padding: 30px 20px; }
+        .scroll-mask {
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
         }
     </style>
 </head>
-<body>
-    <!-- Global Navigation -->
-    <div id="globalNavbar"></div>
-    <script src="global-nav.js"></script>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181411] dark:text-[#f8f7f5] overflow-x-hidden">
+<header class="sticky top-0 z-50 w-full border-b-4 border-black/5 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md">
+<div class="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-4 md:px-10">
+<a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-white shadow-[0_4px_0_#064c91]">
+<span class="material-symbols-outlined text-3xl">water_drop</span>
+</div>
+<h2 class="text-2xl font-khand font-bold leading-tight tracking-wide text-secondary dark:text-white uppercase">MilkRecord</h2>
+</a>
+<div class="hidden flex-1 justify-end gap-8 md:flex items-center">
+<nav class="flex items-center gap-8">
+<a class="text-base font-bold text-gray-600 hover:text-primary transition-colors uppercase tracking-wide" href="index.html">Home</a>
+<a class="text-base font-bold text-gray-600 hover:text-primary transition-colors uppercase tracking-wide" href="stitch_milkbook_login 2/milkrecord_landing_page_1/code.html">Features</a>
+<a class="text-base font-bold text-gray-600 hover:text-primary transition-colors uppercase tracking-wide" href="stitch_milkbook_login 2/milkrecord_landing_page_2/code.html">How It Works</a>
+<a class="text-base font-bold text-gray-600 hover:text-primary transition-colors uppercase tracking-wide" href="stitch_milkbook_login 2/milkrecord_landing_page_3/code.html">Pricing</a>
+</nav>
+<button class="group relative flex min-w-[160px] items-center justify-center rounded-xl bg-secondary px-6 py-3 text-sm font-bold text-white transition-all hover:translate-y-[4px] shadow-[0_6px_0_#064c91] hover:shadow-[0_2px_0_#064c91] active:translate-y-[6px] active:shadow-none border-b-4 border-secondary-dark">
+<span class="material-symbols-outlined mr-2 text-lg">login</span>
+                    LOGIN / SIGN UP
+                </button>
+</div>
+<button class="flex md:hidden text-secondary dark:text-white rounded-lg border-2 border-secondary p-1">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-grow">
+<section class="relative w-full overflow-hidden bg-[#F0F7FF] dark:bg-[#121619] pt-12 pb-20 md:pt-20">
+<div class="absolute inset-0 machine-bg pointer-events-none opacity-30"></div>
+<div class="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-10">
+<div class="text-center mb-16">
+<h1 class="font-khand text-6xl md:text-8xl font-bold leading-[0.9] text-gray-900 dark:text-white tracking-tight">
+                        STOP <span class="text-secondary">FAT CHORI</span><br/>
+                        &amp; <span class="text-primary">HISAAB GADBAD</span>
+                    </h1>
+<p class="font-hind text-xl font-medium leading-relaxed text-gray-600 dark:text-gray-300 md:text-2xl mt-6 max-w-3xl mx-auto">
+                        दूध का पूरा हिसाब – बिना झगड़े, बिना गड़बड़
+                    </p>
+<p class="font-hind text-lg font-medium leading-relaxed text-gray-600 dark:text-gray-300 mt-4 max-w-2xl mx-auto">
+                        Say goodbye to messy 'Parchi', lost slips, and daily milk disputes.  
+                        MilkRecord is a simple dairy software built for real Indian dairies.
+                    </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-0 items-stretch min-h-[500px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-700 mx-auto max-w-6xl">
+<div class="relative bg-[#fdfbf7] p-8 md:p-12 flex flex-col justify-center border-b md:border-b-0 md:border-r border-gray-300">
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIj48cGF0aCBkPSJNMCAwIGw2IDEyIGw2IC0xMiB6IiBmaWxsPSIjZWVmMmY2Ii8+PC9zdmc+')] bg-repeat opacity-10"></div>
+<div class="absolute -top-4 -left-4 bg-red-600 text-white font-khand font-bold px-4 py-2 text-xl shadow-lg transform -rotate-12 z-20">OLD WAY – DIARY / PARCHI</div>
+<div class="relative z-10 font-serif text-gray-700 space-y-6 transform rotate-1 max-w-md mx-auto w-full">
+<h3 class="text-3xl font-bold border-b-2 border-gray-400 pb-2 text-center text-gray-800">Khata Register</h3>
+<div class="bg-white p-4 shadow-sm border border-gray-200 rotate-1">
+<div class="flex justify-between items-center text-xl messy-line pb-2">
+<span class="scribble-text">"Kal likh lenge"</span>
+</div>
+<div class="text-center text-red-600 font-bold font-hand text-sm">Fat yaad nahi</div>
+</div>
+<div class="bg-white p-4 shadow-sm border border-gray-200 -rotate-1">
+<div class="flex justify-between items-center text-xl messy-line pb-2">
+<span class="scribble-text">SNF miss ho gaya</span>
+</div>
+<p class="text-xs text-gray-400 mt-1 italic">Roz ka jhagda...</p>
+</div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full flex items-center justify-center pointer-events-none">
+<span class="material-symbols-outlined text-[150px] text-red-600/20 font-black">close</span>
+</div>
+</div>
+</div>
+<div class="relative bg-gradient-to-br from-secondary to-[#043d75] p-8 md:p-12 flex flex-col justify-center overflow-hidden">
+<div class="absolute -top-4 -right-4 bg-success text-white font-khand font-bold px-4 py-2 text-xl shadow-lg transform rotate-12 z-20">BHARAT TRUST WAY</div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-blue-400/30 rounded-full blur-[80px]"></div>
+<div class="relative z-10 mx-auto w-full max-w-[320px]">
+<div class="bg-gray-900 rounded-[2.5rem] p-3 shadow-2xl border-4 border-gray-800">
+<div class="bg-white rounded-[2rem] overflow-hidden relative h-[450px] flex flex-col">
+<div class="bg-secondary p-4 text-white pb-6 rounded-b-[2rem]">
+<div class="flex justify-between items-center mb-4">
+<span class="material-symbols-outlined">menu</span>
+<span class="font-khand font-bold text-xl uppercase">MilkRecord</span>
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<div class="text-center">
+<div class="text-xs opacity-80 uppercase tracking-widest">Digital Parchi</div>
+<div class="text-3xl font-bold font-khand">₹ 485.50</div>
+<div class="text-xs opacity-80">Paid Today</div>
+</div>
+</div>
+<div class="p-4 space-y-3 flex-1 bg-gray-50">
+<div class="bg-white p-3 rounded-xl shadow-sm border-l-4 border-success flex justify-between items-center">
+<div>
+<div class="font-bold text-gray-800">Raju Bhai</div>
+<div class="text-xs text-gray-500">4:30 AM • #402</div>
+</div>
+<div class="text-right">
+<div class="font-bold text-success">45.5 L</div>
+<div class="text-[10px] text-gray-500 bg-gray-100 px-2 py-1 rounded">Fat: 4.5</div>
+</div>
+</div>
+<div class="bg-white p-3 rounded-xl shadow-sm border-l-4 border-success flex justify-between items-center opacity-75">
+<div>
+<div class="font-bold text-gray-800">Sunita Devi</div>
+<div class="text-xs text-gray-500">4:35 AM • #405</div>
+</div>
+<div class="text-right">
+<div class="font-bold text-success">22.0 L</div>
+<div class="text-[10px] text-gray-500 bg-gray-100 px-2 py-1 rounded">Fat: 4.2</div>
+</div>
+</div>
+<div class="absolute bottom-4 right-4 h-12 w-12 bg-primary rounded-full shadow-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">add</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex justify-center mt-12">
+<button class="skeuomorphic-btn group relative flex min-w-[300px] items-center justify-center gap-4 rounded-2xl bg-primary px-8 py-5 text-left text-white transition-all hover:translate-y-[4px] shadow-3d-button hover:shadow-3d-button-hover active:translate-y-[8px] active:shadow-none">
+<span class="material-symbols-outlined text-4xl drop-shadow-md">rocket_launch</span>
+<div class="flex flex-col">
+<span class="text-sm font-hind font-semibold opacity-90 text-shadow-sm">Stop Milk Losses Today</span>
+<span class="text-2xl font-khand font-bold uppercase leading-none tracking-wide text-shadow-sm">Start Free Trial (No Card Required)</span>
+</div>
+</button>
+</div>
+</div>
+</section>
+<section class="bg-[#0b0e11] text-white py-24 px-6 md:px-10 relative overflow-hidden border-t-4 border-primary">
+<div class="absolute inset-0 machine-bg opacity-10 pointer-events-none"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="flex flex-col gap-12 text-center md:text-left">
+<div class="w-full max-w-4xl mx-auto text-center">
+<div class="inline-block bg-primary/20 text-primary border border-primary/30 px-4 py-1 rounded-full font-khand font-bold uppercase tracking-widest text-sm mb-6">Why MilkRecord Exists</div>
+<h2 class="font-khand text-5xl md:text-6xl font-bold uppercase leading-[0.9] mb-6">The Untapped <span class="text-secondary">Dairy Digitization</span> Opportunity</h2>
+<p class="font-hind text-xl text-gray-400 leading-relaxed mb-8 max-w-3xl mx-auto">
+                        India is the world's largest milk producer, yet most dairies still run on diaries and memory. MilkRecord is not a complex ERP. It is a digital diary that works at dairy speed and quietly builds trust, records, and proof.
+                    </p>
+<div class="grid grid-cols-2 gap-6 mb-8 max-w-2xl mx-auto">
+<div class="bg-white/5 p-4 rounded-xl border-l-4 border-success">
+<div class="text-3xl font-khand font-bold text-white">Millions</div>
+<div class="text-xs text-gray-400 uppercase tracking-wider">Daily Farmers</div>
+</div>
+<div class="bg-white/5 p-4 rounded-xl border-l-4 border-secondary">
+<div class="text-3xl font-khand font-bold text-white">Lakhon</div>
+<div class="text-xs text-gray-400 uppercase tracking-wider">Dairies & Collection Centers</div>
+</div>
+</div>
+</div>
+<div class="w-full max-w-4xl mx-auto bg-[#161b22] rounded-3xl p-8 border border-gray-800 shadow-2xl">
+<h3 class="font-khand text-2xl font-bold uppercase mb-6 text-gray-300 text-center">Market Trajectory: The Shift</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-gray-700">
+<th class="py-3 px-4 font-khand text-lg uppercase text-gray-500">Metric</th>
+<th class="py-3 px-4 font-khand text-lg uppercase text-red-400">Traditional</th>
+<th class="py-3 px-4 font-khand text-lg uppercase text-success">MilkRecord</th>
+</tr>
+</thead>
+<tbody class="font-hind text-sm">
+<tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
+<td class="py-4 px-4 text-gray-400 font-bold">Data Capture</td>
+<td class="py-4 px-4 text-gray-500">Manual / Late</td>
+<td class="py-4 px-4 text-white">Real-time Digital Parchi</td>
+</tr>
+<tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
+<td class="py-4 px-4 text-gray-400 font-bold">Payments</td>
+<td class="py-4 px-4 text-gray-500">Cash / Delayed</td>
+<td class="py-4 px-4 text-white">Direct-to-Bank (D2C)</td>
+</tr>
+<tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
+<td class="py-4 px-4 text-gray-400 font-bold">Credit Access</td>
+<td class="py-4 px-4 text-gray-500">Predatory Lenders</td>
+<td class="py-4 px-4 text-white">Data-Backed Loans</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="py-4 px-4 text-gray-400 font-bold">Scalability</td>
+<td class="py-4 px-4 text-gray-500">Linear / Slow</td>
+<td class="py-4 px-4 text-white">Exponential / Viral</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-white dark:bg-background-dark py-12 px-6 md:px-10 border-b border-gray-100 dark:border-gray-800">
+<div class="mx-auto max-w-[1280px]">
+<div class="bg-gradient-to-r from-[#F0F7FF] to-white dark:from-[#1a2026] dark:to-[#121619] rounded-[2rem] border-2 border-secondary/20 p-8 md:p-12 shadow-lg relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+<div class="flex flex-col md:flex-row items-center gap-10 relative z-10">
+<div class="md:w-2/3 text-center md:text-left">
+<div class="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-4">
+<span class="bg-secondary text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Grant-Ready Reports</span>
+<span class="text-success flex items-center gap-1 text-sm font-bold uppercase"><span class="material-symbols-outlined text-lg">verified</span> SFAC / NABARD Friendly</span>
+</div>
+<h2 class="font-khand text-4xl md:text-5xl font-bold text-gray-900 dark:text-white uppercase mb-4">For FPOs & Institutions</h2>
+<p class="font-hind text-lg text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto md:mx-0">
+                        MilkRecord helps FPOs prepare clean, audit-ready records required for SFAC, NABARD, and institutional reviews. We generate export-ready data formats — not government complexity.
+                    </p>
+<button class="flex items-center justify-center md:justify-start gap-2 text-secondary font-bold font-khand text-xl uppercase hover:text-secondary-dark transition-colors mx-auto md:mx-0">
+                        View Sample Grant-Ready Report <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<div class="md:w-1/3 flex justify-center">
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-secondary to-success rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-200"></div>
+<div class="relative bg-white dark:bg-[#252b33] p-6 rounded-xl border border-gray-200 dark:border-gray-600 shadow-xl w-64 rotate-2 group-hover:rotate-0 transition-transform duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl text-gray-500">description</span>
+</div>
+<span class="material-symbols-outlined text-success text-4xl drop-shadow-sm">verified</span>
+</div>
+<div class="space-y-2 mb-4">
+<div class="h-2 w-3/4 bg-gray-200 dark:bg-gray-600 rounded"></div>
+<div class="h-2 w-1/2 bg-gray-200 dark:bg-gray-600 rounded"></div>
+<div class="h-2 w-5/6 bg-gray-200 dark:bg-gray-600 rounded"></div>
+</div>
+<div class="border-t border-gray-100 dark:border-gray-700 pt-3 flex justify-between items-center">
+<span class="text-xs font-bold text-gray-400 uppercase">Status</span>
+<span class="text-xs font-bold text-success bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">Grant Ready</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#F8FAFC] dark:bg-[#161b20] py-24 px-6 md:px-10 overflow-hidden relative">
+<div class="absolute inset-0 machine-bg pointer-events-none opacity-20"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="text-center mb-16">
+<h2 class="font-khand text-5xl font-bold text-secondary dark:text-white uppercase tracking-tight mb-4">
+                WhatsApp-First, Bharat-First
+            </h2>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                No heavy apps. No training. MilkRecord works with WhatsApp because that's what dairies already use.
+            </p>
+</div>
+<div class="relative">
+<div class="absolute top-1/2 left-0 w-full h-1 bg-gray-200 dark:bg-gray-700 -translate-y-1/2 hidden md:block rounded-full z-0"></div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+<div class="group bg-white dark:bg-[#1e2329] p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:-translate-y-2 transition-transform">
+<div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-white dark:border-[#1e2329] shadow-sm relative z-10">
+<span class="material-symbols-outlined text-3xl">ads_click</span>
+</div>
+<h3 class="font-khand text-xl font-bold text-center uppercase mb-2">1. Simple Setup</h3>
+<p class="text-sm text-center text-gray-500 dark:text-gray-400 font-hind">Easy onboarding using familiar WhatsApp interface.</p>
+</div>
+<div class="group bg-white dark:bg-[#1e2329] p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:-translate-y-2 transition-transform">
+<div class="w-16 h-16 bg-green-100 text-whatsapp rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-white dark:border-[#1e2329] shadow-sm relative z-10">
+<span class="material-symbols-outlined text-3xl">chat</span>
+</div>
+<h3 class="font-khand text-xl font-bold text-center uppercase mb-2">2. Familiar Interface</h3>
+<p class="text-sm text-center text-gray-500 dark:text-gray-400 font-hind">Works like WhatsApp dairy owners already use daily.</p>
+</div>
+<div class="group bg-white dark:bg-[#1e2329] p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:-translate-y-2 transition-transform">
+<div class="w-16 h-16 bg-orange-100 text-primary rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-white dark:border-[#1e2329] shadow-sm relative z-10">
+<span class="material-symbols-outlined text-3xl">support_agent</span>
+</div>
+<h3 class="font-khand text-xl font-bold text-center uppercase mb-2">3. Local Support</h3>
+<p class="text-sm text-center text-gray-500 dark:text-gray-400 font-hind">Hindi-speaking support team understands dairy challenges.</p>
+</div>
+<div class="group bg-white dark:bg-[#1e2329] p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:-translate-y-2 transition-transform">
+<div class="w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-white dark:border-[#1e2329] shadow-sm relative z-10">
+<span class="material-symbols-outlined text-3xl">payments</span>
+</div>
+<h3 class="font-khand text-xl font-bold text-center uppercase mb-2">4. Flexible Pricing</h3>
+<p class="text-sm text-center text-gray-500 dark:text-gray-400 font-hind">Daily wallet model at ₹3/day with pause option.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-white dark:bg-background-dark py-24 px-6 md:px-10 border-t border-gray-200 dark:border-gray-800">
+<div class="mx-auto max-w-[1280px]">
+<div class="grid grid-cols-1 md:grid-cols-2 items-center gap-16">
+<div class="flex flex-col items-start justify-center">
+<div class="inline-block bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 font-bold px-4 py-2 rounded-lg font-khand uppercase tracking-widest mb-4">Simple Pricing</div>
+<h2 class="font-khand text-5xl font-bold text-gray-900 dark:text-white uppercase leading-none mb-6">
+                    No Lock-In Plans <br/> <span class="text-secondary">Flexible Usage</span>
+</h2>
+<p class="font-hind text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-xl">
+                    Use monthly plans or recharge daily. Choose what suits your dairy. No complex subscriptions, just simple daily usage at ₹3/day.
+                </p>
+<ul class="space-y-4 mb-8">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-success">check_circle</span>
+<span class="font-hind font-bold text-gray-700 dark:text-gray-200">No recurring auto-debits</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-success">check_circle</span>
+<span class="font-hind font-bold text-gray-700 dark:text-gray-200">Pause anytime (Non-season days)</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-success">check_circle</span>
+<span class="font-hind font-bold text-gray-700 dark:text-gray-200">Trusted UPI Integration</span>
+</li>
+</ul>
+</div>
+<div class="flex justify-center md:justify-end">
+<div class="relative w-full max-w-sm">
+<div class="bg-white dark:bg-[#1a2026] rounded-[2rem] p-6 shadow-3d-card border-4 border-gray-100 dark:border-gray-700 relative overflow-hidden">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-khand text-2xl font-bold text-gray-800 dark:text-white">My Wallet</h3>
+<span class="material-symbols-outlined text-gray-400">history</span>
+</div>
+<div class="bg-gradient-to-r from-secondary to-secondary-dark rounded-2xl p-6 text-white mb-6 relative overflow-hidden shadow-lg">
+<div class="absolute right-0 top-0 w-32 h-32 bg-white opacity-10 rounded-full translate-x-1/2 -translate-y-1/2"></div>
+<p class="text-xs opacity-80 uppercase tracking-widest mb-1">Available Balance</p>
+<h4 class="text-4xl font-display font-bold">₹ 103.00</h4>
+<p class="text-xs opacity-80 mt-2">Expires in 34 Days (@ ₹3/day)</p>
+</div>
+<div class="grid grid-cols-3 gap-3 mb-6">
+<button class="border border-gray-200 dark:border-gray-600 rounded-xl py-2 font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">+₹50</button>
+<button class="border-2 border-primary bg-primary/5 rounded-xl py-2 font-bold text-primary hover:bg-primary/10 transition-colors">+₹100</button>
+<button class="border border-gray-200 dark:border-gray-600 rounded-xl py-2 font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">+₹500</button>
+</div>
+<button class="w-full bg-[#3395ff] text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 hover:bg-[#2884e6] transition-colors uppercase font-khand text-xl tracking-wide">
+                        Recharge Now
+                        <span class="material-symbols-outlined">bolt</span>
+</button>
+<div class="mt-4 flex justify-center items-center gap-2 grayscale opacity-60">
+<span class="text-[10px] font-bold text-gray-400 uppercase">Secured by</span>
+<div class="flex gap-2">
+<span class="font-bold text-blue-800 dark:text-blue-400 italic font-sans text-sm">Razorpay</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#F0F7FF] dark:bg-[#121619] py-24 px-6 md:px-10 relative overflow-hidden border-t border-gray-200 dark:border-gray-800">
+<div class="absolute inset-0 machine-bg pointer-events-none opacity-30"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="flex flex-col md:flex-row items-center gap-16">
+<div class="md:w-1/2">
+<div class="inline-block bg-primary/10 text-primary font-bold px-4 py-2 rounded-lg font-khand uppercase tracking-widest mb-4">Optional Farmer View</div>
+<h2 class="font-khand text-5xl font-bold text-gray-900 dark:text-white uppercase leading-none mb-6">
+                    Farmers Can See Their Data <br/><span class="text-secondary">(If Enabled)</span>
+</h2>
+<p class="font-hind text-lg text-gray-600 dark:text-gray-300 mb-8">
+                    Farmers can see their own milk entries and balance if enabled by the dairy. No app is forced. Simple transparency to build trust.
+                </p>
+<div class="flex items-center gap-4 mb-6">
+<div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
+<span class="block text-xs font-bold text-gray-400 uppercase mb-1">Daily Malaai</span>
+<span class="font-khand text-3xl font-bold text-primary">4.8 Fat</span>
+</div>
+<div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
+<span class="block text-xs font-bold text-gray-400 uppercase mb-1">Payment Due</span>
+<span class="font-khand text-3xl font-bold text-success">₹ 1,240</span>
+</div>
+</div>
+</div>
+<div class="md:w-1/2 flex justify-center">
+<div class="relative bg-gray-900 rounded-[3rem] p-4 shadow-2xl border-4 border-gray-800 w-[300px]">
+<div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-gray-800 rounded-b-2xl z-20"></div>
+<div class="bg-white rounded-[2.5rem] overflow-hidden relative h-[550px] flex flex-col">
+<div class="bg-secondary p-6 pt-12 text-white rounded-b-3xl shadow-lg relative z-10">
+<div class="flex justify-between items-center mb-6">
+<span class="material-symbols-outlined">menu</span>
+<span class="font-khand font-bold text-lg">MY KHATA</span>
+<div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">RB</div>
+</div>
+<div class="text-center mb-2">
+<p class="text-xs opacity-80 uppercase tracking-widest">Total Payment Due</p>
+<h3 class="text-4xl font-khand font-bold mt-1">₹ 4,850</h3>
+</div>
+</div>
+<div class="flex-1 bg-gray-50 p-4 space-y-4 overflow-y-auto">
+<div class="flex justify-between items-center px-2">
+<span class="text-xs font-bold text-gray-500 uppercase">Recent Pours</span>
+<span class="text-xs font-bold text-primary">View All</span>
+</div>
+<div class="bg-white p-3 rounded-xl shadow-sm border-l-4 border-success flex justify-between items-center">
+<div>
+<div class="font-bold text-gray-800 text-sm">Morning Pour</div>
+<div class="text-[10px] text-gray-400">Today, 6:30 AM</div>
+</div>
+<div class="text-right">
+<div class="font-bold text-gray-900">5.2 L</div>
+<div class="text-[10px] text-success font-bold bg-green-50 px-1 rounded">Fat: 4.8</div>
+</div>
+</div>
+<div class="bg-white p-3 rounded-xl shadow-sm border-l-4 border-success flex justify-between items-center">
+<div>
+<div class="font-bold text-gray-800 text-sm">Evening Pour</div>
+<div class="text-[10px] text-gray-400">Yesterday, 5:45 PM</div>
+</div>
+<div class="text-right">
+<div class="font-bold text-gray-900">4.8 L</div>
+<div class="text-[10px] text-success font-bold bg-green-50 px-1 rounded">Fat: 4.6</div>
+</div>
+</div>
+<div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mt-4">
+<p class="text-xs font-bold text-secondary mb-2 uppercase">Quality Trend (Fat%)</p>
+<div class="flex items-end justify-between h-16 gap-1">
+<div class="w-full bg-blue-200 rounded-t-sm h-[60%]"></div>
+<div class="w-full bg-blue-300 rounded-t-sm h-[80%]"></div>
+<div class="w-full bg-secondary rounded-t-sm h-[75%]"></div>
+<div class="w-full bg-blue-300 rounded-t-sm h-[90%]"></div>
+<div class="w-full bg-blue-200 rounded-t-sm h-[65%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#F0F7FF] dark:bg-[#121619] py-24 px-6 md:px-10 relative overflow-hidden">
+<div class="absolute inset-0 machine-bg pointer-events-none opacity-30"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+<div>
+<h2 class="font-khand text-4xl font-bold text-secondary dark:text-white uppercase mb-6 text-center lg:text-left">
+                    Simple Guidance
+                </h2>
+<p class="font-hind text-lg text-gray-600 dark:text-gray-300 mb-8 text-center lg:text-left">
+                    Designed so even helpers can use it during rush hours. Clear visual indicators and simple workflow.
+                </p>
+<div class="bg-white dark:bg-[#1e2329] p-8 rounded-[2.5rem] shadow-3d-card border-4 border-white dark:border-gray-700 max-w-md mx-auto relative">
+<div class="bg-gray-900 rounded-3xl p-4 text-white relative overflow-hidden aspect-[9/16] shadow-inner border-4 border-gray-800">
+<div class="absolute top-0 left-0 w-full bg-gradient-to-b from-black/80 to-transparent p-4 z-10">
+<div class="flex justify-between text-xs text-gray-400">
+<span>9:41</span>
+<span class="material-symbols-outlined text-sm">wifi</span>
+</div>
+</div>
+<div class="flex flex-col h-full justify-center items-center relative z-0 mt-8">
+<div class="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center mb-6 animate-pulse">
+<span class="material-symbols-outlined text-5xl text-primary">record_voice_over</span>
+</div>
+<div class="text-center space-y-2 mb-8 px-4">
+<h4 class="font-khand text-2xl font-bold">नमस्ते राजू भाई!</h4>
+<p class="font-hind text-sm text-gray-300">"Please enter today's milk rate for Buffalo milk."</p>
+</div>
+<div class="flex items-center justify-center gap-1 h-12 mb-8">
+<div class="w-1 h-4 bg-secondary rounded-full animate-[bounce_1s_infinite]"></div>
+<div class="w-1 h-8 bg-secondary rounded-full animate-[bounce_1.2s_infinite]"></div>
+<div class="w-1 h-6 bg-secondary rounded-full animate-[bounce_0.8s_infinite]"></div>
+<div class="w-1 h-10 bg-secondary rounded-full animate-[bounce_1.1s_infinite]"></div>
+<div class="w-1 h-5 bg-secondary rounded-full animate-[bounce_0.9s_infinite]"></div>
+</div>
+<button class="bg-success rounded-full w-16 h-16 flex items-center justify-center shadow-lg shadow-success/40 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-3xl">mic</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:mt-12">
+<div class="flex items-center gap-3 mb-6 justify-center lg:justify-start">
+<span class="material-symbols-outlined text-3xl text-primary">trending_up</span>
+<h2 class="font-khand text-4xl font-bold text-gray-900 dark:text-white uppercase">
+                        The Facebook-Led Growth Engine
+                    </h2>
+</div>
+<p class="font-hind text-lg text-gray-600 dark:text-gray-300 mb-8 text-center lg:text-left">
+                    Our Customer Acquisition Cost (CAC) defies global SaaS benchmarks because we leverage the "Jio Effect"—cheap data and high engagement on Facebook/WhatsApp.
+                </p>
+<div class="bg-white dark:bg-[#1e2329] rounded-2xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-700">
+<div class="bg-secondary p-4 text-white flex justify-between items-center">
+<span class="font-khand font-bold uppercase tracking-wider">Performance Metrics</span>
+<span class="bg-white/20 text-xs px-2 py-1 rounded font-bold">Q3 2024</span>
+</div>
+<table class="w-full text-left">
+<thead>
+<tr class="bg-gray-50 dark:bg-[#252b33] border-b border-gray-200 dark:border-gray-700">
+<th class="py-3 px-6 font-khand text-base uppercase text-gray-500">Metric</th>
+<th class="py-3 px-6 font-khand text-base uppercase text-gray-500">Global SaaS Avg</th>
+<th class="py-3 px-6 font-khand text-base uppercase text-secondary">MilkRecord</th>
+</tr>
+</thead>
+<tbody class="font-hind text-sm divide-y divide-gray-100 dark:divide-gray-700">
+<tr>
+<td class="py-4 px-6 font-bold text-gray-800 dark:text-white">CPM (Cost per 1k Impressions)</td>
+<td class="py-4 px-6 text-gray-500">$12.50</td>
+<td class="py-4 px-6 font-bold text-success">$0.45</td>
+</tr>
+<tr>
+<td class="py-4 px-6 font-bold text-gray-800 dark:text-white">CPC (Cost Per Click)</td>
+<td class="py-4 px-6 text-gray-500">$2.10</td>
+<td class="py-4 px-6 font-bold text-success">$0.08</td>
+</tr>
+<tr>
+<td class="py-4 px-6 font-bold text-gray-800 dark:text-white">CPL (Cost Per Lead)</td>
+<td class="py-4 px-6 text-gray-500">$35.00</td>
+<td class="py-4 px-6 font-bold text-success">$2.50</td>
+</tr>
+<tr>
+<td class="py-4 px-6 font-bold text-gray-800 dark:text-white">CAC (Customer Acquisition Cost)</td>
+<td class="py-4 px-6 text-gray-500">$250.00+</td>
+<td class="py-4 px-6 font-bold text-success">$18.00</td>
+</tr>
+</tbody>
+</table>
+<div class="p-4 bg-green-50 dark:bg-green-900/20 text-center border-t border-green-100 dark:border-green-900/30">
+<p class="text-success font-bold text-sm uppercase tracking-wide">13x More Efficient than Global Average</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-white border-y border-gray-200 py-10 overflow-hidden dark:bg-background-dark dark:border-gray-800">
+<div class="mx-auto max-w-[1280px] px-6">
+<p class="text-center font-khand text-2xl font-bold uppercase text-gray-500 mb-8 tracking-widest">Works with Common Dairy Hardware</p>
+<div class="relative flex overflow-x-hidden scroll-mask">
+<div class="animate-infinite-scroll flex gap-12 whitespace-nowrap py-2">
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Amul</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Mother Dairy</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Nandini</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Ekomilk</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Lactoscan</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Essae</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Amul</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Mother Dairy</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Nandini</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Ekomilk</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Lactoscan</span>
+<span class="text-3xl font-display font-bold text-gray-400 grayscale hover:grayscale-0 transition-all duration-300">Essae</span>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#F8FAFC] dark:bg-[#161b20] py-24 px-6 md:px-10 relative overflow-hidden">
+<div class="absolute inset-0 machine-bg pointer-events-none opacity-20"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="text-center mb-16">
+<h2 class="font-khand text-5xl font-bold text-secondary dark:text-white uppercase tracking-tight mb-4">
+                Supporting Women in Dairy Work
+            </h2>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300 mb-6 max-w-3xl mx-auto">
+                Clear records help ensure payments reach the right hands. Supporting women who contribute 70% of dairy labor in India.
+            </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4 bg-white dark:bg-[#1e2329] p-6 rounded-xl shadow-sm border-l-4 border-primary">
+<span class="material-symbols-outlined text-4xl text-primary">account_balance_wallet</span>
+<div>
+<h4 class="font-khand text-xl font-bold text-gray-800 dark:text-white uppercase">Financial Control</h4>
+<p class="text-sm font-hind text-gray-500">Clear records help ensure payments reach the right hands.</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-white dark:bg-[#1e2329] p-6 rounded-xl shadow-sm border-l-4 border-success">
+<span class="material-symbols-outlined text-4xl text-success">groups</span>
+<div>
+<h4 class="font-khand text-xl font-bold text-gray-800 dark:text-white uppercase">Caste-Neutral Cooperatives</h4>
+<p class="text-sm font-hind text-gray-500">Uniting communities through shared economic goals, transcending barriers.</p>
+</div>
+</div>
+</div>
+<div class="flex justify-center">
+<div class="relative w-full max-w-md">
+<div class="absolute -top-6 -right-6 bg-primary text-white font-khand font-bold px-4 py-2 text-lg shadow-lg rotate-3 z-20">TRUST ENGINE</div>
+<div class="bg-white dark:bg-[#1e2329] rounded-3xl p-8 shadow-3d-card border-t-8 border-secondary relative overflow-hidden">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-20 h-20 rounded-full bg-pink-100 flex items-center justify-center border-2 border-pink-200">
+<span class="material-symbols-outlined text-5xl text-pink-600">woman</span>
+</div>
+<div>
+<h3 class="font-khand text-3xl font-bold text-gray-900 dark:text-white">Women in Dairy</h3>
+<p class="text-base font-hind text-success font-bold uppercase tracking-wider">Trust Building</p>
+</div>
+</div>
+<div class="space-y-4 font-hind text-gray-600 dark:text-gray-300">
+<p>"Now the records are clear. Everyone can see the exact amount for each farmer. Payments are fair and transparent."</p>
+<div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-4">
+<div class="bg-secondary h-2.5 rounded-full" style="width: 70%"></div>
+</div>
+<p class="text-xs text-right text-gray-400 font-bold uppercase tracking-widest">70% Dairy Workforce</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-white dark:bg-background-dark py-24 px-6 md:px-10 border-t border-gray-200 dark:border-gray-800">
+<div class="mx-auto max-w-[1280px]">
+<div class="mb-16 text-center">
+<h2 class="font-khand text-5xl font-bold text-secondary dark:text-white uppercase tracking-tight mb-4">
+                Hardware-Friendly, Not Hardware-Dependent
+            </h2>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Works with your existing milk analyzers and weighing machines. No forced hardware purchases.
+            </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="group relative bg-[#F0F7FF] dark:bg-[#1a2026] rounded-3xl p-8 border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300">
+<div class="absolute top-4 right-4 bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider z-20">For Premium Centers</div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 w-20 h-20 bg-white dark:bg-[#2d3748] rounded-full shadow-lg flex items-center justify-center border-4 border-secondary">
+<span class="material-symbols-outlined text-4xl text-secondary">science</span>
+</div>
+<div class="mt-10 text-center">
+<h3 class="font-khand text-2xl font-bold text-gray-900 dark:text-white mb-2 uppercase">AMCU</h3>
+<p class="text-xs font-bold text-secondary uppercase tracking-widest mb-4">Automatic Milk Collection Unit</p>
+<p class="font-hind text-gray-600 dark:text-gray-400 text-sm">
+                        Instantly analyzes fat &amp; SNF. No manual tampering. The digital display shows the truth to the farmer immediately.
+                    </p>
+<div class="mt-6 flex justify-center">
+<span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full uppercase">Stops Fat Chori</span>
+</div>
+<div class="mt-4 text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest border-t border-gray-200 dark:border-gray-600 pt-2">Works with Existing Equipment</div>
+</div>
+</div>
+<div class="group relative bg-[#F0FFF4] dark:bg-[#162118] rounded-3xl p-8 border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 mt-12 md:mt-0">
+<div class="absolute top-4 right-4 bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider z-20">For Premium Centers</div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 w-20 h-20 bg-white dark:bg-[#2d3748] rounded-full shadow-lg flex items-center justify-center border-4 border-success">
+<span class="material-symbols-outlined text-4xl text-success">solar_power</span>
+</div>
+<div class="mt-10 text-center">
+<h3 class="font-khand text-2xl font-bold text-gray-900 dark:text-white mb-2 uppercase">Solar MilkoChill</h3>
+<p class="text-xs font-bold text-success uppercase tracking-widest mb-4">Instant Chilling</p>
+<p class="font-hind text-gray-600 dark:text-gray-400 text-sm">
+                        Chills milk at the source even during power cuts. Preserves quality and prevents spoilage deductions.
+                    </p>
+<div class="mt-6 flex justify-center">
+<span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full uppercase">Stops Spoilage</span>
+</div>
+<div class="mt-4 text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest border-t border-gray-200 dark:border-gray-600 pt-2">Works with Existing Equipment</div>
+</div>
+</div>
+<div class="group relative bg-[#FFF4F0] dark:bg-[#261a1a] rounded-3xl p-8 border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 mt-12 md:mt-0">
+<div class="absolute top-4 right-4 bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider z-20">For Premium Centers</div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 w-20 h-20 bg-white dark:bg-[#2d3748] rounded-full shadow-lg flex items-center justify-center border-4 border-primary">
+<span class="material-symbols-outlined text-4xl text-primary">sensors</span>
+</div>
+<div class="mt-10 text-center">
+<h3 class="font-khand text-2xl font-bold text-gray-900 dark:text-white mb-2 uppercase">IoT Sensors</h3>
+<p class="text-xs font-bold text-primary uppercase tracking-widest mb-4">Real-time Data</p>
+<p class="font-hind text-gray-600 dark:text-gray-400 text-sm">
+                        Smart weighing scales connected to the cloud. Eliminates 'Kataouti' (weighing fraud) by locking data instantly.
+                    </p>
+<div class="mt-6 flex justify-center">
+<span class="px-3 py-1 bg-orange-100 text-orange-700 text-xs font-bold rounded-full uppercase">Stops Kataouti</span>
+</div>
+<div class="mt-4 text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest border-t border-gray-200 dark:border-gray-600 pt-2">Works with Existing Equipment</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-secondary-dark relative overflow-hidden py-24 px-6 md:px-10 text-white">
+<div class="absolute inset-0 bg-secondary opacity-90 mix-blend-multiply"></div>
+<div class="absolute inset-0 machine-bg opacity-10 pointer-events-none mix-blend-overlay"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="text-center mb-16">
+<h2 class="font-khand text-5xl font-bold uppercase tracking-tight mb-4">Built for Dairy Timings</h2>
+<p class="font-hind text-xl opacity-90 max-w-2xl mx-auto">Designed for morning and evening rush hours. No slow screens during peak collection times.</p>
+</div>
+<div class="relative">
+<div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-white/20 -translate-y-1/2 rounded-full"></div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<div class="relative group">
+<div class="hidden md:block absolute top-1/2 left-1/2 w-4 h-4 bg-primary rounded-full -translate-x-1/2 -translate-y-1/2 shadow-[0_0_0_4px_rgba(251,108,14,0.4)] z-10"></div>
+<div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 hover:bg-white/20 transition-colors md:mb-12 md:mx-4">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-yellow-300">wb_twilight</span>
+<span class="font-khand text-2xl font-bold">04:00 AM</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Milking &amp; Collection</h4>
+<p class="text-sm opacity-80 font-hind">Pre-dawn activity. AMCU systems boot up for the morning rush.</p>
+</div>
+</div>
+<div class="relative group md:pt-32">
+<div class="hidden md:block absolute top-1/2 left-1/2 w-4 h-4 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 z-10"></div>
+<div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 hover:bg-white/20 transition-colors md:mx-4">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-green-300">grass</span>
+<span class="font-khand text-2xl font-bold">11:00 AM</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Fodder Management</h4>
+<p class="text-sm opacity-80 font-hind">Checking inventory. Automated alerts for fodder shortage.</p>
+</div>
+</div>
+<div class="relative group">
+<div class="hidden md:block absolute top-1/2 left-1/2 w-4 h-4 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 z-10"></div>
+<div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 hover:bg-white/20 transition-colors md:mb-12 md:mx-4">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-red-300">health_and_safety</span>
+<span class="font-khand text-2xl font-bold">04:30 PM</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Heat Detection</h4>
+<p class="text-sm opacity-80 font-hind">Critical window for cattle health checks and breeding logs.</p>
+</div>
+</div>
+<div class="relative group md:pt-32">
+<div class="hidden md:block absolute top-1/2 left-1/2 w-4 h-4 bg-secondary-dark border-2 border-white rounded-full -translate-x-1/2 -translate-y-1/2 z-10"></div>
+<div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 hover:bg-white/20 transition-colors md:mx-4">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-blue-300">medical_services</span>
+<span class="font-khand text-2xl font-bold">11:30 PM</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Veterinary Check</h4>
+<p class="text-sm opacity-80 font-hind">Late night emergency support and automated health reporting.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#F0F7FF] dark:bg-[#121619] py-24 px-6 md:px-10 relative overflow-hidden">
+<div class="absolute inset-0 machine-bg pointer-events-none opacity-30"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="bg-white dark:bg-[#1e2329] rounded-[3rem] p-8 md:p-16 shadow-3d-card border-4 border-white dark:border-gray-700 flex flex-col md:flex-row items-center gap-12">
+<div class="md:w-1/2">
+<div class="inline-block bg-primary/10 text-primary font-bold px-4 py-2 rounded-lg font-khand uppercase tracking-widest mb-4">Your Data, Your Control</div>
+<h2 class="font-khand text-5xl font-bold text-gray-900 dark:text-white uppercase leading-none mb-6">
+                    Clean Records for <span class="text-secondary">Future Needs</span>
+</h2>
+<p class="font-hind text-lg text-gray-600 dark:text-gray-300 mb-8">
+                    Your data is saved on this device. Any financial use of data is always optional and partner-driven. We focus on accurate records.
+                </p>
+<ul class="space-y-4 mb-8">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-success">check_circle</span>
+<span class="font-hind font-bold text-gray-700 dark:text-gray-200">Accurate Record Keeping</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-success">check_circle</span>
+<span class="font-hind font-bold text-gray-700 dark:text-gray-200">Export When Needed</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-success">check_circle</span>
+<span class="font-hind font-bold text-gray-700 dark:text-gray-200">Controlled Sharing</span>
+</li>
+</ul>
+</div>
+<div class="md:w-1/2 flex justify-center">
+<div class="relative w-full max-w-sm">
+<div class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-success/20 rounded-full blur-xl animate-pulse"></div>
+<div class="bg-gradient-to-br from-secondary to-[#043d75] rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIj48cGF0aCBkPSJNMCAwIGw2IDEyIGw2IC0xMiB6IiBmaWxsPSIjZWVmMmY2Ii8+PC9zdmc+')] opacity-10"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-8">
+<div>
+<p class="text-sm opacity-80 uppercase tracking-widest">Credit Score</p>
+<h3 class="text-3xl font-khand font-bold">MooScore™</h3>
+</div>
+<span class="material-symbols-outlined text-4xl text-success">trending_up</span>
+</div>
+<div class="text-center py-6">
+<span class="text-7xl font-bold font-display tracking-tighter">785</span>
+<p class="text-success font-bold bg-white/10 inline-block px-3 py-1 rounded-full text-sm mt-2">Excellent</p>
+</div>
+<div class="mt-6 pt-6 border-t border-white/10 flex justify-between items-center">
+<div>
+<p class="text-xs opacity-60">Loan Eligibility</p>
+<p class="font-bold text-xl font-khand">₹ 50,000</p>
+</div>
+<button class="bg-white text-secondary px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-100 transition-colors">Check Now</button>
+</div>
+</div>
+</div>
+<div class="absolute -bottom-6 -left-6 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg border-2 border-success flex items-center gap-3">
+<span class="material-symbols-outlined text-3xl text-success">currency_rupee</span>
+<div>
+<p class="text-xs text-gray-500 font-bold uppercase">Growth</p>
+<p class="font-bold text-gray-900 dark:text-white">+15% Income</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-white dark:bg-background-dark py-24 px-6 md:px-10 border-t border-gray-100 dark:border-gray-800">
+<div class="mx-auto max-w-[1280px]">
+<div class="text-center mb-8">
+<h2 class="font-khand text-5xl font-bold text-gray-900 dark:text-white uppercase tracking-tight mb-4">
+                Truth vs. Fraud
+            </h2>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300">
+                The clear difference between the old opaque ways and the new transparent future.
+            </p>
+</div>
+<div class="w-full overflow-hidden bg-yellow-50 dark:bg-yellow-900/10 border-y border-yellow-100 dark:border-yellow-900/30 py-2 mb-12">
+<div class="animate-infinite-scroll flex gap-8 whitespace-nowrap">
+<span class="text-sm font-bold text-yellow-800 dark:text-yellow-500 italic">"Ab koi kataouti nahi!" (No more deductions!)</span>
+<span class="text-sm font-bold text-yellow-800 dark:text-yellow-500 italic">"Hisaab ekdum clear hai" (Account is perfectly clear)</span>
+<span class="text-sm font-bold text-yellow-800 dark:text-yellow-500 italic">"Parchi never gets lost now"</span>
+<span class="text-sm font-bold text-yellow-800 dark:text-yellow-500 italic">"Payment comes directly to bank"</span>
+<span class="text-sm font-bold text-yellow-800 dark:text-yellow-500 italic">"Ab koi kataouti nahi!" (No more deductions!)</span>
+<span class="text-sm font-bold text-yellow-800 dark:text-yellow-500 italic">"Hisaab ekdum clear hai" (Account is perfectly clear)</span>
+<span class="text-sm font-bold text-yellow-800 dark:text-yellow-500 italic">"Parchi never gets lost now"</span>
+<span class="text-sm font-bold text-yellow-800 dark:text-yellow-500 italic">"Payment comes directly to bank"</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+<div class="absolute left-1/2 top-0 bottom-0 w-px bg-gray-200 hidden md:block transform -translate-x-1/2"></div>
+<div class="bg-red-50 dark:bg-red-900/10 p-8 rounded-3xl border border-red-100 dark:border-red-900/30">
+<div class="flex items-center gap-3 mb-8 border-b border-red-200 pb-4">
+<span class="material-symbols-outlined text-3xl text-red-600">cancel_presentation</span>
+<h3 class="font-khand text-3xl font-bold text-red-800 dark:text-red-400 uppercase">Old System</h3>
+</div>
+<ul class="space-y-6">
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-red-500 shrink-0">close</span>
+<div>
+<strong class="block text-gray-900 dark:text-gray-200 font-bold">Manual Parchi</strong>
+<span class="text-sm text-gray-600 dark:text-gray-400">Handwritten slips that get lost, faded, or manipulated easily.</span>
+</div>
+</li>
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-red-500 shrink-0">water_drop</span>
+<div>
+<strong class="block text-gray-900 dark:text-gray-200 font-bold">Adulteration Risk</strong>
+<span class="text-sm text-gray-600 dark:text-gray-400">No way to verify water content instantly. High chance of 'Fat Chori'.</span>
+</div>
+</li>
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-red-500 shrink-0">visibility_off</span>
+<div>
+<strong class="block text-gray-900 dark:text-gray-200 font-bold">Total Opacity</strong>
+<span class="text-sm text-gray-600 dark:text-gray-400">Farmer never knows the true rate until payment day. 'Hisaab Gadbad' is common.</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="bg-blue-50 dark:bg-blue-900/10 p-8 rounded-3xl border border-blue-100 dark:border-blue-900/30 shadow-lg relative">
+<div class="absolute -top-3 -right-3 bg-success text-white px-3 py-1 rounded-full text-xs font-bold uppercase shadow-sm">Recommended</div>
+<div class="flex items-center gap-3 mb-8 border-b border-blue-200 pb-4">
+<span class="material-symbols-outlined text-3xl text-secondary">verified</span>
+<h3 class="font-khand text-3xl font-bold text-secondary dark:text-blue-400 uppercase">MilkRecord</h3>
+</div>
+<ul class="space-y-6">
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-success shrink-0">check</span>
+<div>
+<strong class="block text-gray-900 dark:text-gray-200 font-bold">Pucca Digital Bill</strong>
+<span class="text-sm text-gray-600 dark:text-gray-400">SMS sent instantly. Cloud record never fades or gets lost.</span>
+</div>
+</li>
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-success shrink-0">science</span>
+<div>
+<strong class="block text-gray-900 dark:text-gray-200 font-bold">10-sec Testing</strong>
+<span class="text-sm text-gray-600 dark:text-gray-400">AMCU analyzes quality in seconds before the farmer leaves the counter.</span>
+</div>
+</li>
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-success shrink-0">visibility</span>
+<div>
+<strong class="block text-gray-900 dark:text-gray-200 font-bold">Total Transparency</strong>
+<span class="text-sm text-gray-600 dark:text-gray-400">Real-time rate display. Trust builds with every liter poured.</span>
+</div>
+</li>
+</ul>
+<div class="mt-6 bg-white/10 dark:bg-black/10 rounded-lg p-3 flex items-center gap-3 border border-secondary/20 bg-secondary text-white">
+<span class="material-symbols-outlined text-white">menu_book</span>
+<div>
+<div class="text-xs font-bold text-white uppercase">Kaccha to Pucca Guide</div>
+<div class="text-[10px] text-blue-200 font-hind">Transition without tax anxiety</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#F8FAFC] dark:bg-[#1a2026] py-24 px-6 md:px-10 relative overflow-hidden">
+<div class="absolute inset-0 machine-bg pointer-events-none opacity-20"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="mb-16 text-center">
+<h2 class="font-khand text-5xl font-bold text-secondary dark:text-white uppercase tracking-tight mb-4">
+                Dream Outcomes
+            </h2>
+<p class="font-hind text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                See how different dairies are finding 'Malaai' in their margins.
+            </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-white dark:bg-[#1e2329] p-8 rounded-3xl shadow-3d-card border-t-8 border-gray-400 hover:transform hover:-translate-y-2 transition-all duration-300">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+<span class="material-symbols-outlined text-4xl text-gray-500">person</span>
+</div>
+<div>
+<h4 class="font-khand text-2xl font-bold text-gray-900 dark:text-white">Ramesh</h4>
+<p class="text-sm font-hind text-gray-500">The Traditionalist</p>
+</div>
+</div>
+<p class="font-serif italic text-lg text-gray-600 dark:text-gray-300 mb-6">
+                    "I used to argue about 'Fat Chori' every morning. With the printed slip, the arguments stopped at the gate. I sleep better now."
+                </p>
+<div class="flex items-center gap-2 text-secondary font-bold font-khand uppercase tracking-wider">
+<span class="material-symbols-outlined">verified_user</span> Peace of Mind
+                </div>
+</div>
+<div class="bg-white dark:bg-[#1e2329] p-8 rounded-3xl shadow-3d-card border-t-8 border-primary hover:transform hover:-translate-y-2 transition-all duration-300 relative">
+<div class="absolute -top-4 right-8 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg font-khand uppercase">New</div>
+<div class="flex items-center gap-4 mb-6">
+<div class="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center border-2 border-orange-200">
+<span class="material-symbols-outlined text-4xl text-primary">female</span>
+</div>
+<div>
+<h4 class="font-khand text-2xl font-bold text-gray-900 dark:text-white">Renuka</h4>
+<p class="text-sm font-hind text-gray-500">The Resilient Widow</p>
+</div>
+</div>
+<p class="font-serif italic text-lg text-gray-600 dark:text-gray-300 mb-6">
+                    "After my husband passed, the dairy was my only hope. Direct payments meant no middlemen took a cut. I paid my son's school fees this month."
+                </p>
+<div class="flex items-center gap-2 text-primary font-bold font-khand uppercase tracking-wider">
+<span class="material-symbols-outlined">school</span> Survival &amp; Education
+                </div>
+</div>
+<div class="bg-white dark:bg-[#1e2329] p-8 rounded-3xl shadow-3d-card border-t-8 border-success hover:transform hover:-translate-y-2 transition-all duration-300">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center border-2 border-green-200">
+<span class="material-symbols-outlined text-4xl text-success">psychology</span>
+</div>
+<div>
+<h4 class="font-khand text-2xl font-bold text-gray-900 dark:text-white">Ajit</h4>
+<p class="text-sm font-hind text-gray-500">Return-to-Roots Entrepreneur</p>
+</div>
+</div>
+<p class="font-serif italic text-lg text-gray-600 dark:text-gray-300 mb-6">
+                    "I left my city job to modernize our village dairy. Technology has restored dignity to the doodhwala. We are no longer just laborers, we are businessmen."
+                </p>
+<div class="flex items-center gap-2 text-success font-bold font-khand uppercase tracking-wider">
+<span class="material-symbols-outlined">workspace_premium</span> Restoring Dignity
+                </div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-secondary-dark relative overflow-hidden py-20 px-6">
+<div class="absolute inset-0 bg-secondary opacity-90 mix-blend-multiply"></div>
+<div class="absolute inset-0 machine-bg opacity-10 pointer-events-none mix-blend-overlay"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="bg-white dark:bg-[#1a2026] rounded-3xl shadow-2xl overflow-hidden border-4 border-primary max-w-4xl mx-auto">
+<div class="flex flex-col md:flex-row">
+<div class="bg-primary p-10 flex flex-col justify-center items-center md:w-1/3 text-white text-center">
+<span class="material-symbols-outlined text-8xl mb-4 drop-shadow-md">warning</span>
+<h3 class="font-khand text-4xl font-bold uppercase leading-none">Stop<br/>Leaking<br/>Money</h3>
+</div>
+<div class="p-10 md:w-2/3 flex flex-col justify-center">
+<h3 class="font-khand text-5xl font-bold text-gray-900 dark:text-white uppercase mb-4">How Much Are You Losing?</h3>
+<p class="font-hind text-lg text-gray-600 dark:text-gray-300 mb-8">
+                    Is your 'Hisaab' accurate? Small errors in SNF and Fat calculation can cost you thousands per month. Take our free 10-Day Profit-Loss Audit to find out.
+                </p>
+<button class="skeuomorphic-btn group relative flex w-full items-center justify-center gap-3 rounded-xl bg-primary px-8 py-4 text-white transition-all hover:translate-y-[4px] shadow-3d-button hover:shadow-3d-button-hover active:translate-y-[8px] active:shadow-none uppercase font-bold font-khand text-xl tracking-wide">
+<span class="material-symbols-outlined">calculate</span>
+                    Start Audit Now
+                </button>
+<div class="mt-4 flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400">
+<span class="material-symbols-outlined text-success">savings</span>
+<span class="font-hind text-sm font-bold">Saved avg. ₹2,100/center last month by stopping calc errors.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-secondary py-24 px-6 md:px-10 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+<div class="absolute bottom-0 right-0 w-96 h-96 bg-primary opacity-10 rounded-full translate-x-1/3 translate-y-1/3"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="flex flex-col items-center gap-10 text-center rounded-3xl bg-secondary-dark/50 p-12 border border-white/10 backdrop-blur-sm shadow-2xl">
+<div class="flex flex-col gap-4">
+<h2 class="font-khand text-5xl md:text-7xl font-bold leading-tight text-white uppercase text-shadow-sm">
+                            Ready for the Upgrade?
+                        </h2>
+<p class="mx-auto max-w-[720px] font-hind text-xl text-white/90">
+                            Join thousands of VLCCs using MilkRecord to digitize operations. It's time to level up.
+                        </p>
+</div>
+<div class="flex flex-col items-center gap-6 w-full">
+<button class="skeuomorphic-btn group relative flex w-full max-w-md items-center justify-center gap-4 rounded-2xl bg-primary px-10 py-6 text-2xl font-khand font-bold text-white transition-all hover:translate-y-[4px] shadow-3d-button hover:shadow-3d-button-hover active:translate-y-[8px] active:shadow-none uppercase tracking-wide">
+<span class="material-symbols-outlined text-4xl drop-shadow-md">rocket_launch</span>
+<span class="text-shadow-sm">Get Started Free</span>
+</button>
+<div class="flex items-center gap-2 text-sm font-bold text-success bg-white/10 px-4 py-2 rounded-full border border-white/10">
+<span class="material-symbols-outlined text-base">verified</span>
+<span>FREE FOREVER VERSION AVAILABLE</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-[#053b70] text-white border-t-8 border-primary py-16 px-6 md:px-10">
+<div class="mx-auto max-w-[1280px]">
+<div class="flex flex-col items-center gap-12 text-center md:flex-row md:justify-between md:text-left">
+<div class="flex flex-col gap-6 items-center md:items-start">
+<div class="flex items-center justify-center gap-3 md:justify-start">
+<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-secondary shadow-lg">
+<span class="material-symbols-outlined text-3xl">water_drop</span>
+</div>
+<h2 class="text-3xl font-khand font-bold text-white uppercase tracking-wide">MilkRecord</h2>
+</div>
+<p class="max-w-xs text-base text-blue-200 font-hind">
+                        Empowering rural Indian dairy farmers with cutting-edge technology for a better tomorrow.
+                    </p>
+<div class="flex gap-4 mt-2">
+<div class="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-lg border border-secondary">
+<span class="material-symbols-outlined text-lg">sync_alt</span>
+<span class="font-khand font-bold uppercase text-sm">Offline Sync</span>
+</div>
+<div class="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-lg border border-secondary">
+<span class="material-symbols-outlined text-lg">lock</span>
+<span class="font-khand font-bold uppercase text-sm">Data Safe</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-12 sm:grid-cols-3">
+<div class="flex flex-col gap-4">
+<h4 class="font-bold text-lg text-white uppercase tracking-wider border-b-2 border-primary/50 pb-2 w-max mx-auto md:mx-0">Product</h4>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Features</a>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Pricing</a>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Try Web Version</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-bold text-lg text-white uppercase tracking-wider border-b-2 border-primary/50 pb-2 w-max mx-auto md:mx-0">Company</h4>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">About Us</a>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Contact</a>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Careers</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-bold text-lg text-white uppercase tracking-wider border-b-2 border-primary/50 pb-2 w-max mx-auto md:mx-0">Legal</h4>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Privacy Policy</a>
+<a class="text-sm text-blue-200 hover:text-white hover:translate-x-1 transition-all" href="#">Terms of Service</a>
+</div>
+</div>
+</div>
+<div class="mt-16 flex flex-col items-center justify-between gap-6 border-t border-blue-800 pt-8 md:flex-row">
+<p class="text-sm text-blue-300 font-medium">© 2024 MilkRecord. Made for Bharat <span class="text-primary">♥</span></p>
+<div class="flex gap-6">
+<a class="text-white hover:text-primary hover:scale-110 transition-all bg-white/10 p-2 rounded-lg" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-white hover:text-primary hover:scale-110 transition-all bg-white/10 p-2 rounded-lg" href="#"><span class="material-symbols-outlined">share</span></a>
+<a class="text-white hover:text-primary hover:scale-110 transition-all bg-white/10 p-2 rounded-lg" href="#"><span class="material-symbols-outlined">mail</span></a>
+</div>
+</div>
+</div>
+</footer>
+<a class="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-whatsapp px-6 py-3 text-white shadow-2xl transition-all hover:-translate-y-1 hover:shadow-xl hover:bg-[#1DA851] group border-4 border-white/20" href="https://wa.me/918225998112?text=Hello,%20I%20need%20support%20with%20MilkRecord%20app" target="_blank">
+<img alt="WhatsApp" class="h-8 w-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKd4AHAzqB2mVkFGsP7jNzdHyfh_qqaYZVkRYEvAIQ1pFDQLVpgJ1PV8VPNVbHCBUxpSCjkWm5kKDAu-CO3EYfR-biQmIt_4zyfMdzwDIHDqsOmiG84A3rNzrGKs3h1gCMsv6xpgWSpQcidLVFIz9P4E53bpVDPXAFJ3agAoNljrlLE3zp-gIwjmqvYihhjjULHFRMjGM1E_2P6kHja_2qZOUF7AJZ8sDTfJabXB2Wt3ytSe_khewsgy_PoR0nCEr9VXrTX_IEeQ"/>
+<span class="font-khand font-bold text-xl uppercase tracking-wide group-hover:underline">Get Support</span>
+</a>
+
+<script>
+  // Add navigation to main application
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers to all buttons that should navigate to the main app
+    const buttons = document.querySelectorAll('button');
     
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>MilkRecord</h1>
-        <p>Complete dairy management software for collection centers and retail shops.</p>
-    </section>
+    buttons.forEach(button => {
+      // Check if button text contains relevant keywords
+      if (button.textContent && 
+          (button.textContent.includes('Start Free Trial') || 
+           button.textContent.includes('Try Now') || 
+           button.textContent.includes('LOGIN') || 
+           button.textContent.includes('SIGN UP') ||
+           button.textContent.includes('Get Started') ||
+           button.textContent.includes('Try Demo') ||
+           button.textContent.includes('Start Now'))) {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.location.href = 'index.html';
+        });
+      }
+    });
     
-    <!-- ICP Selector -->
-    <section class="icp-selector">
-        <!-- BMC Card -->
-        <div class="icp-card bmc">
-            <div class="icp-icon">🏢</div>
-            <h2>Milk Collection Centers</h2>
-            <p>Professional procurement management for BMCs and dairy cooperatives.</p>
-            
-            <ul class="icp-features">
-                <li>Shift-based operations</li>
-                <li>Complete audit trail</li>
-                <li>Compliance ready</li>
-                <li>Analyzer integration</li>
-                <li>Government reports</li>
-            </ul>
-            
-            <a href="milk-collection-centers.html" class="icp-btn">Learn More →</a>
-        </div>
-        
-        <!-- POS Card -->
-        <div class="icp-card pos">
-            <div class="icp-icon">🏪</div>
-            <h2>Dairy Shops</h2>
-            <p>Fast billing and inventory management for retail dairy shops.</p>
-            
-            <ul class="icp-features">
-                <li>Lightning fast billing</li>
-                <li>Works offline</li>
-                <li>No installation</li>
-                <li>Free to start</li>
-                <li>WhatsApp bills</li>
-            </ul>
-            
-            <a href="dairy-shops.html" class="icp-btn">Learn More →</a>
-        </div>
-    </section>
+    // Also handle any anchor tags that should navigate to the main app
+    const links = document.querySelectorAll('a');
+    links.forEach(link => {
+      if (link.textContent && 
+          (link.textContent.includes('Try Web Version') || 
+           link.textContent.includes('Login') || 
+           link.textContent.includes('Dashboard') ||
+           link.textContent.includes('Try Now'))) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.location.href = 'index.html';
+        });
+      }
+    });
     
-    <!-- Secondary Links -->
-    <section class="secondary-links">
-        <a href="hardware.html" class="secondary-link">
-            🖥️ Hardware Support
-        </a>
-        <a href="compliance.html" class="secondary-link">
-            🔒 Compliance
-        </a>
-        <a href="partners.html" class="secondary-link">
-            🤝 Partner Program
-        </a>
-        <a href="demo-bmc.html" class="secondary-link">
-            🎮 BMC Demo
-        </a>
-        <a href="pos-demo.html" class="secondary-link">
-            🛒 POS Demo
-        </a>
-    </section>
+    // Handle the specific buttons by ID if they exist
+    const startTrialBtn = document.getElementById('btnStartFreeTrial');
+    if (startTrialBtn) {
+      startTrialBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'index.html';
+      });
+    }
     
-    <!-- Footer -->
-    <footer class="footer">
-        <p>© 2024 MilkRecord. Built for Indian dairy industry.</p>
-    </footer>
-</body>
-</html>
+    const scheduleDemoBtn = document.getElementById('btnScheduleDemo');
+    if (scheduleDemoBtn) {
+      scheduleDemoBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'index.html';
+      });
+    }
+  });
+</script>
+</body></html>

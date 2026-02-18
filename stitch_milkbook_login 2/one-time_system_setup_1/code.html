@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkBook - Gamified Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "rgb(37, 99, 235)",
+                        "background-soft": "#f0f7ff",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    boxShadow: {
+                        'pressable': '0 4px 0 0 rgba(37, 99, 235, 0.2)',
+                        'button': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .pin-circle {
+                @apply w-5 h-5 rounded-full border-2 border-primary/30 bg-white transition-all duration-300;
+            }
+            .pin-circle.filled {
+                @apply bg-primary border-primary scale-110;
+            }
+            .num-btn {
+                @apply w-20 h-20 rounded-2xl bg-white flex items-center justify-center text-3xl font-extrabold text-slate-700 shadow-button border-b-4 border-slate-200 active:border-b-0 active:translate-y-1 active:shadow-none transition-all;
+            }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+    </style>
+</head>
+<body class="bg-background-soft font-display min-h-screen flex flex-col items-center justify-center p-4">
+<div class="w-full max-w-md mb-12">
+<div class="flex items-center justify-between mb-2">
+<span class="text-xs font-bold text-primary/60 uppercase tracking-widest">Step 1 of 9</span>
+<span class="text-xs font-bold text-primary">Login</span>
+</div>
+<div class="h-2 w-full bg-blue-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 11%"></div>
+</div>
+</div>
+<div class="w-full max-w-md bg-white rounded-[2.5rem] shadow-xl shadow-blue-900/5 p-10 flex flex-col items-center text-center">
+<div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-5xl text-primary">lock</span>
+</div>
+<h1 class="text-2xl font-extrabold text-slate-800 mb-2">Welcome Back!</h1>
+<p class="text-slate-500 font-medium mb-10 leading-relaxed">Enter your 4-digit PIN to open<br/>your MilkBook</p>
+<div class="flex gap-4 mb-12">
+<div class="pin-circle filled"></div>
+<div class="pin-circle filled"></div>
+<div class="pin-circle"></div>
+<div class="pin-circle"></div>
+</div>
+<div class="grid grid-cols-3 gap-6">
+<button class="num-btn">1</button>
+<button class="num-btn">2</button>
+<button class="num-btn">3</button>
+<button class="num-btn">4</button>
+<button class="num-btn">5</button>
+<button class="num-btn">6</button>
+<button class="num-btn">7</button>
+<button class="num-btn">8</button>
+<button class="num-btn">9</button>
+<div class="w-20 h-20"></div> 
+<button class="num-btn">0</button>
+<button class="w-20 h-20 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-3xl">backspace</span>
+</button>
+</div>
+<button class="mt-10 text-primary font-bold hover:underline text-sm tracking-wide">
+            Forgot PIN?
+        </button>
+</div>
+<div class="mt-8 flex items-center gap-3 text-slate-400 grayscale opacity-70">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="text-xs font-semibold uppercase tracking-widest">Safe &amp; Secure Dairy Management</span>
+</div>
+
+</body></html>

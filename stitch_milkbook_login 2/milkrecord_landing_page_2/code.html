@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkRecord Operational Speed Variant</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Khand:wght@600;700&amp;family=Hind:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FF5F1F", // Neon Orange
+                        "primary-glow": "#FF8C00",
+                        "secondary": "#00E5FF", // Neon Cyan/Blue
+                        "secondary-glow": "#00BFFF",
+                        "success": "#00FF7F", // Spring Green
+                        "dark-base": "#050b14",
+                        "dark-surface": "#0a111c",
+                        "dark-card": "#121a26",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "khand": ["Khand", "sans-serif"],
+                        "hind": ["Hind", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem", 
+                        "lg": "0.5rem", 
+                        "xl": "0.75rem", 
+                        "2xl": "1.5rem",
+                        "3xl": "2rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'neon-blue': '0 0 10px rgba(0, 229, 255, 0.5), 0 0 20px rgba(0, 229, 255, 0.3)',
+                        'neon-orange': '0 0 10px rgba(255, 95, 31, 0.5), 0 0 20px rgba(255, 95, 31, 0.3)',
+                        '3d-button': '0 6px 0 #b33e00, 0 0 15px rgba(255, 95, 31, 0.4)',
+                        '3d-button-hover': '0 3px 0 #b33e00, 0 0 25px rgba(255, 95, 31, 0.6)',
+                        'hud-card': '0 0 0 1px rgba(0, 229, 255, 0.2), 0 10px 30px -10px rgba(0, 0, 0, 0.8)',
+                    },
+                    animation: {
+                        'marquee': 'marquee 25s linear infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, boxShadow: '0 0 15px rgba(255, 95, 31, 0.4)' },
+                            '50%': { opacity: .8, boxShadow: '0 0 25px rgba(255, 95, 31, 0.7)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .night-grid {
+            background-color: #050b14;
+            background-image: 
+                linear-gradient(rgba(0, 229, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .text-neon {
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+        .text-neon-orange {
+            text-shadow: 0 0 10px rgba(255, 95, 31, 0.5);
+        }
+        .glass-panel {
+            background: rgba(18, 26, 38, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .hud-border {
+            position: relative;
+        }
+        .hud-border::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 10px; height: 10px;
+            border-top: 2px solid #00E5FF;
+            border-left: 2px solid #00E5FF;
+        }
+        .hud-border::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 10px; height: 10px;
+            border-bottom: 2px solid #00E5FF;
+            border-right: 2px solid #00E5FF;
+        }
+        .glow-button {
+            position: relative;
+            z-index: 1;
+        }
+        .glow-button::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #FF5F1F, #FF8C00, #FF5F1F);
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0.7;
+            border-radius: 1rem;
+        }
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #00E5FF;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00E5FF;
+        }
+        .comparison-container {
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-dark-base font-display text-[#e0e0e0] overflow-x-hidden">
+<header class="sticky top-0 z-50 w-full border-b border-white/5 bg-dark-base/90 backdrop-blur-md">
+<div class="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-4 md:px-10">
+<a href="../../index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg border border-secondary/50 bg-secondary/10 text-secondary shadow-[0_0_15px_rgba(0,229,255,0.3)]">
+<span class="material-symbols-outlined text-2xl">speed</span>
+</div>
+<h2 class="text-2xl font-khand font-bold leading-tight tracking-wide text-white uppercase"><span class="text-secondary">Milk</span>Record</h2>
+</a>
+<div class="hidden flex-1 justify-end gap-8 md:flex items-center">
+<nav class="flex items-center gap-8">
+<a class="text-sm font-bold text-gray-400 hover:text-secondary transition-colors uppercase tracking-wider" href="#">Dashboard</a>
+<a class="text-sm font-bold text-gray-400 hover:text-secondary transition-colors uppercase tracking-wider" href="#">Connectors</a>
+<a class="text-sm font-bold text-gray-400 hover:text-secondary transition-colors uppercase tracking-wider" href="#">Pricing</a>
+</nav>
+<button class="flex items-center gap-2 rounded-lg border border-secondary/50 bg-secondary/10 px-5 py-2 text-sm font-bold text-secondary transition-all hover:bg-secondary hover:text-dark-base hover:shadow-neon-blue">
+<span class="material-symbols-outlined text-lg">login</span>
+                LOGIN
+            </button>
+</div>
+<button class="flex md:hidden text-white rounded-lg border border-white/20 p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-grow night-grid">
+<section class="relative min-h-[750px] w-full overflow-hidden py-12 md:py-20 flex items-center">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-dark-base/80 to-dark-base pointer-events-none"></div>
+<div class="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-10">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="flex flex-col gap-8 order-2 lg:order-1">
+<div class="inline-flex items-center gap-2 self-start rounded-full bg-dark-surface px-4 py-1.5 border border-primary/50 shadow-neon-orange">
+<span class="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold text-primary tracking-[0.2em] uppercase">Night Shift Ready</span>
+</div>
+<div class="flex flex-col gap-2">
+<h1 class="font-khand text-6xl md:text-8xl font-bold leading-[0.9] text-white tracking-tight">
+                            MAXIMUM<br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-blue-400 text-neon">VISIBILITY</span><br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-400 text-neon-orange">AT 4 AM</span>
+</h1>
+<p class="font-hind text-xl font-medium leading-relaxed text-gray-400 mt-6 max-w-lg border-l-2 border-secondary/30 pl-6">
+                            Dark mode engineered for the pre-dawn rush. Instant data entry, massive numerals, and zero eye strain. Speed is your new currency.
+                        </p>
+</div>
+<div class="flex flex-col sm:flex-row gap-6 mt-8 items-start sm:items-center">
+<button class="glow-button group relative flex min-w-[320px] items-center justify-center gap-4 rounded-2xl bg-primary px-8 py-6 text-left text-white transition-all hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined text-4xl animate-pulse">bolt</span>
+<div class="flex flex-col">
+<span class="text-xs font-mono uppercase tracking-widest text-black/60 font-bold">Launch Dashboard</span>
+<span class="text-3xl font-khand font-bold uppercase leading-none tracking-wide text-white drop-shadow-md">GET STARTED NOW</span>
+</div>
+</button>
+</div>
+<div class="mt-8 flex gap-8 items-center border-t border-white/10 pt-6">
+<div class="flex flex-col">
+<span class="text-3xl font-khand font-bold text-white">0.8s</span>
+<span class="text-xs font-mono text-gray-500 uppercase">Avg. Entry Time</span>
+</div>
+<div class="h-10 w-px bg-white/10"></div>
+<div class="flex flex-col">
+<span class="text-3xl font-khand font-bold text-success">100%</span>
+<span class="text-xs font-mono text-gray-500 uppercase">Uptime Nightly</span>
+</div>
+<div class="h-10 w-px bg-white/10"></div>
+<div class="flex flex-col">
+<span class="text-3xl font-khand font-bold text-secondary">Dark</span>
+<span class="text-xs font-mono text-gray-500 uppercase">Mode Standard</span>
+</div>
+</div>
+</div>
+<div class="relative order-1 lg:order-2">
+<div class="absolute -inset-1 bg-gradient-to-r from-secondary to-primary rounded-xl blur opacity-20 animate-pulse"></div>
+<div class="relative bg-dark-card border border-white/10 rounded-xl overflow-hidden shadow-2xl p-1 hud-border">
+<div class="bg-[#0a111c] px-4 py-2 flex items-center gap-2 border-b border-white/5">
+<div class="flex gap-1.5">
+<div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+<div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+<div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+</div>
+<div class="mx-auto bg-dark-base px-24 py-1 rounded text-[10px] text-gray-600 font-mono tracking-widest uppercase">MilkRecord // Live_Session</div>
+</div>
+<div class="bg-dark-base p-6 md:p-8 grid grid-cols-2 gap-4">
+<div class="col-span-2 flex justify-between items-center mb-4">
+<div class="flex items-center gap-3">
+<div class="h-12 w-12 rounded bg-gray-800 flex items-center justify-center border border-gray-700">
+<span class="material-symbols-outlined text-gray-400">person</span>
+</div>
+<div>
+<div class="text-xs text-gray-500 uppercase tracking-wider">Farmer ID</div>
+<div class="text-2xl font-mono text-white">#4092</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-xs text-gray-500 uppercase tracking-wider">Time</div>
+<div class="text-xl font-mono text-secondary">04:12:35 AM</div>
+</div>
+</div>
+<div class="bg-dark-surface border border-gray-800 p-6 rounded-lg flex flex-col justify-center relative overflow-hidden group hover:border-secondary/50 transition-colors">
+<div class="absolute top-2 right-2 text-gray-600 text-xs font-bold uppercase">Weight (L)</div>
+<div class="text-6xl md:text-7xl font-khand font-bold text-white tracking-tighter group-hover:text-secondary transition-colors">42.5</div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-secondary shadow-[0_0_10px_#00E5FF]"></div>
+</div>
+<div class="bg-dark-surface border border-gray-800 p-6 rounded-lg flex flex-col justify-center relative overflow-hidden group hover:border-primary/50 transition-colors">
+<div class="absolute top-2 right-2 text-gray-600 text-xs font-bold uppercase">Fat %</div>
+<div class="text-6xl md:text-7xl font-khand font-bold text-white tracking-tighter group-hover:text-primary transition-colors">4.8</div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-primary shadow-[0_0_10px_#FF5F1F]"></div>
+</div>
+<div class="col-span-2 bg-dark-surface border border-gray-800 p-4 rounded-lg flex items-center justify-between mt-2">
+<div class="flex gap-8">
+<div>
+<span class="text-xs text-gray-500 uppercase block">SNF</span>
+<span class="text-2xl font-bold text-gray-300">8.5</span>
+</div>
+<div>
+<span class="text-xs text-gray-500 uppercase block">Rate/L</span>
+<span class="text-2xl font-bold text-gray-300">₹32.50</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xs text-gray-500 uppercase block">Total</span>
+<span class="text-4xl font-khand font-bold text-success">₹1,381.25</span>
+</div>
+</div>
+<button class="absolute -bottom-6 -right-6 h-20 w-20 bg-secondary text-dark-base rounded-full flex items-center justify-center shadow-neon-blue font-bold hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl">print</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 border-t border-white/5 bg-[#080e16]">
+<div class="mx-auto max-w-[1000px] px-6">
+<div class="text-center mb-16">
+<h2 class="font-khand text-4xl md:text-5xl font-bold text-white uppercase tracking-tight mb-2">
+                    Stop Wasting Time
+                </h2>
+<p class="font-hind text-gray-400 uppercase tracking-widest text-sm">
+                    Manual Entry vs MilkRecord Speed Mode
+                </p>
+</div>
+<div class="relative h-[400px] w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+<div class="absolute inset-0 grid grid-cols-2">
+<div class="bg-[#1a1a1a] relative flex items-center justify-center flex-col p-8 border-r border-white/5">
+<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+<div class="z-10 flex flex-col items-center gap-4 opacity-50 grayscale">
+<span class="material-symbols-outlined text-8xl text-red-500">timer</span>
+<h3 class="font-khand text-4xl text-gray-400 uppercase">Wait Time</h3>
+<p class="text-6xl font-display font-bold text-red-500/50 line-through decoration-white">45s</p>
+<p class="font-mono text-xs text-gray-500 uppercase mt-4">Manual Ledger Entry</p>
+</div>
+</div>
+<div class="bg-gradient-to-br from-dark-card to-dark-base relative flex items-center justify-center flex-col p-8">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-secondary/10 via-transparent to-transparent"></div>
+<div class="z-10 flex flex-col items-center gap-4">
+<span class="material-symbols-outlined text-8xl text-secondary drop-shadow-[0_0_15px_rgba(0,229,255,0.6)]">bolt</span>
+<h3 class="font-khand text-4xl text-white uppercase">Speed Gain</h3>
+<p class="text-8xl font-display font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">1s</p>
+<p class="font-mono text-xs text-secondary uppercase mt-4 tracking-widest">Instant Digital Capture</p>
+</div>
+</div>
+</div>
+<div class="absolute inset-y-0 left-1/2 w-1 bg-white/20 z-20 flex items-center justify-center cursor-ew-resize hover:bg-secondary/50 transition-colors">
+<div class="h-12 w-12 bg-dark-base border-2 border-secondary rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.5)]">
+<span class="material-symbols-outlined text-secondary text-xl">compare_arrows</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 px-6 md:px-10 relative overflow-hidden bg-dark-base">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="mx-auto max-w-[1280px] relative z-10">
+<div class="text-center mb-16">
+<h2 class="font-khand text-5xl font-bold text-white uppercase tracking-tight">Pay As You Earn</h2>
+<p class="font-hind text-xl text-gray-400 max-w-2xl mx-auto mt-4">
+                    No subscriptions. No commitments. Just speed.
+                </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center max-w-6xl mx-auto">
+<div class="glass-panel p-8 rounded-2xl flex flex-col gap-6 opacity-60 hover:opacity-100 transition-opacity">
+<h3 class="font-khand text-2xl text-gray-300 uppercase">Free Tier</h3>
+<div class="text-4xl font-display font-bold text-white">₹0</div>
+<ul class="space-y-3 text-sm text-gray-400 font-hind">
+<li class="flex gap-2"><span class="material-symbols-outlined text-xs">check</span> Web Access Only</li>
+<li class="flex gap-2"><span class="material-symbols-outlined text-xs">check</span> Basic Reports</li>
+</ul>
+<button class="w-full py-3 rounded border border-white/20 text-white font-bold uppercase text-sm hover:bg-white/10 transition-colors">Sign Up</button>
+</div>
+<div class="bg-gradient-to-b from-gray-900 to-black p-1 rounded-2xl shadow-neon-orange transform scale-105 z-10 relative">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold uppercase px-4 py-1 rounded-full shadow-lg tracking-widest">
+                    Best Value
+                </div>
+<div class="bg-dark-surface p-10 rounded-xl flex flex-col h-full relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-9xl text-primary">account_balance_wallet</span>
+</div>
+<h3 class="font-khand text-3xl text-primary uppercase mb-2">Daily Wallet</h3>
+<p class="text-gray-400 text-sm mb-6">Full power for the price of a chai.</p>
+<div class="flex items-end gap-2 mb-8">
+<div class="text-7xl font-display font-bold text-white tracking-tighter">₹3</div>
+<div class="text-xl text-gray-500 font-medium mb-2">/day</div>
+</div>
+<div class="space-y-4 mb-10">
+<div class="flex items-center gap-3 text-white">
+<span class="material-symbols-outlined text-primary">bolt</span>
+<span class="font-bold">Unlimited Speed Mode</span>
+</div>
+<div class="flex items-center gap-3 text-white">
+<span class="material-symbols-outlined text-primary">offline_bolt</span>
+<span class="font-bold">Offline Sync</span>
+</div>
+<div class="flex items-center gap-3 text-white">
+<span class="material-symbols-outlined text-primary">sms</span>
+<span class="font-bold">Instant SMS Receipts</span>
+</div>
+</div>
+<button class="w-full py-4 rounded bg-primary text-white font-khand text-xl font-bold uppercase shadow-[0_4px_0_#b33e00] hover:shadow-[0_2px_0_#b33e00] hover:translate-y-[2px] transition-all active:shadow-none active:translate-y-[4px]">
+                        Start Trial
+                    </button>
+</div>
+</div>
+<div class="glass-panel p-8 rounded-2xl flex flex-col gap-6 opacity-60 hover:opacity-100 transition-opacity">
+<h3 class="font-khand text-2xl text-secondary uppercase">Monthly Pro</h3>
+<div class="text-4xl font-display font-bold text-white">₹499</div>
+<ul class="space-y-3 text-sm text-gray-400 font-hind">
+<li class="flex gap-2"><span class="material-symbols-outlined text-xs">check</span> Priority Support</li>
+<li class="flex gap-2"><span class="material-symbols-outlined text-xs">check</span> Multiple Users</li>
+<li class="flex gap-2"><span class="material-symbols-outlined text-xs">check</span> Advanced Analytics</li>
+</ul>
+<button class="w-full py-3 rounded border border-secondary/50 text-secondary font-bold uppercase text-sm hover:bg-secondary/10 transition-colors">Go Pro</button>
+</div>
+</div>
+</div>
+</section>
+<section class="border-y border-white/5 bg-black py-8 overflow-hidden relative">
+<div class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-black to-transparent z-10"></div>
+<div class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-black to-transparent z-10"></div>
+<div class="flex items-center gap-4 mb-6 justify-center">
+<span class="material-symbols-outlined text-secondary animate-pulse">cable</span>
+<span class="text-gray-500 uppercase tracking-[0.3em] text-xs font-bold">Universal Connector Ready</span>
+</div>
+<div class="flex w-full whitespace-nowrap overflow-hidden">
+<div class="flex animate-marquee items-center gap-16 min-w-full pl-16">
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">EKOMILK</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">LACTOSCAN</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">REIL</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">ESSAE</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">MILKOTESTER</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">EKOMILK</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">LACTOSCAN</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">REIL</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">ESSAE</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">MILKOTESTER</span>
+</div>
+<div aria-hidden="true" class="flex animate-marquee items-center gap-16 min-w-full pl-16">
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">EKOMILK</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">LACTOSCAN</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">REIL</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">ESSAE</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">MILKOTESTER</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">EKOMILK</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">LACTOSCAN</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">REIL</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">ESSAE</span>
+<span class="text-2xl font-display font-bold text-gray-600 hover:text-white transition-colors cursor-pointer">MILKOTESTER</span>
+</div>
+</div>
+</section>
+<section class="py-24 px-6 md:px-10 text-center relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none"></div>
+<div class="mx-auto max-w-4xl relative z-10">
+<h2 class="font-khand text-5xl md:text-7xl font-bold text-white uppercase tracking-tight mb-8">
+                    Dominating the <span class="text-primary">Dark</span>
+</h2>
+<p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
+                    Join the fastest growing network of high-tech dairies. Experience the speed for yourself.
+                </p>
+<button class="relative inline-flex group">
+<div class="absolute transition-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"></div>
+</button><button class="relative inline-flex items-center justify-center px-16 py-8 text-2xl font-bold font-khand text-white transition-all duration-200 bg-dark-base font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 uppercase tracking-widest border border-white/10 hover:text-secondary">
+                        Get Started Now
+                        <span class="material-symbols-outlined ml-4 text-3xl">arrow_forward</span>
+</button>
+
+<div class="mt-8 flex justify-center gap-6 text-xs font-mono text-gray-500 uppercase tracking-widest">
+<span>No Credit Card</span>
+<span>•</span>
+<span>Instant Access</span>
+<span>•</span>
+<span>24/7 Support</span>
+</div>
+</div>
+</section>
+</main>
+<footer class="border-t border-white/10 bg-[#050b14] py-12 px-6">
+<div class="mx-auto max-w-[1280px] flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-600">water_drop</span>
+<span class="font-khand font-bold text-gray-500 uppercase">MilkRecord OS</span>
+</div>
+<div class="flex gap-8 text-sm text-gray-600 font-bold uppercase tracking-wider">
+<a class="hover:text-secondary transition-colors" href="#">Privacy</a>
+<a class="hover:text-secondary transition-colors" href="#">Terms</a>
+<a class="hover:text-secondary transition-colors" href="#">Status</a>
+</div>
+<div class="text-gray-700 text-xs">
+                © 2024 MilkRecord. System Operational.
+            </div>
+</div>
+</footer>
+</body></html>
