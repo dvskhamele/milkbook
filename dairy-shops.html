@@ -207,6 +207,144 @@
             font-weight: 600;
         }
 
+        /* Retail vs Institutional Truth Section */
+        .retail-truth-section {
+            padding: 80px 20px;
+            background: #f0fdf4;
+        }
+
+        .retail-truth-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 40px auto 0;
+        }
+
+        .retail-truth-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .retail-truth-card h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #047857;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .retail-truth-card ul {
+            list-style: none;
+        }
+
+        .retail-truth-card li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .retail-truth-card li:last-child {
+            border-bottom: none;
+        }
+
+        .retail-truth-card .module-name {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .retail-truth-card .module-status {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .status-yes {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-no {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .retail-truth-footer {
+            max-width: 1000px;
+            margin: 20px auto 0;
+            text-align: center;
+            color: #047857;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        /* Upgrade Path Section */
+        .upgrade-path-section {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .upgrade-path-box {
+            max-width: 800px;
+            margin: 40px auto 0;
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .upgrade-path-box h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #92400e;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .upgrade-path-box ul {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .upgrade-path-box li {
+            padding: 10px 0;
+            padding-left: 28px;
+            position: relative;
+            color: #92400e;
+            font-size: 15px;
+        }
+
+        .upgrade-path-box li:before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        .upgrade-path-footer {
+            text-align: center;
+            color: #78350f;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .pos-disclaimer {
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            font-style: italic;
+            margin-top: 40px;
+        }
+
         /* Preparedness Section */
         .preparedness-section {
             padding: 80px 20px;
@@ -534,6 +672,88 @@
                 <p>Desktop, tablet, or mobile. Chrome, Firefox, or Safari. No installation, just open and sell.</p>
             </div>
         </div>
+    </section>
+    
+    <!-- Retail vs Institutional Truth Section -->
+    <section class="retail-truth-section">
+        <div class="section-title">
+            <h2>Retail Truth vs Institutional Truth</h2>
+        </div>
+        
+        <div class="retail-truth-grid">
+            <!-- Retail Truth -->
+            <div class="retail-truth-card">
+                <h3>Retail Truth (POS Scope)</h3>
+                <ul>
+                    <li>
+                        <span class="module-name">Billing</span>
+                        <span class="module-status status-yes">✅ Yes</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Customer Udhar</span>
+                        <span class="module-status status-yes">✅ Yes</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Daily Sales</span>
+                        <span class="module-status status-yes">✅ Yes</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Product-wise ledger</span>
+                        <span class="module-status status-yes">✅ Yes</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Institutional Truth -->
+            <div class="retail-truth-card">
+                <h3>Not Retail Scope (Requires BMC System)</h3>
+                <ul>
+                    <li>
+                        <span class="module-name">Milk source validation</span>
+                        <span class="module-status status-no">❌ No</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Quality disputes</span>
+                        <span class="module-status status-no">❌ No</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Audit justification</span>
+                        <span class="module-status status-no">❌ No</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Payment settlements</span>
+                        <span class="module-status status-no">❌ No</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <p class="retail-truth-footer">
+            Retail speed ≠ institutional truth.
+        </p>
+    </section>
+    
+    <!-- Upgrade Path Section -->
+    <section class="upgrade-path-section">
+        <div class="section-title">
+            <h2>When Shops Become Collection Points</h2>
+        </div>
+        
+        <div class="upgrade-path-box">
+            <ul>
+                <li>POS handles billing</li>
+                <li>Procurement starts</li>
+                <li>Audit responsibility begins</li>
+                <li>MilkRecord BMC modules activate</li>
+            </ul>
+            <p class="upgrade-path-footer">
+                Same data mindset. Different responsibility level.
+            </p>
+        </div>
+        
+        <p class="pos-disclaimer">
+            POS demo shows retail speed. Audit completeness is demonstrated in BMC systems.
+        </p>
     </section>
     
     <!-- Preparedness Section -->

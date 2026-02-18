@@ -275,6 +275,150 @@
             font-style: italic;
         }
 
+        /* Operational Truth Stack Section */
+        .truth-stack-section {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .truth-stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 40px auto 0;
+        }
+
+        .truth-stack-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 30px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .truth-stack-card h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .truth-stack-card ul {
+            list-style: none;
+        }
+
+        .truth-stack-card li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .truth-stack-card li:last-child {
+            border-bottom: none;
+        }
+
+        .truth-stack-card .module-name {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .truth-stack-card .module-status {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .status-mandatory {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-optional {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .truth-stack-footer {
+            max-width: 1000px;
+            margin: 20px auto 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        /* Audit Readiness Matrix */
+        .audit-matrix-section {
+            padding: 80px 20px;
+            background: #f8fafc;
+        }
+
+        .audit-matrix-table {
+            max-width: 900px;
+            margin: 40px auto 0;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .audit-matrix-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .audit-matrix-table th {
+            background: #1e3a5f;
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .audit-matrix-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .audit-matrix-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .audit-matrix-table tr:hover {
+            background: #f1f5f9;
+        }
+
+        .audit-matrix-footer {
+            max-width: 900px;
+            margin: 20px auto 0;
+            text-align: center;
+            color: #dc2626;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        /* Demo Expectation */
+        .demo-expectation {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px auto 0;
+            max-width: 800px;
+            text-align: center;
+            color: #92400e;
+            font-size: 14px;
+        }
+
         /* Audit Expectations Section */
         .audit-expectations {
             padding: 80px 20px;
@@ -529,7 +673,151 @@
         </div>
     </section>
     
-    <!-- Operational Completeness Section -->
+    <!-- Operational Truth Stack Section -->
+    <section class="truth-stack-section">
+        <div class="section-title">
+            <h2>Operational Truth Stack</h2>
+            <p>Core truth modules define what happened. Explanation modules are optional but visible when missing.</p>
+        </div>
+        
+        <div class="truth-stack-grid">
+            <!-- Core Truth Modules -->
+            <div class="truth-stack-card">
+                <h3>Core Truth Modules (Always Active)</h3>
+                <ul>
+                    <li>
+                        <span class="module-name">Collection Truth</span>
+                        <span class="module-status status-mandatory">✅ Mandatory</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Login → Shift → Dock → Lab</span>
+                        <span class="module-status status-mandatory">✅ Mandatory</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Quantity Truth</span>
+                        <span class="module-status status-mandatory">✅ Mandatory</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Weighing + Analyzer</span>
+                        <span class="module-status status-mandatory">✅ Mandatory</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Quality Truth</span>
+                        <span class="module-status status-mandatory">✅ Mandatory</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Fat / SNF / Scoreboard</span>
+                        <span class="module-status status-mandatory">✅ Mandatory</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Time Truth</span>
+                        <span class="module-status status-mandatory">✅ Mandatory</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Shift close + sync logs</span>
+                        <span class="module-status status-mandatory">✅ Mandatory</span>
+                    </li>
+                    <li>
+                        <span class="module-name">History</span>
+                        <span class="module-status status-mandatory">✅ Mandatory</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Immutable ledger</span>
+                        <span class="module-status status-mandatory">✅ Mandatory</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Explanation Modules -->
+            <div class="truth-stack-card">
+                <h3>Explanation Modules (Optional, Visible When Missing)</h3>
+                <ul>
+                    <li>
+                        <span class="module-name">Payment Method</span>
+                        <span class="module-status status-optional">🟡 Optional</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Cheque Printing</span>
+                        <span class="module-status status-optional">🟡 Optional</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Deductions</span>
+                        <span class="module-status status-optional">🟡 Optional</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Loan / Advance Ledger</span>
+                        <span class="module-status status-optional">🟡 Optional</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Variance Cause</span>
+                        <span class="module-status status-optional">🟡 Optional</span>
+                    </li>
+                    <li>
+                        <span class="module-name">AMC / Service Logs</span>
+                        <span class="module-status status-optional">🟡 Optional</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Source Identity</span>
+                        <span class="module-status status-optional">🟡 Optional</span>
+                    </li>
+                    <li>
+                        <span class="module-name">Farmer / Cattle Profile</span>
+                        <span class="module-status status-optional">🟡 Optional</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <p class="truth-stack-footer">
+            MilkRecord clearly marks when explanations are not recorded.
+        </p>
+    </section>
+    
+    <!-- Audit Readiness Matrix Section -->
+    <section class="audit-matrix-section">
+        <div class="section-title">
+            <h2>Audit Readiness Matrix</h2>
+        </div>
+        
+        <div class="audit-matrix-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Auditor Question</th>
+                        <th>Answered By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Why payable changed?</strong></td>
+                        <td>Cheque + Loan modules</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Why fat variance occurred?</strong></td>
+                        <td>Lab + AMC</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Which equipment failed?</strong></td>
+                        <td>AMC</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Which farmer / animal?</strong></td>
+                        <td>Profile module</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Who approved override?</strong></td>
+                        <td>Core audit log</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <p class="audit-matrix-footer">
+            Missing answers are explicitly flagged.
+        </p>
+    </section>
+    
+    <!-- Completeness Section -->
     <section class="completeness-section">
         <div class="section-title">
             <h2>Operational Completeness Status</h2>
@@ -603,7 +891,7 @@
     <section class="demo-section">
         <div class="section-title">
             <h2>Try the BMC Procurement Demo</h2>
-            <p>Experience a real collection center workflow with sample data.</p>
+            <p>Demo shows core truth flow. Explanation modules appear in hint mode to demonstrate completeness gaps.</p>
         </div>
         
         <div class="demo-box">
