@@ -51,7 +51,7 @@ const navConfig = {
         {
           title: 'Dairy Shop POS Demo',
           desc: 'Quick billing & sales',
-          url: 'purchase2.html',
+          url: 'pos-demo.html',
           icp: 'pos'
         }
       ]
