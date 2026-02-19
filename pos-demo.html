@@ -406,6 +406,33 @@
         </div>
     </div>
 
+    <!-- Unsaved Cart Warning Modal -->
+    <div class="overlay" id="unsavedCartModal" style="background: rgba(0,0,0,0.75);">
+        <div class="modal" style="width:450px; height:auto; border-radius: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.5);">
+            <div class="panelHeader" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white;">
+                <span style="font-weight: 900;">⚠️ Unsaved Order!</span>
+            </div>
+            <div style="padding:30px; text-align:center;">
+                <div style="font-size:60px; margin-bottom:15px;">🛒</div>
+                <h3 style="margin:0 0 10px 0; color:#1e293b; font-size:20px;">You have unsaved items in cart!</h3>
+                <p style="color:#64748b; font-size:14px; margin:0 0 25px 0;">Do you want to HOLD or SAVE before closing?</p>
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                    <button onclick="holdAndClose()" style="padding:15px; background:#fde68a; color:#92400e; border:2px solid #f59e0b; border-radius:12px; font-weight:900; font-size:16px; cursor:pointer;">
+                        🟡 HOLD<br><span style="font-size:12px; font-weight:700;">Save for later</span>
+                    </button>
+                    <button onclick="saveAndClose()" style="padding:15px; background:#22c55e; color:white; border:2px solid #16a34a; border-radius:12px; font-weight:900; font-size:16px; cursor:pointer;">
+                        🟢 SAVE<br><span style="font-size:12px; font-weight:700;">Complete order</span>
+                    </button>
+                </div>
+                
+                <button onclick="closeAndDiscard()" style="margin-top:15px; padding:10px; background:#f1f5f9; color:#64748b; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">
+                    ❌ Discard and Close
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <!-- Institutional Gaps Panel -->
@@ -476,6 +503,69 @@
           }
         } else {
           console.log('⚠️ Using offline mode (localStorage)');
+        }
+      });
+      
+      // Warn before close/refresh if cart has items
+      window.addEventListener('beforeunload', (e) => {
+        if (cart.length > 0) {
+          // Show our custom modal instead of browser default
+          e.preventDefault();
+          e.returnValue = '';
+          
+          // Open the unsaved cart modal
+          const modal = document.getElementById('unsavedCartModal');
+          if (modal) {
+            modal.style.display = 'flex';
+          }
+          
+          return '';
+        }
+      });
+      
+      // Hold and close
+      function holdAndClose() {
+        if (cart.length > 0) {
+          holdCart();
+          closeModal('unsavedCartModal');
+          showToast('Order held! You can now close safely ✅');
+        }
+      }
+      
+      // Save and close
+      function saveAndClose() {
+        if (cart.length > 0) {
+          saveEntry('Quick');
+          closeModal('unsavedCartModal');
+          showToast('Order saved! You can now close ✅');
+        }
+      }
+      
+      // Close and discard
+      function closeAndDiscard() {
+        cart = [];
+        updateUI();
+        closeModal('unsavedCartModal');
+        showToast('Order discarded');
+      }
+      
+      // Show hold/save popup on page hide (tab close, refresh, navigation)
+      window.addEventListener('visibilitychange', async () => {
+        if (document.visibilityState === 'hidden' && cart.length > 0) {
+          // Auto-hold the cart
+          const customerName = el("activeCust").innerText;
+          const holdId = Date.now();
+          
+          heldCarts.push({
+            id: holdId,
+            customer: customerName,
+            cart: [...cart],
+            total: total,
+            timestamp: new Date().toISOString()
+          });
+          
+          localStorage.setItem('mr_held_carts', JSON.stringify(heldCarts));
+          console.log('🟡 Auto-held cart for', customerName);
         }
       });
       
