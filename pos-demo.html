@@ -297,11 +297,15 @@
       </div>
 
       <div class="bottom" style="flex-shrink: 0;">
-        <button class="panicBtn" style="background:#fde68a; color:#78350f;" onclick="holdCart()"><span id="txtHold">🟡 HOLD</span> <span class="subnote">pause</span></button>
-        <button class="panicBtn" style="background:#fde68a; color:#78350f; font-size:18px;" onclick="showHeldCarts()" title="View held orders">📋</button>
-        <button class="panicBtn" onclick="saveEntry('Quick')" style="background:#22c55e; color:#064e3b; font-size:30px;"><span id="txtDone">🟢 DONE</span> <span class="subnote">next customer</span></button>
-        <button class="panicBtn" onclick="resetCart()" style="background:#fecaca; color:#7f1d1d;"><span id="txtClear">🔴 CLEAR</span> <span class="subnote">trash</span></button>
+        <button class="panicBtn" style="background:#fde68a; color:#78350f;" onclick="holdCart()"><span id="txtHold">🟡 HOLD</span> <span class="subnote">save</span></button>
+        <button class="panicBtn" style="background:#fef3c7; color:#92400e; font-size:18px;" onclick="showHeldCarts()" title="View held orders">📋 <span class="subnote" id="heldCount">0</span></button>
+        <button class="panicBtn" style="background:#dbeafe; color:#1e40af; font-size:20px;" onclick="retrieveLastHold()" title="Retrieve last held order">↩️ <span class="subnote">retrieve</span></button>
       </div>
+
+      <!-- DONE button - Moved to payment area -->
+      <button onclick="saveEntry('Quick')" style="width: calc(100% - 30px); margin: 15px; padding: 15px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; border: none; border-radius: 16px; font-size: 24px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);" title="Complete transaction">
+        🟢 DONE - Complete Transaction
+      </button>
 
       <!-- DONE button microcopy - Hover only -->
       <div class="hover-info" title="Institutional accountability requires collection center system">
@@ -1146,9 +1150,25 @@ function clearTodayHistory() {
       // Update hold button display
       function updateHoldButton() {
         const holdBtn = document.querySelector('button[onclick*="holdCart"]');
+        const heldCountEl = document.getElementById('heldCount');
+        
         if (holdBtn && heldCarts.length > 0) {
-          holdBtn.innerHTML = `🟡 HOLD <span class="subnote">${heldCarts.length} held</span>`;
+          holdBtn.innerHTML = `🟡 HOLD <span class="subnote">${heldCarts.length} saved</span>`;
+        } else if (holdBtn) {
+          holdBtn.innerHTML = `🟡 HOLD <span class="subnote">save</span>`;
         }
+        
+        if (heldCountEl) {
+          heldCountEl.textContent = heldCarts.length;
+        }
+      }
+      
+      // Retrieve last held cart
+      function retrieveLastHold() {
+        if (heldCarts.length === 0) return showToast("No held orders!");
+        
+        const lastHold = heldCarts[heldCarts.length - 1];
+        retrieveHoldCart(lastHold.id);
       }
       
       // Show held carts modal
