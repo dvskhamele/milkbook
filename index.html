@@ -2424,9 +2424,9 @@ return `
     balAfter.textContent = `₹${after.toFixed(2)}`;
 
     // steps + values
-    el("qtyStep").textContent = `±${settings.qtyStep}`;
-    el("fatStep").textContent = `±${settings.fatStep}`;
-    el("snfStep").textContent = `±${settings.snfStep}`;
+    if (el("qtyStep")) el("qtyStep").textContent = `±${settings.qtyStep}`;
+    if (el("fatStep")) el("fatStep").textContent = `±${settings.fatStep}`;
+    if (el("snfStep")) el("snfStep").textContent = `±${settings.snfStep}`;
 
     // Density Sync (Agar density dabba add kiya hai toh ye line add karein)
     if (el("densityInput") && document.activeElement !== el("densityInput")) {
