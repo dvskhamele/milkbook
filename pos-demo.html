@@ -406,8 +406,9 @@
     <!-- Unsaved Cart Warning Modal -->
     <div class="overlay" id="unsavedCartModal" style="background: rgba(0,0,0,0.75);">
         <div class="modal" style="width:450px; height:auto; border-radius: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.5);">
-            <div class="panelHeader" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white;">
+            <div class="panelHeader" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; justify-content: space-between;">
                 <span style="font-weight: 900;">⚠️ Unsaved Order!</span>
+                <button onclick="closeModal('unsavedCartModal')" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✖</button>
             </div>
             <div style="padding:30px; text-align:center;">
                 <div style="font-size:60px; margin-bottom:15px;">🛒</div>
