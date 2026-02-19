@@ -91,20 +91,19 @@
       .gap-item p { margin: 0; font-size: 12px; color: #64748b; }
       .gap-tooltip { background: #fef3c7; color: #92400e; font-size: 11px; padding: 6px; border-radius: 4px; margin-top: 6px; font-style: italic; }
 
-      /* Hover Info - Beautiful Priority UI */
+      /* Hover Info - Subtle, minimal UI */
       .hover-info {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 12px;
-        font-size: 13px;
-        font-weight: 700;
+        background: #f1f5f9;
+        color: #64748b;
+        padding: 6px;
+        font-size: 11px;
+        font-weight: 600;
         text-align: center;
-        border-radius: 0 0 12px 12px;
+        border-radius: 0 0 8px 8px;
         opacity: 0;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
+        transform: translateY(-5px);
+        transition: all 0.2s ease;
         cursor: help;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
       }
       .panel:hover .hover-info {
         opacity: 1;
@@ -112,9 +111,11 @@
       }
       .summary-box .hover-info {
         margin-top: 10px;
-        border-radius: 8px;
+        border-radius: 6px;
         opacity: 1;
         transform: none;
+        background: rgba(255,255,255,0.2);
+        color: white;
       }
 
       /* Card Image aur Selection Style */
