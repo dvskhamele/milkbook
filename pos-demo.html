@@ -269,7 +269,7 @@
         <!-- Tabs -->
         <div style="display:flex; border-bottom:1px solid var(--line); padding:0 20px;">
           <button onclick="switchHistoryTab('today')" id="tabToday" style="flex:1; padding:12px; border:none; background:none; font-weight:700; cursor:pointer; border-bottom:3px solid var(--blue);">📅 Today</button>
-          <button onclick="switchHistoryTab('weekly')" id="tabWeekly" style="flex:1; padding:12px; border:none; background:none; font-weight:700; cursor:pointer; border-bottom:3px solid transparent;">🗓️ Weekly</button>
+          <button onclick="switchHistoryTab('all')" id="tabAll" style="flex:1; padding:12px; border:none; background:none; font-weight:700; cursor:pointer; border-bottom:3px solid transparent;">📚 All History</button>
         </div>
         
         <!-- Tab Content -->
@@ -651,49 +651,45 @@ function loadOrderFromHistory(customerName, cartItems) {
   showToast(`Loaded order for ${customerName}`);
 }
 
-// Switch history tab (today/weekly)
+// Switch history tab (today/all)
 function switchHistoryTab(tab) {
   const todayDiv = el("historyToday");
-  const weeklyDiv = el("historyWeekly");
+  const allDiv = el("historyWeekly"); // Reusing same div for all history
   const tabToday = el("tabToday");
-  const tabWeekly = el("tabWeekly");
+  const tabAll = el("tabAll");
   
   if (tab === 'today') {
     todayDiv.style.display = 'block';
-    weeklyDiv.style.display = 'none';
+    allDiv.style.display = 'none';
     tabToday.style.borderBottomColor = 'var(--blue)';
-    tabWeekly.style.borderBottomColor = 'transparent';
+    tabAll.style.borderBottomColor = 'transparent';
     renderHistory();
   } else {
     todayDiv.style.display = 'none';
-    weeklyDiv.style.display = 'block';
+    allDiv.style.display = 'block';
     tabToday.style.borderBottomColor = 'transparent';
-    tabWeekly.style.borderBottomColor = 'var(--blue)';
-    renderWeeklyHistory();
+    tabAll.style.borderBottomColor = 'var(--blue)';
+    renderAllHistory();
   }
 }
 
-// Render weekly history
-function renderWeeklyHistory() {
-  const today = new Date();
-  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-  
-  const weeklySales = exportHistory.filter(sale => {
-    const saleDate = new Date(sale.date);
-    return saleDate >= weekAgo;
-  });
-  
+// Render ALL history (no date limit)
+function renderAllHistory() {
   const container = el("historyWeekly");
-  if (weeklySales.length === 0) {
-    container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--muted);">No sales in last 7 days</div>';
+  
+  if (exportHistory.length === 0) {
+    container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--muted);">No sales history yet</div>';
     return;
   }
   
-  container.innerHTML = weeklySales.map((sale, i) => `
+  // Show ALL history, newest first
+  const allHistory = [...exportHistory].reverse();
+  
+  container.innerHTML = allHistory.map((sale, i) => `
     <div class="cardRow" style="cursor:pointer;" onclick="loadOrderFromHistory('${sale.customer.replace(/'/g, "\\'")}', ${JSON.stringify(sale.cartItems || []).replace(/"/g, '&quot;')})">
       <div style="flex:1">
         <b>${sale.customer}</b><br>
-        <small style="color:var(--muted); font-weight:700;">${sale.time} • ${sale.products} • ${sale.method}</small>
+        <small style="color:var(--muted); font-weight:700;">${sale.date} ${sale.time} • ${sale.products} • ${sale.method}</small>
       </div>
       <b style="color:var(--blue);">₹${sale.amount}</b>
     </div>
@@ -701,7 +697,7 @@ function renderWeeklyHistory() {
   
   // Update count
   const todayCount = exportHistory.filter(s => s.date === new Date().toLocaleDateString()).length;
-  el("historyCount").textContent = `${todayCount} today • ${weeklySales.length} in 7d`;
+  el("historyCount").textContent = `${todayCount} today • ${exportHistory.length} total`;
 }
 
 // Export history to CSV
@@ -837,12 +833,8 @@ function loadHistoryOnStart() {
     });
     
     // Update count
-    const weeklyCount = exportHistory.filter(s => {
-      const saleDate = new Date(s.date);
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      return saleDate >= weekAgo;
-    }).length;
-    el("historyCount").textContent = `${todaySales.length} today • ${weeklyCount} in 7d`;
+    const totalCount = exportHistory.length;
+    el("historyCount").textContent = `${todaySales.length} today • ${totalCount} total`;
 }
 
 function toggleGaps() { el("gapsPanel").classList.toggle("open"); }
