@@ -1,23 +1,68 @@
 const { createClient } = require('@supabase/supabase-js');
 
-// Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('Missing Supabase environment variables');
+  throw new Error('Supabase credentials not configured');
 }
 
-const supabase = supabaseUrl && supabaseKey 
-  ? createClient(supabaseUrl, supabaseKey)
-  : null;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-// CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
 };
+
+/**
+ * Get user's shop_id from JWT token
+ */
+async function getUserShopId(authHeader) {
+  if (!authHeader) return null;
+  
+  const token = authHeader.replace('Bearer ', '');
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  
+  if (error || !user) return null;
+  
+  const { data: userProfile } = await supabase
+    .from('users')
+    .select('shop_id')
+    .eq('id', user.id)
+    .single();
+  
+  return userProfile?.shop_id || null;
+}
+
+/**
+ * Check if subscription is active
+ */
+async function checkSubscription(shop_id) {
+  const { data, error } = await supabase
+    .rpc('is_subscription_active', { p_shop_id: shop_id });
+  
+  if (error || !data) {
+    return { active: false, status: 'expired' };
+  }
+  
+  return { active: data, status: 'active' };
+}
+
+/**
+ * Check if module is enabled
+ */
+async function checkModule(shop_id, module_id) {
+  const { data, error } = await supabase
+    .rpc('is_module_enabled', { p_shop_id: shop_id, p_module_id: module_id });
+  
+  if (error || !data) {
+    return { enabled: false };
+  }
+  
+  return { enabled: data };
+}
 
 exports.handler = async (event, context) => {
   // Handle CORS preflight
@@ -29,22 +74,54 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // Check if Supabase is configured
-  if (!supabase) {
-    return {
-      statusCode: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        error: 'Server configuration error',
-        message: 'Supabase credentials not configured'
-      }),
-    };
-  }
-
   const { httpMethod, body, queryStringParameters, path } = event;
+  const authHeader = event.headers.authorization || event.headers.Authorization;
   const resourceId = path.split('/').pop();
 
   try {
+    // Get user's shop_id
+    const shop_id = await getUserShopId(authHeader);
+    
+    if (!shop_id) {
+      return {
+        statusCode: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          error: 'Unauthorized',
+          message: 'Invalid or missing authentication token'
+        }),
+      };
+    }
+
+    // Check subscription (for write operations)
+    if (['POST', 'PUT', 'DELETE'].includes(httpMethod)) {
+      const subscription = await checkSubscription(shop_id);
+      if (!subscription.active) {
+        return {
+          statusCode: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            error: 'Subscription expired',
+            message: 'Your trial has expired. Please upgrade to continue.',
+            upgrade_required: true
+          }),
+        };
+      }
+    }
+
+    // Check module access (farmer_collection module)
+    const moduleCheck = await checkModule(shop_id, 'farmer_collection');
+    if (!moduleCheck.enabled && ['POST', 'PUT', 'DELETE'].includes(httpMethod)) {
+      return {
+        statusCode: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          error: 'Module not enabled',
+          message: 'Farmer Collection module is not enabled for your shop',
+          module_required: 'farmer_collection'
+        }),
+      };
+    }
     // GET - Fetch farmers
     if (httpMethod === 'GET') {
       let query = supabase.from('farmers').select('*');
