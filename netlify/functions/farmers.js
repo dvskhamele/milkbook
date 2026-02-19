@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { requireAccess } = require('./lib/access-guard');
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -36,34 +37,6 @@ async function getUserShopId(authHeader) {
   return userProfile?.shop_id || null;
 }
 
-/**
- * Check if subscription is active
- */
-async function checkSubscription(shop_id) {
-  const { data, error } = await supabase
-    .rpc('is_subscription_active', { p_shop_id: shop_id });
-  
-  if (error || !data) {
-    return { active: false, status: 'expired' };
-  }
-  
-  return { active: data, status: 'active' };
-}
-
-/**
- * Check if module is enabled
- */
-async function checkModule(shop_id, module_id) {
-  const { data, error } = await supabase
-    .rpc('is_module_enabled', { p_shop_id: shop_id, p_module_id: module_id });
-  
-  if (error || !data) {
-    return { enabled: false };
-  }
-  
-  return { enabled: data };
-}
-
 exports.handler = async (event, context) => {
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
@@ -87,40 +60,18 @@ exports.handler = async (event, context) => {
         statusCode: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          error: 'Unauthorized',
+          error: 'UNAUTHORIZED',
           message: 'Invalid or missing authentication token'
         }),
       };
     }
 
-    // Check subscription (for write operations)
+    // Check subscription and module access for write operations
     if (['POST', 'PUT', 'DELETE'].includes(httpMethod)) {
-      const subscription = await checkSubscription(shop_id);
-      if (!subscription.active) {
-        return {
-          statusCode: 403,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            error: 'Subscription expired',
-            message: 'Your trial has expired. Please upgrade to continue.',
-            upgrade_required: true
-          }),
-        };
+      const accessError = await requireAccess('farmer_collection')(shop_id);
+      if (accessError) {
+        return accessError;
       }
-    }
-
-    // Check module access (farmer_collection module)
-    const moduleCheck = await checkModule(shop_id, 'farmer_collection');
-    if (!moduleCheck.enabled && ['POST', 'PUT', 'DELETE'].includes(httpMethod)) {
-      return {
-        statusCode: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          error: 'Module not enabled',
-          message: 'Farmer Collection module is not enabled for your shop',
-          module_required: 'farmer_collection'
-        }),
-      };
     }
     // GET - Fetch farmers
     if (httpMethod === 'GET') {

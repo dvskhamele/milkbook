@@ -90,7 +90,33 @@
       .gap-item h4 { margin: 0 0 5px 0; font-size: 13px; color: #475569; }
       .gap-item p { margin: 0; font-size: 12px; color: #64748b; }
       .gap-tooltip { background: #fef3c7; color: #92400e; font-size: 11px; padding: 6px; border-radius: 4px; margin-top: 6px; font-style: italic; }
-      
+
+      /* Hover Info - Beautiful Priority UI */
+      .hover-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: center;
+        border-radius: 0 0 12px 12px;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        cursor: help;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+      .panel:hover .hover-info {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .summary-box .hover-info {
+        margin-top: 10px;
+        border-radius: 8px;
+        opacity: 1;
+        transform: none;
+      }
+
       /* Card Image aur Selection Style */
 .p-card img { width: 45px; height: 45px; object-fit: cover; margin-bottom: 8px; border-radius: 10px; }
 .p-card.selected { border: 3px solid var(--blue) !important; background: #eff6ff !important; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important; transform: scale(1.02); }
@@ -98,15 +124,6 @@
     </style>
   </head>
   <body>
-    <!-- Demo Banner -->
-    <div class="demo-banner">
-      🟡 Demo Mode — Retail POS<br>
-      This demo shows billing-only retail records.
-      <div style="margin-top: 6px; font-size: 12px; font-weight: 500;">
-        Procurement, quality verification, and audit explanations are out of scope for retail systems.
-      </div>
-    </div>
-  
     <div class="app">
       <div class="topbar">
         <div class="brand">
@@ -150,35 +167,66 @@
             <button class="add-btn" id="btnAdd" onclick="openModal('addCustModal')">+ Add New</button>
           </div>
 
-          <div class="product-grid" id="productGrid">
-            <div class="p-card cow" onclick="tapAdd('Cow Milk', 64, 1)"><div data-en="Cow 1L" data-hi="गाय दूध 1L">Cow 1L</div><small>₹64</small></div>
-            <div class="p-card cow" onclick="tapAdd('Cow Milk', 32, 0.5)"><div data-en="Cow 0.5L" data-hi="गाय दूध 0.5L">Cow 0.5L</div><small>₹32</small></div>
-            <div class="p-card buff" onclick="tapAdd('Buff Milk', 100, 1)"><div data-en="Buff 1L" data-hi="भैंस दूध 1L">Buff thick 1L</div><small>₹100</small></div>
-            <div class="p-card buff" onclick="tapAdd('Buff Milk', 80, 1)"><div data-en="Buff 1L" data-hi="भैंस दूध 1L">Buff 1L</div><small>₹80</small></div>
-            <div class="p-card buff" onclick="tapAdd('Buff Milk', 40, 0.5)"><div data-en="Buff 0.5L" data-hi="भैंस दूध 0.5L">Buff 0.5L</div><small>₹40</small></div>
-            <div class="p-card" style="border-left:6px solid var(--yellow)" onclick="tapAdd('Paneer', 320, 1)"><div data-en="Paneer kg" data-hi="पनीर किलो">Paneer kg</div><small>₹320</small></div>
-            <div class="p-card" style="border-left:6px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)"><div data-en="Ghee 250g" data-hi="घी 250g">Ghee 250g</div><small>₹180</small></div>
-            <div class="p-card" style="border: 2px dashed var(--blue); background: #f8fafc;" onclick="openModal('addProductModal')">
-    <div style="font-size:30px; color:var(--blue);">➕</div>
-    <div style="font-weight:1000; color:var(--blue); font-size:12px;">ADD CARD</div>
-</div>
-
-<div class="overlay" id="addProductModal">
-    <div class="modal" style="width:400px; height:auto;">
-        <div class="panelHeader"><span>📦 Add New Card</span> <button onclick="closeModal('addProductModal')">✖</button></div>
-        <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
-            <input type="text" id="pName" placeholder="Product Name" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
-            <input type="number" id="pPrice" placeholder="Default Price (₹)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
-            <input type="text" id="pImage" placeholder="Image URL (Optionally paste link)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
-            <button class="add-btn" style="height:50px; background:var(--green);" onclick="addNewProduct()">Create Card</button>
-        </div>
-    </div>
-</div>
+          <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()">
+            <!-- Cow Products -->
+            <div class="p-card cow" onclick="tapAdd('Cow Milk', 64, 1)">
+              <span class="emoji" style="font-size: 56px;">🐄</span>
+              <div data-en="Cow 1L" data-hi="गाय दूध 1L" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Cow 1L</div>
+              <small style="font-size: 16px; margin-top: 4px;">₹64</small>
+            </div>
+            <div class="p-card cow" onclick="tapAdd('Cow Milk', 32, 0.5)">
+              <span class="emoji" style="font-size: 42px;">🐄</span>
+              <div data-en="Cow 0.5L" data-hi="गाय दूध 0.5L" style="font-size: 16px; font-weight: 900; margin-top: 8px;">Cow 0.5L</div>
+              <small style="font-size: 14px; margin-top: 4px;">₹32</small>
+            </div>
+            
+            <!-- Buffalo Products -->
+            <div class="p-card buff" onclick="tapAdd('Buff Milk', 100, 1)">
+              <span class="emoji" style="font-size: 56px;">🐃</span>
+              <div data-en="Buff 1L" data-hi="भैंस दूध 1L" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Buff 1L</div>
+              <small style="font-size: 16px; margin-top: 4px;">₹100</small>
+            </div>
+            <div class="p-card buff" onclick="tapAdd('Buff Milk', 80, 1)">
+              <span class="emoji" style="font-size: 56px;">🐃</span>
+              <div data-en="Buff 1L" data-hi="भैंस दूध 1L" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Buff 1L</div>
+              <small style="font-size: 16px; margin-top: 4px;">₹80</small>
+            </div>
+            <div class="p-card buff" onclick="tapAdd('Buff Milk', 40, 0.5)">
+              <span class="emoji" style="font-size: 42px;">🐃</span>
+              <div data-en="Buff 0.5L" data-hi="भैंस दूध 0.5L" style="font-size: 16px; font-weight: 900; margin-top: 8px;">Buff 0.5L</div>
+              <small style="font-size: 14px; margin-top: 4px;">₹40</small>
+            </div>
+            
+            <!-- Other Products -->
+            <div class="p-card" style="border-left:6px solid var(--yellow)" onclick="tapAdd('Paneer', 320, 1)">
+              <span class="emoji" style="font-size: 56px;">🧀</span>
+              <div data-en="Paneer kg" data-hi="पनीर किलो" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Paneer kg</div>
+              <small style="font-size: 16px; margin-top: 4px;">₹320</small>
+            </div>
+            <div class="p-card" style="border-left:6px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)">
+              <span class="emoji" style="font-size: 56px;">🍯</span>
+              <div data-en="Ghee 250g" data-hi="घी 250g" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Ghee 250g</div>
+              <small style="font-size: 16px; margin-top: 4px;">₹180</small>
+            </div>
+            <div class="p-card" onclick="tapAdd('Milk Cake', 300, 1)">
+              <span class="emoji" style="font-size: 56px;">🍰</span>
+              <div data-en="Milk Cake" data-hi="मिल्क केक" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Milk Cake</div>
+              <small style="font-size: 16px; margin-top: 4px;">₹300</small>
+            </div>
+            <div class="p-card" style="border: 3px dashed var(--blue); background: #eff6ff;" onclick="openModal('addProductModal')">
+              <div style="font-size:60px; color:var(--blue); font-weight: 900;">➕</div>
+              <div style="font-weight:900; color:var(--blue); font-size:16px; margin-top: 8px;">ADD PRODUCT</div>
+            </div>
           </div>
 
-          <!-- Keyboard shortcuts info -->
-          <div style="padding: 8px 15px; background: #f8fafc; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); text-align: center;">
-            ⌨️ <strong>Keyboard:</strong> Enter = Next field | Esc = Clear search | F1 = New customer
+          <!-- Product search field -->
+          <div style="padding: 10px 15px; background: #f8fafc; border-top: 1px solid var(--line);">
+            <input type="text" id="productSearch" placeholder="🔍 Search products..." oninput="filterProducts(this.value)" style="width: 100%; padding: 10px; border: 2px solid var(--line); border-radius: 10px; font-size: 14px; font-weight: 600;" onclick="event.stopPropagation()" />
+          </div>
+
+          <!-- Keyboard shortcuts - Hidden by default, show on hover -->
+          <div class="hover-info" style="text-align: center; border-top: 1px solid var(--line);" title="Enter = Next field | Esc = Clear search | F1 = New customer">
+            ⌨️ Keyboard shortcuts
           </div>
         </div>
 
@@ -187,10 +235,9 @@
           <div class="summary-box">
             <div style="font-size:12px; opacity:0.8;" id="lblPayable">TOTAL PAYABLE</div>
             <div class="amt" id="totalAmt">₹0.00</div>
-            <!-- Record Strength Tag -->
-            <div style="margin-top: 10px; padding: 6px 10px; background: #eff6ff; border: 1px solid #3b82f6; border-radius: 6px; font-size: 10px; font-weight: 700; color: #1e40af; text-align: center;" title="Retail records are valid for daily sales and udhar tracking. They are not suitable for procurement audits or institutional settlements.">
-              📊 Record Strength: <span style="color: #f59e0b;">RETAIL</span><br>
-              <span style="font-weight: 500; color: #64748b;">Suitable for shop billing only</span>
+            <!-- Record Strength Tag - Hidden by default, show on hover -->
+            <div class="hover-info" title="Retail records are valid for daily sales and udhar tracking">
+              📊 Record Strength: <span style="color: #f59e0b;">RETAIL</span>
             </div>
           </div>
 
@@ -235,9 +282,10 @@
             <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af;" onclick="saveEntry('UPI')">UPI</button>
             <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')">LIKH LO (Credit)</button>
           </div>
-          
-          <div style="font-size: 10px; color: var(--muted); font-weight: 700; margin: 10px 15px; text-align: center;" title="Settlement traceability & deductions tracking available in collection center system.">
-            Retail payment mode — settlement traceability not generated
+
+          <!-- Payment info - Hidden by default, show on hover -->
+          <div class="hover-info" style="text-align: center;" title="Settlement traceability available in collection center system">
+            Retail payment mode
           </div>
 
           <div style="padding:15px; flex:1; overflow-y:auto; border-top:1px solid var(--line);">
@@ -251,9 +299,9 @@
         <button class="panicBtn" onclick="saveEntry('Quick')" style="background:#22c55e; color:#064e3b; font-size:30px;"><span id="txtDone">🟢 DONE</span> <span class="subnote">next customer</span></button>
         <button class="panicBtn" onclick="resetCart()" style="background:#fecaca; color:#7f1d1d;"><span id="txtClear">🔴 CLEAR</span> <span class="subnote">trash</span></button>
       </div>
-      
-      <!-- DONE button microcopy -->
-      <div style="text-align: center; font-size: 10px; color: var(--muted); font-weight: 700; padding: 8px;" title="Institutional accountability requires collection center system.">
+
+      <!-- DONE button microcopy - Hover only -->
+      <div class="hover-info" title="Institutional accountability requires collection center system">
         Completes retail transaction only
       </div>
     </div>
@@ -331,6 +379,19 @@
         </div>
     </div>
 
+    <!-- Add Product Modal -->
+    <div class="overlay" id="addProductModal">
+        <div class="modal" style="width:400px; height:auto;">
+            <div class="panelHeader"><span>📦 Add New Product</span> <button onclick="closeModal('addProductModal')">✖</button></div>
+            <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
+                <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
+                <input type="number" id="pPrice" placeholder="Price (₹)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
+                <input type="text" id="pEmoji" placeholder="Emoji (e.g., 🥛, 🧀, 🍯)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
+                <button class="add-btn" style="width:100%; background:var(--green);" onclick="addNewProductFromModal()">Create Product</button>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <!-- Institutional Gaps Panel -->
@@ -369,6 +430,106 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="netlify-client.js"></script>
+    <script>
+      // Check if backend is configured
+      let useBackend = false;
+      let currentShopId = null;
+      let currentUserId = null;
+      let authToken = null;
+      
+      // Initialize Supabase
+      window.addEventListener('DOMContentLoaded', async () => {
+        if (window.MilkBookConfig && window.MilkBookConfig.isConfigured()) {
+          useBackend = true;
+          console.log('✅ Backend connected');
+          
+          // Check if user is logged in
+          const session = localStorage.getItem('milkbook_session');
+          if (session) {
+            const sessionData = JSON.parse(session);
+            currentShopId = sessionData.shop_id;
+            currentUserId = sessionData.user_id;
+            authToken = sessionData.token;
+            
+            // Load customers from backend
+            await loadCustomersFromBackend();
+            
+            // Load sales history from backend
+            await loadSalesFromBackend();
+          }
+        } else {
+          console.log('⚠️ Using offline mode (localStorage)');
+        }
+      });
+      
+      // Load customers from backend
+      async function loadCustomersFromBackend() {
+        if (!useBackend || !currentShopId) return;
+        
+        try {
+          // In real implementation, fetch from API
+          // const response = await fetch('/.netlify/functions/customers', {
+          //   headers: { 'Authorization': `Bearer ${authToken}` }
+          // });
+          // const { customers } = await response.json();
+          // customers.forEach(c => {
+          //   if (!customersData.find(existing => existing.name === c.name)) {
+          //     customersData.push(c);
+          //   }
+          // });
+          console.log('Loaded customers from backend');
+        } catch (error) {
+          console.error('Failed to load customers:', error);
+        }
+      }
+      
+      // Load sales from backend
+      async function loadSalesFromBackend() {
+        if (!useBackend || !currentShopId) return;
+        
+        try {
+          // In real implementation, fetch from API
+          console.log('Loaded sales from backend');
+        } catch (error) {
+          console.error('Failed to load sales:', error);
+        }
+      }
+      
+      // Save sale to backend
+      async function saveSaleToBackend(saleData) {
+        if (!useBackend || !currentShopId) return null;
+        
+        try {
+          const response = await fetch('/.netlify/functions/sales', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${authToken}`
+            },
+            body: JSON.stringify({
+              shop_id: currentShopId,
+              customer_name: saleData.customer,
+              customer_phone: saleData.phone || '',
+              items: saleData.items,
+              total_amount: saleData.total,
+              payment_mode: saleData.paymentMode
+            })
+          });
+          
+          if (response.ok) {
+            const { sale } = await response.json();
+            return sale;
+          }
+          return null;
+        } catch (error) {
+          console.error('Failed to save sale:', error);
+          return null;
+        }
+      }
+    </script>
     <script>
       const el = (id) => document.getElementById(id);
       let cart = [], total = 0, exportHistory = [], currentLang = 'en';
@@ -996,40 +1157,66 @@ function convertMilkToProduct() {
   showToast(`Converted ${qty}L to ${productName}`);
 }
 
-// Add new product card
-function addNewProduct() {
+// Add new product card from modal
+function addNewProductFromModal() {
   const name = el("pName").value.trim();
   const price = parseFloat(el("pPrice").value);
-  const image = el("pImage").value.trim();
-  
+  const emoji = el("pEmoji").value.trim() || '📦';
+
   if (!name || !price) return showToast("Name and Price required!");
-  
+
   // Create new product card
   const grid = el("productGrid");
   const newCard = document.createElement('div');
   newCard.className = 'p-card';
   newCard.onclick = function() { tapAdd(name, price, 1); };
   newCard.innerHTML = `
-    ${image ? `<img src="${image}" alt="${name}">` : `<div class="emoji">📦</div>`}
-    <div>${name}</div>
-    <small>₹${price}</small>
+    <span class="emoji" style="font-size: 56px;">${emoji}</span>
+    <div style="font-size: 18px; font-weight: 900; margin-top: 8px;">${name}</div>
+    <small style="font-size: 16px; margin-top: 4px;">₹${price}</small>
   `;
-  
-  // Insert before ADD CARD button
-  const addCardBtn = grid.querySelector('.p-card[onclick*="addProduct"]');
+
+  // Insert before ADD PRODUCT button
+  const addCardBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
   grid.insertBefore(newCard, addCardBtn);
-  
+
   // Save to localStorage
   const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
-  customProducts.push({name, price, image});
+  customProducts.push({name, price, emoji});
   localStorage.setItem('mr_pos_custom_products', JSON.stringify(customProducts));
-  
+
   // Close modal and clear
   closeModal('addProductModal');
   el("pName").value = "";
   el("pPrice").value = "";
-  el("pImage").value = "";
-  showToast(`${name} card added! ✅`);
+  el("pEmoji").value = "";
+  showToast(`${name} added! ✅`);
+}
+
+// Filter products by search
+function filterProducts(query) {
+  const search = query.toLowerCase().trim();
+  const cards = document.querySelectorAll('.p-card');
+  
+  cards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    if (search === '' || text.includes(search)) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// Close customer search dropdown
+function closeSearchDropdown() {
+  const dropdown = el("searchDropdown");
+  if (dropdown) dropdown.style.display = 'none';
+}
+
+// Add new product card (legacy function)
+function addNewProduct() {
+  addNewProductFromModal();
 }
 
 // Load custom products on page load

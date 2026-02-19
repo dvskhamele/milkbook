@@ -2600,7 +2600,11 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
 });
 
       function renderFarmers() {
-    farmerCount.textContent = `${activeFarmers().length} 👤`;
+    const activeCount = activeFarmers().length;
+    farmerCount.textContent = `${activeCount} 👤`;
+    
+    // Debug logging
+    console.log('Farmers:', farmers.length, 'Active:', activeCount);
 
     const list = filterFarmers();
     const maxPage = Math.max(0, Math.ceil(list.length / FARMERS_PER_PAGE) - 1);
@@ -2610,6 +2614,14 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
     const pageItems = list.slice(start, start + FARMERS_PER_PAGE);
 
     farmerGrid.innerHTML = "";
+    
+    // Show message if no farmers
+    if (list.length === 0) {
+      farmerGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--muted); font-weight: 700;">No farmers yet.<br>Click "＋ Farmer" to add your first farmer!</div>';
+      el("prevFarmers").disabled = true;
+      el("nextFarmers").disabled = true;
+      return;
+    }
 
     const toShow = [...pageItems];
     while (toShow.length < FARMERS_PER_PAGE) toShow.push(null);
