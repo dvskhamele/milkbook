@@ -3115,6 +3115,26 @@ function playSuccessSound() {
 
     entries.push(entry);
     saveEntries(entries);
+    
+    // Save to backend if API mode is enabled
+    if (window.USE_API && window.MilkBookAPI) {
+      window.MilkBookAPI.milkEntries.create({
+        farmer_id: farmer.id,
+        day: entry.day,
+        session: entry.session,
+        animal: entry.animal,
+        quantity: entry.qty,
+        fat: entry.fat,
+        snf: entry.snf,
+        rate_per_l: entry.rateSnapshot,
+        amount: entry.amount,
+        reading_mode: 'manual',
+        images: entry.images || []
+      }).catch(error => {
+        console.error('Failed to save to backend:', error);
+      });
+    }
+    
     playSuccessSound();
     saveUndoToken({
         entryId: entry.id,
