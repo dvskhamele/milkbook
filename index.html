@@ -2351,7 +2351,20 @@ function playSuccessSound() {
         return farmers.filter((f) => f.active !== false);
       }
       function filterFarmers() {
-        const list = activeFarmers();
+        let list = activeFarmers();
+        
+        // Filter by selected booth/collection point (show farmers from selected booth first)
+        if (selectedCollectionPointId && selectedCollectionPointId !== 'DEFAULT') {
+          // Sort: Farmers from selected booth first, then others
+          list = list.sort((a, b) => {
+            const aBooth = a.collectionPoint || 'DEFAULT';
+            const bBooth = b.collectionPoint || 'DEFAULT';
+            if (aBooth === selectedCollectionPointId && bBooth !== selectedCollectionPointId) return -1;
+            if (aBooth !== selectedCollectionPointId && bBooth === selectedCollectionPointId) return 1;
+            return 0;
+          });
+        }
+        
         if (!farmerSearch.trim()) return list;
         const q = farmerSearch.trim().toLowerCase();
         return list.filter((f) => (f.name || "").toLowerCase().includes(q));
@@ -4079,6 +4092,10 @@ function updateCollectionPoint() {
   localStorage.setItem('milkbook_collection_point', selectedCollectionPointId);
   const selectedName = select.options[select.selectedIndex].text;
   showToast(`Booth: ${selectedName}`);
+  
+  // Re-render farmers list to show booth-filtered results
+  farmerPage = 0;
+  renderFarmers();
 }
 
 // Load saved collection point on init

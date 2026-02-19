@@ -402,7 +402,18 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
             : customers.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
           
           if(filtered.length) {
-              drop.innerHTML = filtered.map((c, i) => `<div class="drop-item" onclick="selectCust('${c.name}')" data-index="${i}">${c.name}</div>`).join('');
+              drop.innerHTML = filtered.map((c, i) => `
+                <div class="drop-item" onclick="selectCust('${c.name}')" data-index="${i}" style="display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <div style="font-weight:700;">${c.name}</div>
+                    <div style="font-size:11px; color:var(--muted);">${c.phone || 'No phone'}</div>
+                  </div>
+                  <div style="text-align:right;">
+                    ${c.advance > 0 ? `<div style="font-size:11px; color:#dc2626; font-weight:700;">📕 ₹${c.advance.toFixed(2)}</div>` : ''}
+                    <div style="font-size:11px; color:var(--muted);">Bal: ₹${(c.balance || 0).toFixed(2)}</div>
+                  </div>
+                </div>
+              `).join('');
               drop.style.display = 'block';
           } else { 
             drop.style.display = 'none'; 
@@ -461,8 +472,14 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         el("monthMilk").textContent = customer.monthMilk.toFixed(1) + ' L';
         el("currentAdvance").textContent = '₹' + customer.advance.toFixed(2);
         
-        // Show toggle button for this customer
-        el("advanceToggleBtn").style.display = "flex";
+        // Show advance toggle button with existing advance amount
+        const advanceBtn = el("advanceToggleBtn");
+        advanceBtn.style.display = "flex";
+        if (customer.advance > 0) {
+          advanceBtn.innerHTML = `📕 Udhar: ₹${customer.advance.toFixed(2)}`;
+        } else {
+          advanceBtn.innerHTML = '📕 Advance / Udhar';
+        }
       }
       
       // Toggle advance section visibility
@@ -533,10 +550,10 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
       let selectedProduct = null; // Track selected product for highlighting
       
       function tapAdd(name, rate, qty) { 
-        // Check if item already exists in cart
-        const existingItem = cart.find(item => item.name === name && item.rate === rate);
+        // Check if item already exists in cart - match by NAME ONLY (merge Cow Milk regardless of rate)
+        const existingItem = cart.find(item => item.name === name);
         if (existingItem) {
-          // Increase quantity of existing item
+          // Increase quantity of existing item (merge all Cow Milk together)
           existingItem.qty += qty;
         } else {
           // Add new item
