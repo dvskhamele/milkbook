@@ -1374,28 +1374,35 @@
       <div class="core">
         <!-- LEFT -->
         <div class="panel">
-          <div class="panelHeader">
-            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-              <div id="stationTitle">Milk Intake Station</div>
-              <div class="searchBox" style="flex: 1; max-width: 300px;">
-                🔎
-                <input
-                  id="searchInput"
-                  inputmode="search"
-                  autocomplete="off"
-                  placeholder="Search name…"
-                />
-              </div>
-              <button class="addNewBtn" id="btnAddFarmerMain" style="padding: 8px 16px; font-size: 13px;">
-                ＋ Farmer
-              </button>
+          <div class="panelHeader" style="padding: 8px 12px; height: 40px;">
+            <div style="display:flex; align-items:center; gap:8px; flex:1;">
+              <div style="font-size:20px;">💧</div>
+              <div style="font-weight:900; font-size:14px; color:#1e293b;">Milk Intake Station</div>
+              <select id="collectionPointSelect" onchange="updateCollectionPoint()" style="padding:4px 8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; font-size:12px; background:white;">
+                <option value="DEFAULT">Default Booth</option>
+                <option value="VILLAGE_A">Village A</option>
+                <option value="VILLAGE_B">Village B</option>
+                <option value="MAIN_MARKET">Main Market</option>
+                <option value="GANDHI_CHOWK">Gandhi Chowk</option>
+              </select>
             </div>
-            <small id="holdBadge"></small>
-            <div class="miniTag" id="farmerCount" style="margin-left: 8px;">0 👤</div>
-            <!-- Source Strength Indicator -->
-            <div style="margin-left: auto; padding: 6px 12px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; font-size: 11px; font-weight: 700; color: #92400e;" title="These entries are suitable for shop billing. Procurement-grade source verification requires a collection center system.">
-              📊 Source Strength: <span style="color: #dc2626;">LOW</span>
-              <span style="color: var(--muted); font-weight: 500; margin-left: 4px;">Retail-only records</span>
+            <div class="searchBox" style="flex: 1; max-width: 250px; margin: 0 8px;">
+              🔎
+              <input
+                id="searchInput"
+                inputmode="search"
+                autocomplete="off"
+                placeholder="Search farmer…"
+                style="padding: 6px 6px 6px 28px; font-size: 12px;"
+              />
+            </div>
+            <button class="addNewBtn" id="btnAddFarmerMain" style="padding: 6px 12px; font-size: 12px; height: 32px;">
+              ＋ Farmer
+            </button>
+            <div class="miniTag" id="farmerCount" style="margin-left: 8px; height: 32px; min-width: 60px; font-size: 11px;">0 👤</div>
+            <!-- Source Strength Indicator - Hover only -->
+            <div style="margin-left: 8px; padding: 6px 10px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; font-size: 10px; font-weight: 700; color: #92400e; cursor: help;" title="These entries are suitable for shop billing. Procurement-grade source verification requires a collection center system.">
+              📊 LOW
             </div>
           </div>
 
@@ -1459,8 +1466,8 @@
     placeholder="0"
   />
 </div>
-<div style="font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 4px;" title="Analyzer-linked readings are required for verifiable quality records.">
-  ⚠️ Manual quality entry — not suitable for dispute resolution or audits
+<div style="text-align:center; margin-top: 4px;" title="Analyzer-linked readings are required for verifiable quality records.">
+  <span style="font-size: 16px; cursor: help;">⚠️</span>
 </div>
                 <!-- <div class="pmRow">
                   <button class="pm" id="fatMinus">−</button>
@@ -1490,8 +1497,8 @@
                     placeholder="0"
                   />
                 </div>
-                <div style="font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 4px;" title="Analyzer-linked readings are required for verifiable quality records.">
-  ⚠️ Manual quality entry — not suitable for dispute resolution or audits
+                <div style="text-align:center; margin-top: 4px;" title="Analyzer-linked readings are required for verifiable quality records.">
+  <span style="font-size: 16px; cursor: help;">⚠️</span>
 </div>
                 <!-- <div class="pmRow">
                   <button class="pm" id="snfMinus">−</button>
@@ -1589,8 +1596,8 @@
             <div id="optCredit" style="text-align: center; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font-weight: 1000; font-size: 14px; transition: 0.2s;">उधार</div>
         </label>
     </div>
-    <div style="font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 8px; text-align: center;" title="Settlement traceability & deductions tracking available in collection center system.">
-      Retail settlement (non-auditable)
+    <div style="text-align: center; margin-top: 8px;" title="Settlement traceability & deductions tracking available in collection center system.">
+      <span style="font-size: 16px; cursor: help;">⚠️</span>
     </div>
 </div>
             </div>
@@ -1598,8 +1605,8 @@
         <button class="pillbtn" id="btnDailySummary" style="width: 100%; background: #25d366; color: white; border: none; font-weight: bold; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
              💬 Send Today's Summary
         </button>
-        <div style="font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 8px; text-align: center;" title="This summary is suitable for farmer communication. Not valid for institutional audit or dispute resolution.">
-          ⚠️ Suitable for farmer communication. Not valid for institutional audit.
+        <div style="text-align: center; margin-top: 8px;" title="This summary is suitable for farmer communication. Not valid for institutional audit or dispute resolution.">
+          <span style="font-size: 16px; cursor: help;">⚠️</span>
         </div>
     </div>
             <div class="recent">
