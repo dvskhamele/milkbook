@@ -245,7 +245,15 @@
     <div class="overlay" id="convertModal">
         <div class="modal" style="width:400px; height:auto;">
             <div class="panelHeader"><span>🔄 Milk → Product Conversion</span> <button onclick="closeModal('convertModal')">✖</button></div>
-            <div style="padding:20px;"><input type="number" id="convQty" placeholder="Milk (L)" style="width:100%; padding:15px; border-radius:10px; border:1px solid var(--line); font-weight:1000;"><button class="add-btn" style="width:100%; background:var(--green); margin-top:10px;" onclick="closeModal('convertModal')">Update Stock</button></div>
+            <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
+                <input type="number" id="convQty" placeholder="Milk (L)" style="width:100%; padding:15px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
+                <select id="convProduct" style="width:100%; padding:15px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
+                    <option value="Cow Milk,64">Cow Milk (₹64/L)</option>
+                    <option value="Buff Milk,100">Buff Milk (₹100/L)</option>
+                    <option value="Buff Milk,80">Buff Milk (₹80/L)</option>
+                </select>
+                <button class="add-btn" style="width:100%; background:var(--green);" onclick="convertMilkToProduct()">Update Stock</button>
+            </div>
         </div>
     </div>
 
@@ -368,6 +376,8 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
       }
 
       // Existing Code Logic
+      let selectedProduct = null; // Track selected product for highlighting
+      
       function tapAdd(name, rate, qty) { 
         // Check if item already exists in cart
         const existingItem = cart.find(item => item.name === name && item.rate === rate);
@@ -378,35 +388,47 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           // Add new item
           cart.push({name, rate, qty, id: Date.now()});
         }
+        selectedProduct = {name, rate}; // Track for highlighting
         updateUI(); 
         showToast(name + " added"); 
       }
       // adjustQty removed - use inline quantity editing instead
       function updateUI() {
         const tbody = el("cartItems"); tbody.innerHTML = ""; total = 0;
-        cart.forEach((i, index) => { 
+        cart.forEach((i, index) => {
           const itemAmount = i.rate * i.qty;
-          total += itemAmount; 
+          total += itemAmount;
           tbody.innerHTML += `<tr>
             <td>${i.name}<br><small style="color:var(--muted); font-weight:700;">₹${i.rate}/unit</small></td>
             <td>
-              <input type="number" value="${i.qty}" min="0.1" step="0.1" 
-                onchange="updateItemQty(${index}, this.value)" 
-                style="width:70px; padding:4px; border:1px solid var(--line); border-radius:6px; font-weight:700; text-align:center;" 
+              <input type="number" value="${i.qty}" min="0.1" step="0.1"
+                onchange="updateItemQty(${index}, this.value)"
+                style="width:70px; padding:4px; border:1px solid var(--line); border-radius:6px; font-weight:700; text-align:center;"
                 title="Quantity" />
             </td>
             <td>
-              <input type="number" value="${itemAmount.toFixed(2)}" min="1" step="1" 
-                onchange="updateItemAmount(${index}, this.value)" 
-                style="width:80px; padding:4px; border:1px solid var(--line); border-radius:6px; font-weight:700; text-align:center;" 
+              <input type="number" value="${itemAmount.toFixed(2)}" min="1" step="1"
+                onchange="updateItemAmount(${index}, this.value)"
+                style="width:80px; padding:4px; border:1px solid var(--line); border-radius:6px; font-weight:700; text-align:center;"
                 title="Amount in ₹" />
             </td>
             <td style="text-align:right;">
               <button onclick="removeItem(${index})" style="background:#fecaca; color:#7f1d1d; border:none; border-radius:6px; padding:4px 8px; cursor:pointer; font-weight:700; font-size:12px;">✕ Remove</button>
             </td>
-          </tr>`; 
+          </tr>`;
         });
         el("totalAmt").textContent = `₹${total.toFixed(2)}`;
+        
+        // Update product card selection highlighting
+        document.querySelectorAll('.p-card').forEach(card => {
+          card.classList.remove('selected');
+          if (selectedProduct) {
+            const cardName = card.querySelector('[data-en]').textContent;
+            if (cardName.includes(selectedProduct.name)) {
+              card.classList.add('selected');
+            }
+          }
+        });
       }
       
       // Update item quantity (amount auto-calculates)
@@ -445,7 +467,7 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
     const itemsDetail = cart.map(i => `${i.qty}x ${i.name}`).join(" | ");
 
     const newSale = { date: new Date().toLocaleDateString(), time, customer: custName, products: itemsDetail, amount: total.toFixed(2), method: mode };
-    
+
     // 1. Array mein add karo
     exportHistory.push(newSale);
 
@@ -458,14 +480,15 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
 
     // Customer persistence (Aapka logic sahi hai)
     let cIdx = customers.findIndex(c => c.name === custName);
-    if(cIdx !== -1) { 
-        customers[cIdx].lastOrder = itemsDetail; 
-        customers[cIdx].rate = cart[0].rate; 
+    if(cIdx !== -1) {
+        customers[cIdx].lastOrder = itemsDetail;
+        customers[cIdx].rate = cart[0].rate;
         customers[cIdx].qty = cart[0].qty;
+        customers[cIdx].lastProductName = cart[0].name; // Save product name for repeat
         localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
     }
 
-    showToast(`Saved ✅`); 
+    showToast(`Saved ✅`);
     resetCart();
 }
 
@@ -520,13 +543,20 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
                 <b>${c.name}</b><br>
                 <small>Last: ${c.lastOrder} ${c.sub > 0 ? '| Subscribed: '+c.sub+'L' : ''}</small>
             </div>
-            <button class="pillbtn primary" onclick="repeatOrder('${c.name}', ${c.rate}, ${c.qty})">Repeat</button>
+            <button class="pillbtn primary" onclick="repeatOrder('${c.name}', '${c.lastProductName || 'Cow Milk'}', ${c.rate}, ${c.qty})">Repeat</button>
         </div>`;
     });
     openModal('memoryModal');
 }
 
-      function repeatOrder(name, rate, qty) { el("activeCust").innerText = name; if(rate > 0) { cart = [{name: "Frequent Item", rate, qty, id: Date.now()}]; updateUI(); } closeModal('memoryModal'); }
+      function repeatOrder(name, productName, rate, qty) { 
+        el("activeCust").innerText = name; 
+        if(rate > 0) { 
+          cart = [{name: productName, rate, qty, id: Date.now()}]; 
+          updateUI(); 
+        } 
+        closeModal('memoryModal'); 
+      }
       function resetCart() { cart = []; updateUI(); el("activeCust").innerText = "Walking Customer"; el("custSearch").value = ""; }
       function openModal(id) { el(id).style.display = "flex"; }
       function closeModal(id) { el(id).style.display = "none"; }
@@ -555,6 +585,28 @@ function loadHistoryOnStart() {
 }
 
 function toggleGaps() { el("gapsPanel").classList.toggle("open"); }
+
+// Convert milk to product
+function convertMilkToProduct() {
+  const qty = parseFloat(el("convQty").value);
+  const productData = el("convProduct").value.split(',');
+  const productName = productData[0];
+  const rate = parseFloat(productData[1]);
+  
+  if (!qty || qty <= 0) return showToast("Enter valid quantity");
+  
+  // Add to cart
+  const existingItem = cart.find(item => item.name === productName && item.rate === rate);
+  if (existingItem) {
+    existingItem.qty += qty;
+  } else {
+    cart.push({name: productName, rate, qty, id: Date.now()});
+  }
+  updateUI();
+  closeModal('convertModal');
+  el("convQty").value = "";
+  showToast(`Converted ${qty}L to ${productName}`);
+}
 
 // Keyboard Navigation - Full End-to-End Invoice Creation
 document.addEventListener('keydown', function(e) {
