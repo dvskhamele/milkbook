@@ -226,48 +226,40 @@
         gap: 12px; /* sabke beech gap */
       }
 
-      .farmerTop {
-        position: static !important; /* ❗ absolute / sticky cancel */
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap; /* chhoti screen pe break ho sake */
-      }
-
       .searchBox {
-        flex: 1;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         border: 1px solid var(--line);
-        border-radius: 16px;
+        border-radius: 12px;
         background: #fff;
-        padding: 10px 12px;
-        height: 48px;
+        padding: 6px 10px;
+        height: 36px;
       }
       .searchBox input {
         width: 100%;
         border: none;
         outline: none;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 900;
         color: var(--text);
         background: transparent;
       }
       .addNewBtn {
-        height: 48px;
-        padding: 0 16px;
-        border-radius: 16px;
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 12px;
         border: 1px solid var(--line);
         background: #eef2ff;
         font-weight: 1000;
         cursor: pointer;
+        font-size: 13px;
       }
       .miniTag {
-        height: 48px;
-        min-width: 92px;
-        padding: 0 12px;
-        border-radius: 16px;
+        height: 36px;
+        min-width: 70px;
+        padding: 0 10px;
+        border-radius: 12px;
         border: 1px solid var(--line);
         background: #fff;
         display: flex;
@@ -275,13 +267,14 @@
         justify-content: center;
         font-weight: 1000;
         color: var(--muted);
+        font-size: 13px;
       }
       .farmerGrid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 8px;
 
-        max-height: 240px; /* 👈 yahin se scroll start */
+        max-height: 200px;
         overflow-y: auto;
         padding-right: 6px;
 
@@ -289,14 +282,14 @@
       }
 
       .fcard {
-        height: var(--tile);
-        border-radius: 16px;
+        height: 60px;
+        border-radius: 12px;
         border: 1px solid var(--line);
         background: #fff;
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 10px;
+        gap: 8px;
+        padding: 8px;
         cursor: pointer;
         position: relative;
         overflow: hidden;
@@ -305,15 +298,15 @@
         transform: translateY(1px);
       }
       .fimg {
-        width: 52px;
-        height: 52px;
-        border-radius: 14px;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
         background: #f1f5f9;
         border: 1px solid var(--line);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        font-size: 18px;
         flex: 0 0 auto;
         overflow: hidden;
       }
@@ -324,17 +317,17 @@
       }
       .fname {
         font-weight: 1000;
-        font-size: 16px;
+        font-size: 14px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 180px;
+        max-width: 150px;
       }
       .fsub {
         color: var(--muted);
         font-weight: 900;
-        font-size: 12px;
-        margin-top: 4px;
+        font-size: 11px;
+        margin-top: 2px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -1045,16 +1038,16 @@
       .field {
         border: 1px solid var(--line);
         background: #fff;
-        border-radius: 16px;
-        padding: 10px;
+        border-radius: 12px;
+        padding: 6px;
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 4px;
       }
       .field label {
         color: var(--muted);
         font-weight: 1100;
-        font-size: 12px;
+        font-size: 11px;
         letter-spacing: 0.3px;
       }
       .field input,
@@ -1064,12 +1057,13 @@
         outline: none;
         background: transparent;
         color: var(--text);
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 1100;
         resize: none;
+        padding: 8px;
       }
       .field textarea {
-        min-height: 84px;
+        min-height: 60px;
       }
       .field.full {
         grid-column: 1/-1;
@@ -1348,29 +1342,28 @@
         <!-- LEFT -->
         <div class="panel">
           <div class="panelHeader">
-            <div id="stationTitle">Milk Intake Station</div>
+            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+              <div id="stationTitle">Milk Intake Station</div>
+              <div class="searchBox" style="flex: 1; max-width: 300px;">
+                🔎
+                <input
+                  id="searchInput"
+                  inputmode="search"
+                  autocomplete="off"
+                  placeholder="Search name…"
+                />
+              </div>
+              <button class="addNewBtn" id="btnAddFarmerMain" style="padding: 8px 16px; font-size: 13px;">
+                ＋ Add New
+              </button>
+            </div>
             <small id="holdBadge"></small>
+            <div class="miniTag" id="farmerCount" style="margin-left: 8px;">0 👤</div>
           </div>
 
           <div class="actionBody">
             <!-- Farmer selection -->
             <div class="farmerPick">
-              <div class="farmerTop">
-                <div class="searchBox">
-                  🔎
-                  <input
-                    id="searchInput"
-                    inputmode="search"
-                    autocomplete="off"
-                    placeholder="Search name…"
-                  />
-                </div>
-                <button class="addNewBtn" id="btnAddFarmerMain">
-                  ＋ Add New
-                </button>
-                <div class="miniTag" id="farmerCount">0 👤</div>
-              </div>
-
               <div class="farmerGrid" id="farmerGrid"></div>
 
               <div class="farmerNav">
@@ -1976,51 +1969,49 @@
           <div class="muted">Photo optional</div>
         </div>
 
-        <div class="modalBody onecol">
+        <div class="modalBody onecol" style="overflow-y: auto; max-height: 60vh;">
           <div class="modalCol">
             <h3>👤 Farmer Form</h3>
             <div class="formGrid">
-              <div class="field">
-                <label>👤 Name</label>
-                <input id="fName" autocomplete="off" />
+              <div class="field" style="padding: 6px;">
+                <label style="font-size: 11px;">👤 Name</label>
+                <input id="fName" autocomplete="off" style="font-size: 14px; padding: 8px;" />
               </div>
-              <div class="field">
-                <label>📱 Number</label>
-                <input id="fPhone" inputmode="tel" autocomplete="off" />
+              <div class="field" style="padding: 6px;">
+                <label style="font-size: 11px;">📱 Number</label>
+                <input id="fPhone" inputmode="tel" autocomplete="off" style="font-size: 14px; padding: 8px;" />
               </div>
-              <div class="field full">
-                <label>📍 Address</label>
-                <textarea id="fAddress"></textarea>
+              <div class="field full" style="padding: 6px;">
+                <label style="font-size: 11px;">📍 Address</label>
+                <textarea id="fAddress" style="font-size: 14px; padding: 8px; min-height: 60px;"></textarea>
               </div>
-              <div class="field full">
-                <label>🖼️ Image</label>
-                <input id="fImage" type="file" accept="image/*" />
-                <div
-                  style="
-                    color: var(--muted);
-                    font-size: 12px;
-                    font-weight: 1000;
-                  "
-                >
+              <div class="field full" style="padding: 6px;">
+                <label style="font-size: 11px;">🏢 GST No. (B2B)</label>
+                <input id="fGst" autocomplete="off" placeholder="Optional for B2B customers" style="font-size: 14px; padding: 8px;" />
+              </div>
+              <div class="field full" style="padding: 6px;">
+                <label style="font-size: 11px;">🖼️ Image</label>
+                <input id="fImage" type="file" accept="image/*" style="font-size: 13px;" />
+                <div style="color: var(--muted); font-size: 11px; font-weight: 1000;">
                   Stored offline (small compressed)
                 </div>
               </div>
-              <div class="field">
-                <label>₹ Opening Balance</label>
-                <input id="fBalance" inputmode="decimal" value="0" />
+              <div class="field" style="padding: 6px;">
+                <label style="font-size: 11px;">₹ Opening Balance</label>
+                <input id="fBalance" inputmode="decimal" value="0" style="font-size: 14px; padding: 8px;" />
               </div>
-              <div class="field">
-  <label>🥛 Milk Type</label>
-  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
-    <button type="button" onclick="selectAnimalType('cow')" id="animalCow" style="padding:10px; border:2px solid var(--line); border-radius:8px; background:white; cursor:pointer; font-weight:700;">🐄 Cow</button>
-    <button type="button" onclick="selectAnimalType('buffalo')" id="animalBuffalo" style="padding:10px; border:2px solid var(--line); border-radius:8px; background:white; cursor:pointer; font-weight:700;">🐃 Buffalo</button>
-    <button type="button" onclick="selectAnimalType('both')" id="animalBoth" style="padding:10px; border:2px solid var(--line); border-radius:8px; background:white; cursor:pointer; font-weight:700;">🔄 Both</button>
+              <div class="field" style="padding: 6px;">
+  <label style="font-size: 11px;">🥛 Milk Type</label>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;">
+    <button type="button" onclick="selectAnimalType('cow')" id="animalCow" style="padding:8px; border:2px solid var(--line); border-radius:6px; background:white; cursor:pointer; font-weight:700; font-size: 12px;">🐄 Cow</button>
+    <button type="button" onclick="selectAnimalType('buffalo')" id="animalBuffalo" style="padding:8px; border:2px solid var(--line); border-radius:6px; background:white; cursor:pointer; font-weight:700; font-size: 12px;">🐃 Buffalo</button>
+    <button type="button" onclick="selectAnimalType('both')" id="animalBoth" style="padding:8px; border:2px solid var(--line); border-radius:6px; background:white; cursor:pointer; font-weight:700; font-size: 12px;">🔄 Both</button>
   </div>
   <input type="hidden" id="fAnimalType" value="cow" />
 </div>
-              <div class="field">
-                <label>Status</label>
-                <select id="fActive">
+              <div class="field" style="padding: 6px;">
+                <label style="font-size: 11px;">Status</label>
+                <select id="fActive" style="font-size: 14px; padding: 8px;">
                   <option value="1">✅ Active</option>
                   <option value="0">⛔ Inactive</option>
                 </select>
