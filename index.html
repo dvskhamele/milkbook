@@ -3701,15 +3701,44 @@ function selectAnimalType(type) {
   }
 }
 
-// ESC Key Handler for All Modals
+// ESC Key Handler for ALL Modals
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
-    // Close all open overlays
-    ['overlayFarmer', 'overlayFarmerDetail', 'overlayReceipt', 'overlayEntryDetail', 'overlayPayment'].forEach(id => {
-      const overlay = el(id);
+    // Method 1: Close using closeOverlay function
+    const overlays = [
+      'overlayFarmer', 
+      'overlayFarmerDetail', 
+      'overlayReceipt', 
+      'overlayEntryDetail', 
+      'overlayPayment',
+      'overlayHold',
+      'overlayRateEditor',
+      'overlayHistory',
+      'overlayLeader',
+      'overlaySettings'
+    ];
+    
+    overlays.forEach(id => {
+      const overlay = document.getElementById(id);
       if (overlay && overlay.style.display === 'flex') {
-        closeOverlay(id);
+        if (typeof closeOverlay === 'function') {
+          closeOverlay(id);
+        }
       }
+    });
+    
+    // Method 2: Click any visible close button with data-close attribute
+    document.querySelectorAll('[data-close]').forEach(btn => {
+      const overlayId = btn.getAttribute('data-close');
+      const overlay = document.getElementById(overlayId);
+      if (overlay && overlay.style.display === 'flex' && btn.offsetParent !== null) {
+        btn.click();
+      }
+    });
+    
+    // Method 3: Fallback - hide any visible overlay
+    document.querySelectorAll('.overlay[style*="display: flex"]').forEach(overlay => {
+      overlay.style.display = 'none';
     });
   }
 });
