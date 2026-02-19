@@ -390,13 +390,24 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
       // Logic: Persistent Search Dropdown with Keyboard Support
       function handleSearch(val) {
           const drop = el("searchDropdown");
-          if(!val) { drop.style.display = "none"; return; }
-          const filtered = customers.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
+          
+          // Show ALL customers when search is focused (even if empty)
+          const filtered = !val 
+            ? customers 
+            : customers.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
+          
           if(filtered.length) {
               drop.innerHTML = filtered.map((c, i) => `<div class="drop-item" onclick="selectCust('${c.name}')" data-index="${i}">${c.name}</div>`).join('');
-              drop.style.display = "block";
-          } else { drop.style.display = "none"; }
+              drop.style.display = 'block';
+          } else { 
+            drop.style.display = 'none'; 
+          }
       }
+      
+      // Show all customers when search is focused
+      el("custSearch").addEventListener('focus', function() {
+        handleSearch('');
+      });
       
       // Add customer with validation
       function addCust() {
@@ -715,15 +726,21 @@ function renderAllHistory() {
   // Show ALL history, newest first
   const allHistory = [...exportHistory].reverse();
   
-  container.innerHTML = allHistory.map((sale, i) => `
+  container.innerHTML = allHistory.map((sale, i) => {
+    // Get payment mode icon
+    let modeIcon = '💵';
+    if (sale.method === 'Credit' || sale.method === 'Udhar') modeIcon = '📕';
+    else if (sale.method === 'UPI') modeIcon = '📱';
+    
+    return `
     <div class="cardRow" style="cursor:pointer;" onclick="loadOrderFromHistory('${sale.customer.replace(/'/g, "\\'")}', ${JSON.stringify(sale.cartItems || []).replace(/"/g, '&quot;')})">
       <div style="flex:1">
         <b>${sale.customer}</b><br>
-        <small style="color:var(--muted); font-weight:700;">${sale.date} ${sale.time} • ${sale.products} • ${sale.method}</small>
+        <small style="color:var(--muted); font-weight:700;">${sale.date} ${sale.time} • ${sale.products} • ${modeIcon} ${sale.method}</small>
       </div>
       <b style="color:var(--blue);">₹${sale.amount}</b>
     </div>
-  `).join('');
+  `}).join('');
   
   // Update count
   const todayCount = exportHistory.filter(s => s.date === new Date().toLocaleDateString()).length;
@@ -838,6 +855,7 @@ function clearTodayHistory() {
       window.onload = () => {
     updateShift();
     loadHistoryOnStart(); // Ye function history ke cards wapas banayega
+    loadCustomProducts(); // Load custom product cards
     setInterval(updateShift, 60000);
 }
 
@@ -849,14 +867,19 @@ function loadHistoryOnStart() {
     const today = new Date().toLocaleDateString();
     const todaySales = exportHistory.filter(s => s.date === today);
     
-    // Render today's history with clickable items
+    // Render today's history with clickable items and payment mode
     todaySales.forEach(sale => {
+        // Get payment mode icon
+        let modeIcon = '💵';
+        if (sale.method === 'Credit' || sale.method === 'Udhar') modeIcon = '📕';
+        else if (sale.method === 'UPI') modeIcon = '📱';
+        
         const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px; cursor:pointer;" onclick="loadOrderFromHistory('${sale.customer.replace(/'/g, "\\'")}', ${JSON.stringify(sale.cartItems || []).replace(/"/g, '&quot;')})">
             <div style="width:100%; display:flex; justify-content:space-between;">
               <b>${sale.customer}</b><b>₹${sale.amount}</b>
             </div>
             <small style="color:var(--muted); font-weight:700;">
-              ${sale.time} • 🛒 ${sale.products} • ${sale.method}
+              ${sale.time} • ${sale.products} • ${modeIcon} ${sale.method}
               <span style="color:var(--blue); font-weight:700; margin-left:8px;">🔁 Click to reload</span>
             </small>
           </div>`;
@@ -876,9 +899,9 @@ function convertMilkToProduct() {
   const productData = el("convProduct").value.split(',');
   const productName = productData[0];
   const rate = parseFloat(productData[1]);
-  
+
   if (!qty || qty <= 0) return showToast("Enter valid quantity");
-  
+
   // Add to cart
   const existingItem = cart.find(item => item.name === productName && item.rate === rate);
   if (existingItem) {
@@ -890,6 +913,61 @@ function convertMilkToProduct() {
   closeModal('convertModal');
   el("convQty").value = "";
   showToast(`Converted ${qty}L to ${productName}`);
+}
+
+// Add new product card
+function addNewProduct() {
+  const name = el("pName").value.trim();
+  const price = parseFloat(el("pPrice").value);
+  const image = el("pImage").value.trim();
+  
+  if (!name || !price) return showToast("Name and Price required!");
+  
+  // Create new product card
+  const grid = el("productGrid");
+  const newCard = document.createElement('div');
+  newCard.className = 'p-card';
+  newCard.onclick = function() { tapAdd(name, price, 1); };
+  newCard.innerHTML = `
+    ${image ? `<img src="${image}" alt="${name}">` : `<div class="emoji">📦</div>`}
+    <div>${name}</div>
+    <small>₹${price}</small>
+  `;
+  
+  // Insert before ADD CARD button
+  const addCardBtn = grid.querySelector('.p-card[onclick*="addProduct"]');
+  grid.insertBefore(newCard, addCardBtn);
+  
+  // Save to localStorage
+  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  customProducts.push({name, price, image});
+  localStorage.setItem('mr_pos_custom_products', JSON.stringify(customProducts));
+  
+  // Close modal and clear
+  closeModal('addProductModal');
+  el("pName").value = "";
+  el("pPrice").value = "";
+  el("pImage").value = "";
+  showToast(`${name} card added! ✅`);
+}
+
+// Load custom products on page load
+function loadCustomProducts() {
+  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  const grid = el("productGrid");
+  const addCardBtn = grid.querySelector('.p-card[onclick*="addProduct"]');
+  
+  customProducts.forEach(p => {
+    const newCard = document.createElement('div');
+    newCard.className = 'p-card';
+    newCard.onclick = function() { tapAdd(p.name, p.price, 1); };
+    newCard.innerHTML = `
+      ${p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div class="emoji">📦</div>`}
+      <div>${p.name}</div>
+      <small>₹${p.price}</small>
+    `;
+    grid.insertBefore(newCard, addCardBtn);
+  });
 }
 
 // Keyboard Navigation - Full End-to-End Invoice Creation
