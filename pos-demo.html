@@ -180,16 +180,22 @@
 
       <div class="core">
         <div class="panel">
-          <div class="panelHeader">
-            <span id="lblTerm">Terminal</span>
-            <div style="display:flex; gap:10px; align-items:center;">
-                <button onclick="openModal('convertModal')" id="btnConv" style="font-size:10px; font-weight:1000; background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 8px; cursor:pointer;">🔄 CONVERT</button>
+          <div class="panelHeader" style="padding: 8px 12px; height: 40px;">
+            <div style="display:flex; align-items:center; gap:8px; flex:1;">
+              <div style="font-size:20px;">💧</div>
+              <div style="font-weight:900; font-size:14px; color:#1e293b;">Gopal Dairy Shop</div>
+              <select id="boothSelect" onchange="updateBooth()" style="padding:4px 8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; font-size:12px; background:white;">
+                <option value="main">Main Booth</option>
+                <option value="village-a">Village A</option>
+                <option value="village-b">Village B</option>
+                <option value="market">Market</option>
+              </select>
             </div>
           </div>
 
           <!-- Product search field -->
-          <div style="padding: 10px 15px; background: #f8fafc; border-bottom: 1px solid var(--line);">
-            <input type="text" id="productSearch" placeholder="🔍 Search products..." oninput="filterProducts(this.value)" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-weight: 600;" onclick="event.stopPropagation()" />
+          <div style="padding: 8px 12px; background: #f8fafc; border-bottom: 1px solid var(--line);">
+            <input type="text" id="productSearch" placeholder="🔍 Search products..." oninput="filterProducts(this.value)" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; font-weight: 600;" onclick="event.stopPropagation()" />
           </div>
 
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0">
@@ -252,28 +258,12 @@
         </div>
 
         <div class="panel">
-          <div class="panelHeader" id="lblSum">Summary</div>
-          
-          <!-- Customer Section -->
-          <div style="padding: 15px; background: #f8fafc; border-bottom: 1px solid var(--line);">
-            <div style="font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 8px;">👤 Customer</div>
-            
-            <!-- Customer Search -->
-            <div style="position: relative; margin-bottom: 10px;">
-              <input type="text" id="custSearch" placeholder="Search customer..." oninput="handleSearch(this.value)" style="width: 100%; padding: 8px 8px 8px 30px; border: 2px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 13px;" />
+          <div class="panelHeader" style="padding: 8px 12px; height: 40px; background: #f8fafc; border-bottom: 1px solid var(--line);">
+            <!-- Customer Search with Selected Customer Display -->
+            <div style="position: relative; width: 100%;">
+              <input type="text" id="custSearch" placeholder="👤 Search customer..." oninput="handleSearch(this.value)" style="width: 100%; padding: 8px 8px 8px 30px; border: 2px solid #3b82f6; border-radius: 8px; font-weight: 700; font-size: 13px; background: white;" />
               <span style="position: absolute; left: 10px; top: 8px; font-size: 14px;">🔎</span>
               <div id="searchDropdown" class="search-dropdown" onclick="event.stopPropagation()" style="top: 100%; border-radius: 0 0 8px 8px;"></div>
-            </div>
-            
-            <!-- Current Customer Display -->
-            <div id="currentCustomerDisplay" style="background: white; border: 2px solid #3b82f6; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                  <div style="font-weight: 900; color: #1e293b; font-size: 14px;" id="activeCust">Walking Customer</div>
-                  <div style="font-size: 11px; color: #64748b;" id="customerPhoneDisplay"></div>
-                </div>
-                <button onclick="openModal('addCustModal')" style="background: #3b82f6; color: white; border: none; border-radius: 6px; padding: 6px 10px; font-weight: 700; font-size: 11px; cursor: pointer;">✏️ Edit</button>
-              </div>
             </div>
           </div>
           
@@ -1261,10 +1251,12 @@ MilkRecord POS`;
       
       // Select customer from search
       function selectCust(name) {
-          el("activeCust").innerText = name;
-          el("custSearch").value = name;
+          // Update search input to show selected customer
+          const searchInput = el("custSearch");
+          searchInput.value = name;
+          searchInput.style.borderColor = '#22c55e';
+          searchInput.style.background = '#f0fdf4';
           el("searchDropdown").style.display = "none";
-          updateCustomerDisplay();
           showToast("Customer: " + name);
           
           // Auto-fill frequent buys / last invoice from memory
@@ -2164,31 +2156,22 @@ function openEditInventory() {
   const products = [
     { name: 'Cow 1L', emoji: '🐄', rate: 64, unit: 'L', step: 1 },
     { name: 'Cow 0.5L', emoji: '🐄', rate: 32, unit: 'L', step: 0.5 },
-    { name: 'Buff 1L', emoji: '🐃', rate: 100, unit: 'L', step: 1 },
+    { name: 'Buff 2L', emoji: '🐃', rate: 100, unit: 'L', step: 1 },
     { name: 'Buff 1L', emoji: '🐃', rate: 80, unit: 'L', step: 1 },
     { name: 'Buff 0.5L', emoji: '🐃', rate: 40, unit: 'L', step: 0.5 },
     { name: 'Paneer', emoji: '🧀', rate: 320, unit: 'kg', step: 0.5 },
-    { name: 'Ghee', emoji: '🍯', rate: 180, unit: 'g', step: 100 },
+    { name: 'Ghee', emoji: '🍯', rate: 180, unit: 'g', step: 0.5 },
     { name: 'Milk Cake', emoji: '🍰', rate: 300, unit: 'kg', step: 0.5 }
   ];
   
   list.innerHTML = products.map((p, i) => `
-    <div style="display:grid; grid-template-columns: 50px 1fr 80px 60px 60px auto; gap:8px; align-items:center; padding:12px; background:#f8fafc; border-radius:8px;">
-      <div style="font-size:28px;">${p.emoji}</div>
-      <input type="text" id="editName_${i}" value="${p.name}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700;" />
-      <input type="number" id="editRate_${i}" value="${p.rate}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center;" />
-      <select id="editUnit_${i}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700;">
-        <option value="L" ${p.unit === 'L' ? 'selected' : ''}>L</option>
-        <option value="kg" ${p.unit === 'kg' ? 'selected' : ''}>kg</option>
-        <option value="g" ${p.unit === 'g' ? 'selected' : ''}>g</option>
-        <option value="ml" ${p.unit === 'ml' ? 'selected' : ''}>ml</option>
-      </select>
-      <select id="editStep_${i}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700;">
-        <option value="0.5" ${p.step === 0.5 ? 'selected' : ''}>0.5</option>
-        <option value="1" ${p.step === 1 ? 'selected' : ''}>1</option>
-        <option value="2" ${p.step === 2 ? 'selected' : ''}>2</option>
-      </select>
-      <button onclick="updateProductFull(${i}, '${p.name}')" style="padding:8px 16px; background:#22c55e; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer;">Update</button>
+    <div style="display:grid; grid-template-columns: 40px 1fr 60px 40px 40px auto; gap:8px; align-items:center; padding:10px; background:#f8fafc; border-radius:8px;">
+      <div style="font-size:24px;">${p.emoji}</div>
+      <input type="text" id="editName_${i}" value="${p.name}" style="padding:6px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; font-size:12px;" />
+      <input type="number" id="editRate_${i}" value="${p.rate}" style="padding:6px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center; font-size:12px;" />
+      <input type="text" id="editUnit_${i}" value="${p.unit}" style="padding:6px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center; font-size:12px; width:100%;" />
+      <input type="number" id="editStep_${i}" value="${p.step}" step="0.5" style="padding:6px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center; font-size:12px; width:100%;" />
+      <button onclick="updateProductFull(${i}, '${p.name}')" style="padding:6px 12px; background:#22c55e; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:11px;">Update</button>
     </div>
   `).join('');
   
@@ -2220,6 +2203,27 @@ function updateProductFull(index, oldName) {
   // Reload page to apply changes
   setTimeout(() => location.reload(), 1000);
 }
+
+// Update booth selection
+function updateBooth() {
+  const booth = el("boothSelect").value;
+  const boothNames = {
+    'main': 'Main Booth',
+    'village-a': 'Village A',
+    'village-b': 'Village B',
+    'market': 'Market'
+  };
+  localStorage.setItem('milkbook_booth', booth);
+  showToast(`Booth: ${boothNames[booth]}`);
+}
+
+// Load saved booth on startup
+window.addEventListener('DOMContentLoaded', function() {
+  const savedBooth = localStorage.getItem('milkbook_booth');
+  if (savedBooth && el('boothSelect')) {
+    el('boothSelect').value = savedBooth;
+  }
+});
 
 // Keyboard Navigation - Full End-to-End Invoice Creation
 document.addEventListener('keydown', function(e) {
