@@ -153,6 +153,10 @@
         justify-content: center;
         min-width: 120px;
       }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
       .iconbtn {
         width: 44px;
         height: 44px;
@@ -1257,6 +1261,17 @@
             <span>🍼</span> <span id="btnIntakeText">Milk sales</span>
           </button>
           </div>
+        
+        <!-- Route Code Selector -->
+        <div style="display: flex; align-items: center; gap: 8px; margin: 0 15px;">
+          <div style="position: relative;">
+            <input type="text" id="routeCodeSearch" placeholder="[1] Route Code (रूट कोड)" 
+              style="padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-weight: 700; font-size: 13px; width: 200px;"
+              oninput="filterRouteCodes()" />
+            <div id="routeCodeDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--line); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div>
+          </div>
+        </div>
+        
         <div id="ratePillContainer" style="display: flex; align-items: center; gap: 8px; margin-left: 15px;">
     <div id="ratePill" onclick="openRateEditor()" style="background: #e3f2fd; color: #1565c0; padding: 8px 16px; border-radius: 999px; font-weight: 1000; cursor: pointer; border: 1px solid #bbdefb; font-size: 14px; display: flex; align-items: center; gap: 6px;">
         <span id="rateDisplay">Rate: ₹0.00</span>
@@ -1308,6 +1323,11 @@
 
           <div class="hdr-right">
             <!-- <div class="timer" id="timerBox">⏱ 00:00</div> -->
+            <!-- Online Status -->
+            <div style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 999px; font-size: 12px; font-weight: 700; color: #166534;">
+              <span style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; animation: pulse 2s infinite;"></span>
+              <span>Online</span>
+            </div>
             <button class="iconbtn" id="btnLeader" title="Leader (Weekly)">
               🏆
             </button>
@@ -3998,6 +4018,75 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+// Route Code Functions
+const routeCodes = [
+  { code: "1", name: "Route 1 - Main Market" },
+  { code: "2", name: "Route 2 - Gandhi Chowk" },
+  { code: "3", name: "Route 3 - Station Road" },
+  { code: "4", name: "Route 4 - Hospital Area" },
+  { code: "5", name: "Route 5 - School Zone" },
+  { code: "6", name: "Route 6 - Industrial Area" },
+  { code: "7", name: "Route 7 - Residential" },
+  { code: "8", name: "Route 8 - Village A" },
+  { code: "9", name: "Route 9 - Village B" },
+  { code: "10", name: "Route 10 - Dairy Center" }
+];
+
+function filterRouteCodes() {
+  const search = document.getElementById('routeCodeSearch').value.toLowerCase();
+  const dropdown = document.getElementById('routeCodeDropdown');
+  
+  if (!search) {
+    dropdown.style.display = 'none';
+    return;
+  }
+  
+  const filtered = routeCodes.filter(rc => 
+    rc.code.toLowerCase().includes(search) || 
+    rc.name.toLowerCase().includes(search)
+  );
+  
+  if (filtered.length > 0) {
+    dropdown.innerHTML = filtered.map(rc => `
+      <div onclick="selectRouteCode('${rc.code}', '${rc.name}')" 
+           style="padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-weight: 700; font-size: 13px;"
+           onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background='white'">
+        <strong>[${rc.code}]</strong> ${rc.name}
+      </div>
+    `).join('');
+    dropdown.style.display = 'block';
+  } else {
+    dropdown.style.display = 'none';
+  }
+}
+
+function selectRouteCode(code, name) {
+  document.getElementById('routeCodeSearch').value = `[${code}] ${name}`;
+  document.getElementById('routeCodeDropdown').style.display = 'none';
+  localStorage.setItem('milkbook_route_code', code);
+  showToast(`Route ${code} selected`);
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const dropdown = document.getElementById('routeCodeDropdown');
+  const search = document.getElementById('routeCodeSearch');
+  if (dropdown && search && !dropdown.contains(e.target) && e.target !== search) {
+    dropdown.style.display = 'none';
+  }
+});
+
+// Load saved route code on init
+function loadSavedRouteCode() {
+  const saved = localStorage.getItem('milkbook_route_code');
+  if (saved) {
+    const route = routeCodes.find(rc => rc.code === saved);
+    if (route) {
+      document.getElementById('routeCodeSearch').value = `[${route.code}] ${route.name}`;
+    }
+  }
+}
+
       /***********************
        * INIT                *
        ***********************/
@@ -4009,6 +4098,7 @@ document.addEventListener('keydown', function(e) {
     // --- YE 2 LINE BHI JODO (Table & Button ke liye) ---
     renderRecentToday();
     updateDailySummaryButton();
+    loadSavedRouteCode(); // Load saved route code
     // --------------------------------------------------
         restoreHoldIfAny();
         renderAll();
