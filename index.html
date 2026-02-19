@@ -1666,8 +1666,14 @@
 
     <!-- Auth check and backend connection -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script src="netlify-client.js"></script>
     <script>
+      // Check Supabase configuration
+      if (!window.MilkBookConfig.isConfigured()) {
+        console.warn('⚠️ Supabase not configured! Check .env file');
+      }
+      
       // Check authentication on page load
       window.addEventListener('DOMContentLoaded', async () => {
         // Check if user is logged in
@@ -1690,6 +1696,8 @@
             if (entries && entries.length > 0) {
               localStorage.setItem('milkbook_entries', JSON.stringify(entries));
             }
+            
+            console.log('✅ Data loaded from backend');
           } catch (error) {
             console.error('Failed to load data from backend:', error);
           }

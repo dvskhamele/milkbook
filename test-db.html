@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MilkBook - Database Connection Test</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .test-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .test-title {
+            font-weight: 700;
+            color: #475569;
+        }
+        .status {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .status.success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .status.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        .test-result {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        pre {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Database Connection Test</h1>
+    
+    <div class="test-card">
+        <div class="test-header">
+            <div class="test-title">1. Supabase Configuration</div>
+            <div class="status pending" id="config-status">Testing...</div>
+        </div>
+        <div class="test-result" id="config-result">
+            Checking configuration...
+        </div>
+    </div>
+    
+    <div class="test-card">
+        <div class="test-header">
+            <div class="test-title">2. Database Connection</div>
+            <div class="status pending" id="connection-status">Testing...</div>
+        </div>
+        <div class="test-result" id="connection-result">
+            Testing connection...
+        </div>
+    </div>
+    
+    <div class="test-card">
+        <div class="test-header">
+            <div class="test-title">3. Tables Check</div>
+            <div class="status pending" id="tables-status">Testing...</div>
+        </div>
+        <div class="test-result" id="tables-result">
+            Checking tables...
+        </div>
+    </div>
+    
+    <div class="test-card">
+        <div class="test-header">
+            <div class="test-title">4. Sample Data</div>
+            <div class="status pending" id="data-status">Testing...</div>
+        </div>
+        <div class="test-result" id="data-result">
+            Checking sample data...
+        </div>
+    </div>
+    
+    <button class="btn" onclick="runAllTests()">🔄 Run All Tests Again</button>
+    
+    <div class="test-card" style="margin-top: 20px;">
+        <div class="test-header">
+            <div class="test-title">📝 Configuration Details</div>
+        </div>
+        <pre id="config-details">Loading...</pre>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script>
+        let supabase = null;
+        
+        // Update status helper
+        function updateStatus(elementId, status, message) {
+            const el = document.getElementById(elementId);
+            el.className = `status ${status}`;
+            el.textContent = status === 'success' ? '✅ Pass' : status === 'error' ? '❌ Fail' : '⏳ Testing';
+            
+            const resultEl = document.getElementById(elementId.replace('-status', '-result'));
+            if (resultEl) {
+                resultEl.innerHTML = message;
+            }
+        }
+        
+        // Test 1: Configuration
+        async function testConfig() {
+            try {
+                const config = window.MilkBookConfig;
+                
+                const details = {
+                    url: config.supabaseUrl,
+                    anonKey: config.supabaseAnonKey ? '***' + config.supabaseAnonKey.slice(-10) : 'Not set',
+                    serviceKey: config.supabaseServiceKey ? '***' + config.supabaseServiceKey.slice(-10) : 'Not set',
+                    isConfigured: config.isConfigured()
+                };
+                
+                document.getElementById('config-details').textContent = JSON.stringify(details, null, 2);
+                
+                if (config.isConfigured()) {
+                    updateStatus('config-status', 'success', 'Supabase is configured correctly');
+                    return true;
+                } else {
+                    updateStatus('config-status', 'error', 'Supabase is NOT configured. Please check your .env file');
+                    return false;
+                }
+            } catch (error) {
+                updateStatus('config-status', 'error', `Error: ${error.message}`);
+                return false;
+            }
+        }
+        
+        // Test 2: Database Connection
+        async function testConnection() {
+            try {
+                const result = await window.MilkBookConfig.testConnection();
+                
+                if (result.success) {
+                    updateStatus('connection-status', 'success', `Connected to Supabase successfully!<br>Shops found: ${result.data?.length || 0}`);
+                    return true;
+                } else {
+                    updateStatus('connection-status', 'error', `Connection failed: ${result.error}`);
+                    return false;
+                }
+            } catch (error) {
+                updateStatus('connection-status', 'error', `Error: ${error.message}`);
+                return false;
+            }
+        }
+        
+        // Test 3: Tables Check
+        async function testTables() {
+            try {
+                supabase = window.MilkBookConfig.getSupabase();
+                
+                const tables = ['shops', 'users', 'farmers', 'milk_intake_entries', 'retail_sales', 'balances'];
+                const results = [];
+                
+                for (const table of tables) {
+                    const { count, error } = await supabase
+                        .from(table)
+                        .select('*', { count: 'exact', head: true });
+                    
+                    if (error) {
+                        results.push(`❌ ${table}: ${error.message}`);
+                    } else {
+                        results.push(`✅ ${table}: ${count || 0} rows`);
+                    }
+                }
+                
+                const allOk = results.every(r => r.startsWith('✅'));
+                updateStatus('tables-status', allOk ? 'success' : 'error', results.join('<br>'));
+                return allOk;
+            } catch (error) {
+                updateStatus('tables-status', 'error', `Error: ${error.message}`);
+                return false;
+            }
+        }
+        
+        // Test 4: Sample Data
+        async function testData() {
+            try {
+                supabase = window.MilkBookConfig.getSupabase();
+                
+                // Check for sample shop
+                const { data: shops } = await supabase
+                    .from('shops')
+                    .select('id, name')
+                    .limit(1);
+                
+                // Check for sample user
+                const { data: users } = await supabase
+                    .from('users')
+                    .select('id, role')
+                    .limit(1);
+                
+                let message = '';
+                if (shops && shops.length > 0) {
+                    message += `✅ Shop: ${shops[0].name}<br>`;
+                } else {
+                    message += `⚠️ No shops found (run schema.sql)<br>`;
+                }
+                
+                if (users && users.length > 0) {
+                    message += `✅ Users: ${users.length} user(s) found`;
+                } else {
+                    message += `⚠️ No users found (create users manually)`;
+                }
+                
+                updateStatus('data-status', 'success', message);
+                return true;
+            } catch (error) {
+                updateStatus('data-status', 'error', `Error: ${error.message}`);
+                return false;
+            }
+        }
+        
+        // Run all tests
+        async function runAllTests() {
+            console.log('🧪 Running all tests...');
+            
+            await testConfig();
+            await new Promise(r => setTimeout(r, 500));
+            
+            await testConnection();
+            await new Promise(r => setTimeout(r, 500));
+            
+            await testTables();
+            await new Promise(r => setTimeout(r, 500));
+            
+            await testData();
+        }
+        
+        // Auto-run on load
+        window.addEventListener('DOMContentLoaded', runAllTests);
+    </script>
+</body>
+</html>

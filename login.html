@@ -269,14 +269,18 @@
             Don't have an account? <a href="#" onclick="alert('Contact admin to create account')">Contact Admin</a>
         </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script>
-        // Initialize Supabase
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Get Supabase client from config
+        const supabase = window.MilkBookConfig.getSupabase();
         
+        // Check if Supabase is configured
+        if (!window.MilkBookConfig.isConfigured()) {
+          alert('⚠️ Supabase not configured! Please check your .env file');
+        }
+
         // Switch between PIN and Password login
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
