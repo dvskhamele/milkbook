@@ -145,33 +145,6 @@
       .gap-item p { margin: 0; font-size: 12px; color: #64748b; }
       .gap-tooltip { background: #fef3c7; color: #92400e; font-size: 11px; padding: 6px; border-radius: 4px; margin-top: 6px; font-style: italic; }
 
-      /* Hover Info - Subtle, minimal UI */
-      .hover-info {
-        background: #f1f5f9;
-        color: #64748b;
-        padding: 6px;
-        font-size: 11px;
-        font-weight: 600;
-        text-align: center;
-        border-radius: 0 0 8px 8px;
-        opacity: 0;
-        transform: translateY(-5px);
-        transition: all 0.2s ease;
-        cursor: help;
-      }
-      .panel:hover .hover-info {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .summary-box .hover-info {
-        margin-top: 10px;
-        border-radius: 6px;
-        opacity: 1;
-        transform: none;
-        background: rgba(255,255,255,0.2);
-        color: white;
-      }
-
       /* Card Image aur Selection Style */
 .p-card img { width: 45px; height: 45px; object-fit: cover; margin-bottom: 8px; border-radius: 10px; }
 .p-card.selected { border: 3px solid var(--blue) !important; background: #eff6ff !important; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important; transform: scale(1.02); }
@@ -279,11 +252,6 @@
               <div style="font-size:60px; color:var(--blue); font-weight: 900;">➕</div>
               <div style="font-weight:900; color:var(--blue); font-size:16px; margin-top: 8px;">ADD PRODUCT</div>
             </div>
-          </div>
-
-          <!-- Keyboard shortcuts - Hidden by default, show on hover -->
-          <div class="hover-info" style="text-align: center; border-top: 1px solid var(--line);" title="Enter = Next field | Esc = Clear search | F1 = New customer">
-            ⌨️ Keyboard shortcuts
           </div>
         </div>
 
