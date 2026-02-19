@@ -101,9 +101,9 @@
     <!-- Demo Banner -->
     <div class="demo-banner">
       🟡 Demo Mode — Retail POS<br>
-      This demo shows billing only, not procurement or audit modules.
+      This demo shows billing-only retail records.
       <div style="margin-top: 6px; font-size: 12px; font-weight: 500;">
-        If you were expecting procurement, quality, or audit features, those are part of the <strong>Professional Growth Plan</strong>, not this retail POS demo.
+        Procurement, quality verification, and audit explanations are out of scope for retail systems.
       </div>
     </div>
   
@@ -187,6 +187,11 @@
           <div class="summary-box">
             <div style="font-size:12px; opacity:0.8;" id="lblPayable">TOTAL PAYABLE</div>
             <div class="amt" id="totalAmt">₹0.00</div>
+            <!-- Record Strength Tag -->
+            <div style="margin-top: 10px; padding: 6px 10px; background: #eff6ff; border: 1px solid #3b82f6; border-radius: 6px; font-size: 10px; font-weight: 700; color: #1e40af; text-align: center;" title="Retail records are valid for daily sales and udhar tracking. They are not suitable for procurement audits or institutional settlements.">
+              📊 Record Strength: <span style="color: #f59e0b;">RETAIL</span><br>
+              <span style="font-weight: 500; color: #64748b;">Suitable for shop billing only</span>
+            </div>
           </div>
 
           <!-- Advance/Cut Ledger Section - Collapsed by default -->
@@ -220,11 +225,19 @@
           <button onclick="toggleAdvance()" id="advanceToggleBtn" style="margin:0 15px; padding:10px; background:#fef3c7; border:2px solid #f59e0b; border-radius:12px; font-weight:700; color:#92400e; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
             📕 Advance / Udhar
           </button>
+          <div id="udharThresholdNudge" style="display: none; margin: 0 15px 15px; padding: 10px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; font-size: 11px; color: #92400e; font-weight: 700;">
+            ⚠️ High outstanding credit<br>
+            <span style="font-weight: 500; color: #64748b;">Retail POS tracks balance, not settlement responsibility.</span>
+          </div>
 
           <div class="pay-grid">
             <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534;" onclick="saveEntry('Cash')">CASH</button>
             <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af;" onclick="saveEntry('UPI')">UPI</button>
             <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')">LIKH LO (Credit)</button>
+          </div>
+          
+          <div style="font-size: 10px; color: var(--muted); font-weight: 700; margin: 10px 15px; text-align: center;" title="Settlement traceability & deductions tracking available in collection center system.">
+            Retail payment mode — settlement traceability not generated
           </div>
 
           <div style="padding:15px; flex:1; overflow-y:auto; border-top:1px solid var(--line);">
@@ -237,6 +250,11 @@
         <button class="panicBtn" style="background:#fde68a; color:#78350f;"><span id="txtHold">🟡 HOLD</span> <span class="subnote">pause</span></button>
         <button class="panicBtn" onclick="saveEntry('Quick')" style="background:#22c55e; color:#064e3b; font-size:30px;"><span id="txtDone">🟢 DONE</span> <span class="subnote">next customer</span></button>
         <button class="panicBtn" onclick="resetCart()" style="background:#fecaca; color:#7f1d1d;"><span id="txtClear">🔴 CLEAR</span> <span class="subnote">trash</span></button>
+      </div>
+      
+      <!-- DONE button microcopy -->
+      <div style="text-align: center; font-size: 10px; color: var(--muted); font-weight: 700; padding: 8px;" title="Institutional accountability requires collection center system.">
+        Completes retail transaction only
       </div>
     </div>
 
@@ -462,6 +480,7 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         if (!customer) {
           el("advanceSection").style.display = "none";
           el("advanceToggleBtn").style.display = "none";
+          el("udharThresholdNudge").style.display = "none";
           return;
         }
         
@@ -479,6 +498,12 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           advanceBtn.innerHTML = `📕 Udhar: ₹${customer.advance.toFixed(2)}`;
         } else {
           advanceBtn.innerHTML = '📕 Advance / Udhar';
+        }
+        
+        // Show Udhar threshold nudge if high credit
+        const udharNudge = el("udharThresholdNudge");
+        if (udharNudge) {
+          udharNudge.style.display = (customer.advance || 0) > 3000 ? 'block' : 'none';
         }
       }
       

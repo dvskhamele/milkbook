@@ -1354,11 +1354,16 @@
                 />
               </div>
               <button class="addNewBtn" id="btnAddFarmerMain" style="padding: 8px 16px; font-size: 13px;">
-                ＋ Add New
+                ＋ Farmer
               </button>
             </div>
             <small id="holdBadge"></small>
             <div class="miniTag" id="farmerCount" style="margin-left: 8px;">0 👤</div>
+            <!-- Source Strength Indicator -->
+            <div style="margin-left: auto; padding: 6px 12px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; font-size: 11px; font-weight: 700; color: #92400e;" title="These entries are suitable for shop billing. Procurement-grade source verification requires a collection center system.">
+              📊 Source Strength: <span style="color: #dc2626;">LOW</span>
+              <span style="color: var(--muted); font-weight: 500; margin-left: 4px;">Retail-only records</span>
+            </div>
           </div>
 
           <div class="actionBody">
@@ -1393,11 +1398,18 @@
                   <button class="pm" id="qtyPlus">+</button>
                 </div> -->
               </div>
+              
+              <!-- Quantity Threshold Nudge -->
+              <div id="qtyThresholdNudge" style="display: none; grid-column: 1/-1; background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 8px; font-size: 11px; color: #1e40af; font-weight: 700;">
+                ℹ️ Bulk collection detected<br>
+                <span style="font-weight: 500; color: #64748b;">Institutional systems track source, quality & settlement for this volume.</span>
+                <span style="color: #3b82f6; cursor: pointer; margin-left: 8px; text-decoration: underline;" onclick="showWhatMissing()">What's missing?</span>
+              </div>
 
               <div class="control yellow">
                 <div class="ctrlTop">
   <div id="fatLabel">3. Fat %</div>
-  
+
   <label for="fImageEntry" style="cursor:pointer; font-size: 1.2rem; margin-left: auto;" title="Capture Proof">
     📷
   </label>
@@ -1413,6 +1425,9 @@
     step="0.1"
     placeholder="0"
   />
+</div>
+<div style="font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 4px;" title="Analyzer-linked readings are required for verifiable quality records.">
+  ⚠️ Manual quality entry — not suitable for dispute resolution or audits
 </div>
                 <!-- <div class="pmRow">
                   <button class="pm" id="fatMinus">−</button>
@@ -1442,6 +1457,9 @@
                     placeholder="0"
                   />
                 </div>
+                <div style="font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 4px;" title="Analyzer-linked readings are required for verifiable quality records.">
+  ⚠️ Manual quality entry — not suitable for dispute resolution or audits
+</div>
                 <!-- <div class="pmRow">
                   <button class="pm" id="snfMinus">−</button>
                   <button class="pm" id="snfPlus">+</button>
@@ -1538,12 +1556,18 @@
             <div id="optCredit" style="text-align: center; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font-weight: 1000; font-size: 14px; transition: 0.2s;">उधार</div>
         </label>
     </div>
+    <div style="font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 8px; text-align: center;" title="Settlement traceability & deductions tracking available in collection center system.">
+      Retail settlement (non-auditable)
+    </div>
 </div>
             </div>
             <div id="dailySummaryWrapper" style="display: none; margin-top: 15px;">
         <button class="pillbtn" id="btnDailySummary" style="width: 100%; background: #25d366; color: white; border: none; font-weight: bold; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
              💬 Send Today's Summary
         </button>
+        <div style="font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 8px; text-align: center;" title="This summary is suitable for farmer communication. Not valid for institutional audit or dispute resolution.">
+          ⚠️ Suitable for farmer communication. Not valid for institutional audit.
+        </div>
     </div>
             <div class="recent">
               <div class="recentHead">
@@ -1562,12 +1586,13 @@
                       <th>FAT</th>
                       <th>SNF</th>
                       <th>AMT</th>
+                      <th style="font-size: 10px;">Verified</th>
                     </tr>
                   </thead>
                   <tbody id="recentTbody">
                     <tr>
                       <td
-                        colspan="8"
+                        colspan="9"
                         style="color: var(--muted); font-weight: 1100"
                       >
                         No records recorded today
@@ -2638,7 +2663,7 @@ function refreshRatePill() {
         recentMeta.textContent = `${todays.length} records`;
 
         if (todays.length === 0) {
-          recentTbody.innerHTML = `<tr><td colspan="8" style="color:var(--muted);font-weight:1100;">No records recorded today</td></tr>`;
+          recentTbody.innerHTML = `<tr><td colspan="9" style="color:var(--muted);font-weight:1100;">No records recorded today</td></tr>`;
           return;
         }
 
@@ -2681,6 +2706,7 @@ return `
         <button onclick="event.stopPropagation(); editEntry('${e.id}')" title="Edit" style="border:none; background:transparent; cursor:pointer; font-size:14px;">✏️</button>
         ${phone ? `<a href="${wpLink}" target="_blank" onclick="event.stopPropagation();" title="Send WhatsApp" style="text-decoration:none; font-size:16px;">🟢</a>` : ''}
     </td>
+    <td style="text-align: center;" title="Retail entry. Source & quality verification not recorded.">❌ Retail</td>
   </tr>
 `;
           })
@@ -4347,6 +4373,47 @@ function setupKeyboardNavigation() {
     });
   }
 }
+
+// Show "What's missing?" panel
+function showWhatMissing() {
+  const msg = `Institutional systems track:
+  
+❌ Shift locking
+❌ Analyzer linkage  
+❌ Audit trail
+❌ Settlement logic
+
+These are required for procurement-grade accountability.`;
+  alert(msg);
+}
+
+// Quantity threshold nudge logic
+const qtyInput = el('qtyInput');
+if (qtyInput) {
+  qtyInput.addEventListener('input', function() {
+    const qty = parseFloat(this.value) || 0;
+    const nudge = el('qtyThresholdNudge');
+    if (nudge) {
+      nudge.style.display = qty > 20 ? 'block' : 'none';
+    }
+  });
+}
+
+// Balance risk marker logic - add to renderTrust
+const originalRenderTrust = window.renderTrust || function() {};
+window.renderTrust = function() {
+  originalRenderTrust();
+  
+  // Add balance risk marker
+  const farmer = getFarmerById(selectedFarmerId);
+  const balanceEl = el('balAfter');
+  if (farmer && balanceEl) {
+    const balance = farmer.balance || 0;
+    if (balance > 10000) {
+      balanceEl.innerHTML = `₹${balance.toFixed(2)} <span style="color: #f59e0b;" title="Large outstanding balance. Settlement traceability & deductions tracking available in collection center system.">⚠️</span>`;
+    }
+  }
+};
 
       /***********************
        * INIT                *
