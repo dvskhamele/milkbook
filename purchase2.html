@@ -60,8 +60,9 @@
       .pay-btn.credit { grid-column: 1/-1; background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
 
       .recent-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-      .recent-table td { padding: 10px; border-bottom: 1px solid var(--line); font-weight: 700; }
-      .recent-table input { width: 60px; padding: 4px; border: 1px solid var(--line); border-radius: 6px; font-weight: 700; text-align: center; }
+      .recent-table td { padding: 10px; border-bottom: 1px solid var(--line); font-weight: 700; vertical-align: middle; }
+      .recent-table input { padding: 4px; border: 1px solid var(--line); border-radius: 6px; font-weight: 700; text-align: center; }
+      .recent-table input[type="number"]::-webkit-inner-spin-button { opacity: 1; cursor: pointer; }
       .recent-table .remove-btn { background: #fecaca; color: #7f1d1d; border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-weight: 700; font-size: 12px; }
 
       .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); display: none; align-items: center; justify-content: center; z-index: 100; }
@@ -379,15 +380,22 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
       function updateUI() {
         const tbody = el("cartItems"); tbody.innerHTML = ""; total = 0;
         cart.forEach((i, index) => { 
-          total += (i.rate * i.qty); 
+          const itemAmount = i.rate * i.qty;
+          total += itemAmount; 
           tbody.innerHTML += `<tr>
-            <td>${i.name}</td>
+            <td>${i.name}<br><small style="color:var(--muted); font-weight:700;">₹${i.rate}/unit</small></td>
             <td>
               <input type="number" value="${i.qty}" min="0.1" step="0.1" 
                 onchange="updateItemQty(${index}, this.value)" 
-                style="width:60px; padding:4px; border:1px solid var(--line); border-radius:6px; font-weight:700; text-align:center;" />
+                style="width:70px; padding:4px; border:1px solid var(--line); border-radius:6px; font-weight:700; text-align:center;" 
+                title="Quantity" />
             </td>
-            <td style="text-align:right">₹${(i.rate*i.qty).toFixed(2)}</td>
+            <td>
+              <input type="number" value="${itemAmount.toFixed(2)}" min="1" step="1" 
+                onchange="updateItemAmount(${index}, this.value)" 
+                style="width:80px; padding:4px; border:1px solid var(--line); border-radius:6px; font-weight:700; text-align:center;" 
+                title="Amount in ₹" />
+            </td>
             <td style="text-align:right;">
               <button onclick="removeItem(${index})" style="background:#fecaca; color:#7f1d1d; border:none; border-radius:6px; padding:4px 8px; cursor:pointer; font-weight:700; font-size:12px;">✕ Remove</button>
             </td>
@@ -396,11 +404,22 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         el("totalAmt").textContent = `₹${total.toFixed(2)}`;
       }
       
-      // Update item quantity
+      // Update item quantity (amount auto-calculates)
       function updateItemQty(index, newQty) {
         const qty = parseFloat(newQty);
         if (qty > 0) {
           cart[index].qty = qty;
+          updateUI();
+        } else {
+          removeItem(index);
+        }
+      }
+      
+      // Update item amount (quantity auto-calculates)
+      function updateItemAmount(index, newAmount) {
+        const amount = parseFloat(newAmount);
+        if (amount > 0 && cart[index].rate > 0) {
+          cart[index].qty = amount / cart[index].rate;
           updateUI();
         } else {
           removeItem(index);
