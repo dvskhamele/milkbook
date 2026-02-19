@@ -75,6 +75,19 @@
       .sync-msg { font-size: 10px; font-weight: 900; color: var(--muted); text-transform: uppercase; }
       .toast { position: fixed; left: 50%; bottom: 116px; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 16px; font-weight: 1100; opacity: 0; transition: 0.3s; z-index: 200; }
       .toast.show { opacity: 1; }
+      
+      /* Demo Banner */
+      .demo-banner { background: #fef3c7; border-bottom: 2px solid #f59e0b; padding: 10px 20px; text-align: center; font-size: 13px; font-weight: 600; color: #92400e; }
+      
+      /* Institutional Gaps Panel */
+      .gaps-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 300px; background: #f8fafc; border-left: 2px solid #e2e8f0; padding: 20px; overflow-y: auto; transform: translateX(100%); transition: transform 0.3s; z-index: 1000; }
+      .gaps-panel.open { transform: translateX(0); }
+      .gaps-toggle { position: fixed; right: 20px; bottom: 120px; width: 50px; height: 50px; border-radius: 50%; background: #64748b; color: white; border: none; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 999; }
+      .gap-item { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 10px; opacity: 0.6; }
+      .gap-item h4 { margin: 0 0 5px 0; font-size: 13px; color: #475569; }
+      .gap-item p { margin: 0; font-size: 12px; color: #64748b; }
+      .gap-tooltip { background: #fef3c7; color: #92400e; font-size: 11px; padding: 6px; border-radius: 4px; margin-top: 6px; font-style: italic; }
+      
       /* Card Image aur Selection Style */
 .p-card img { width: 45px; height: 45px; object-fit: cover; margin-bottom: 8px; border-radius: 10px; }
 .p-card.selected { border: 2px solid var(--blue) !important; background: #eff6ff; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15); }
@@ -82,6 +95,15 @@
     </style>
   </head>
   <body>
+    <!-- Demo Banner -->
+    <div class="demo-banner">
+      🟡 Demo Mode — Retail POS<br>
+      This demo shows billing only, not procurement or audit modules.
+      <div style="margin-top: 6px; font-size: 12px; font-weight: 500;">
+        If you were expecting procurement, quality, or audit features, those are part of the <strong>Milk Collection Center (BMC) system</strong>, not this retail POS demo.
+      </div>
+    </div>
+  
     <div class="app">
       <div class="topbar">
         <div class="brand">
@@ -226,6 +248,42 @@
     </div>
 
     <div class="toast" id="toast"></div>
+
+    <!-- Institutional Gaps Panel -->
+    <button class="gaps-toggle" onclick="toggleGaps()" title="Institutional Records">📋</button>
+    <div class="gaps-panel" id="gapsPanel">
+      <h3 style="margin: 0 0 15px 0; font-size: 16px; color: #1e293b;">Institutional Records (Not Tracked)</h3>
+      
+      <div class="gap-item">
+        <h4>🟡 Farmer source</h4>
+        <p>Not recorded</p>
+        <div class="gap-tooltip">Required only for milk collection centers</div>
+      </div>
+      
+      <div class="gap-item">
+        <h4>🟡 Quality test (Fat/SNF)</h4>
+        <p>Not recorded</p>
+        <div class="gap-tooltip">Required only for milk collection centers</div>
+      </div>
+      
+      <div class="gap-item">
+        <h4>🟡 Payment settlement</h4>
+        <p>Not recorded</p>
+        <div class="gap-tooltip">Required only for milk collection centers</div>
+      </div>
+      
+      <div class="gap-item">
+        <h4>🟡 Deductions / loans</h4>
+        <p>Not recorded</p>
+        <div class="gap-tooltip">Required only for milk collection centers</div>
+      </div>
+      
+      <div class="gap-item">
+        <h4>🟡 Equipment logs</h4>
+        <p>Not recorded</p>
+        <div class="gap-tooltip">Required only for milk collection centers</div>
+      </div>
+    </div>
 
     <script>
       const el = (id) => document.getElementById(id);
@@ -413,7 +471,7 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
 function loadHistoryOnStart() {
     const historyContainer = document.getElementById("historyToday");
     if(!historyContainer) return;
-    historyContainer.innerHTML = ""; 
+    historyContainer.innerHTML = "";
     exportHistory.forEach(sale => {
         // Purane records ko screen par wapas dikhana
         const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px;">
@@ -425,6 +483,8 @@ function loadHistoryOnStart() {
         historyContainer.insertAdjacentHTML('afterbegin', entry);
     });
 }
+
+function toggleGaps() { el("gapsPanel").classList.toggle("open"); }
     </script>
   </body>
 </html>
