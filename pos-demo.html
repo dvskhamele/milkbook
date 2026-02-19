@@ -79,12 +79,12 @@
 
       .add-btn { height: 40px; padding: 0 15px; border-radius: 10px; border: none; background: var(--blue); color: #fff; font-weight: 1000; cursor: pointer; }
 
-      .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; overflow-y: auto; flex: 1; outline: none; }
+      .product-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px; overflow-y: auto; flex: 1; outline: none; }
       .p-card { 
         background: #fff; 
         border: none; 
-        border-radius: 12px; 
-        padding: 10px 8px; 
+        border-radius: 8px; 
+        padding: 6px 4px; 
         text-align: center; 
         cursor: pointer; 
         transition: all 0.15s; 
@@ -92,17 +92,17 @@
         flex-direction: column; 
         align-items: center; 
         justify-content: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
       }
-      .p-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+      .p-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
       .p-card:active { transform: scale(0.95); }
-      .p-card.selected { border: 3px solid #3b82f6 !important; background: #eff6ff !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transform: scale(1.05); }
-      .p-card.focused { outline: 3px solid #3b82f6; outline-offset: 2px; }
+      .p-card.selected { border: 2px solid #3b82f6 !important; background: #eff6ff !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transform: scale(1.05); }
+      .p-card.focused { outline: 2px solid #3b82f6; outline-offset: 2px; }
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
-      .p-card .emoji { font-size: 36px; margin-bottom: 4px; display: block; }
-      .p-card div { font-weight: 900; font-size: 12px; line-height: 1.2; }
-      .p-card small { color: #64748b; font-weight: 700; font-size: 11px; margin-top: 2px; }
+      .p-card .emoji { font-size: 28px; margin-bottom: 2px; display: block; }
+      .p-card div { font-weight: 900; font-size: 10px; line-height: 1.2; }
+      .p-card small { color: #64748b; font-weight: 700; font-size: 9px; margin-top: 2px; }
 
       .qty-bar { display: flex; gap: 10px; padding: 12px 15px; background: #f8fafc; border-top: 1px solid var(--line); }
       .qty-btn { flex: 1; height: 45px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-weight: 1000; cursor: pointer; }
@@ -195,60 +195,58 @@
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0">
             <!-- Cow Products -->
             <div class="p-card cow" onclick="tapAdd('Cow Milk', 64, 1)">
-              <span class="emoji" style="font-size: 56px;">🐄</span>
-              <div data-en="Cow 1L" data-hi="गाय दूध 1L" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Cow 1L</div>
-              <small style="font-size: 16px; margin-top: 4px;">₹64</small>
+              <span class="emoji" style="font-size: 28px;">🐄</span>
+              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Cow 1L</div>
+              <small style="font-size: 9px; margin-top: 2px;">₹64</small>
             </div>
             <div class="p-card cow" onclick="tapAdd('Cow Milk', 32, 0.5)">
-              <span class="emoji" style="font-size: 42px;">🐄</span>
-              <div data-en="Cow 0.5L" data-hi="गाय दूध 0.5L" style="font-size: 16px; font-weight: 900; margin-top: 8px;">Cow 0.5L</div>
-              <small style="font-size: 14px; margin-top: 4px;">₹32</small>
+              <span class="emoji" style="font-size: 24px;">🐄</span>
+              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Cow 0.5L</div>
+              <small style="font-size: 9px; margin-top: 2px;">₹32</small>
             </div>
-            
+
             <!-- Buffalo Products -->
             <div class="p-card buff" onclick="tapAdd('Buff Milk', 100, 1)">
-              <span class="emoji" style="font-size: 56px;">🐃</span>
-              <div data-en="Buff 1L" data-hi="भैंस दूध 1L" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Buff 1L</div>
-              <small style="font-size: 16px; margin-top: 4px;">₹100</small>
+              <span class="emoji" style="font-size: 28px;">🐃</span>
+              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Buff 1L</div>
+              <small style="font-size: 9px; margin-top: 2px;">₹100</small>
             </div>
             <div class="p-card buff" onclick="tapAdd('Buff Milk', 80, 1)">
-              <span class="emoji" style="font-size: 56px;">🐃</span>
-              <div data-en="Buff 1L" data-hi="भैंस दूध 1L" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Buff 1L</div>
-              <small style="font-size: 16px; margin-top: 4px;">₹80</small>
+              <span class="emoji" style="font-size: 28px;">🐃</span>
+              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Buff 1L</div>
+              <small style="font-size: 9px; margin-top: 2px;">₹80</small>
             </div>
             <div class="p-card buff" onclick="tapAdd('Buff Milk', 40, 0.5)">
-              <span class="emoji" style="font-size: 42px;">🐃</span>
-              <div data-en="Buff 0.5L" data-hi="भैंस दूध 0.5L" style="font-size: 16px; font-weight: 900; margin-top: 8px;">Buff 0.5L</div>
-              <small style="font-size: 14px; margin-top: 4px;">₹40</small>
+              <span class="emoji" style="font-size: 24px;">🐃</span>
+              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Buff 0.5L</div>
+              <small style="font-size: 9px; margin-top: 2px;">₹40</small>
             </div>
-            
+
             <!-- Other Products -->
-            <div class="p-card" style="border-left:6px solid var(--yellow)" onclick="tapAdd('Paneer', 320, 1)">
-              <span class="emoji" style="font-size: 56px;">🧀</span>
-              <div data-en="Paneer kg" data-hi="पनीर किलो" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Paneer kg</div>
-              <small style="font-size: 16px; margin-top: 4px;">₹320</small>
+            <div class="p-card" style="border-left:3px solid #fbbf24" onclick="tapAdd('Paneer', 320, 1)">
+              <span class="emoji" style="font-size: 28px;">🧀</span>
+              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Paneer</div>
+              <small style="font-size: 9px; margin-top: 2px;">₹320</small>
             </div>
-            <div class="p-card" style="border-left:6px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)">
-              <span class="emoji" style="font-size: 56px;">🍯</span>
-              <div data-en="Ghee 250g" data-hi="घी 250g" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Ghee 250g</div>
-              <small style="font-size: 16px; margin-top: 4px;">₹180</small>
+            <div class="p-card" style="border-left:3px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)">
+              <span class="emoji" style="font-size: 28px;">🍯</span>
+              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Ghee</div>
+              <small style="font-size: 9px; margin-top: 2px;">₹180</small>
             </div>
             <div class="p-card" onclick="tapAdd('Milk Cake', 300, 1)">
-              <span class="emoji" style="font-size: 56px;">🍰</span>
-              <div data-en="Milk Cake" data-hi="मिल्क केक" style="font-size: 18px; font-weight: 900; margin-top: 8px;">Milk Cake</div>
-              <small style="font-size: 16px; margin-top: 4px;">₹300</small>
+              <span class="emoji" style="font-size: 28px;">🍰</span>
+              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Milk Cake</div>
+              <small style="font-size: 9px; margin-top: 2px;">₹300</small>
             </div>
-            
-            <!-- Edit Inventory Button -->
+
+            <!-- Edit & Add Buttons -->
             <div class="p-card" style="border: 2px solid #f59e0b; background: #fffbeb;" onclick="openEditInventory()" title="Edit Product Prices">
-              <div style="font-size:40px; color:#f59e0b; font-weight: 900;">✏️</div>
-              <div style="font-weight:900; color:#f59e0b; font-size:12px; margin-top: 8px;">EDIT RATES</div>
+              <div style="font-size:24px; color:#f59e0b; font-weight: 900;">✏️</div>
+              <div style="font-weight:900; color:#f59e0b; font-size:8px; margin-top: 2px;">EDIT</div>
             </div>
-            
-            <!-- Add Product Button -->
-            <div class="p-card" style="border: 3px dashed var(--blue); background: #eff6ff;" onclick="openModal('addProductModal')">
-              <div style="font-size:60px; color:var(--blue); font-weight: 900;">➕</div>
-              <div style="font-weight:900; color:var(--blue); font-size:16px; margin-top: 8px;">ADD PRODUCT</div>
+            <div class="p-card" style="border: 2px dashed #3b82f6; background: #eff6ff;" onclick="openModal('addProductModal')">
+              <div style="font-size:32px; color:#3b82f6; font-weight: 900;">➕</div>
+              <div style="font-weight:900; color:#3b82f6; font-size:8px; margin-top: 2px;">ADD</div>
             </div>
           </div>
         </div>
@@ -1949,7 +1947,7 @@ function clearTodayHistory() {
         const cards = Array.from(productGrid.querySelectorAll('.p-card'));
         if (cards.length === 0) return;
         
-        const cols = 3; // 3 columns in grid
+        const cols = 5; // 5 columns in grid
         
         if (e.key === 'ArrowRight') {
           e.preventDefault();
