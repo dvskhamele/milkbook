@@ -1262,14 +1262,24 @@
           </button>
           </div>
         
-        <!-- Route Code Selector -->
+        <!-- Booth/Collection Point Selector -->
         <div style="display: flex; align-items: center; gap: 8px; margin: 0 15px;">
-          <div style="position: relative;">
-            <input type="text" id="routeCodeSearch" placeholder="[1] Route Code (रूट कोड)" 
-              style="padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-weight: 700; font-size: 13px; width: 200px;"
-              oninput="filterRouteCodes()" />
-            <div id="routeCodeDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--line); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div>
+          <div style="display: flex; flex-direction: column;">
+            <label style="font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 4px;">Booth:</label>
+            <select id="collectionPointSelect" onchange="updateCollectionPoint()" style="padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-weight: 700; font-size: 13px; min-width: 180px; background: white;">
+              <option value="DEFAULT">Default Booth</option>
+              <option value="VILLAGE_A">Village A Booth</option>
+              <option value="VILLAGE_B">Village B Booth</option>
+              <option value="VILLAGE_C">Village C Booth</option>
+              <option value="MAIN_MARKET">Main Market Booth</option>
+              <option value="GANDHI_CHOWK">Gandhi Chowk Booth</option>
+            </select>
           </div>
+        </div>
+        
+        <!-- Hardware Indicator -->
+        <div style="font-size: 12px; font-weight: 900; color: #64748b; display: flex; align-items: center; gap: 4px; margin: 0 10px;">
+          <span style="color: #9ca3af;">●</span> Reading: Manual
         </div>
         
         <div id="ratePillContainer" style="display: flex; align-items: center; gap: 8px; margin-left: 15px;">
@@ -4018,71 +4028,34 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// Route Code Functions
-const routeCodes = [
-  { code: "1", name: "Route 1 - Main Market" },
-  { code: "2", name: "Route 2 - Gandhi Chowk" },
-  { code: "3", name: "Route 3 - Station Road" },
-  { code: "4", name: "Route 4 - Hospital Area" },
-  { code: "5", name: "Route 5 - School Zone" },
-  { code: "6", name: "Route 6 - Industrial Area" },
-  { code: "7", name: "Route 7 - Residential" },
-  { code: "8", name: "Route 8 - Village A" },
-  { code: "9", name: "Route 9 - Village B" },
-  { code: "10", name: "Route 10 - Dairy Center" }
+// Collection Point (Booth) Functions
+const defaultCollectionPoints = [
+  { id: "DEFAULT", name: "Default Booth" },
+  { id: "VILLAGE_A", name: "Village A Booth" },
+  { id: "VILLAGE_B", name: "Village B Booth" },
+  { id: "VILLAGE_C", name: "Village C Booth" },
+  { id: "MAIN_MARKET", name: "Main Market Booth" },
+  { id: "GANDHI_CHOWK", name: "Gandhi Chowk Booth" }
 ];
 
-function filterRouteCodes() {
-  const search = document.getElementById('routeCodeSearch').value.toLowerCase();
-  const dropdown = document.getElementById('routeCodeDropdown');
-  
-  if (!search) {
-    dropdown.style.display = 'none';
-    return;
-  }
-  
-  const filtered = routeCodes.filter(rc => 
-    rc.code.toLowerCase().includes(search) || 
-    rc.name.toLowerCase().includes(search)
-  );
-  
-  if (filtered.length > 0) {
-    dropdown.innerHTML = filtered.map(rc => `
-      <div onclick="selectRouteCode('${rc.code}', '${rc.name}')" 
-           style="padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-weight: 700; font-size: 13px;"
-           onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background='white'">
-        <strong>[${rc.code}]</strong> ${rc.name}
-      </div>
-    `).join('');
-    dropdown.style.display = 'block';
-  } else {
-    dropdown.style.display = 'none';
-  }
+let selectedCollectionPointId = "DEFAULT";
+
+function updateCollectionPoint() {
+  const select = document.getElementById('collectionPointSelect');
+  selectedCollectionPointId = select.value;
+  localStorage.setItem('milkbook_collection_point', selectedCollectionPointId);
+  const selectedName = select.options[select.selectedIndex].text;
+  showToast(`Booth: ${selectedName}`);
 }
 
-function selectRouteCode(code, name) {
-  document.getElementById('routeCodeSearch').value = `[${code}] ${name}`;
-  document.getElementById('routeCodeDropdown').style.display = 'none';
-  localStorage.setItem('milkbook_route_code', code);
-  showToast(`Route ${code} selected`);
-}
-
-// Close dropdown when clicking outside
-document.addEventListener('click', function(e) {
-  const dropdown = document.getElementById('routeCodeDropdown');
-  const search = document.getElementById('routeCodeSearch');
-  if (dropdown && search && !dropdown.contains(e.target) && e.target !== search) {
-    dropdown.style.display = 'none';
-  }
-});
-
-// Load saved route code on init
-function loadSavedRouteCode() {
-  const saved = localStorage.getItem('milkbook_route_code');
+// Load saved collection point on init
+function loadSavedCollectionPoint() {
+  const saved = localStorage.getItem('milkbook_collection_point');
   if (saved) {
-    const route = routeCodes.find(rc => rc.code === saved);
-    if (route) {
-      document.getElementById('routeCodeSearch').value = `[${route.code}] ${route.name}`;
+    const select = document.getElementById('collectionPointSelect');
+    if (select) {
+      select.value = saved;
+      selectedCollectionPointId = saved;
     }
   }
 }
@@ -4098,7 +4071,7 @@ function loadSavedRouteCode() {
     // --- YE 2 LINE BHI JODO (Table & Button ke liye) ---
     renderRecentToday();
     updateDailySummaryButton();
-    loadSavedRouteCode(); // Load saved route code
+    loadSavedCollectionPoint(); // Load saved booth
     // --------------------------------------------------
         restoreHoldIfAny();
         renderAll();

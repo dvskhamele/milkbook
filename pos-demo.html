@@ -787,19 +787,20 @@ function clearTodayHistory() {
                 <b>${c.name}</b><br>
                 <small>Last: ${c.lastOrder} ${c.sub > 0 ? '| Subscribed: '+c.sub+'L' : ''}</small>
             </div>
-            <button class="pillbtn primary" onclick="repeatOrder('${c.name}', '${c.lastProductName || 'Cow Milk'}', ${c.rate}, ${c.qty})">Repeat</button>
+            <button class="pillbtn primary" onclick="repeatOrder('${c.name}', '${c.lastProductName || 'Cow Milk'}', ${c.rate || 64}, ${c.qty || 1})">Repeat</button>
         </div>`;
     });
     openModal('memoryModal');
 }
 
-      function repeatOrder(name, productName, rate, qty) { 
-        el("activeCust").innerText = name; 
-        if(rate > 0) { 
-          cart = [{name: productName, rate, qty, id: Date.now()}]; 
-          updateUI(); 
-        } 
-        closeModal('memoryModal'); 
+      function repeatOrder(name, productName, rate, qty) {
+        el("activeCust").innerText = name;
+        if(rate > 0) {
+          // Add the actual product from customer's last order
+          cart = [{name: productName, rate: parseFloat(rate) || 64, qty: parseFloat(qty) || 1, id: Date.now()}];
+          updateUI();
+        }
+        closeModal('memoryModal');
       }
       function resetCart() { cart = []; updateUI(); el("activeCust").innerText = "Walking Customer"; el("custSearch").value = ""; }
       function openModal(id) { el(id).style.display = "flex"; }
