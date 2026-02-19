@@ -960,6 +960,78 @@
         color: #7f1d1d;
       }
 
+      /* Center Summary Cards */
+      .center-summary-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 20px;
+      }
+      .center-summary-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--line);
+      }
+      .center-summary-title {
+        font-size: 18px;
+        font-weight: 1100;
+        color: #0f172a;
+      }
+      .center-summary-date {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .center-summary-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      .center-summary-stat {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+      }
+      .center-summary-stat-label {
+        font-size: 11px;
+        color: var(--muted);
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .center-summary-stat-value {
+        font-size: 24px;
+        font-weight: 1200;
+        color: #0f172a;
+      }
+      .dispatch-action {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .dispatch-action-btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .whatsapp-share-btn {
+        background: #25D366;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
       /* FORMS */
       .formGrid {
         display: grid;
@@ -1673,6 +1745,185 @@
           <button class="footBtn bad" id="btnFactoryReset">
             🧨 Factory Reset
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER SUMMARY MODAL -->
+    <div class="overlay" id="overlayCenterSummary">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayCenterSummary">✖</button>
+            <div>📊 Center Summary</div>
+          </div>
+          <div class="muted" id="centerSummaryTitle">—</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <div class="center-summary-card">
+              <div class="center-summary-header">
+                <div class="center-summary-title">Collection Summary</div>
+                <div class="center-summary-date" id="centerSummaryDate">Center: —</div>
+              </div>
+
+              <div class="center-summary-stats">
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Entries</div>
+                  <div class="center-summary-stat-value" id="summaryEntries">0</div>
+                </div>
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Total Milk (L)</div>
+                  <div class="center-summary-stat-value" id="summaryMilk">0.0</div>
+                </div>
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Fat Range</div>
+                  <div class="center-summary-stat-value" id="summaryFat">—</div>
+                </div>
+                <div class="center-summary-stat">
+                  <div class="center-summary-stat-label">Total Amount</div>
+                  <div class="center-summary-stat-value" id="summaryAmount">₹0</div>
+                </div>
+              </div>
+
+              <div class="dispatch-action">
+                <button class="dispatch-action-btn" id="btnMarkDispatch">Mark Milk Sent to Dairy</button>
+                <button class="whatsapp-share-btn" id="btnShareCenterSummary">📤 Send Center Summary (WhatsApp)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn" id="btnCloseCenterSummary">✅ Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DISPATCH MODAL -->
+    <div class="overlay" id="overlayDispatch">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayDispatch">✖</button>
+            <div>🚛 Mark Milk Dispatch</div>
+          </div>
+          <div class="muted">Fill Cane Record</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>Dispatch Information</h3>
+            <div class="formGrid">
+              <div class="field">
+                <label>Total Milk Sent (L)</label>
+                <input id="dispatchMilkQty" inputmode="decimal" placeholder="Enter quantity" />
+              </div>
+              <div class="field">
+                <label>Destination</label>
+                <select id="dispatchDestination">
+                  <option value="dairy">Dairy</option>
+                  <option value="bmc">BMC</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label>Notes</label>
+                <textarea id="dispatchNotes" placeholder="Additional information"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" id="btnSaveDispatch">✅ Save Dispatch</button>
+          <button class="footBtn" id="btnCancelDispatch">❌ Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BMC RECONCILIATION MODAL -->
+    <div class="overlay" id="overlayBMCReconcile">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayBMCReconcile">✖</button>
+            <div>⚖️ BMC Reconciliation</div>
+          </div>
+          <div class="muted">Compare Records</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>Reconciliation Details</h3>
+            <div class="formGrid">
+              <div class="field">
+                <label>Our Records (L)</label>
+                <input id="reconcileOurRecords" inputmode="decimal" readonly />
+              </div>
+              <div class="field">
+                <label>BMC Records (L)</label>
+                <input id="reconcileBMCRecords" inputmode="decimal" placeholder="Enter BMC quantity" />
+              </div>
+              <div class="field">
+                <label>Difference (L)</label>
+                <input id="reconcileDifference" inputmode="decimal" readonly />
+              </div>
+              <div class="field">
+                <label>Status</label>
+                <select id="reconcileStatus">
+                  <option value="matched">✅ Matched</option>
+                  <option value="variance">⚠️ Variance</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" id="btnSaveReconcile">✅ Save Reconciliation</button>
+          <button class="footBtn" id="btnCancelBMCReconcile">❌ Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT OBLIGATION MODAL -->
+    <div class="overlay" id="overlayPaymentObligation">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayPaymentObligation">✖</button>
+            <div>💰 Payment Obligation</div>
+          </div>
+          <div class="muted">Monthly Summary</div>
+        </div>
+
+        <div class="modalBody onecol">
+          <div class="modalCol">
+            <h3>Payment Summary</h3>
+            <div class="center-summary-stats">
+              <div class="center-summary-stat">
+                <div class="center-summary-stat-label">Total Milk Purchased</div>
+                <div class="center-summary-stat-value" id="paymentTotalMilk">0.0 L</div>
+              </div>
+              <div class="center-summary-stat">
+                <div class="center-summary-stat-label">Total Amount Due</div>
+                <div class="center-summary-stat-value" id="paymentTotalAmount">₹0</div>
+              </div>
+              <div class="center-summary-stat">
+                <div class="center-summary-stat-label">Advances Given</div>
+                <div class="center-summary-stat-value" id="paymentAdvancesGiven">₹0</div>
+              </div>
+              <div class="center-summary-stat">
+                <div class="center-summary-stat-label">Net Payable</div>
+                <div class="center-summary-stat-value" id="paymentNetPayable">₹0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn" id="btnClosePaymentObligation">✅ Close</button>
         </div>
       </div>
     </div>
@@ -3715,7 +3966,11 @@ document.addEventListener('keydown', function(e) {
       'overlayRateEditor',
       'overlayHistory',
       'overlayLeader',
-      'overlaySettings'
+      'overlaySettings',
+      'overlayCenterSummary',
+      'overlayDispatch',
+      'overlayBMCReconcile',
+      'overlayPaymentObligation'
     ];
     
     overlays.forEach(id => {
