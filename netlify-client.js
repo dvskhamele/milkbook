@@ -213,6 +213,68 @@ window.MilkBookAPI = {
   milkEntries,
   payments,
   sales,
+  auth: {
+    // PIN login
+    async loginWithPin(shopId, userId, pin) {
+      return apiCall('/auth-verify-pin', {
+        method: 'POST',
+        body: JSON.stringify({ shop_id: shopId, user_id: userId, pin }),
+      });
+    },
+    
+    // Password login (Supabase)
+    async loginWithPassword(email, password) {
+      const { data, error } = await window.supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (error) throw error;
+      
+      // Get user profile
+      const { data: profile } = await window.supabase
+        .from('users')
+        .select('shop_id, role')
+        .eq('id', data.user.id)
+        .single();
+      
+      return {
+        token: data.session.access_token,
+        user: {
+          id: data.user.id,
+          shop_id: profile.shop_id,
+          role: profile.role
+        }
+      };
+    },
+    
+    // Logout
+    async logout() {
+      localStorage.removeItem('milkbook_session');
+      if (window.supabase) {
+        await window.supabase.auth.signOut();
+      }
+    },
+    
+    // Check if logged in
+    isLoggedIn() {
+      return getSession() !== null;
+    },
+    
+    // Get current user
+    getCurrentUser() {
+      return getSession();
+    },
+    
+    // Require auth (redirect if not logged in)
+    requireAuth() {
+      if (!this.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return false;
+      }
+      return true;
+    }
+  }
 };
 
 // Helper to switch between API and localStorage
