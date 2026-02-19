@@ -183,6 +183,39 @@
         overflow: hidden;
         min-height: 0;
       }
+      
+      /* Mobile-first: Stack panels vertically on small screens */
+      @media (max-width: 768px) {
+        .core {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto auto;
+          overflow-y: auto;
+        }
+        .panel {
+          max-height: none;
+        }
+        .panelHeader {
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .searchBox {
+          order: 1;
+          max-width: 100% !important;
+          flex: 1 1 100%;
+        }
+        #btnAddFarmerMain {
+          order: 2;
+        }
+        #farmerCount {
+          order: 3;
+        }
+        /* Source Strength indicator moves to bottom on mobile */
+        [style*="Source Strength"] {
+          order: 4;
+          margin-left: 0 !important;
+          width: 100%;
+        }
+      }
 
       .panel {
         background: var(--panel);

@@ -1,11 +1,21 @@
 [build]
   publish = "."
-  command = "echo 'No build command needed for static files'"
+  functions = "netlify/functions"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
 
-[template.environment]
-  NODE_VERSION = "18"
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[dev]
+  port = 8888
+  autoLaunch = false
+  functionsPort = 9999
