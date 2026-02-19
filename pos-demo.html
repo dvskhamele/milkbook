@@ -35,7 +35,7 @@
       .search-box::before { content: '🔍'; position: absolute; left: 10px; top: 10px; font-size: 14px; }
       
       /* New Dropdown Style */
-      .search-dropdown { position: absolute; top: 45px; left: 0; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 10px; z-index: 100; display: none; box-shadow: var(--shadow); max-height: 150px; overflow-y: auto; }
+      .search-dropdown { position: absolute; left: 0; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 10px; z-index: 100; display: none; box-shadow: var(--shadow); max-height: 200px; overflow-y: auto; }
       .drop-item { padding: 10px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-weight: 700; font-size: 13px; }
       .drop-item:hover { background: #f8fafc; color: var(--blue); }
 
@@ -161,11 +161,11 @@
           </div>
           
           <div class="cust-control">
-            <!-- Customer search dropdown positioned above -->
+            <!-- Customer search dropdown positioned ABOVE -->
             <div class="search-box" style="position: relative;">
               <span style="font-size: 18px;">🔎</span>
-              <input type="text" id="custSearch" placeholder="Search customer..." oninput="handleSearch(this.value)" onclick="event.stopPropagation()" />
-              <div id="searchDropdown" class="search-dropdown" onclick="event.stopPropagation()" style="top: 100%; bottom: auto;"></div>
+              <input type="text" id="custSearch" placeholder="Search customer..." oninput="handleSearch(this.value)" onclick="event.stopPropagation()" style="width: 100%;" />
+              <div id="searchDropdown" class="search-dropdown" onclick="event.stopPropagation()" style="top: auto; bottom: 100%; margin-bottom: 8px;"></div>
             </div>
             <button class="add-btn" id="btnAdd" onclick="openModal('addCustModal'); event.stopPropagation();">+ Add New</button>
           </div>
@@ -638,6 +638,13 @@
       let heldCarts = JSON.parse(localStorage.getItem('mr_held_carts') || '[]'); // Hold functionality
       let lastRate = parseFloat(localStorage.getItem('mr_last_rate') || '64'); // Save/retrieve last rate
       
+      // Escape HTML to prevent XSS
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+      
       // Load data from LocalStorage taaki refresh par na ude
 let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
     { name: "Rahul Sharma", lastOrder: "1.5L Cow Milk", rate: 64, qty: 1.5, type: "Retail", sub: 1.5 },
@@ -678,29 +685,86 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
       // Logic: Persistent Search Dropdown with Keyboard Support
       function handleSearch(val) {
           const drop = el("searchDropdown");
-          
+          const searchVal = val.trim();
+
           // Show ALL customers when search is focused (even if empty)
-          const filtered = !val 
-            ? customers 
-            : customers.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
-          
-          if(filtered.length) {
-              drop.innerHTML = filtered.map((c, i) => `
-                <div class="drop-item" onclick="selectCust('${c.name}')" data-index="${i}" style="display:flex; justify-content:space-between; align-items:center;">
-                  <div>
-                    <div style="font-weight:700;">${c.name}</div>
-                    <div style="font-size:11px; color:var(--muted);">${c.phone || 'No phone'}</div>
-                  </div>
-                  <div style="text-align:right;">
-                    ${c.advance > 0 ? `<div style="font-size:11px; color:#dc2626; font-weight:700;">📕 ₹${c.advance.toFixed(2)}</div>` : ''}
-                    <div style="font-size:11px; color:var(--muted);">Bal: ₹${(c.balance || 0).toFixed(2)}</div>
-                  </div>
-                </div>
-              `).join('');
+          const filtered = !searchVal
+            ? customers
+            : customers.filter(c => c.name.toLowerCase().includes(searchVal.toLowerCase()));
+
+          // Always show dropdown when there's input or focus
+          if (searchVal || document.activeElement === el("custSearch")) {
+              let html = '';
+              
+              // Always show "Add New Customer" option at top
+              if (searchVal) {
+                  html += `
+                    <div class="drop-item" onclick="addCustomerDirect('${escapeHtml(searchVal)}')" style="background: #f0fdf4; border-bottom: 2px solid #22c55e;">
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:18px;">➕</span>
+                        <div>
+                          <div style="font-weight:900; color:#166534;">Add New Customer</div>
+                          <div style="font-size:11px; color:#15803d;">"${escapeHtml(searchVal)}"</div>
+                        </div>
+                      </div>
+                    </div>
+                  `;
+              }
+              
+              // Show matching customers
+              if (filtered.length > 0) {
+                  html += filtered.map((c, i) => `
+                    <div class="drop-item" onclick="selectCust('${c.name}')" data-index="${i}" style="display:flex; justify-content:space-between; align-items:center;">
+                      <div>
+                        <div style="font-weight:700;">${c.name}</div>
+                        <div style="font-size:11px; color:var(--muted);">${c.phone || 'No phone'}</div>
+                      </div>
+                      <div style="text-align:right;">
+                        ${c.advance > 0 ? `<div style="font-size:11px; color:#dc2626; font-weight:700;">📕 ₹${c.advance.toFixed(2)}</div>` : ''}
+                        <div style="font-size:11px; color:var(--muted);">Bal: ₹${(c.balance || 0).toFixed(2)}</div>
+                      </div>
+                    </div>
+                  `).join('');
+              } else if (!searchVal) {
+                  html += '<div style="padding:15px; text-align:center; color:var(--muted); font-size:12px;">Start typing to search customers</div>';
+              }
+              
+              drop.innerHTML = html;
               drop.style.display = 'block';
-          } else { 
-            drop.style.display = 'none'; 
+          } else {
+            drop.style.display = 'none';
           }
+      }
+      
+      // Add customer directly from dropdown (no popup)
+      function addCustomerDirect(name) {
+        if (!name) return;
+        
+        // Check if customer already exists
+        const existing = customers.find(c => c.name.toLowerCase() === name.toLowerCase());
+        if (existing) {
+          selectCust(existing.name);
+          showToast('Customer selected: ' + name);
+          return;
+        }
+        
+        // Add new customer directly
+        customers.push({ 
+          name: name, 
+          lastOrder: "No order yet", 
+          rate: 0, 
+          qty: 0, 
+          type: "Retail",
+          sub: 0,
+          balance: 0,
+          advance: 0
+        });
+        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+        
+        selectCust(name);
+        el("custSearch").value = name;
+        el("searchDropdown").style.display = 'none';
+        showToast(name + ' added! ✅');
       }
       
       // Show all customers when search is focused
