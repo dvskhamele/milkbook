@@ -1506,6 +1506,18 @@
           </div>
 
           <div class="trustBody">
+            <!-- Inline Cow/Buff Quantity Tracker -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+              <div style="background: #dcfce7; border: 2px solid #16a34a; border-radius: 12px; padding: 12px; text-align: center;">
+                <div style="font-size: 11px; font-weight: 700; color: #166534; margin-bottom: 4px;">🐄 COW (L)</div>
+                <div style="font-size: 24px; font-weight: 900; color: #166534;" id="cowQtyInline">0.0</div>
+              </div>
+              <div style="background: #fee2e2; border: 2px solid #dc2626; border-radius: 12px; padding: 12px; text-align: center;">
+                <div style="font-size: 11px; font-weight: 700; color: #7f1d1d; margin-bottom: 4px;">🐃 BUFF (L)</div>
+                <div style="font-size: 24px; font-weight: 900; color: #7f1d1d;" id="buffQtyInline">0.0</div>
+              </div>
+            </div>
+            
             <div class="amountBox">
               <div class="label" id="amtLabel">TOTAL AMOUNT</div>
               <div class="amt" id="amountView">₹0.00</div>
@@ -2588,7 +2600,7 @@ function refreshRatePill() {
     : '';
             const f = getFarmerById(e.farmerId);
             const phone = (f && f.phone) ? f.phone : "";
-        
+
             const msg = `*Milk Receipt* 🥛\nDate: ${e.day} (${e.session})\nQty: ${e.qty}L | Fat: ${e.fat}\n*Amount: ₹${Number(e.amount).toFixed(2)}*\nGopal Dairy Shop`;
             const wpLink = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 
@@ -2620,6 +2632,29 @@ return `
           .join("");
 
         recentTbody.innerHTML = rows;
+        
+        // Update inline quantities
+        updateInlineQuantities();
+      }
+      
+      // Update inline cow/buff quantities for today
+      function updateInlineQuantities() {
+        const today = fmtDate(new Date());
+        const todays = entries.filter(e => e.day === today && e.farmerId === selectedFarmerId);
+        
+        let cowQty = 0;
+        let buffQty = 0;
+        
+        todays.forEach(e => {
+          if (e.animal === 'cow') {
+            cowQty += Number(e.qty || 0);
+          } else if (e.animal === 'buffalo') {
+            buffQty += Number(e.qty || 0);
+          }
+        });
+        
+        if (el('cowQtyInline')) el('cowQtyInline').textContent = cowQty.toFixed(1);
+        if (el('buffQtyInline')) el('buffQtyInline').textContent = buffQty.toFixed(1);
       }
       function viewProof(imgData) {
     if(!imgData) return;
@@ -2669,11 +2704,11 @@ return `
 
     // --- YE WALA BLOCK UPDATE KIYA HAI ---
     if (farmer) {
-        const stdSNF = 8.5; 
+        const stdSNF = 8.5;
         // 1. Kisan ka naam aur uska type (Cow/Buffalo) dikhao
         const typeIcon = farmer.animalType === 'cow' ? '🐄' : '🐃';
         const typeText = farmer.animalType === 'both' ? '🔄 Both' : (farmer.animalType === 'cow' ? 'Cow' : 'Buffalo');
-        
+
         let nameHTML = `${farmer.name} <small style="color:var(--muted)">(${typeIcon} ${typeText})</small>`;
 
         // 2. Agar Pani hai toh wo bhi dikhao
@@ -2681,8 +2716,8 @@ return `
             const waterPercent = round2(((stdSNF - snf) / stdSNF) * 100);
             nameHTML += `<br><span style="color:red; font-size:11px; font-weight:bold;">⚠️ Pani: ${waterPercent}%</span>`;
         }
-        
-        el("selectedName").innerHTML = nameHTML; 
+
+        el("selectedName").innerHTML = nameHTML;
     } else {
         el("selectedName").textContent = "—";
     }
@@ -2694,6 +2729,9 @@ return `
     rateView.textContent = `₹${r.toFixed(2)}`;
     amountView.textContent = `₹${a.toFixed(2)}`;
     trailMini.textContent = `${round2(qty).toFixed(1)} L × ₹${r.toFixed(2)}/L`;
+
+    // Update inline cow/buff quantities
+    updateInlineQuantities();
 
     const before = farmer ? farmerBalanceBefore(farmer) : 0;
     const after = round2(before + a);
@@ -4055,6 +4093,67 @@ function loadSavedCollectionPoint() {
   }
 }
 
+// Keyboard Navigation - Auto Focus Flow
+let keyboardMode = 'search'; // 'search' -> 'liters' -> 'fat' -> 'snf' -> 'save'
+
+function setupKeyboardNavigation() {
+  document.addEventListener('keydown', function(e) {
+    // Only activate when not in modal
+    if (document.querySelector('.overlay[style*="display: flex"]')) return;
+    
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      
+      if (keyboardMode === 'search') {
+        // Enter in search → Select first farmer and focus liters
+        const firstFarmer = document.querySelector('.fcard');
+        if (firstFarmer) {
+          firstFarmer.click();
+          keyboardMode = 'liters';
+          setTimeout(() => el('qtyInput').focus(), 100);
+        }
+      } else if (keyboardMode === 'liters') {
+        // Enter in liters → Focus fat
+        keyboardMode = 'fat';
+        el('fatInput').focus();
+      } else if (keyboardMode === 'fat') {
+        // Enter in fat → Focus SNF
+        keyboardMode = 'snf';
+        el('snfInput').focus();
+      } else if (keyboardMode === 'snf') {
+        // Enter in SNF → Save entry
+        el('btnSave').click();
+        keyboardMode = 'search';
+        el('searchInput').focus();
+      }
+    }
+    
+    // Escape → Reset to search
+    if (e.key === 'Escape') {
+      keyboardMode = 'search';
+      el('searchInput').focus();
+    }
+  });
+  
+  // Focus search on page load
+  setTimeout(() => {
+    el('searchInput').focus();
+  }, 500);
+  
+  // Track focus changes
+  ['searchInput', 'qtyInput', 'fatInput', 'snfInput'].forEach(id => {
+    const input = el(id);
+    if (input) {
+      input.addEventListener('focus', function() {
+        if (id === 'searchInput') keyboardMode = 'search';
+        else if (id === 'qtyInput') keyboardMode = 'liters';
+        else if (id === 'fatInput') keyboardMode = 'fat';
+        else if (id === 'snfInput') keyboardMode = 'snf';
+      });
+    }
+  });
+}
+
       /***********************
        * INIT                *
        ***********************/
@@ -4063,10 +4162,11 @@ function loadSavedCollectionPoint() {
     const today = fmtDate(new Date());
     if (el("todayLabel")) el("todayLabel").textContent = `${today} | ${autoSessionLabel()}`;
     // --------------------------------------
-    // --- YE 2 LINE BHI JODO (Table & Button ke liye) ---
+    // --- YE 3 LINE BHI JODO ---
     renderRecentToday();
     updateDailySummaryButton();
     loadSavedCollectionPoint(); // Load saved booth
+    setupKeyboardNavigation(); // Enable keyboard-only workflow
     // --------------------------------------------------
         restoreHoldIfAny();
         renderAll();
