@@ -103,7 +103,7 @@
       🟡 Demo Mode — Retail POS<br>
       This demo shows billing only, not procurement or audit modules.
       <div style="margin-top: 6px; font-size: 12px; font-weight: 500;">
-        If you were expecting procurement, quality, or audit features, those are part of the <strong>Milk Collection Center (BMC) system</strong>, not this retail POS demo.
+        If you were expecting procurement, quality, or audit features, those are part of the <strong>Professional Growth Plan</strong>, not this retail POS demo.
       </div>
     </div>
   
@@ -512,6 +512,26 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         selectedProduct = {name, rate}; // Track for highlighting
         updateUI(); 
         showToast(name + " added"); 
+        
+        // Highlight the clicked card
+        highlightProductCard(name);
+      }
+      
+      function highlightProductCard(productName) {
+        // Remove highlight from all cards
+        document.querySelectorAll('.p-card').forEach(card => {
+          card.classList.remove('selected');
+        });
+        
+        // Find and highlight the matching card
+        document.querySelectorAll('.p-card').forEach(card => {
+          const cardName = card.querySelector('[data-en]')?.textContent || card.textContent;
+          if (cardName.includes(productName)) {
+            card.classList.add('selected');
+            // Scroll into view if needed
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
       }
       // adjustQty removed - use inline quantity editing instead
       function updateUI() {
@@ -540,15 +560,24 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         });
         el("totalAmt").textContent = `₹${total.toFixed(2)}`;
         
-        // Update product card selection highlighting
+        // Highlight product cards based on cart items
+        highlightCardsFromCart();
+      }
+      
+      function highlightCardsFromCart() {
+        // Remove highlight from all cards first
         document.querySelectorAll('.p-card').forEach(card => {
           card.classList.remove('selected');
-          if (selectedProduct) {
-            const cardName = card.querySelector('[data-en]').textContent;
-            if (cardName.includes(selectedProduct.name)) {
+        });
+        
+        // Highlight cards for items in cart
+        cart.forEach(item => {
+          document.querySelectorAll('.p-card').forEach(card => {
+            const cardName = card.querySelector('[data-en]')?.textContent || card.textContent;
+            if (cardName.includes(item.name)) {
               card.classList.add('selected');
             }
-          }
+          });
         });
       }
       
