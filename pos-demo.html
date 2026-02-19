@@ -669,12 +669,12 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
     const totalMilkQty = cart.filter(i => i.name.includes('Milk')).reduce((sum, i) => sum + i.qty, 0);
 
     // Save full cart data for replay
-    const newSale = { 
-      date: new Date().toLocaleDateString(), 
-      time, 
-      customer: custName, 
-      products: itemsDetail, 
-      amount: total.toFixed(2), 
+    const newSale = {
+      date: new Date().toLocaleDateString(),
+      time,
+      customer: custName,
+      products: itemsDetail,
+      amount: total.toFixed(2),
       method: mode,
       cartItems: JSON.parse(JSON.stringify(cart)) // Save full cart for replay
     };
@@ -691,7 +691,7 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         <b>${custName}</b><b>₹${total.toFixed(2)}</b>
       </div>
       <div style="font-size:11px; color:var(--muted); font-weight:700;">
-        ${time} • 🛒 ${itemsDetail} • ${mode}
+        ${time} • 🛒 ${itemsDetail} • ${modeIcon(mode)} ${mode}
         <span style="color:var(--blue); font-weight:700; margin-left:8px;">🔁 Click to reload</span>
       </div>
     </div>`;
@@ -704,16 +704,33 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         customers[cIdx].rate = cart[0].rate;
         customers[cIdx].qty = cart[0].qty;
         customers[cIdx].lastProductName = cart[0].name;
-        
+
         // Update monthly milk tracking
         if (!customers[cIdx].monthMilk) customers[cIdx].monthMilk = 0;
         customers[cIdx].monthMilk += totalMilkQty;
         
-        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
-    }
+        // Handle Credit/Udhar - Add to customer balance
+        if (mode === 'Credit' || mode === 'Udhar') {
+            if (!customers[cIdx].balance) customers[cIdx].balance = 0;
+            customers[cIdx].balance += total;
+            showToast(`₹${total.toFixed(2)} added to Udhar ✅`);
+        } else {
+            showToast(`Saved ✅`);
+        }
 
-    showToast(`Saved ✅`);
+        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+    } else {
+        showToast(`Saved ✅`);
+    }
+    
     resetCart();
+}
+
+// Get payment mode icon
+function modeIcon(mode) {
+    if (mode === 'Credit' || mode === 'Udhar') return '📕';
+    if (mode === 'UPI') return '📱';
+    return '💵';
 }
 
 // Load order from history (clickable history items)
