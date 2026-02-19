@@ -2303,11 +2303,10 @@ function refreshRatePill() {
               e.animal === "buffalo"
                 ? `<span class="tag buff">🐃 Buffalo</span>`
                 : `<span class="tag cow">🐄 Cow</span>`;
-            console.log("Entry images:", e.images); // Agar ye khali [] aa raha hai, toh photo save nahi ho rahi
-            // Sirf ye 2 line add kar apne existing code mein
-            const photoIcon = (e.images && Array.isArray(e.images) && e.images.length > 0) 
-    ? ` <span onclick="viewProof('${e.images[0]}')" style="cursor:pointer;">📸</span>` 
-    : '';            
+            // Photo icon with null check
+            const photoIcon = (e.images && Array.isArray(e.images) && e.images.length > 0)
+    ? ` <span onclick="viewProof('${e.images[0]}')" style="cursor:pointer;">📸</span>`
+    : '';
             const f = getFarmerById(e.farmerId);
             const phone = (f && f.phone) ? f.phone : "";
         
