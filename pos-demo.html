@@ -110,11 +110,13 @@
     <div class="app">
       <div class="topbar">
         <div class="brand">
-          <div class="logo-box">💧</div>
-          <div class="brand-text">
-            <div class="title" id="shopTitle">MilkRecord POS</div>
-            <div class="sub-text" id="todayLabel">—</div>
-          </div>
+          <a href="homepage.html" style="text-decoration:none; color:inherit;">
+            <div class="logo-box">💧</div>
+            <div class="brand-text">
+              <div class="title" id="shopTitle">MilkRecord POS</div>
+              <div class="sub-text" id="todayLabel">—</div>
+            </div>
+          </a>
         </div>
         <div class="hdr-actions">
           <div style="margin-right: 10px; text-align: right;">
@@ -284,7 +286,7 @@
             <span id="historyCount">1 today • 0 in 7d</span>
           </div>
           <div style="display:flex; gap:8px;">
-            <button onclick="exportHistory()" style="padding:8px 16px; background:#eff6ff; color:#1e40af; border:none; border-radius:8px; font-weight:700; cursor:pointer;">⬇️ Export</button>
+            <button onclick="downloadHistoryCSV()" style="padding:8px 16px; background:#eff6ff; color:#1e40af; border:none; border-radius:8px; font-weight:700; cursor:pointer;">⬇️ Export</button>
             <button onclick="clearTodayHistory()" style="padding:8px 16px; background:#fecaca; color:#7f1d1d; border:none; border-radius:8px; font-weight:700; cursor:pointer;">🗑️ Clear Today</button>
           </div>
         </div>
@@ -701,16 +703,16 @@ function renderAllHistory() {
 }
 
 // Export history to CSV
-function exportHistory() {
+function downloadHistoryCSV() {
   if (exportHistory.length === 0) return showToast("No history to export!");
-  
+
   let csv = "Date,Time,Customer,Products,Amount,Payment Method\n";
   exportHistory.forEach(r => {
     let safeCust = r.customer.replace(/,/g, "");
     let safeProd = r.products.replace(/,/g, " | ");
     csv += `${r.date},${r.time},${safeCust},"${safeProd}",${r.amount},${r.method}\n`;
   });
-  
+
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -726,11 +728,11 @@ function exportHistory() {
 function clearTodayHistory() {
   const today = new Date().toLocaleDateString();
   if (!confirm(`Clear all ${today} sales? This cannot be undone!`)) return;
-  
+
   exportHistory = exportHistory.filter(sale => sale.date !== today);
   localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
-  renderHistory();
-  renderWeeklyHistory();
+  loadHistoryOnStart();
+  renderAllHistory();
   showToast("Today's history cleared! 🗑️");
 }
 
