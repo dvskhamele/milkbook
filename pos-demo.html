@@ -299,7 +299,6 @@
       <div class="bottom" style="flex-shrink: 0;">
         <button class="panicBtn" style="background:#fde68a; color:#78350f;" onclick="holdCart()"><span id="txtHold">🟡 HOLD</span> <span class="subnote">save</span></button>
         <button class="panicBtn" style="background:#fef3c7; color:#92400e; font-size:18px;" onclick="showHeldCarts()" title="View held orders">📋 <span class="subnote" id="heldCount">0</span></button>
-        <button class="panicBtn" style="background:#dbeafe; color:#1e40af; font-size:20px;" onclick="retrieveLastHold()" title="Retrieve last held order">↩️ <span class="subnote">retrieve</span></button>
       </div>
 
       <!-- DONE button - Moved to payment area -->
@@ -1161,14 +1160,6 @@ function clearTodayHistory() {
         if (heldCountEl) {
           heldCountEl.textContent = heldCarts.length;
         }
-      }
-      
-      // Retrieve last held cart
-      function retrieveLastHold() {
-        if (heldCarts.length === 0) return showToast("No held orders!");
-        
-        const lastHold = heldCarts[heldCarts.length - 1];
-        retrieveHoldCart(lastHold.id);
       }
       
       // Show held carts modal
