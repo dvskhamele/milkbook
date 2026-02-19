@@ -100,9 +100,17 @@
       .p-card.focused { outline: 2px solid #3b82f6; outline-offset: 2px; }
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
-      .p-card .emoji { font-size: 42px; margin-bottom: 4px; display: block; }
-      .p-card div { font-weight: 900; font-size: 11px; line-height: 1.2; }
-      .p-card small { color: #64748b; font-weight: 700; font-size: 10px; margin-top: 2px; }
+      .p-card .emoji { font-size: 48px; margin-bottom: 4px; display: block; transition: all 0.2s; }
+      .p-card div { font-weight: 900; font-size: 11px; line-height: 1.2; transition: all 0.2s; }
+      .p-card small { color: #64748b; font-weight: 700; font-size: 10px; margin-top: 2px; transition: all 0.2s; }
+      
+      /* Dynamic styling based on quantity */
+      .p-card[data-qty="0.5"] .emoji { font-size: 32px; }
+      .p-card[data-qty="0.5"] div { font-weight: 700; color: #64748b; }
+      .p-card[data-qty="1"] .emoji { font-size: 48px; }
+      .p-card[data-qty="1"] div { font-weight: 900; color: #1e293b; }
+      .p-card[data-qty="2"] .emoji { font-size: 56px; }
+      .p-card[data-qty="2"] div { font-weight: 900; color: #166534; }
 
       .qty-bar { display: flex; gap: 10px; padding: 12px 15px; background: #f8fafc; border-top: 1px solid var(--line); }
       .qty-btn { flex: 1; height: 45px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-weight: 1000; cursor: pointer; }
@@ -180,11 +188,9 @@
 
       <div class="core">
         <div class="panel">
-          <div class="panelHeader" style="padding: 8px 12px; height: 40px;">
+          <div class="panelHeader" style="padding: 6px 12px; height: 36px;">
             <div style="display:flex; align-items:center; gap:8px; flex:1;">
-              <div style="font-size:20px;">💧</div>
-              <div style="font-weight:900; font-size:14px; color:#1e293b;">Gopal Dairy Shop</div>
-              <select id="boothSelect" onchange="updateBooth()" style="padding:4px 8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; font-size:12px; background:white;">
+              <select id="boothSelect" onchange="updateBooth()" style="padding:4px 8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; font-size:11px; background:white;">
                 <option value="main">Main Booth</option>
                 <option value="village-a">Village A</option>
                 <option value="village-b">Village B</option>
@@ -194,52 +200,52 @@
           </div>
 
           <!-- Product search field -->
-          <div style="padding: 8px 12px; background: #f8fafc; border-bottom: 1px solid var(--line);">
-            <input type="text" id="productSearch" placeholder="🔍 Search products..." oninput="filterProducts(this.value)" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; font-weight: 600;" onclick="event.stopPropagation()" />
+          <div style="padding: 6px 12px; background: #f8fafc; border-bottom: 1px solid var(--line);">
+            <input type="text" id="productSearch" placeholder="🔍 Search products..." oninput="filterProducts(this.value)" style="width: 100%; padding: 6px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 12px; font-weight: 600;" onclick="event.stopPropagation()" />
           </div>
 
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0">
             <!-- Cow Products -->
-            <div class="p-card cow" onclick="tapAdd('Cow Milk', 64, 1)">
+            <div class="p-card cow" onclick="tapAdd('Cow Milk', 64, 1)" data-qty="1">
               <span class="emoji" style="font-size: 48px;">🐄</span>
               <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Cow 1L</div>
               <small style="font-size: 10px; margin-top: 2px;">₹64</small>
             </div>
-            <div class="p-card cow" onclick="tapAdd('Cow Milk', 32, 0.5)">
+            <div class="p-card cow" onclick="tapAdd('Cow Milk', 32, 0.5)" data-qty="0.5">
               <span class="emoji" style="font-size: 32px;">🐄</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Cow 0.5L</div>
+              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Cow 0.5L</div>
               <small style="font-size: 10px; margin-top: 2px;">₹32</small>
             </div>
 
             <!-- Buffalo Products -->
-            <div class="p-card buff" onclick="tapAdd('Buff Milk', 100, 1)">
+            <div class="p-card buff" onclick="tapAdd('Buff Milk', 100, 1)" data-qty="1">
               <span class="emoji" style="font-size: 48px;">🐃</span>
               <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 1L</div>
               <small style="font-size: 10px; margin-top: 2px;">₹100</small>
             </div>
-            <div class="p-card buff" onclick="tapAdd('Buff Milk', 80, 1)">
+            <div class="p-card buff" onclick="tapAdd('Buff Milk', 80, 1)" data-qty="1">
               <span class="emoji" style="font-size: 48px;">🐃</span>
               <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 1L</div>
               <small style="font-size: 10px; margin-top: 2px;">₹80</small>
             </div>
-            <div class="p-card buff" onclick="tapAdd('Buff Milk', 40, 0.5)">
+            <div class="p-card buff" onclick="tapAdd('Buff Milk', 40, 0.5)" data-qty="0.5">
               <span class="emoji" style="font-size: 32px;">🐃</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 0.5L</div>
+              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Buff 0.5L</div>
               <small style="font-size: 10px; margin-top: 2px;">₹40</small>
             </div>
 
             <!-- Other Products -->
-            <div class="p-card" style="border-left:3px solid #fbbf24" onclick="tapAdd('Paneer', 320, 1)">
+            <div class="p-card" style="border-left:3px solid #fbbf24" onclick="tapAdd('Paneer', 320, 1)" data-qty="1">
               <span class="emoji" style="font-size: 48px;">🧀</span>
               <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Paneer</div>
               <small style="font-size: 10px; margin-top: 2px;">₹320</small>
             </div>
-            <div class="p-card" style="border-left:3px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)">
-              <span class="emoji" style="font-size: 48px;">🍯</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Ghee</div>
+            <div class="p-card" style="border-left:3px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)" data-qty="0.25">
+              <span class="emoji" style="font-size: 36px;">🍯</span>
+              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Ghee</div>
               <small style="font-size: 10px; margin-top: 2px;">₹180</small>
             </div>
-            <div class="p-card" onclick="tapAdd('Milk Cake', 300, 1)">
+            <div class="p-card" onclick="tapAdd('Milk Cake', 300, 1)" data-qty="1">
               <span class="emoji" style="font-size: 48px;">🍰</span>
               <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Milk Cake</div>
               <small style="font-size: 10px; margin-top: 2px;">₹300</small>
@@ -258,12 +264,12 @@
         </div>
 
         <div class="panel">
-          <div class="panelHeader" style="padding: 8px 12px; height: 40px; background: #f8fafc; border-bottom: 1px solid var(--line);">
+          <div class="panelHeader" style="padding: 6px 12px; height: 36px; background: #f8fafc; border-bottom: 1px solid var(--line);">
             <!-- Customer Search with Selected Customer Display -->
             <div style="position: relative; width: 100%;">
-              <input type="text" id="custSearch" placeholder="👤 Search customer..." oninput="handleSearch(this.value)" style="width: 100%; padding: 8px 8px 8px 30px; border: 2px solid #3b82f6; border-radius: 8px; font-weight: 700; font-size: 13px; background: white;" />
-              <span style="position: absolute; left: 10px; top: 8px; font-size: 14px;">🔎</span>
-              <div id="searchDropdown" class="search-dropdown" onclick="event.stopPropagation()" style="top: 100%; border-radius: 0 0 8px 8px;"></div>
+              <input type="text" id="custSearch" placeholder="👤 Search customer..." oninput="handleSearch(this.value)" style="width: 100%; padding: 6px 6px 6px 28px; border: 2px solid #3b82f6; border-radius: 6px; font-weight: 700; font-size: 12px; background: white;" />
+              <span style="position: absolute; left: 10px; top: 6px; font-size: 14px;">🔎</span>
+              <div id="searchDropdown" class="search-dropdown" onclick="event.stopPropagation()" style="top: 100%; border-radius: 0 0 6px 6px;"></div>
             </div>
           </div>
           
@@ -322,15 +328,15 @@
 
           <!-- Payment amount input -->
           <div style="padding: 0 15px 10px;">
-            <div style="font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 8px;">💰 Customer De Raha Hai?</div>
-            <input type="number" id="paymentAmount" placeholder="Kitna de raha hai? (₹)" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-weight: 700; font-size: 16px;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
+            <div style="font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 8px;">💰 Payment</div>
+            <input type="number" id="paymentAmount" placeholder="Amount (₹)" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-weight: 700; font-size: 16px;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
             <div id="creditDisplay" style="font-size: 12px; color: #64748b; font-weight: 700; margin-top: 8px; text-align: center;"></div>
           </div>
           
           <div class="pay-grid">
             <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534;" onclick="saveEntry('Cash')">CASH</button>
             <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af;" onclick="saveEntry('UPI')">UPI</button>
-            <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')">LIKH LO (Credit)</button>
+            <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')">CREDIT</button>
           </div>
 
           <div style="padding:15px; flex:1; overflow-y:auto; border-top:1px solid var(--line);">
@@ -429,7 +435,10 @@
             <div class="panelHeader"><span>📦 Add New Product</span> <button onclick="closeModal('addProductModal')">✖</button></div>
             <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
                 <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
-                <input type="number" id="pPrice" placeholder="Price (₹)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                  <input type="number" id="pPrice" placeholder="Price (₹)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
+                  <input type="text" id="pUnit" placeholder="Unit (L/kg/g)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
+                </div>
                 <input type="text" id="pEmoji" placeholder="Emoji (e.g., 🥛, 🧀, 🍯)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
                 <button class="add-btn" style="width:100%; background:var(--green);" onclick="addNewProductFromModal()">Create Product</button>
             </div>
@@ -739,13 +748,13 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         if (paymentAmount > 0) {
           const remaining = total - paymentAmount;
           if (remaining > 0) {
-            creditDisplay.textContent = `₹${remaining.toFixed(2)} likhna hoga`;
+            creditDisplay.textContent = `Balance: ₹${remaining.toFixed(2)}`;
             creditDisplay.style.color = '#dc2626';
           } else if (remaining < 0) {
-            creditDisplay.textContent = `₹${Math.abs(remaining).toFixed(2)} wapas karna hoga`;
+            creditDisplay.textContent = `Return: ₹${Math.abs(remaining).toFixed(2)}`;
             creditDisplay.style.color = '#16a34a';
           } else {
-            creditDisplay.textContent = 'Exact payment! No credit needed';
+            creditDisplay.textContent = 'Exact amount!';
             creditDisplay.style.color = '#16a34a';
           }
         } else {
@@ -2073,6 +2082,7 @@ function convertMilkToProduct() {
 function addNewProductFromModal() {
   const name = el("pName").value.trim();
   const price = parseFloat(el("pPrice").value);
+  const unit = el("pUnit").value.trim() || 'unit';
   const emoji = el("pEmoji").value.trim() || '📦';
 
   if (!name || !price) return showToast("Name and Price required!");
@@ -2081,11 +2091,12 @@ function addNewProductFromModal() {
   const grid = el("productGrid");
   const newCard = document.createElement('div');
   newCard.className = 'p-card';
+  newCard.setAttribute('data-qty', '1');
   newCard.onclick = function() { tapAdd(name, price, 1); };
   newCard.innerHTML = `
-    <span class="emoji" style="font-size: 56px;">${emoji}</span>
-    <div style="font-size: 18px; font-weight: 900; margin-top: 8px;">${name}</div>
-    <small style="font-size: 16px; margin-top: 4px;">₹${price}</small>
+    <span class="emoji" style="font-size: 48px;">${emoji}</span>
+    <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">${name}</div>
+    <small style="font-size: 10px; margin-top: 2px;">₹${price}/${unit}</small>
   `;
 
   // Insert before ADD PRODUCT button
@@ -2094,7 +2105,7 @@ function addNewProductFromModal() {
 
   // Save to localStorage
   const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
-  customProducts.push({name, price, emoji});
+  customProducts.push({name, price, unit, emoji});
   localStorage.setItem('mr_pos_custom_products', JSON.stringify(customProducts));
 
   // Close modal and clear
