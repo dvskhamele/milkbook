@@ -331,7 +331,7 @@
       </div>
 
       <div class="bottom" style="flex-shrink: 0;">
-        <button class="panicBtn" style="background:#22c55e; color:#064e3b;" onclick="saveEntry('Quick')"><span>🟢 SAVE</span> <span class="subnote">complete</span></button>
+        <button class="panicBtn" style="background:#22c55e; color:#064e3b;" onclick="saveAndInvoice()"><span>🟢 SAVE</span> <span class="subnote">invoice + WhatsApp</span></button>
         <button class="panicBtn" style="background:#fde68a; color:#78350f;" onclick="holdCart()"><span id="txtHold">🟡 HOLD</span> <span class="subnote">save</span></button>
         <button class="panicBtn" style="background:#fef3c7; color:#92400e; font-size:18px;" onclick="showHeldCarts()" title="View held orders">📋 <span class="subnote" id="heldCount">0</span></button>
       </div>
@@ -737,7 +737,13 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         if (total === 0) return showToast('Cart is empty!');
         
         const customerName = el("activeCust").innerText;
-        const paymentAmount = parseFloat(el("paymentAmount").value) || total;
+        let paymentAmount = parseFloat(el("paymentAmount").value);
+        
+        // If payment amount not entered, ask user
+        if (!paymentAmount || paymentAmount <= 0) {
+          paymentAmount = total; // Default to full amount
+        }
+        
         const customer = customers.find(c => c.name === customerName);
         
         // Determine payment mode
