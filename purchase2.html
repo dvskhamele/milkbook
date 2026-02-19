@@ -360,7 +360,19 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
       }
 
       // Existing Code Logic (Untouched)
-      function tapAdd(name, rate, qty) { cart.push({name, rate, qty, id: Date.now()}); updateUI(); showToast(name + " added"); }
+      function tapAdd(name, rate, qty) { 
+        // Check if item already exists in cart
+        const existingItem = cart.find(item => item.name === name && item.rate === rate);
+        if (existingItem) {
+          // Increase quantity of existing item
+          existingItem.qty += qty;
+        } else {
+          // Add new item
+          cart.push({name, rate, qty, id: Date.now()});
+        }
+        updateUI(); 
+        showToast(name + " added"); 
+      }
       function adjustQty(val) { if(cart.length > 0) { cart[cart.length-1].qty += val; updateUI(); } }
       function updateUI() {
         const tbody = el("cartItems"); tbody.innerHTML = ""; total = 0;
