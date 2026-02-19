@@ -1,9 +1,34 @@
 /**
  * MilkBook Netlify Client
  * Connects frontend to Netlify serverless functions
+ * Includes authentication and all backend features
  */
 
 const API_BASE = '/.netlify/functions';
+
+// Get current session
+function getSession() {
+  const session = localStorage.getItem('milkbook_session');
+  if (!session) return null;
+  
+  const sessionData = JSON.parse(session);
+  if (sessionData.expires < Date.now()) {
+    localStorage.removeItem('milkbook_session');
+    return null;
+  }
+  
+  return sessionData;
+}
+
+// Get auth headers
+function getAuthHeaders() {
+  const session = getSession();
+  if (!session) return {};
+  
+  return {
+    'Authorization': `Bearer ${session.token}`,
+  };
+}
 
 // Helper function to make API calls
 async function apiCall(endpoint, options = {}) {
@@ -13,6 +38,7 @@ async function apiCall(endpoint, options = {}) {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
       ...options.headers,
     },
   };
