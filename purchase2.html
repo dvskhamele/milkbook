@@ -61,6 +61,8 @@
 
       .recent-table { width: 100%; border-collapse: collapse; font-size: 13px; }
       .recent-table td { padding: 10px; border-bottom: 1px solid var(--line); font-weight: 700; }
+      .recent-table input { width: 60px; padding: 4px; border: 1px solid var(--line); border-radius: 6px; font-weight: 700; text-align: center; }
+      .recent-table .remove-btn { background: #fecaca; color: #7f1d1d; border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-weight: 700; font-size: 12px; }
 
       .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); display: none; align-items: center; justify-content: center; z-index: 100; }
       .modal { width: min(800px, 95vw); height: min(600px, 90vh); background: #fff; border-radius: 22px; display: grid; grid-template-rows: 60px 1fr 70px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.3); }
@@ -376,8 +378,40 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
       function adjustQty(val) { if(cart.length > 0) { cart[cart.length-1].qty += val; updateUI(); } }
       function updateUI() {
         const tbody = el("cartItems"); tbody.innerHTML = ""; total = 0;
-        cart.forEach(i => { total += (i.rate * i.qty); tbody.innerHTML += `<tr><td>${i.name}</td><td>${i.qty}</td><td style="text-align:right">₹${(i.rate*i.qty).toFixed(2)}</td></tr>`; });
+        cart.forEach((i, index) => { 
+          total += (i.rate * i.qty); 
+          tbody.innerHTML += `<tr>
+            <td>${i.name}</td>
+            <td>
+              <input type="number" value="${i.qty}" min="0.1" step="0.1" 
+                onchange="updateItemQty(${index}, this.value)" 
+                style="width:60px; padding:4px; border:1px solid var(--line); border-radius:6px; font-weight:700; text-align:center;" />
+            </td>
+            <td style="text-align:right">₹${(i.rate*i.qty).toFixed(2)}</td>
+            <td style="text-align:right;">
+              <button onclick="removeItem(${index})" style="background:#fecaca; color:#7f1d1d; border:none; border-radius:6px; padding:4px 8px; cursor:pointer; font-weight:700; font-size:12px;">✕ Remove</button>
+            </td>
+          </tr>`; 
+        });
         el("totalAmt").textContent = `₹${total.toFixed(2)}`;
+      }
+      
+      // Update item quantity
+      function updateItemQty(index, newQty) {
+        const qty = parseFloat(newQty);
+        if (qty > 0) {
+          cart[index].qty = qty;
+          updateUI();
+        } else {
+          removeItem(index);
+        }
+      }
+      
+      // Remove item from cart
+      function removeItem(index) {
+        cart.splice(index, 1);
+        updateUI();
+        showToast("Item removed");
       }
 
      function saveEntry(mode) {
