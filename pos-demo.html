@@ -84,7 +84,7 @@
         background: #fff; 
         border: none; 
         border-radius: 8px; 
-        padding: 6px 4px; 
+        padding: 8px 4px; 
         text-align: center; 
         cursor: pointer; 
         transition: all 0.15s; 
@@ -100,9 +100,9 @@
       .p-card.focused { outline: 2px solid #3b82f6; outline-offset: 2px; }
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
-      .p-card .emoji { font-size: 28px; margin-bottom: 2px; display: block; }
-      .p-card div { font-weight: 900; font-size: 10px; line-height: 1.2; }
-      .p-card small { color: #64748b; font-weight: 700; font-size: 9px; margin-top: 2px; }
+      .p-card .emoji { font-size: 42px; margin-bottom: 4px; display: block; }
+      .p-card div { font-weight: 900; font-size: 11px; line-height: 1.2; }
+      .p-card small { color: #64748b; font-weight: 700; font-size: 10px; margin-top: 2px; }
 
       .qty-bar { display: flex; gap: 10px; padding: 12px 15px; background: #f8fafc; border-top: 1px solid var(--line); }
       .qty-btn { flex: 1; height: 45px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-weight: 1000; cursor: pointer; }
@@ -195,58 +195,58 @@
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0">
             <!-- Cow Products -->
             <div class="p-card cow" onclick="tapAdd('Cow Milk', 64, 1)">
-              <span class="emoji" style="font-size: 28px;">🐄</span>
-              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Cow 1L</div>
-              <small style="font-size: 9px; margin-top: 2px;">₹64</small>
+              <span class="emoji" style="font-size: 42px;">🐄</span>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Cow 1L</div>
+              <small style="font-size: 10px; margin-top: 2px;">₹64</small>
             </div>
             <div class="p-card cow" onclick="tapAdd('Cow Milk', 32, 0.5)">
-              <span class="emoji" style="font-size: 24px;">🐄</span>
-              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Cow 0.5L</div>
-              <small style="font-size: 9px; margin-top: 2px;">₹32</small>
+              <span class="emoji" style="font-size: 36px;">🐄</span>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Cow 0.5L</div>
+              <small style="font-size: 10px; margin-top: 2px;">₹32</small>
             </div>
 
             <!-- Buffalo Products -->
             <div class="p-card buff" onclick="tapAdd('Buff Milk', 100, 1)">
-              <span class="emoji" style="font-size: 28px;">🐃</span>
-              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Buff 1L</div>
-              <small style="font-size: 9px; margin-top: 2px;">₹100</small>
+              <span class="emoji" style="font-size: 42px;">🐃</span>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 1L</div>
+              <small style="font-size: 10px; margin-top: 2px;">₹100</small>
             </div>
             <div class="p-card buff" onclick="tapAdd('Buff Milk', 80, 1)">
-              <span class="emoji" style="font-size: 28px;">🐃</span>
-              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Buff 1L</div>
-              <small style="font-size: 9px; margin-top: 2px;">₹80</small>
+              <span class="emoji" style="font-size: 42px;">🐃</span>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 1L</div>
+              <small style="font-size: 10px; margin-top: 2px;">₹80</small>
             </div>
             <div class="p-card buff" onclick="tapAdd('Buff Milk', 40, 0.5)">
-              <span class="emoji" style="font-size: 24px;">🐃</span>
-              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Buff 0.5L</div>
-              <small style="font-size: 9px; margin-top: 2px;">₹40</small>
+              <span class="emoji" style="font-size: 36px;">🐃</span>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 0.5L</div>
+              <small style="font-size: 10px; margin-top: 2px;">₹40</small>
             </div>
 
             <!-- Other Products -->
             <div class="p-card" style="border-left:3px solid #fbbf24" onclick="tapAdd('Paneer', 320, 1)">
-              <span class="emoji" style="font-size: 28px;">🧀</span>
-              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Paneer</div>
-              <small style="font-size: 9px; margin-top: 2px;">₹320</small>
+              <span class="emoji" style="font-size: 42px;">🧀</span>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Paneer</div>
+              <small style="font-size: 10px; margin-top: 2px;">₹320</small>
             </div>
             <div class="p-card" style="border-left:3px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)">
-              <span class="emoji" style="font-size: 28px;">🍯</span>
-              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Ghee</div>
-              <small style="font-size: 9px; margin-top: 2px;">₹180</small>
+              <span class="emoji" style="font-size: 42px;">🍯</span>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Ghee</div>
+              <small style="font-size: 10px; margin-top: 2px;">₹180</small>
             </div>
             <div class="p-card" onclick="tapAdd('Milk Cake', 300, 1)">
-              <span class="emoji" style="font-size: 28px;">🍰</span>
-              <div style="font-size: 10px; font-weight: 900; margin-top: 2px;">Milk Cake</div>
-              <small style="font-size: 9px; margin-top: 2px;">₹300</small>
+              <span class="emoji" style="font-size: 42px;">🍰</span>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Milk Cake</div>
+              <small style="font-size: 10px; margin-top: 2px;">₹300</small>
             </div>
 
             <!-- Edit & Add Buttons -->
             <div class="p-card" style="border: 2px solid #f59e0b; background: #fffbeb;" onclick="openEditInventory()" title="Edit Product Prices">
-              <div style="font-size:24px; color:#f59e0b; font-weight: 900;">✏️</div>
-              <div style="font-weight:900; color:#f59e0b; font-size:8px; margin-top: 2px;">EDIT</div>
+              <div style="font-size:32px; color:#f59e0b; font-weight: 900;">✏️</div>
+              <div style="font-weight:900; color:#f59e0b; font-size:9px; margin-top: 4px;">EDIT</div>
             </div>
             <div class="p-card" style="border: 2px dashed #3b82f6; background: #eff6ff;" onclick="openModal('addProductModal')">
-              <div style="font-size:32px; color:#3b82f6; font-weight: 900;">➕</div>
-              <div style="font-weight:900; color:#3b82f6; font-size:8px; margin-top: 2px;">ADD</div>
+              <div style="font-size:40px; color:#3b82f6; font-weight: 900;">➕</div>
+              <div style="font-weight:900; color:#3b82f6; font-size:9px; margin-top: 4px;">ADD</div>
             </div>
           </div>
         </div>
@@ -275,9 +275,6 @@
                 <button onclick="openModal('addCustModal')" style="background: #3b82f6; color: white; border: none; border-radius: 6px; padding: 6px 10px; font-weight: 700; font-size: 11px; cursor: pointer;">✏️ Edit</button>
               </div>
             </div>
-            
-            <!-- Add Customer Button -->
-            <button onclick="openModal('addCustModal')" style="width: 100%; padding: 8px; background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 8px; color: #1d4ed8; font-weight: 700; font-size: 12px; cursor: pointer;">+ Add New Customer</button>
           </div>
           
           <div class="summary-box">
@@ -366,6 +363,8 @@
                 <input type="text" id="newName" placeholder="Full Name" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
                 <input type="tel" id="newPhone" placeholder="WhatsApp Mobile (e.g., 9876543210)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" inputmode="tel" pattern="[0-9]{10}" />
                 <input type="email" id="newEmail" placeholder="Email (for invoice)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" />
+                <input type="date" id="newBirthday" placeholder="Birthday" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" />
+                <input type="text" id="newGst" placeholder="GST Number (Optional)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" />
                 <select id="newType" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
                     <option value="Retail">Retail Walk-in</option>
                     <option value="PACS">PACS Member</option>
@@ -447,11 +446,11 @@
         </div>
     </div>
 
-    <!-- Edit Inventory Modal -->
+    <!-- Edit Products Modal -->
     <div class="overlay" id="editInventoryModal">
-        <div class="modal" style="width:500px; height:auto; max-height:80vh;">
-            <div class="panelHeader"><span>✏️ Edit Product Rates</span> <button onclick="closeModal('editInventoryModal')">✖</button></div>
-            <div class="modalBody" id="editInventoryList" style="padding:20px; display:flex; flex-direction:column; gap:10px; overflow-y:auto; max-height:60vh;"></div>
+        <div class="modal" style="width:600px; height:auto; max-height:80vh;">
+            <div class="panelHeader"><span>✏️ Edit Products</span> <button onclick="closeModal('editInventoryModal')">✖</button></div>
+            <div class="modalBody" id="editInventoryList" style="padding:20px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; max-height:60vh;"></div>
         </div>
     </div>
 
@@ -1267,7 +1266,24 @@ MilkRecord POS`;
           el("searchDropdown").style.display = "none";
           updateCustomerDisplay();
           showToast("Customer: " + name);
-
+          
+          // Auto-fill frequent buys / last invoice from memory
+          const customer = customers.find(c => c.name === name);
+          if (customer && customer.frequentBuys && customer.frequentBuys.length > 0) {
+            // Clear current cart and add frequent buys
+            cart = [];
+            customer.frequentBuys.forEach(buy => {
+              cart.push({
+                name: buy.name,
+                rate: buy.rate,
+                qty: buy.qty,
+                id: Date.now() + Math.random()
+              });
+            });
+            updateUI();
+            showToast(`Loaded ${customer.frequentBuys.length} frequent items ✅`);
+          }
+          
           // Show advance toggle for this customer
           showAdvanceSection(name);
       }
@@ -1753,6 +1769,8 @@ function clearTodayHistory() {
           const name = el("newName").value;
           const phone = el("newPhone").value;
           const email = el("newEmail").value;
+          const birthday = el("newBirthday").value;
+          const gst = el("newGst").value;
           if(!name) return showToast("Name required!");
           
           // Update or create customer
@@ -1761,13 +1779,18 @@ function clearTodayHistory() {
             // Update existing
             customer.phone = phone || customer.phone;
             customer.email = email || customer.email;
+            customer.birthday = birthday || customer.birthday;
+            customer.gst = gst || customer.gst;
           } else {
             // Create new
             customers.push({ 
               name: name, 
               phone: phone || '', 
               email: email || '',
+              birthday: birthday || '',
+              gst: gst || '',
               lastOrder: "New Customer", 
+              frequentBuys: [],
               rate: 0, 
               qty: 0, 
               type: el("newType").value,
@@ -1783,6 +1806,8 @@ function clearTodayHistory() {
           el("newName").value = "";
           el("newPhone").value = "";
           el("newEmail").value = "";
+          el("newBirthday").value = "";
+          el("newGst").value = "";
           localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
           showToast(name + (phone ? ` (+91${phone})` : '') + " Saved!");
       }
@@ -2133,46 +2158,63 @@ function loadCustomProducts() {
   });
 }
 
-// Edit Inventory Modal
+// Edit Products Modal
 function openEditInventory() {
   const list = el("editInventoryList");
   const products = [
-    { name: 'Cow 1L', rate: 64 },
-    { name: 'Cow 0.5L', rate: 32 },
-    { name: 'Buff 1L', rate: 100 },
-    { name: 'Buff 1L', rate: 80 },
-    { name: 'Buff 0.5L', rate: 40 },
-    { name: 'Paneer', rate: 320 },
-    { name: 'Ghee', rate: 180 },
-    { name: 'Milk Cake', rate: 300 }
+    { name: 'Cow 1L', emoji: '🐄', rate: 64, unit: 'L', step: 1 },
+    { name: 'Cow 0.5L', emoji: '🐄', rate: 32, unit: 'L', step: 0.5 },
+    { name: 'Buff 1L', emoji: '🐃', rate: 100, unit: 'L', step: 1 },
+    { name: 'Buff 1L', emoji: '🐃', rate: 80, unit: 'L', step: 1 },
+    { name: 'Buff 0.5L', emoji: '🐃', rate: 40, unit: 'L', step: 0.5 },
+    { name: 'Paneer', emoji: '🧀', rate: 320, unit: 'kg', step: 0.5 },
+    { name: 'Ghee', emoji: '🍯', rate: 180, unit: 'g', step: 100 },
+    { name: 'Milk Cake', emoji: '🍰', rate: 300, unit: 'kg', step: 0.5 }
   ];
   
   list.innerHTML = products.map((p, i) => `
-    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f8fafc; border-radius:8px;">
-      <div style="font-weight:700;">${p.name}</div>
-      <div style="display:flex; gap:8px; align-items:center;">
-        <input type="number" id="editRate_${i}" value="${p.rate}" style="width:80px; padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center;" />
-        <button onclick="updateProductRate(${i}, '${p.name}')" style="padding:8px 16px; background:#22c55e; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer;">Update</button>
-      </div>
+    <div style="display:grid; grid-template-columns: 50px 1fr 80px 60px 60px auto; gap:8px; align-items:center; padding:12px; background:#f8fafc; border-radius:8px;">
+      <div style="font-size:28px;">${p.emoji}</div>
+      <input type="text" id="editName_${i}" value="${p.name}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700;" />
+      <input type="number" id="editRate_${i}" value="${p.rate}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center;" />
+      <select id="editUnit_${i}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700;">
+        <option value="L" ${p.unit === 'L' ? 'selected' : ''}>L</option>
+        <option value="kg" ${p.unit === 'kg' ? 'selected' : ''}>kg</option>
+        <option value="g" ${p.unit === 'g' ? 'selected' : ''}>g</option>
+        <option value="ml" ${p.unit === 'ml' ? 'selected' : ''}>ml</option>
+      </select>
+      <select id="editStep_${i}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700;">
+        <option value="0.5" ${p.step === 0.5 ? 'selected' : ''}>0.5</option>
+        <option value="1" ${p.step === 1 ? 'selected' : ''}>1</option>
+        <option value="2" ${p.step === 2 ? 'selected' : ''}>2</option>
+      </select>
+      <button onclick="updateProductFull(${i}, '${p.name}')" style="padding:8px 16px; background:#22c55e; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer;">Update</button>
     </div>
   `).join('');
   
   openModal('editInventoryModal');
 }
 
-function updateProductRate(index, productName) {
+function updateProductFull(index, oldName) {
+  const newName = el(`editName_${index}`).value;
   const newRate = parseFloat(el(`editRate_${index}`).value);
-  if (!newRate || newRate <= 0) return showToast('Invalid rate!');
+  const newUnit = el(`editUnit_${index}`).value;
+  const newStep = parseFloat(el(`editStep_${index}`).value);
+  
+  if (!newName || !newRate || newRate <= 0) return showToast('Invalid name or rate!');
   
   // Update in localStorage (for custom products)
   const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
-  const product = customProducts.find(p => p.name === productName);
+  const product = customProducts.find(p => p.name === oldName);
   if (product) {
+    product.name = newName;
     product.price = newRate;
+    product.unit = newUnit;
+    product.step = newStep;
     localStorage.setItem('mr_pos_custom_products', JSON.stringify(customProducts));
   }
   
-  showToast(`${productName} rate updated to ₹${newRate} ✅`);
+  showToast(`${newName} updated! Rate: ₹${newRate}/${newUnit} (Step: ${newStep}) ✅`);
   closeModal('editInventoryModal');
   
   // Reload page to apply changes
@@ -2181,6 +2223,22 @@ function updateProductRate(index, productName) {
 
 // Keyboard Navigation - Full End-to-End Invoice Creation
 document.addEventListener('keydown', function(e) {
+  // Auto-focus product search when typing (if no other focus)
+  if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+    const activeElement = document.activeElement;
+    const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA';
+    
+    if (!isInputFocused) {
+      e.preventDefault();
+      const productSearch = document.getElementById('productSearch');
+      if (productSearch) {
+        productSearch.focus();
+        productSearch.value = e.key;
+      }
+      return;
+    }
+  }
+  
   // F1 = New Customer
   if (e.key === 'F1') {
     e.preventDefault();
