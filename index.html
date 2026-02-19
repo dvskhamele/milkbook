@@ -4098,12 +4098,31 @@ let keyboardMode = 'search'; // 'search' -> 'liters' -> 'fat' -> 'snf' -> 'save'
 
 function setupKeyboardNavigation() {
   document.addEventListener('keydown', function(e) {
-    // Only activate when not in modal
-    if (document.querySelector('.overlay[style*="display: flex"]')) return;
+    // ESC key - Close any open modal/overlay
+    if (e.key === 'Escape') {
+      // Close all overlays
+      document.querySelectorAll('.overlay[style*="display: flex"]').forEach(overlay => {
+        overlay.style.display = 'none';
+      });
+      // Also click any visible close buttons
+      document.querySelectorAll('[data-close]').forEach(btn => {
+        const overlayId = btn.getAttribute('data-close');
+        const overlay = document.getElementById(overlayId);
+        if (overlay && overlay.style.display === 'flex' && btn.offsetParent !== null) {
+          btn.click();
+        }
+      });
+      keyboardMode = 'search';
+      el('searchInput').focus();
+      return;
+    }
     
+    // Only activate Enter when not in modal
+    if (document.querySelector('.overlay[style*="display: flex"]')) return;
+
     if (e.key === 'Enter') {
       e.preventDefault();
-      
+
       if (keyboardMode === 'search') {
         // Enter in search → Select first farmer and focus liters
         const firstFarmer = document.querySelector('.fcard');
@@ -4127,19 +4146,13 @@ function setupKeyboardNavigation() {
         el('searchInput').focus();
       }
     }
-    
-    // Escape → Reset to search
-    if (e.key === 'Escape') {
-      keyboardMode = 'search';
-      el('searchInput').focus();
-    }
   });
-  
+
   // Focus search on page load
   setTimeout(() => {
     el('searchInput').focus();
   }, 500);
-  
+
   // Track focus changes
   ['searchInput', 'qtyInput', 'fatInput', 'snfInput'].forEach(id => {
     const input = el(id);
@@ -4152,6 +4165,24 @@ function setupKeyboardNavigation() {
       });
     }
   });
+  
+  // Prevent Enter on Add New button
+  const addNewBtn = document.getElementById('btnAddFarmerMain');
+  if (addNewBtn) {
+    addNewBtn.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        // Move to next farmer or field instead
+        const firstFarmer = document.querySelector('.fcard');
+        if (firstFarmer) {
+          firstFarmer.click();
+          keyboardMode = 'liters';
+          setTimeout(() => el('qtyInput').focus(), 100);
+        }
+      }
+    });
+  }
 }
 
       /***********************
