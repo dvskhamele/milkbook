@@ -79,7 +79,7 @@
 
       .add-btn { height: 40px; padding: 0 15px; border-radius: 10px; border: none; background: var(--blue); color: #fff; font-weight: 1000; cursor: pointer; }
 
-      .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; overflow-y: auto; flex: 1; }
+      .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; overflow-y: auto; flex: 1; outline: none; }
       .p-card { 
         background: #fff; 
         border: none; 
@@ -96,7 +96,8 @@
       }
       .p-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
       .p-card:active { transform: scale(0.95); }
-      .p-card.selected { border: 3px solid #3b82f6 !important; background: #eff6ff !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+      .p-card.selected { border: 3px solid #3b82f6 !important; background: #eff6ff !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transform: scale(1.05); }
+      .p-card.focused { outline: 3px solid #3b82f6; outline-offset: 2px; }
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
       .p-card .emoji { font-size: 36px; margin-bottom: 4px; display: block; }
@@ -202,7 +203,7 @@
             <input type="text" id="productSearch" placeholder="🔍 Search products..." oninput="filterProducts(this.value)" style="width: 100%; padding: 10px; border: 2px solid var(--line); border-radius: 10px; font-size: 14px; font-weight: 600;" onclick="event.stopPropagation()" />
           </div>
 
-          <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()">
+          <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0">
             <!-- Cow Products -->
             <div class="p-card cow" onclick="tapAdd('Cow Milk', 64, 1)">
               <span class="emoji" style="font-size: 56px;">🐄</span>
@@ -1470,22 +1471,80 @@ function clearTodayHistory() {
       
       window.onload = () => {
     updateShift();
-    loadHistoryOnStart(); // Ye function history ke cards wapas banayega
-    loadCustomProducts(); // Load custom product cards
+    loadHistoryOnStart();
+    loadCustomProducts();
     setInterval(updateShift, 60000);
     
     // ESC key closes all modals
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        // Close all open modals
         document.querySelectorAll('.overlay[style*="display: flex"]').forEach(modal => {
           modal.style.display = 'none';
         });
-        // Also close search dropdown
         const searchDrop = document.getElementById('searchDropdown');
         if (searchDrop) searchDrop.style.display = 'none';
       }
     });
+    
+    // Arrow key navigation for products
+    let productFocusIndex = -1;
+    const productGrid = document.getElementById('productGrid');
+    
+    if (productGrid) {
+      // Update focus on product cards
+      function updateProductFocus() {
+        const cards = Array.from(productGrid.querySelectorAll('.p-card'));
+        cards.forEach((card, i) => {
+          if (i === productFocusIndex) {
+            card.classList.add('focused');
+            card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          } else {
+            card.classList.remove('focused');
+          }
+        });
+      }
+      
+      productGrid.addEventListener('keydown', function(e) {
+        const cards = Array.from(productGrid.querySelectorAll('.p-card'));
+        if (cards.length === 0) return;
+        
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          productFocusIndex = (productFocusIndex + 1) % cards.length;
+          updateProductFocus();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          productFocusIndex = (productFocusIndex - 1 + cards.length) % cards.length;
+          updateProductFocus();
+        } else if (e.key === 'Enter' || e.key === 'Tab') {
+          if (productFocusIndex >= 0 && cards[productFocusIndex]) {
+            e.preventDefault();
+            cards[productFocusIndex].click();
+            // Move focus to payment amount field
+            setTimeout(() => {
+              const paymentInput = document.getElementById('paymentAmount');
+              if (paymentInput) {
+                paymentInput.value = total.toFixed(2);
+                paymentInput.focus();
+                paymentInput.select();
+                calculateCredit();
+              }
+            }, 100);
+          }
+        }
+      });
+      
+      // Click handler updates focus index
+      productGrid.addEventListener('click', function(e) {
+        const cards = Array.from(productGrid.querySelectorAll('.p-card'));
+        cards.forEach((card, i) => {
+          if (card.contains(e.target)) {
+            productFocusIndex = i;
+            updateProductFocus();
+          }
+        });
+      });
+    }
 }
 
 function loadHistoryOnStart() {
