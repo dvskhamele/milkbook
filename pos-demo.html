@@ -186,7 +186,34 @@
             <div style="font-size:12px; opacity:0.8;" id="lblPayable">TOTAL PAYABLE</div>
             <div class="amt" id="totalAmt">₹0.00</div>
           </div>
-          
+
+          <!-- Advance/Cut Ledger Section -->
+          <div id="advanceSection" style="display:none; background:#fef3c7; border:2px solid #f59e0b; border-radius:16px; margin:15px; padding:15px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <h4 style="margin:0; color:#92400e; font-size:14px;">📕 Advance Management</h4>
+              <button onclick="closeAdvance()" style="background:none; border:none; font-size:18px; cursor:pointer; color:#92400e;">✖</button>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+              <div style="background:white; padding:10px; border-radius:8px; text-align:center;">
+                <div style="font-size:11px; color:#64748b; font-weight:700;">TOTAL MILK (MONTH)</div>
+                <div style="font-size:18px; font-weight:900; color:#1e293b;" id="monthMilk">0.0 L</div>
+              </div>
+              <div style="background:white; padding:10px; border-radius:8px; text-align:center;">
+                <div style="font-size:11px; color:#64748b; font-weight:700;">CURRENT ADVANCE</div>
+                <div style="font-size:18px; font-weight:900; color:#166534;" id="currentAdvance">₹0.00</div>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <input type="number" id="advanceAmount" placeholder="Amount (₹)" style="padding:10px; border-radius:8px; border:1px solid #f59e0b; font-weight:700;" />
+              <select id="advanceAction" style="padding:10px; border-radius:8px; border:1px solid #f59e0b; font-weight:700;">
+                <option value="give">➕ Give</option>
+                <option value="cut">➖ Cut</option>
+              </select>
+            </div>
+            <button onclick="updateAdvance()" style="width:100%; margin-top:10px; padding:12px; background:#f59e0b; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Update Advance</button>
+            <button onclick="sendMonthlySummary()" style="width:100%; margin-top:8px; padding:12px; background:white; color:#92400e; border:1px solid #f59e0b; border-radius:8px; font-weight:700; cursor:pointer;">💬 Send Monthly Summary</button>
+          </div>
+
           <div class="pay-grid">
             <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534;" onclick="saveEntry('Cash')">CASH</button>
             <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af;" onclick="saveEntry('UPI')">UPI</button>
@@ -373,6 +400,76 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           el("custSearch").value = name;
           el("searchDropdown").style.display = "none";
           showToast("Customer: " + name);
+          
+          // Show advance section for this customer
+          showAdvanceSection(name);
+      }
+      
+      // Show advance/cut ledger
+      function showAdvanceSection(customerName) {
+        const customer = customers.find(c => c.name === customerName);
+        if (!customer) {
+          el("advanceSection").style.display = "none";
+          return;
+        }
+        
+        // Initialize advance if not exists
+        if (!customer.advance) customer.advance = 0;
+        if (!customer.monthMilk) customer.monthMilk = 0;
+        
+        el("monthMilk").textContent = customer.monthMilk.toFixed(1) + ' L';
+        el("currentAdvance").textContent = '₹' + customer.advance.toFixed(2);
+        el("advanceSection").style.display = 'block';
+      }
+      
+      // Close advance section
+      function closeAdvance() {
+        el("advanceSection").style.display = 'none';
+      }
+      
+      // Update advance (give/cut)
+      function updateAdvance() {
+        const customerName = el("activeCust").innerText;
+        const amount = parseFloat(el("advanceAmount").value);
+        const action = el("advanceAction").value;
+        
+        if (!amount || amount <= 0) return showToast("Enter valid amount");
+        
+        const customer = customers.find(c => c.name === customerName);
+        if (!customer) return showToast("Customer not found");
+        
+        if (!customer.advance) customer.advance = 0;
+        
+        if (action === 'give') {
+          customer.advance += amount;
+          showToast(`₹${amount} given to ${customerName}`);
+        } else if (action === 'cut') {
+          customer.advance -= amount;
+          showToast(`₹${amount} cut from ${customerName}`);
+        }
+        
+        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+        el("advanceAmount").value = "";
+        showAdvanceSection(customerName);
+      }
+      
+      // Send monthly summary via WhatsApp
+      function sendMonthlySummary() {
+        const customerName = el("activeCust").innerText;
+        const customer = customers.find(c => c.name === customerName);
+        
+        if (!customer) return showToast("Customer not found");
+        
+        const monthMilk = customer.monthMilk || 0;
+        const advance = customer.advance || 0;
+        
+        const message = `*Monthly Summary - ${customerName}*\n\n🥛 Total Milk: ${monthMilk.toFixed(1)}L\n💰 Current Advance: ₹${advance.toFixed(2)}\n\nThank you for your business!`;
+        
+        const phone = customer.phone || "";
+        const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        
+        window.open(whatsappUrl, '_blank');
+        showToast("Opening WhatsApp...");
       }
 
       // Existing Code Logic
@@ -466,6 +563,9 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const itemsDetail = cart.map(i => `${i.qty}x ${i.name}`).join(" | ");
 
+    // Calculate total milk quantity for month tracking
+    const totalMilkQty = cart.filter(i => i.name.includes('Milk')).reduce((sum, i) => sum + i.qty, 0);
+
     // Save full cart data for replay
     const newSale = { 
       date: new Date().toLocaleDateString(), 
@@ -495,13 +595,18 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
     </div>`;
     el("historyToday").innerHTML = entry + el("historyToday").innerHTML;
 
-    // Customer persistence (Aapka logic sahi hai)
+    // Customer persistence + advance tracking
     let cIdx = customers.findIndex(c => c.name === custName);
     if(cIdx !== -1) {
         customers[cIdx].lastOrder = itemsDetail;
         customers[cIdx].rate = cart[0].rate;
         customers[cIdx].qty = cart[0].qty;
-        customers[cIdx].lastProductName = cart[0].name; // Save product name for repeat
+        customers[cIdx].lastProductName = cart[0].name;
+        
+        // Update monthly milk tracking
+        if (!customers[cIdx].monthMilk) customers[cIdx].monthMilk = 0;
+        customers[cIdx].monthMilk += totalMilkQty;
+        
         localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
     }
 
