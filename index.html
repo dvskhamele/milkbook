@@ -1723,11 +1723,12 @@
               </div>
               <div class="field">
   <label>🥛 Milk Type</label>
-  <select id="fAnimalType">
-    <option value="cow">🐄 Cow Only</option>
-    <option value="buffalo">🐃 Buffalo Only</option>
-    <option value="both">🔄 Both (Selectable on Entry)</option>
-  </select>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+    <button type="button" onclick="selectAnimalType('cow')" id="animalCow" style="padding:10px; border:2px solid var(--line); border-radius:8px; background:white; cursor:pointer; font-weight:700;">🐄 Cow</button>
+    <button type="button" onclick="selectAnimalType('buffalo')" id="animalBuffalo" style="padding:10px; border:2px solid var(--line); border-radius:8px; background:white; cursor:pointer; font-weight:700;">🐃 Buffalo</button>
+    <button type="button" onclick="selectAnimalType('both')" id="animalBoth" style="padding:10px; border:2px solid var(--line); border-radius:8px; background:white; cursor:pointer; font-weight:700;">🔄 Both</button>
+  </div>
+  <input type="hidden" id="fAnimalType" value="cow" />
 </div>
               <div class="field">
                 <label>Status</label>
@@ -3679,6 +3680,40 @@ function updateDailySummaryButton() {
     }
 }
 // ... iske niche init(); function hona chahiye ...
+
+// Animal Type Toggle Function
+function selectAnimalType(type) {
+  // Reset all buttons
+  ['animalCow', 'animalBuffalo', 'animalBoth'].forEach(id => {
+    const btn = el(id);
+    if (btn) {
+      btn.style.borderColor = 'var(--line)';
+      btn.style.background = 'white';
+    }
+  });
+  
+  // Set selected
+  el("fAnimalType").value = type;
+  const selectedBtn = el("animal" + type.charAt(0).toUpperCase() + type.slice(1));
+  if (selectedBtn) {
+    selectedBtn.style.borderColor = 'var(--blue)';
+    selectedBtn.style.background = '#eff6ff';
+  }
+}
+
+// ESC Key Handler for All Modals
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    // Close all open overlays
+    ['overlayFarmer', 'overlayFarmerDetail', 'overlayReceipt', 'overlayEntryDetail', 'overlayPayment'].forEach(id => {
+      const overlay = el(id);
+      if (overlay && overlay.style.display === 'flex') {
+        closeOverlay(id);
+      }
+    });
+  }
+});
+
       /***********************
        * INIT                *
        ***********************/

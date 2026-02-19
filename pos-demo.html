@@ -260,11 +260,33 @@
     </div>
 
     <div class="overlay" id="historyModal">
-      <div class="modal">
-        <div class="panelHeader"><span id="lblHistTitle">Sales Detail & Audit Logs 🧾</span> <button onclick="closeModal('historyModal')">✖</button></div>
-        <div class="modalBody" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-            <div class="panel" style="padding:10px;"><h4>Today's Sales</h4><div id="historyToday"></div></div>
-            <div class="panel" style="padding:10px;"><h4>Audit Logic</h4><div class="cardRow"><div>PACS Mapping</div><span class="badge">Verified</span></div></div>
+      <div class="modal" style="height:auto; max-height:80vh;">
+        <div class="panelHeader">
+          <span id="lblHistTitle">🧾 History</span>
+          <button onclick="closeModal('historyModal')">✖</button>
+        </div>
+        
+        <!-- Tabs -->
+        <div style="display:flex; border-bottom:1px solid var(--line); padding:0 20px;">
+          <button onclick="switchHistoryTab('today')" id="tabToday" style="flex:1; padding:12px; border:none; background:none; font-weight:700; cursor:pointer; border-bottom:3px solid var(--blue);">📅 Today</button>
+          <button onclick="switchHistoryTab('weekly')" id="tabWeekly" style="flex:1; padding:12px; border:none; background:none; font-weight:700; cursor:pointer; border-bottom:3px solid transparent;">🗓️ Weekly</button>
+        </div>
+        
+        <!-- Tab Content -->
+        <div class="modalBody" style="display:block; padding:15px; overflow-y:auto; max-height:50vh;">
+          <div id="historyToday" style="display:block;"></div>
+          <div id="historyWeekly" style="display:none;"></div>
+        </div>
+        
+        <!-- Footer Actions -->
+        <div style="padding:15px 20px; border-top:1px solid var(--line); display:flex; gap:10px; justify-content:space-between;">
+          <div style="font-size:13px; color:var(--muted); font-weight:700;">
+            <span id="historyCount">1 today • 0 in 7d</span>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button onclick="exportHistory()" style="padding:8px 16px; background:#eff6ff; color:#1e40af; border:none; border-radius:8px; font-weight:700; cursor:pointer;">⬇️ Export</button>
+            <button onclick="clearTodayHistory()" style="padding:8px 16px; background:#fecaca; color:#7f1d1d; border:none; border-radius:8px; font-weight:700; cursor:pointer;">🗑️ Clear Today</button>
+          </div>
         </div>
       </div>
     </div>
@@ -629,6 +651,93 @@ function loadOrderFromHistory(customerName, cartItems) {
   showToast(`Loaded order for ${customerName}`);
 }
 
+// Switch history tab (today/weekly)
+function switchHistoryTab(tab) {
+  const todayDiv = el("historyToday");
+  const weeklyDiv = el("historyWeekly");
+  const tabToday = el("tabToday");
+  const tabWeekly = el("tabWeekly");
+  
+  if (tab === 'today') {
+    todayDiv.style.display = 'block';
+    weeklyDiv.style.display = 'none';
+    tabToday.style.borderBottomColor = 'var(--blue)';
+    tabWeekly.style.borderBottomColor = 'transparent';
+    renderHistory();
+  } else {
+    todayDiv.style.display = 'none';
+    weeklyDiv.style.display = 'block';
+    tabToday.style.borderBottomColor = 'transparent';
+    tabWeekly.style.borderBottomColor = 'var(--blue)';
+    renderWeeklyHistory();
+  }
+}
+
+// Render weekly history
+function renderWeeklyHistory() {
+  const today = new Date();
+  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  
+  const weeklySales = exportHistory.filter(sale => {
+    const saleDate = new Date(sale.date);
+    return saleDate >= weekAgo;
+  });
+  
+  const container = el("historyWeekly");
+  if (weeklySales.length === 0) {
+    container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--muted);">No sales in last 7 days</div>';
+    return;
+  }
+  
+  container.innerHTML = weeklySales.map((sale, i) => `
+    <div class="cardRow" style="cursor:pointer;" onclick="loadOrderFromHistory('${sale.customer.replace(/'/g, "\\'")}', ${JSON.stringify(sale.cartItems || []).replace(/"/g, '&quot;')})">
+      <div style="flex:1">
+        <b>${sale.customer}</b><br>
+        <small style="color:var(--muted); font-weight:700;">${sale.time} • ${sale.products} • ${sale.method}</small>
+      </div>
+      <b style="color:var(--blue);">₹${sale.amount}</b>
+    </div>
+  `).join('');
+  
+  // Update count
+  const todayCount = exportHistory.filter(s => s.date === new Date().toLocaleDateString()).length;
+  el("historyCount").textContent = `${todayCount} today • ${weeklySales.length} in 7d`;
+}
+
+// Export history to CSV
+function exportHistory() {
+  if (exportHistory.length === 0) return showToast("No history to export!");
+  
+  let csv = "Date,Time,Customer,Products,Amount,Payment Method\n";
+  exportHistory.forEach(r => {
+    let safeCust = r.customer.replace(/,/g, "");
+    let safeProd = r.products.replace(/,/g, " | ");
+    csv += `${r.date},${r.time},${safeCust},"${safeProd}",${r.amount},${r.method}\n`;
+  });
+  
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.setAttribute("href", url);
+  a.setAttribute("download", `MilkRecord_History_${new Date().toISOString().split('T')[0]}.csv`);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast("History Exported! 📊✅");
+}
+
+// Clear today's history
+function clearTodayHistory() {
+  const today = new Date().toLocaleDateString();
+  if (!confirm(`Clear all ${today} sales? This cannot be undone!`)) return;
+  
+  exportHistory = exportHistory.filter(sale => sale.date !== today);
+  localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
+  renderHistory();
+  renderWeeklyHistory();
+  showToast("Today's history cleared! 🗑️");
+}
+
       function exportDetailedExcel() {
     // 1. Check if history exists
     if(exportHistory.length === 0) return showToast("No sales to export!");
@@ -699,26 +808,41 @@ function loadOrderFromHistory(customerName, cartItems) {
       function closeModal(id) { el(id).style.display = "none"; }
       function showToast(msg) { const t = el("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1500); }
       
-      window.onload = () => { 
-    updateShift(); 
+      window.onload = () => {
+    updateShift();
     loadHistoryOnStart(); // Ye function history ke cards wapas banayega
-    setInterval(updateShift, 60000); 
+    setInterval(updateShift, 60000);
 }
 
 function loadHistoryOnStart() {
     const historyContainer = document.getElementById("historyToday");
     if(!historyContainer) return;
     historyContainer.innerHTML = "";
-    exportHistory.forEach(sale => {
-        // Purane records ko screen par wapas dikhana
-        const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px;">
+    
+    const today = new Date().toLocaleDateString();
+    const todaySales = exportHistory.filter(s => s.date === today);
+    
+    // Render today's history with clickable items
+    todaySales.forEach(sale => {
+        const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px; cursor:pointer;" onclick="loadOrderFromHistory('${sale.customer.replace(/'/g, "\\'")}', ${JSON.stringify(sale.cartItems || []).replace(/"/g, '&quot;')})">
             <div style="width:100%; display:flex; justify-content:space-between;">
               <b>${sale.customer}</b><b>₹${sale.amount}</b>
             </div>
-            <small style="color:var(--muted); font-weight:700;">${sale.time} • 🛒 ${sale.products} • ${sale.method}</small>
+            <small style="color:var(--muted); font-weight:700;">
+              ${sale.time} • 🛒 ${sale.products} • ${sale.method}
+              <span style="color:var(--blue); font-weight:700; margin-left:8px;">🔁 Click to reload</span>
+            </small>
           </div>`;
         historyContainer.insertAdjacentHTML('afterbegin', entry);
     });
+    
+    // Update count
+    const weeklyCount = exportHistory.filter(s => {
+      const saleDate = new Date(s.date);
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      return saleDate >= weekAgo;
+    }).length;
+    el("historyCount").textContent = `${todaySales.length} today • ${weeklyCount} in 7d`;
 }
 
 function toggleGaps() { el("gapsPanel").classList.toggle("open"); }
