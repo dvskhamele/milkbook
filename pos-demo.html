@@ -189,7 +189,7 @@
             <div class="amt" id="totalAmt">₹0.00</div>
           </div>
 
-          <!-- Advance/Cut Ledger Section -->
+          <!-- Advance/Cut Ledger Section - Collapsed by default -->
           <div id="advanceSection" style="display:none; background:#fef3c7; border:2px solid #f59e0b; border-radius:16px; margin:15px; padding:15px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
               <h4 style="margin:0; color:#92400e; font-size:14px;">📕 Advance Management</h4>
@@ -215,6 +215,11 @@
             <button onclick="updateAdvance()" style="width:100%; margin-top:10px; padding:12px; background:#f59e0b; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Update Advance</button>
             <button onclick="sendMonthlySummary()" style="width:100%; margin-top:8px; padding:12px; background:white; color:#92400e; border:1px solid #f59e0b; border-radius:8px; font-weight:700; cursor:pointer;">💬 Send Monthly Summary</button>
           </div>
+          
+          <!-- Advance Toggle Button (Always Visible) -->
+          <button onclick="toggleAdvance()" id="advanceToggleBtn" style="margin:0 15px; padding:10px; background:#fef3c7; border:2px solid #f59e0b; border-radius:12px; font-weight:700; color:#92400e; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+            📕 Advance / Udhar
+          </button>
 
           <div class="pay-grid">
             <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534;" onclick="saveEntry('Cash')">CASH</button>
@@ -436,7 +441,7 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           el("searchDropdown").style.display = "none";
           showToast("Customer: " + name);
           
-          // Show advance section for this customer
+          // Show advance toggle for this customer
           showAdvanceSection(name);
       }
       
@@ -445,6 +450,7 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         const customer = customers.find(c => c.name === customerName);
         if (!customer) {
           el("advanceSection").style.display = "none";
+          el("advanceToggleBtn").style.display = "none";
           return;
         }
         
@@ -454,7 +460,23 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         
         el("monthMilk").textContent = customer.monthMilk.toFixed(1) + ' L';
         el("currentAdvance").textContent = '₹' + customer.advance.toFixed(2);
-        el("advanceSection").style.display = 'block';
+        
+        // Show toggle button for this customer
+        el("advanceToggleBtn").style.display = "flex";
+      }
+      
+      // Toggle advance section visibility
+      function toggleAdvance() {
+        const section = el("advanceSection");
+        if (section.style.display === 'none' || section.style.display === '') {
+          section.style.display = 'block';
+          const customerName = el("activeCust").innerText;
+          if (customerName && customerName !== 'Walking Customer') {
+            showAdvanceSection(customerName);
+          }
+        } else {
+          section.style.display = 'none';
+        }
       }
       
       // Close advance section
@@ -847,7 +869,7 @@ function clearTodayHistory() {
         }
         closeModal('memoryModal');
       }
-      function resetCart() { cart = []; updateUI(); el("activeCust").innerText = "Walking Customer"; el("custSearch").value = ""; }
+      function resetCart() { cart = []; updateUI(); el("activeCust").innerText = "Walking Customer"; el("custSearch").value = ""; el("advanceSection").style.display = "none"; el("advanceToggleBtn").style.display = "none"; }
       function openModal(id) { el(id).style.display = "flex"; }
       function closeModal(id) { el(id).style.display = "none"; }
       function showToast(msg) { const t = el("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1500); }
