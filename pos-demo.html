@@ -93,7 +93,7 @@
       
       /* Card Image aur Selection Style */
 .p-card img { width: 45px; height: 45px; object-fit: cover; margin-bottom: 8px; border-radius: 10px; }
-.p-card.selected { border: 2px solid var(--blue) !important; background: #eff6ff; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15); }
+.p-card.selected { border: 3px solid var(--blue) !important; background: #eff6ff !important; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important; transform: scale(1.02); }
 .price-input { width: 60px; border: 1px solid var(--line); border-radius: 5px; padding: 2px; font-weight: bold; text-align: center; }
     </style>
   </head>
@@ -513,7 +513,7 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         updateUI(); 
         showToast(name + " added"); 
         
-        // Highlight the clicked card
+        // Highlight the clicked card by finding it via onclick attribute
         highlightProductCard(name);
       }
       
@@ -523,12 +523,11 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           card.classList.remove('selected');
         });
         
-        // Find and highlight the matching card
+        // Find the card by matching onclick attribute
         document.querySelectorAll('.p-card').forEach(card => {
-          const cardName = card.querySelector('[data-en]')?.textContent || card.textContent;
-          if (cardName.includes(productName)) {
+          const onclick = card.getAttribute('onclick') || '';
+          if (onclick.includes(`'${productName}'`)) {
             card.classList.add('selected');
-            // Scroll into view if needed
             card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }
         });
@@ -570,11 +569,11 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           card.classList.remove('selected');
         });
         
-        // Highlight cards for items in cart
+        // Highlight cards for items in cart by matching onclick
         cart.forEach(item => {
           document.querySelectorAll('.p-card').forEach(card => {
-            const cardName = card.querySelector('[data-en]')?.textContent || card.textContent;
-            if (cardName.includes(item.name)) {
+            const onclick = card.getAttribute('onclick') || '';
+            if (onclick.includes(`'${item.name}'`)) {
               card.classList.add('selected');
             }
           });
