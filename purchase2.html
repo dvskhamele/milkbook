@@ -173,11 +173,10 @@
     </div>
 </div>
           </div>
-          
-          <div class="qty-bar">
-            <button class="qty-btn" onclick="adjustQty(0.25)">+0.25</button>
-            <button class="qty-btn" onclick="adjustQty(0.5)">+0.5</button>
-            <button class="qty-btn" onclick="adjustQty(1.0)">+1.0</button>
+
+          <!-- Keyboard shortcuts info -->
+          <div style="padding: 8px 15px; background: #f8fafc; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); text-align: center;">
+            ⌨️ <strong>Keyboard:</strong> Enter = Next field | Esc = Clear search | F1 = New customer
           </div>
         </div>
 
@@ -329,32 +328,38 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           showToast(currentLang === 'en' ? "English Enabled" : "हिंदी सक्रिय");
       }
 
-      // Logic: Persistent Search Dropdown
+      // Logic: Persistent Search Dropdown with Keyboard Support
       function handleSearch(val) {
           const drop = el("searchDropdown");
           if(!val) { drop.style.display = "none"; return; }
           const filtered = customers.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
           if(filtered.length) {
-              drop.innerHTML = filtered.map(c => `<div class="drop-item" onclick="selectCust('${c.name}')">${c.name}</div>`).join('');
+              drop.innerHTML = filtered.map((c, i) => `<div class="drop-item" onclick="selectCust('${c.name}')" data-index="${i}">${c.name}</div>`).join('');
               drop.style.display = "block";
           } else { drop.style.display = "none"; }
       }
+      
+      // Add customer with validation
       function addCust() {
-    const name = el("newName").value;
-    const type = el("newType").value;
-    const sub = el("subQty").value || 0; // Subscription value lena
-    if(!name) return showToast("Name required!");
-    
-    customers.push({ name, lastOrder: "No order yet", rate: 0, qty: 0, type, sub });
-    localStorage.setItem('mr_pos_customers', JSON.stringify(customers)); // Storage save
-    
-    selectCust(name); 
-    closeModal('addCustModal'); 
-    el("newName").value = ""; 
-    el("subQty").value = "";
-    showToast(name + " Added!");
-}
+        const name = el("newName").value;
+        const type = el("newType").value;
+        const sub = el("subQty").value || 0;
+        if(!name) return showToast("Name required!");
 
+        customers.push({ name, lastOrder: "No order yet", rate: 0, qty: 0, type, sub });
+        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+
+        selectCust(name);
+        closeModal('addCustModal');
+        el("newName").value = "";
+        el("subQty").value = "";
+        showToast(name + " Added!");
+        
+        // Return focus to search
+        setTimeout(() => el("custSearch").focus(), 100);
+      }
+      
+      // Select customer from search
       function selectCust(name) {
           el("activeCust").innerText = name;
           el("custSearch").value = name;
@@ -362,7 +367,7 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           showToast("Customer: " + name);
       }
 
-      // Existing Code Logic (Untouched)
+      // Existing Code Logic
       function tapAdd(name, rate, qty) { 
         // Check if item already exists in cart
         const existingItem = cart.find(item => item.name === name && item.rate === rate);
@@ -376,7 +381,7 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         updateUI(); 
         showToast(name + " added"); 
       }
-      function adjustQty(val) { if(cart.length > 0) { cart[cart.length-1].qty += val; updateUI(); } }
+      // adjustQty removed - use inline quantity editing instead
       function updateUI() {
         const tbody = el("cartItems"); tbody.innerHTML = ""; total = 0;
         cart.forEach((i, index) => { 
@@ -550,6 +555,93 @@ function loadHistoryOnStart() {
 }
 
 function toggleGaps() { el("gapsPanel").classList.toggle("open"); }
+
+// Keyboard Navigation - Full End-to-End Invoice Creation
+document.addEventListener('keydown', function(e) {
+  // F1 = New Customer
+  if (e.key === 'F1') {
+    e.preventDefault();
+    openModal('addCustModal');
+    setTimeout(() => el("newName").focus(), 100);
+    return;
+  }
+  
+  // Enter key handling
+  if (e.key === 'Enter') {
+    // In search box - select first result or current customer
+    if (document.activeElement === el("custSearch")) {
+      const firstResult = document.querySelector('.drop-item');
+      if (firstResult) {
+        firstResult.click();
+      }
+      // Move focus to product grid (first product)
+      const firstProduct = document.querySelector('.p-card:not([onclick*="addProduct"])');
+      if (firstProduct) firstProduct.focus();
+      return;
+    }
+    
+    // In add customer modal - navigate fields
+    if (el("addCustModal").style.display === 'flex') {
+      if (document.activeElement === el("newName")) {
+        el("subQty").focus();
+      } else if (document.activeElement === el("subQty")) {
+        addCust();
+      }
+      return;
+    }
+    
+    // In cart quantity/amount fields - move to next
+    if (document.activeElement.tagName === 'INPUT' && 
+        document.activeElement.type === 'number' &&
+        document.activeElement.closest('.recent-table')) {
+      const inputs = Array.from(document.querySelectorAll('.recent-table input[type="number"]'));
+      const currentIndex = inputs.indexOf(document.activeElement);
+      if (currentIndex < inputs.length - 1) {
+        inputs[currentIndex + 1].focus();
+        inputs[currentIndex + 1].select();
+      }
+      return;
+    }
+  }
+  
+  // Escape - clear search
+  if (e.key === 'Escape') {
+    if (document.activeElement === el("custSearch")) {
+      el("custSearch").value = "";
+      el("searchDropdown").style.display = "none";
+    }
+    // Close any open modals
+    closeModal('addCustModal');
+    closeModal('memoryModal');
+    closeModal('historyModal');
+    return;
+  }
+  
+  // Number keys 1-9 when product grid focused - quick add
+  if (document.activeElement.classList.contains('p-card')) {
+    const num = parseInt(e.key);
+    if (num >= 1 && num <= 9) {
+      const products = document.querySelectorAll('.p-card:not([onclick*="addProduct"])');
+      if (products[num - 1]) {
+        products[num - 1].click();
+      }
+    }
+  }
+});
+
+// Make product cards focusable for keyboard navigation
+document.querySelectorAll('.p-card').forEach(card => {
+  card.setAttribute('tabindex', '0');
+  card.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this.click();
+    }
+  });
+});
+
+// Focus search on page load
+setTimeout(() => el("custSearch").focus(), 500);
     </script>
   </body>
 </html>
