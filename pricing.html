@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - MilkRecord Dairy Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; padding: 40px 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; font-size: 42px; margin-bottom: 20px; color: #1e40af; }
+        .subtitle { text-align: center; font-size: 18px; color: #64748b; margin-bottom: 50px; }
+        
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 60px; }
+        .pricing-card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; transition: transform 0.2s; }
+        .pricing-card:hover { transform: translateY(-5px); }
+        .pricing-card.popular { border: 3px solid #fbbf24; transform: scale(1.05); }
+        .pricing-card.popular::before { content: 'MOST POPULAR'; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .pricing-card h3 { font-size: 24px; margin-bottom: 10px; color: #1e293b; }
+        .price { font-size: 56px; font-weight: 900; color: #1e40af; margin: 20px 0; }
+        .price span { font-size: 18px; color: #64748b; font-weight: 400; }
+        .pricing-card .description { color: #64748b; margin-bottom: 20px; }
+        .pricing-card ul { list-style: none; margin-top: 20px; }
+        .pricing-card li { padding: 12px 0; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start; gap: 12px; }
+        .pricing-card li::before { content: '✅'; flex-shrink: 0; }
+        .pricing-card li.locked { color: #94a3b8; }
+        .pricing-card li.locked::before { content: '🔒'; }
+        .btn { display: block; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; border: none; text-align: center; margin-top: 20px; text-decoration: none; }
+        .btn-primary { background: #fbbf24; color: #78350f; }
+        .btn-primary:hover { background: #f59e0b; }
+        .btn-secondary { background: #1e40af; color: white; }
+        .btn-secondary:hover { background: #1e3a8a; }
+        .btn-disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; }
+        
+        .feature-comparison { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .feature-comparison h2 { text-align: center; margin-bottom: 30px; color: #1e40af; }
+        .comparison-table { width: 100%; border-collapse: collapse; }
+        .comparison-table th, .comparison-table td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+        .comparison-table th { background: #f8fafc; font-weight: 700; color: #1e293b; }
+        .comparison-table td:first-child { font-weight: 600; color: #475569; }
+        .comparison-table .check { color: #16a34a; font-size: 20px; }
+        .comparison-table .cross { color: #dc2626; font-size: 20px; }
+        .comparison-table .limited { color: #f59e0b; font-size: 14px; }
+        
+        .faq { margin-top: 60px; }
+        .faq h2 { text-align: center; margin-bottom: 30px; color: #1e40af; }
+        .faq-item { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .faq-item h3 { color: #1e293b; margin-bottom: 10px; }
+        .faq-item p { color: #64748b; line-height: 1.6; }
+        
+        .trial-notice { background: #fef3c7; border: 2px solid #f59e0b; padding: 20px; border-radius: 12px; margin-bottom: 30px; }
+        .trial-notice h3 { color: #92400e; margin-bottom: 10px; }
+        .trial-notice p { color: #78350f; line-height: 1.6; }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 32px; }
+            .pricing-card.popular { transform: none; }
+            .comparison-table { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Pricing for Dairy Shops</h1>
+        <p class="subtitle">Start free. Pay only if you love it. No hidden charges.</p>
+
+        <div class="trial-notice">
+            <h3>🎁 30-Day Free Trial</h3>
+            <p>Get full access to all Standard features for 30 days. No credit card required. After trial, you can continue using basic billing forever, or upgrade to unlock full features.</p>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>🟢 Trial</h3>
+                <div class="price">FREE<span>/30 days</span></div>
+                <p class="description">Perfect for testing all features</p>
+                <ul>
+                    <li>Full milk billing system</li>
+                    <li>Udhar (credit) tracking</li>
+                    <li>30-day detailed history</li>
+                    <li>Customer balance management</li>
+                    <li>Daily sales dashboard</li>
+                    <li>WhatsApp invoice sharing</li>
+                    <li class="locked">CSV/Excel export</li>
+                    <li class="locked">Monthly dairy sheet</li>
+                    <li class="locked">Milkman delivery sheet</li>
+                    <li class="locked">WhatsApp reminders</li>
+                    <li class="locked">1-year history</li>
+                    <li class="locked">Backup download</li>
+                </ul>
+                <a href="pos-demo.html" class="btn btn-secondary">Start Free Trial</a>
+                <p style="margin-top: 15px; font-size: 12px; color: #64748b; text-align: center;">After 30 days: Continues with limited features (3-day history, no export)</p>
+            </div>
+
+            <div class="pricing-card popular">
+                <h3>🔵 Standard</h3>
+                <div class="price">₹2000<span>/year</span></div>
+                <p class="description">For serious dairy shop owners</p>
+                <ul>
+                    <li><strong>Everything in Trial, plus:</strong></li>
+                    <li>✅ Unlimited transaction history</li>
+                    <li>✅ Monthly dairy settlement sheet</li>
+                    <li>✅ Milkman delivery summary</li>
+                    <li>✅ Customer-wise milk summary</li>
+                    <li>✅ CSV/Excel export</li>
+                    <li>✅ WhatsApp balance reminders</li>
+                    <li>✅ Monthly balance confirmation</li>
+                    <li>✅ Aging report (0-30, 30-60 days)</li>
+                    <li>✅ 1-year transaction history</li>
+                    <li>✅ Backup download</li>
+                    <li>✅ Priority support</li>
+                </ul>
+                <a href="pos-demo.html" class="btn btn-primary">Start 30-Day Free Trial</a>
+                <p style="margin-top: 15px; font-size: 12px; color: #64748b; text-align: center;">Pay ₹2000 only after trial ends</p>
+            </div>
+
+            <div class="pricing-card">
+                <h3>🟣 Growth Add-ons</h3>
+                <div class="price">Coming<span> Soon</span></div>
+                <p class="description">Optional modules for expansion</p>
+                <ul>
+                    <li class="locked">Advanced analytics dashboard</li>
+                    <li class="locked">Multi-branch support</li>
+                    <li class="locked">Cheque printing integration</li>
+                    <li class="locked">Loan ledger management</li>
+                    <li class="locked">GST filing integration</li>
+                    <li class="locked">SMS notifications</li>
+                    <li class="locked">Custom report builder</li>
+                </ul>
+                <button class="btn btn-disabled" disabled>Coming Soon</button>
+                <p style="margin-top: 15px; font-size: 12px; color: #64748b; text-align: center;">Contact us for enterprise pricing</p>
+            </div>
+        </div>
+
+        <!-- Feature Comparison -->
+        <div class="feature-comparison">
+            <h2>Feature Comparison</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Trial (Free)</th>
+                        <th>Standard (₹2000/yr)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Milk Billing (Cow/Buffalo)</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Udhar (Credit) Tracking</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Cash/UPI/Credit Payments</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Transaction History</td>
+                        <td><span class="limited">30 days</span></td>
+                        <td><span class="check">✓ Unlimited</span></td>
+                    </tr>
+                    <tr>
+                        <td>After Trial (Free Continuation)</td>
+                        <td><span class="limited">3 days only</span></td>
+                        <td><span class="check">✓ Full access</span></td>
+                    </tr>
+                    <tr>
+                        <td>Monthly Dairy Sheet</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Milkman Delivery Sheet</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Customer Milk Summary</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>CSV/Excel Export</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>WhatsApp Reminders</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Aging Report (0-30, 30-60 days)</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>1-Year History</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Backup Download</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Priority Support</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FAQ -->
+        <div class="faq">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <h3>What happens after 30-day trial?</h3>
+                <p>You can continue using the billing system forever for free, but with limited features: only 3-day history visible, no export, no monthly sheets. Upgrade to Standard to unlock all features and unlimited history.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Can I pay monthly instead of yearly?</h3>
+                <p>Currently we only offer annual billing (₹2000/year). This keeps costs low for dairy shop owners. Monthly plans may be available in the future.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Is my data safe?</h3>
+                <p>Yes! Your data is stored securely and backed up automatically. You can download backups anytime (Standard plan). We never sell or share your data.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Can I use this offline?</h3>
+                <p>Yes! MilkRecord works offline. Data is saved locally and syncs when you're back online. Perfect for areas with unstable internet.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>What if I have multiple dairy branches?</h3>
+                <p>Our Multi-branch add-on (coming soon) will support multiple locations with consolidated reporting. Contact us for enterprise solutions.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Do you offer refunds?</h3>
+                <p>Yes! If you're not satisfied within the first 30 days of paid subscription, we'll refund 100%. No questions asked.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Can I upgrade later?</h3>
+                <p>Absolutely! You can upgrade from Trial to Standard anytime. Your existing data will carry over seamlessly.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Is GST invoice available?</h3>
+                <p>Yes! Standard plan includes GST-ready monthly summary reports. GST filing integration is coming in Growth add-ons.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
