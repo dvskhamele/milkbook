@@ -3595,7 +3595,16 @@ el("snfInput").oninput = (e) => {
       };
 
       // Add farmer modal
-      el("btnAddFarmerMain").onclick = () => openOverlay("overlayFarmer");
+      window.addEventListener('DOMContentLoaded', function() {
+        const addBtn = el("btnAddFarmerMain");
+        if (addBtn) {
+          addBtn.onclick = () => openOverlay("overlayFarmer");
+          console.log('✅ + Farmer button initialized');
+        } else {
+          console.error('❌ + Farmer button not found!');
+        }
+      });
+      
       el("btnCreateFarmer").onclick = () => {
         const f = {
           id: uid("f"),
@@ -3608,13 +3617,27 @@ el("snfInput").oninput = (e) => {
         };
         if (!f.name) {
           showToast("Name required");
+          console.error('❌ Farmer creation failed: Name is required');
           return;
         }
         farmers.push(f);
         saveFarmers(farmers);
+        console.log('✅ Farmer created:', f);
+        console.log('💾 Saved to LocalStorage. Total farmers:', farmers.length);
+        
+        // Try to save to Supabase if enabled
+        if (window.USE_SUPABASE && window.MilkBookDB) {
+          window.MilkBookDB.farmers.create(f).then(() => {
+            console.log('✅ Also saved to Supabase!');
+          }).catch(err => {
+            console.error('⚠️ Could not save to Supabase:', err);
+          });
+        }
+        
         selectedFarmerId = f.id;
         closeOverlay("overlayFarmer");
         renderAll();
+        showToast("Farmer created! ✅");
       };
 
       // Close overlays

@@ -372,24 +372,24 @@
     </div>
 
     <div class="overlay" id="historyModal">
-      <div class="modal" style="height:auto; max-height:80vh;">
+      <div class="modal" style="width:700px; height:auto; max-height:90vh;">
         <div class="panelHeader">
           <span id="lblHistTitle">🧾 History</span>
           <button onclick="closeModal('historyModal')">✖</button>
         </div>
-        
+
         <!-- Tabs -->
         <div style="display:flex; border-bottom:1px solid var(--line); padding:0 20px;">
           <button onclick="switchHistoryTab('today')" id="tabToday" style="flex:1; padding:12px; border:none; background:none; font-weight:700; cursor:pointer; border-bottom:3px solid var(--blue);">📅 Today</button>
           <button onclick="switchHistoryTab('all')" id="tabAll" style="flex:1; padding:12px; border:none; background:none; font-weight:700; cursor:pointer; border-bottom:3px solid transparent;">📚 All History</button>
         </div>
-        
+
         <!-- Tab Content -->
-        <div class="modalBody" style="display:block; padding:15px; overflow-y:auto; max-height:50vh;">
+        <div class="modalBody" style="display:block; padding:15px; overflow-y:auto; max-height:70vh;">
           <div id="historyToday" style="display:block;"></div>
           <div id="historyWeekly" style="display:none;"></div>
         </div>
-        
+
         <!-- Footer Actions -->
         <div style="padding:15px 20px; border-top:1px solid var(--line); display:flex; gap:10px; justify-content:space-between;">
           <div style="font-size:13px; color:var(--muted); font-weight:700;">
