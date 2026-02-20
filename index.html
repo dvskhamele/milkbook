@@ -1374,34 +1374,24 @@
       <div class="core">
         <!-- LEFT -->
         <div class="panel">
-          <div class="panelHeader" style="padding: 6px 12px; height: 36px;">
-            <div style="display:flex; align-items:center; gap:8px; flex:1;">
-              <select id="collectionPointSelect" onchange="updateCollectionPoint()" style="padding:4px 8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; font-size:11px; background:white;">
-                <option value="DEFAULT">Default Booth</option>
-                <option value="VILLAGE_A">Village A</option>
-                <option value="VILLAGE_B">Village B</option>
-                <option value="MAIN_MARKET">Main Market</option>
-                <option value="GANDHI_CHOWK">Gandhi Chowk</option>
-              </select>
+          <div class="panelHeader">
+            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+              <div id="stationTitle">Milk Intake Station</div>
+              <div class="searchBox" style="flex: 1; max-width: 300px;">
+                🔎
+                <input
+                  id="searchInput"
+                  inputmode="search"
+                  autocomplete="off"
+                  placeholder="Search name…"
+                />
+              </div>
+              <button class="addNewBtn" id="btnAddFarmerMain" style="padding: 8px 16px; font-size: 13px;">
+                ＋ Farmer
+              </button>
             </div>
-            <div class="searchBox" style="flex: 1; max-width: 200px; margin: 0 8px;">
-              🔎
-              <input
-                id="searchInput"
-                inputmode="search"
-                autocomplete="off"
-                placeholder="Search farmer…"
-                style="padding: 6px 6px 6px 28px; font-size: 12px;"
-              />
-            </div>
-            <button class="addNewBtn" id="btnAddFarmerMain" style="padding: 6px 12px; font-size: 11px; height: 30px;">
-              ＋ Farmer
-            </button>
-            <div class="miniTag" id="farmerCount" style="margin-left: 8px; height: 30px; min-width: 50px; font-size: 10px;">0 👤</div>
-            <!-- Source Strength Indicator - Hover only -->
-            <div style="margin-left: 8px; padding: 6px 8px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; font-size: 10px; font-weight: 700; color: #92400e; cursor: help;" title="These entries are suitable for shop billing. Procurement-grade source verification requires a collection center system.">
-              📊 LOW
-            </div>
+            <small id="holdBadge"></small>
+            <div class="miniTag" id="farmerCount" style="margin-left: 8px;">0 👤</div>
           </div>
 
           <div class="actionBody">
