@@ -293,27 +293,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        let supabase = null;
-        
-        // HARDCODED SUPABASE CREDENTIALS FROM .ENV
-        const SUPABASE_URL = 'https://uoeswfuiwjluqomgepar.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_kTjJ_8DV78y3W63GFaZgSQ_G9PR4YyY';
-        
-        // Initialize Supabase immediately
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase initialized with hardcoded credentials');
-        
-        // Check existing session
-        const session = localStorage.getItem('milkbook_session');
-        if (session) {
-            const sessionData = JSON.parse(session);
-            if (sessionData.expires > Date.now()) {
-                window.location.href = 'pos-demo.html';
-            } else {
-                localStorage.removeItem('milkbook_session');
-            }
-        }
-
         // Switch between login and register tabs
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -352,7 +331,18 @@
             document.getElementById('successMessage').style.display = 'none';
         }
 
-        // Handle Login
+        // Check existing session
+        const session = localStorage.getItem('milkbook_session');
+        if (session) {
+            const sessionData = JSON.parse(session);
+            if (sessionData.expires > Date.now()) {
+                window.location.href = 'pos-demo.html';
+            } else {
+                localStorage.removeItem('milkbook_session');
+            }
+        }
+
+        // Handle Login - Calls Backend API
         async function handleLogin(event) {
             event.preventDefault();
             
@@ -365,65 +355,32 @@
             btn.innerHTML = '⏳ Logging in...';
             
             try {
-                // Demo login
-                if (email === 'demo@milkrecord.in' && password === 'demo123') {
-                    localStorage.setItem('milkbook_session', JSON.stringify({
-                        shop_name: shop,
-                        email: email,
-                        user_id: 'demo-user',
-                        expires: Date.now() + (24 * 60 * 60 * 1000)
-                    }));
-                    
-                    showSuccess('✅ Login successful! Redirecting...');
-                    setTimeout(() => {
-                        window.location.href = 'pos-demo.html';
-                    }, 1000);
-                    return;
+                // Call backend API
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Login failed');
                 }
                 
-                // Supabase login (if configured)
-                if (supabase) {
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email: email,
-                        password: password
-                    });
-                    
-                    if (error) throw error;
-                    
-                    localStorage.setItem('milkbook_session', JSON.stringify({
-                        shop_name: shop,
-                        email: email,
-                        user_id: data.user.id,
-                        token: data.session.access_token,
-                        expires: Date.now() + (24 * 60 * 60 * 1000)
-                    }));
-                    
-                    showSuccess('✅ Login successful! Redirecting...');
-                    setTimeout(() => {
-                        window.location.href = 'pos-demo.html';
-                    }, 1000);
-                    return;
-                }
+                // Save session
+                localStorage.setItem('milkbook_session', JSON.stringify({
+                    shop_name: data.user.shop,
+                    email: data.user.email,
+                    user_id: data.user.id,
+                    token: data.session.access_token,
+                    expires: Date.now() + (data.session.expires_in * 1000)
+                }));
                 
-                // Fallback: LocalStorage login
-                const users = JSON.parse(localStorage.getItem('milkbook_users') || '[]');
-                const user = users.find(u => u.email === email && u.password === password);
-                
-                if (user) {
-                    localStorage.setItem('milkbook_session', JSON.stringify({
-                        shop_name: user.shop,
-                        email: email,
-                        user_id: user.id,
-                        expires: Date.now() + (24 * 60 * 60 * 1000)
-                    }));
-                    
-                    showSuccess('✅ Login successful! Redirecting...');
-                    setTimeout(() => {
-                        window.location.href = 'pos-demo.html';
-                    }, 1000);
-                } else {
-                    throw new Error('Invalid credentials. User not found.');
-                }
+                showSuccess('✅ Login successful! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = 'pos-demo.html';
+                }, 1000);
                 
             } catch (error) {
                 showError('❌ ' + error.message);
@@ -432,7 +389,7 @@
             }
         }
 
-        // Handle Register
+        // Handle Register - Calls Backend API
         async function handleRegister(event) {
             event.preventDefault();
             
@@ -446,61 +403,26 @@
             btn.innerHTML = '⏳ Creating account...';
             
             try {
-                // Supabase registration (if configured)
-                if (supabase) {
-                    const { data, error } = await supabase.auth.signUp({
-                        email: email,
-                        password: password
-                    });
-                    
-                    if (error) throw error;
-                    
-                    // Create user profile in database
-                    try {
-                        await supabase.from('users').insert([{
-                            id: data.user.id,
-                            shop_id: data.user.id,
-                            shop_name: shop,
-                            phone: phone,
-                            role: 'admin'
-                        }]);
-                    } catch (dbError) {
-                        console.log('Note: Could not create profile table yet:', dbError.message);
-                    }
-                    
-                    showSuccess('✅ Account created! Please check your email.');
-                    setTimeout(() => {
-                        switchTab('login');
-                        document.getElementById('loginEmail').value = email;
-                    }, 2000);
-                    return;
+                // Call backend API
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ shop, email, phone, password })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Registration failed');
                 }
-                
-                // Fallback: LocalStorage registration
-                const users = JSON.parse(localStorage.getItem('milkbook_users') || '[]');
-                
-                if (users.find(u => u.email === email)) {
-                    throw new Error('Email already registered. Please login instead.');
-                }
-                
-                const newUser = {
-                    id: 'user-' + Date.now(),
-                    shop: shop,
-                    email: email,
-                    phone: phone,
-                    password: password,
-                    created: new Date().toISOString()
-                };
-                
-                users.push(newUser);
-                localStorage.setItem('milkbook_users', JSON.stringify(users));
                 
                 // Auto-login
                 localStorage.setItem('milkbook_session', JSON.stringify({
-                    shop_name: shop,
-                    email: email,
-                    user_id: newUser.id,
-                    expires: Date.now() + (24 * 60 * 60 * 1000)
+                    shop_name: data.user.shop,
+                    email: data.user.email,
+                    user_id: data.user.id,
+                    token: data.session.access_token,
+                    expires: Date.now() + (data.session.expires_in * 1000)
                 }));
                 
                 showSuccess('✅ Account created! Redirecting...');
