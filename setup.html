@@ -63,45 +63,23 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Check if already configured
+        // HARDCODED SUPABASE CREDENTIALS FROM .ENV
+        const SUPABASE_URL = 'https://uoeswfuiwjluqomgepar.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_kTjJ_8DV78y3W63GFaZgSQ_G9PR4YyY';
+        
+        // Auto-save and redirect
         window.addEventListener('DOMContentLoaded', () => {
-            const savedUrl = localStorage.getItem('milkbook_supabase_url');
-            const savedKey = localStorage.getItem('milkbook_supabase_key');
-            
-            if (savedUrl && savedKey) {
-                // Already configured, test connection
-                testAndRedirect(savedUrl, savedKey);
-            }
-        });
-
-        async function saveCredentials(event) {
-            event.preventDefault();
-            
-            const url = document.getElementById('supabaseUrl').value.trim();
-            const key = document.getElementById('supabaseKey').value.trim();
-            
-            if (!url || !key) {
-                showError('Please enter both URL and Key');
-                return;
-            }
-            
             // Save to localStorage
-            localStorage.setItem('milkbook_supabase_url', url);
-            localStorage.setItem('milkbook_supabase_key', key);
+            localStorage.setItem('milkbook_supabase_url', SUPABASE_URL);
+            localStorage.setItem('milkbook_supabase_key', SUPABASE_ANON_KEY);
             
-            // Test connection
-            const success = await testAndRedirect(url, key);
-            
-            if (success) {
-                showSuccess();
-            } else {
-                showError('Connection failed. Please check your credentials.');
-            }
-        }
-
-        async function testAndRedirect(url, key) {
+            // Test and redirect
+            testAndRedirect();
+        });
+        
+        async function testAndRedirect() {
             try {
-                const supabase = window.supabase.createClient(url, key);
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 
                 // Test connection
                 const { error } = await supabase.from('shops').select('id').limit(1);
@@ -111,10 +89,10 @@
                     throw error;
                 }
                 
-                return true;
+                showSuccess();
             } catch (err) {
                 console.error('Connection test failed:', err);
-                return false;
+                showError('Connection failed. Please check your credentials.');
             }
         }
 

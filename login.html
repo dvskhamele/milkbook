@@ -295,60 +295,24 @@
     <script>
         let supabase = null;
         
-        // Load Supabase credentials from .env or localStorage
-        async function loadCredentials() {
-            // Try localStorage first
-            let supabaseUrl = localStorage.getItem('milkbook_supabase_url');
-            let supabaseKey = localStorage.getItem('milkbook_supabase_key');
-            
-            // If not in localStorage, try to load from .env
-            if (!supabaseUrl || !supabaseKey) {
-                try {
-                    const response = await fetch('.env');
-                    const text = await response.text();
-                    const config = {};
-                    text.split('\n').forEach(line => {
-                        const [key, value] = line.split('=');
-                        if (key && value) {
-                            config[key.trim()] = value.trim();
-                        }
-                    });
-                    
-                    supabaseUrl = config.supabase_project_url;
-                    supabaseKey = config.supabase_publishable_key;
-                    
-                    if (supabaseUrl && supabaseKey) {
-                        localStorage.setItem('milkbook_supabase_url', supabaseUrl);
-                        localStorage.setItem('milkbook_supabase_key', supabaseKey);
-                        console.log('✅ Loaded credentials from .env');
-                    }
-                } catch (error) {
-                    console.log('⚠️ Could not load .env file');
-                }
-            }
-            
-            // Initialize Supabase if we have credentials
-            if (supabaseUrl && supabaseKey) {
-                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-                console.log('✅ Supabase initialized');
+        // HARDCODED SUPABASE CREDENTIALS FROM .ENV
+        const SUPABASE_URL = 'https://uoeswfuiwjluqomgepar.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_kTjJ_8DV78y3W63GFaZgSQ_G9PR4YyY';
+        
+        // Initialize Supabase immediately
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase initialized with hardcoded credentials');
+        
+        // Check existing session
+        const session = localStorage.getItem('milkbook_session');
+        if (session) {
+            const sessionData = JSON.parse(session);
+            if (sessionData.expires > Date.now()) {
+                window.location.href = 'pos-demo.html';
             } else {
-                console.log('⚠️ No Supabase credentials. Using LocalStorage mode.');
-            }
-            
-            // Check existing session
-            const session = localStorage.getItem('milkbook_session');
-            if (session) {
-                const sessionData = JSON.parse(session);
-                if (sessionData.expires > Date.now()) {
-                    window.location.href = 'pos-demo.html';
-                } else {
-                    localStorage.removeItem('milkbook_session');
-                }
+                localStorage.removeItem('milkbook_session');
             }
         }
-        
-        // Load credentials on page load
-        loadCredentials();
 
         // Switch between login and register tabs
         function switchTab(tab) {

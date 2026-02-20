@@ -97,21 +97,19 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        let supabase = null;
-
-        // Load saved credentials
+        // HARDCODED SUPABASE CREDENTIALS FROM .ENV
+        const SUPABASE_URL = 'https://uoeswfuiwjluqomgepar.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_kTjJ_8DV78y3W63GFaZgSQ_G9PR4YyY';
+        
+        let supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase initialized with hardcoded credentials');
+        
+        // Auto-test connection on load
         window.addEventListener('DOMContentLoaded', () => {
-            const savedUrl = localStorage.getItem('milkbook_supabase_url');
-            const savedKey = localStorage.getItem('milkbook_supabase_key');
-            
-            if (savedUrl && savedKey) {
-                document.getElementById('supabaseUrl').value = savedUrl;
-                document.getElementById('supabaseKey').value = savedKey;
-                log('✅ Loaded saved credentials');
-                initializeSupabase(savedUrl, savedKey);
-            } else {
-                log('⚠️ No saved credentials. Enter your Supabase credentials above.');
-            }
+            document.getElementById('supabaseUrl').value = SUPABASE_URL;
+            document.getElementById('supabaseKey').value = SUPABASE_ANON_KEY;
+            log('✅ Credentials loaded from .env');
+            testConnection();
         });
 
         // Save credentials
