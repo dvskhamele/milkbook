@@ -1665,11 +1665,25 @@
     <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
-    <!-- Backend Connection -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-backend.js"></script>
+    <!-- Backend -->
+    <script src="simple-backend.js"></script>
     <script>
-      console.log('🚀 MilkBook Backend Initializing...');
+      console.log('🚀 Collection Page Loading...');
+      
+      // Debug: Check if backend loaded
+      window.addEventListener('DOMContentLoaded', function() {
+        console.log('✅ DOM Loaded');
+        console.log('Backend available:', !!window.MilkBookDB);
+        
+        // Test backend
+        if (window.MilkBookDB) {
+          window.MilkBookDB.farmers.getAll().then(result => {
+            console.log('✅ Backend working! Farmers:', result.farmers.length);
+          }).catch(err => {
+            console.error('❌ Backend error:', err);
+          });
+        }
+      });
     </script>
 
     <!-- HISTORY MODAL -->
