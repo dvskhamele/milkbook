@@ -16,6 +16,9 @@
     button { background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; margin: 5px; }
     button:hover { background: #2563eb; }
     pre { background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+    .setup-steps { background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 15px 0; }
+    .setup-steps ol { margin: 10px 0; padding-left: 20px; }
+    .setup-steps li { margin: 8px 0; color: #1e40af; }
   </style>
 </head>
 <body>
@@ -24,6 +27,23 @@
   <div class="card">
     <h2>Current Status</h2>
     <div id="statusContent">Checking...</div>
+  </div>
+
+  <div class="card" id="setupCard" style="display:none;">
+    <h2>📋 Supabase Setup Required</h2>
+    <div class="setup-steps">
+      <h3>Quick Setup (2 minutes):</h3>
+      <ol>
+        <li>Go to <a href="https://supabase.com" target="_blank">supabase.com</a></li>
+        <li>Create new project (or select existing)</li>
+        <li>Go to <strong>Settings ⚙️ → API</strong></li>
+        <li>Copy <strong>Project URL</strong> and <strong>anon key</strong></li>
+        <li>Edit <code>supabase-backend.js</code> lines 8-9</li>
+        <li>Replace with your credentials</li>
+        <li>Save and redeploy to Vercel</li>
+      </ol>
+    </div>
+    <p><strong>OR</strong> continue with LocalStorage - works perfectly for single-device use!</p>
   </div>
 
   <div class="card">
@@ -39,63 +59,88 @@
     <pre id="output">Ready to test...</pre>
   </div>
 
-  <script src="demo-backend.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-backend.js"></script>
   <script>
     // Show current status
     function showStatus() {
       const statusDiv = document.getElementById('statusContent');
+      const setupCard = document.getElementById('setupCard');
       
-      if (window.DEMO_MODE) {
+      const status = window.MilkBookDB.getStatus();
+      
+      if (status.useSupabase) {
         statusDiv.innerHTML = `
-          <div class="status success">✅ Demo Mode Active</div>
-          <p style="margin-top: 10px;">Backend is working with LocalStorage!</p>
-          <p><strong>No configuration needed - works immediately!</strong></p>
+          <div class="status success">✅ Supabase Connected</div>
+          <p style="margin-top: 10px;">Connected to Supabase database</p>
+          <p><strong>URL:</strong> <code>${SUPABASE_URL.substring(0, 40)}...</code></p>
           <p style="margin-top: 15px; font-size: 14px; color: #64748b;">
-            💡 Data saves to your browser. Start using the app now!
+            ✅ Data syncs across devices
           </p>
         `;
+        setupCard.style.display = 'none';
+      } else {
+        statusDiv.innerHTML = `
+          <div class="status warning">💾 LocalStorage Mode</div>
+          <p style="margin-top: 10px;">Using browser storage (works offline)</p>
+          <p><strong>Current setup:</strong> Demo credentials (will use LocalStorage)</p>
+          <p style="margin-top: 15px; font-size: 14px; color: #64748b;">
+            💡 Perfect for single-device use. Add Supabase credentials for multi-device sync.
+          </p>
+        `;
+        setupCard.style.display = 'block';
       }
     }
 
     // Test connection
     async function testConnection() {
       const output = document.getElementById('output');
-      output.textContent = 'Testing backend connection...\n';
+      output.textContent = 'Testing backend connection...\n\n';
 
-      if (window.DEMO_MODE) {
-        output.textContent += '✅ Demo Mode Active!\n\n';
+      const status = window.MilkBookDB.getStatus();
+      output.textContent += `Backend Mode: ${status.message}\n\n`;
+      
+      try {
+        // Test farmers
+        output.textContent += '1. Testing farmers...\n';
+        const farmers = await window.MilkBookDB.farmers.getAll();
+        output.textContent += `   ✅ ${farmers.farmers.length} farmer(s)\n`;
+
+        // Test entries
+        output.textContent += '2. Testing milk entries...\n';
+        const entries = await window.MilkBookDB.entries.getAll();
+        output.textContent += `   ✅ ${entries.entries.length} entry(ies)\n`;
+
+        // Test customers
+        output.textContent += '3. Testing customers...\n';
+        const customers = await window.MilkBookDB.customers.getAll();
+        output.textContent += `   ✅ ${customers.customers.length} customer(s)\n`;
+
+        // Test sales
+        output.textContent += '4. Testing sales...\n';
+        const sales = await window.MilkBookDB.sales.getAll();
+        output.textContent += `   ✅ ${sales.sales.length} sale(s)\n`;
+
+        output.textContent += '\n✅ Backend working perfectly!\n';
         
-        try {
-          // Test farmers
-          output.textContent += '1. Testing farmers...\n';
-          const farmers = await window.MilkBookDB.farmers.getAll();
-          output.textContent += `   ✅ ${farmers.farmers.length} farmer(s)\n`;
-
-          // Test entries
-          output.textContent += '2. Testing milk entries...\n';
-          const entries = await window.MilkBookDB.entries.getAll();
-          output.textContent += `   ✅ ${entries.entries.length} entry(ies)\n`;
-
-          // Test customers
-          output.textContent += '3. Testing customers...\n';
-          const customers = await window.MilkBookDB.customers.getAll();
-          output.textContent += `   ✅ ${customers.customers.length} customer(s)\n`;
-
-          // Test sales
-          output.textContent += '4. Testing sales...\n';
-          const sales = await window.MilkBookDB.sales.getAll();
-          output.textContent += `   ✅ ${sales.sales.length} sale(s)\n`;
-
-          output.textContent += '\n✅ Backend working perfectly!\n';
-          output.textContent += '\n💡 Start using:\n';
-          output.textContent += '   1. Go to Collection → Add farmers\n';
-          output.textContent += '   2. Go to POS → Make sales\n';
-          output.textContent += '   3. Data saves automatically!\n';
-
-        } catch (error) {
-          output.textContent += `❌ Error: ${error.message}\n`;
+        if (!status.useSupabase) {
+          output.textContent += '\n💡 Using LocalStorage (browser storage)\n';
+          output.textContent += '   - Works offline\n';
+          output.textContent += '   - Data persists in browser\n';
+          output.textContent += '   - Perfect for single device\n';
+          output.textContent += '\n📋 To enable Supabase:\n';
+          output.textContent += '   1. Get credentials from supabase.com\n';
+          output.textContent += '   2. Edit supabase-backend.js lines 8-9\n';
+          output.textContent += '   3. Redeploy to Vercel\n';
+        } else {
+          output.textContent += '\n✅ Using Supabase (cloud database)\n';
+          output.textContent += '   - Syncs across devices\n';
+          output.textContent += '   - Cloud backup\n';
+          output.textContent += '   - Team access\n';
         }
-        return;
+
+      } catch (error) {
+        output.textContent += `❌ Error: ${error.message}\n`;
       }
     }
 
@@ -106,6 +151,7 @@
         localStorage.removeItem('milkbook_entries');
         localStorage.removeItem('mr_pos_customers');
         localStorage.removeItem('mr_sales_history');
+        const output = document.getElementById('output');
         output.textContent = '✅ All data cleared! Refreshing...';
         setTimeout(() => location.reload(), 1000);
       }
