@@ -1665,45 +1665,12 @@
     <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
-    <!-- Auth check and backend connection -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-    <script src="netlify-client.js"></script>
+    <!-- Demo Backend - Works Immediately! -->
+    <script src="demo-backend.js"></script>
     <script>
-      // Check Supabase configuration
-      if (!window.MilkBookConfig.isConfigured()) {
-        console.warn('⚠️ Supabase not configured! Check .env file');
-      }
-      
-      // Check authentication on page load
-      window.addEventListener('DOMContentLoaded', async () => {
-        // Check if user is logged in
-        if (!window.MilkBookAPI.auth.isLoggedIn()) {
-          window.location.href = 'login.html';
-          return;
-        }
-        
-        // Load data from backend if API mode is enabled
-        if (window.USE_API) {
-          try {
-            // Load farmers
-            const { farmers } = await window.MilkBookAPI.farmers.getAll();
-            if (farmers && farmers.length > 0) {
-              localStorage.setItem('milkbook_farmers', JSON.stringify(farmers));
-            }
-            
-            // Load milk entries
-            const { entries } = await window.MilkBookAPI.milkEntries.getAll();
-            if (entries && entries.length > 0) {
-              localStorage.setItem('milkbook_entries', JSON.stringify(entries));
-            }
-            
-            console.log('✅ Data loaded from backend');
-          } catch (error) {
-            console.error('Failed to load data from backend:', error);
-          }
-        }
-      });
+      console.log('✅ MilkBook Demo Mode Ready!');
+      console.log('💾 Data saves to browser (LocalStorage)');
+      console.log('🚀 No configuration needed!');
     </script>
 
     <!-- HISTORY MODAL -->

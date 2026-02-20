@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Backend Status - MilkRecord</title>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: system-ui; max-width: 800px; margin: 40px auto; padding: 20px; background: #f8fafc; }
+    .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .status { padding: 8px 16px; border-radius: 8px; font-weight: 700; display: inline-block; }
+    .status.error { background: #fee2e2; color: #991b1b; }
+    .status.success { background: #dcfce7; color: #166534; }
+    .status.warning { background: #fef3c7; color: #92400e; }
+    h1 { color: #1e293b; }
+    h2 { color: #475569; font-size: 18px; margin-top: 0; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+    button { background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; margin: 5px; }
+    button:hover { background: #2563eb; }
+    pre { background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>🔧 Backend Status</h1>
+
+  <div class="card">
+    <h2>Current Status</h2>
+    <div id="statusContent">Checking...</div>
+  </div>
+
+  <div class="card">
+    <h2>Quick Actions</h2>
+    <button onclick="testConnection()">Test Backend</button>
+    <button onclick="clearData()" style="background: #dc2626;">Clear All Data</button>
+    <a href="index.html"><button style="background: #16a34a;">Go to Collection</button></a>
+    <a href="pos-demo.html"><button style="background: #16a34a;">Go to POS</button></a>
+  </div>
+
+  <div class="card">
+    <h2>Console Output</h2>
+    <pre id="output">Ready to test...</pre>
+  </div>
+
+  <script src="demo-backend.js"></script>
+  <script>
+    // Show current status
+    function showStatus() {
+      const statusDiv = document.getElementById('statusContent');
+      
+      if (window.DEMO_MODE) {
+        statusDiv.innerHTML = `
+          <div class="status success">✅ Demo Mode Active</div>
+          <p style="margin-top: 10px;">Backend is working with LocalStorage!</p>
+          <p><strong>No configuration needed - works immediately!</strong></p>
+          <p style="margin-top: 15px; font-size: 14px; color: #64748b;">
+            💡 Data saves to your browser. Start using the app now!
+          </p>
+        `;
+      }
+    }
+
+    // Test connection
+    async function testConnection() {
+      const output = document.getElementById('output');
+      output.textContent = 'Testing backend connection...\n';
+
+      if (window.DEMO_MODE) {
+        output.textContent += '✅ Demo Mode Active!\n\n';
+        
+        try {
+          // Test farmers
+          output.textContent += '1. Testing farmers...\n';
+          const farmers = await window.MilkBookDB.farmers.getAll();
+          output.textContent += `   ✅ ${farmers.farmers.length} farmer(s)\n`;
+
+          // Test entries
+          output.textContent += '2. Testing milk entries...\n';
+          const entries = await window.MilkBookDB.entries.getAll();
+          output.textContent += `   ✅ ${entries.entries.length} entry(ies)\n`;
+
+          // Test customers
+          output.textContent += '3. Testing customers...\n';
+          const customers = await window.MilkBookDB.customers.getAll();
+          output.textContent += `   ✅ ${customers.customers.length} customer(s)\n`;
+
+          // Test sales
+          output.textContent += '4. Testing sales...\n';
+          const sales = await window.MilkBookDB.sales.getAll();
+          output.textContent += `   ✅ ${sales.sales.length} sale(s)\n`;
+
+          output.textContent += '\n✅ Backend working perfectly!\n';
+          output.textContent += '\n💡 Start using:\n';
+          output.textContent += '   1. Go to Collection → Add farmers\n';
+          output.textContent += '   2. Go to POS → Make sales\n';
+          output.textContent += '   3. Data saves automatically!\n';
+
+        } catch (error) {
+          output.textContent += `❌ Error: ${error.message}\n`;
+        }
+        return;
+      }
+    }
+
+    // Clear all data
+    function clearData() {
+      if (confirm('Clear all data? This cannot be undone!')) {
+        localStorage.removeItem('milkbook_farmers');
+        localStorage.removeItem('milkbook_entries');
+        localStorage.removeItem('mr_pos_customers');
+        localStorage.removeItem('mr_sales_history');
+        output.textContent = '✅ All data cleared! Refreshing...';
+        setTimeout(() => location.reload(), 1000);
+      }
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', showStatus);
+  </script>
+</body>
+</html>
