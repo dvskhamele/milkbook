@@ -18,6 +18,8 @@ module.exports = async (req, res) => {
   }
 
   try {
+    const defaultShopId = '00000000-0000-0000-0000-000000000001';
+    
     // GET - Get all customers
     if (req.method === 'GET') {
       const { data, error } = await supabase.from('customers').select('*').order('name');
@@ -33,12 +35,16 @@ module.exports = async (req, res) => {
       
       const { data, error } = await supabase
         .from('customers')
-        .insert([{ name, phone, email, balance: balance || 0 }])
+        .insert([{
+          shop_id: defaultShopId,
+          name, phone, email, balance: balance || 0
+        }])
         .select()
         .single();
       
       if (error) throw error;
       
+      console.log('✅ Customer created:', data.id);
       return res.status(201).json({ success: true, customer: data });
     }
 
@@ -55,6 +61,7 @@ module.exports = async (req, res) => {
       
       if (error) throw error;
       
+      console.log('✅ Customer updated:', data.id);
       return res.status(200).json({ success: true, customer: data });
     }
 

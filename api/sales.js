@@ -35,21 +35,32 @@ module.exports = async (req, res) => {
 
     // POST - Create sale
     if (req.method === 'POST') {
-      const { customer_name, items, total_amount, payment_mode } = req.body;
+      const { customer_id, customer_name, items, total_amount, paid_amount, credit_amount, payment_mode } = req.body;
+      
+      // Generate a default shop_id if not provided (for demo/testing)
+      const defaultShopId = '00000000-0000-0000-0000-000000000001';
       
       const { data, error } = await supabase
         .from('retail_sales')
         .insert([{
+          shop_id: defaultShopId,
+          customer_id: customer_id || null,
           customer_name,
           items,
           total_amount,
+          paid_amount: paid_amount || total_amount,
+          credit_amount: credit_amount || 0,
           payment_mode: payment_mode || 'cash'
         }])
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
       
+      console.log('✅ Sale saved:', data.id);
       return res.status(201).json({ success: true, sale: data });
     }
 
