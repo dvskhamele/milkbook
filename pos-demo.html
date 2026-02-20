@@ -728,12 +728,37 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
       function toggleLanguage() {
           currentLang = currentLang === 'en' ? 'hi' : 'en';
           const t = langData[currentLang];
-          el("shopTitle").textContent = t.shop;
-          el("btnMem").innerHTML = t.mem; el("btnHist").innerHTML = t.hist; el("btnExp").innerHTML = t.exp;
-          el("lblTerm").textContent = t.term; el("lblSum").textContent = t.sum; el("lblPayable").textContent = t.payable;
-          el("btnCash").textContent = t.cash; el("btnCredit").textContent = t.credit;
-          el("txtHold").textContent = t.hold; el("txtDone").textContent = t.done; el("txtClear").textContent = t.clear;
           
+          // Safe element updates with null checks
+          const shopTitle = el("shopTitle");
+          if (shopTitle) shopTitle.textContent = t.shop;
+          
+          const btnMem = el("btnMem");
+          if (btnMem) btnMem.innerHTML = t.mem;
+          const btnHist = el("btnHist");
+          if (btnHist) btnHist.innerHTML = t.hist;
+          const btnExp = el("btnExp");
+          if (btnExp) btnExp.innerHTML = t.exp;
+          
+          const lblTerm = el("lblTerm");
+          if (lblTerm) lblTerm.textContent = t.term;
+          const lblSum = el("lblSum");
+          if (lblSum) lblSum.textContent = t.sum;
+          const lblPayable = el("lblPayable");
+          if (lblPayable) lblPayable.textContent = t.payable;
+          
+          const btnCash = el("btnCash");
+          if (btnCash) btnCash.textContent = t.cash;
+          const btnCredit = el("btnCredit");
+          if (btnCredit) btnCredit.textContent = t.credit;
+          
+          const txtHold = el("txtHold");
+          if (txtHold) txtHold.textContent = t.hold;
+          const txtDone = el("txtDone");
+          if (txtDone) txtDone.textContent = t.done;
+          const txtClear = el("txtClear");
+          if (txtClear) txtClear.textContent = t.clear;
+
           // Cards translation using data attributes
           document.querySelectorAll("[data-en]").forEach(i => i.textContent = currentLang === 'en' ? i.dataset.en : i.dataset.hi);
           updateShift();
@@ -886,12 +911,15 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
       
       // Generate invoice HTML and download as PDF
       function generateInvoice(customerName, paymentAmount, paymentMode, creditAmount) {
-        const date = new Date().toLocaleDateString('en-IN', { 
+        const date = new Date().toLocaleDateString('en-IN', {
           day: 'numeric', month: 'short', year: 'numeric',
           hour: '2-digit', minute: '2-digit'
         });
         const invoiceNo = 'INV-' + Date.now().toString().slice(-6);
         
+        // Get customer object for phone number
+        const customer = customers.find(c => c.name === customerName);
+
         // Create invoice HTML
         const invoiceHTML = `
           <!DOCTYPE html>
@@ -2292,14 +2320,16 @@ document.addEventListener('keydown', function(e) {
     }
     
     // In cart quantity/amount fields - move to next
-    if (document.activeElement.tagName === 'INPUT' && 
+    if (document.activeElement.tagName === 'INPUT' &&
         document.activeElement.type === 'number' &&
         document.activeElement.closest('.recent-table')) {
       const inputs = Array.from(document.querySelectorAll('.recent-table input[type="number"]'));
-      const currentIndex = inputs.indexOf(document.activeElement);
-      if (currentIndex < inputs.length - 1) {
-        inputs[currentIndex + 1].focus();
-        inputs[currentIndex + 1].select();
+      if (inputs && inputs.length > 0) {
+        const currentIndex = inputs.indexOf(document.activeElement);
+        if (currentIndex >= 0 && currentIndex < inputs.length - 1) {
+          inputs[currentIndex + 1].focus();
+          inputs[currentIndex + 1].select();
+        }
       }
       return;
     }

@@ -4497,17 +4497,19 @@ These are required for procurement-grade accountability.`;
   alert(msg);
 }
 
-// Quantity threshold nudge logic
-const qtyInput = el('qtyInput');
-if (qtyInput) {
-  qtyInput.addEventListener('input', function() {
-    const qty = parseFloat(this.value) || 0;
-    const nudge = el('qtyThresholdNudge');
-    if (nudge) {
-      nudge.style.display = qty > 20 ? 'block' : 'none';
-    }
-  });
-}
+// Quantity threshold nudge logic (wrapped to avoid duplicate declaration)
+(function() {
+  const qtyInputLocal = el('qtyInput');
+  if (qtyInputLocal) {
+    qtyInputLocal.addEventListener('input', function() {
+      const qty = parseFloat(this.value) || 0;
+      const nudge = el('qtyThresholdNudge');
+      if (nudge) {
+        nudge.style.display = qty > 20 ? 'block' : 'none';
+      }
+    });
+  }
+})();
 
 // Balance risk marker logic - add to renderTrust
 const originalRenderTrust = window.renderTrust || function() {};
