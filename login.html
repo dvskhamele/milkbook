@@ -21,7 +21,7 @@
             border-radius: 24px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
             padding: 40px;
         }
         .logo {
@@ -193,16 +193,6 @@
             position: relative;
             z-index: 1;
         }
-        .setup-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 13px;
-        }
-        .setup-link a {
-            color: #667eea;
-            font-weight: 700;
-            text-decoration: none;
-        }
     </style>
 </head>
 <body>
@@ -221,19 +211,15 @@
         <div class="error-message" id="errorMessage"></div>
         <div class="success-message" id="successMessage"></div>
 
-        <!-- Login Form -->
+        <!-- Login Form - Email & Password ONLY -->
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-group">
-                <label>Shop Name</label>
-                <input type="text" id="loginShop" placeholder="Enter shop name" required />
-            </div>
-            <div class="form-group">
                 <label>Email</label>
-                <input type="email" id="loginEmail" placeholder="Enter email" required />
+                <input type="email" id="loginEmail" placeholder="Enter your email" required />
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter password" required />
+                <input type="password" id="loginPassword" placeholder="Enter your password" required />
             </div>
             <button type="submit" class="login-btn" id="loginBtn">
                 Login to Dashboard
@@ -248,7 +234,7 @@
             </div>
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" id="regEmail" placeholder="Enter email" required />
+                <input type="email" id="regEmail" placeholder="Enter your email" required />
             </div>
             <div class="form-group">
                 <label>Phone</label>
@@ -270,10 +256,6 @@
         <div class="demo-box">
             <h4>📝 Demo Credentials</h4>
             <div class="credential">
-                <strong>Shop Name:</strong>
-                <code>Gopal Dairy Shop</code>
-            </div>
-            <div class="credential">
                 <strong>Email:</strong>
                 <code>demo@milkrecord.in</code>
             </div>
@@ -285,13 +267,8 @@
                 💡 Perfect for testing the app!
             </p>
         </div>
-
-        <div class="setup-link">
-            <p>Have Supabase? <a href="test-supabase.html" target="_blank">Test Connection →</a></p>
-        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Switch between login and register tabs
         function switchTab(tab) {
@@ -346,7 +323,6 @@
         async function handleLogin(event) {
             event.preventDefault();
             
-            const shop = document.getElementById('loginShop').value;
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
