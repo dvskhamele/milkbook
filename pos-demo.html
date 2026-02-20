@@ -547,10 +547,9 @@
       </div>
     </div>
 
-    <script src="simple-backend.js"></script>
+    <!-- Backend API Calls -->
     <script>
-      console.log('🚀 POS Page Loading...');
-      console.log('Backend:', !!window.MilkBookDB);
+      console.log('🚀 POS Backend: Using Supabase APIs');
     </script>
     <script>
       // Check if backend is configured
@@ -1252,6 +1251,24 @@ MilkRecord POS`;
       // Logic: Persistent Search Dropdown with Keyboard Support
       let selectedDropIndex = -1;
       
+      // Load customers from API on page load
+      async function loadCustomers() {
+        try {
+          const response = await fetch('/api/customers');
+          const result = await response.json();
+          
+          if (result.success && result.customers) {
+            customers = result.customers;
+            console.log('✅ Loaded', customers.length, 'customers from Supabase');
+          }
+        } catch (error) {
+          console.error('Error loading customers:', error);
+        }
+      }
+      
+      // Load customers on page load
+      loadCustomers();
+
       function handleSearch(val) {
           const drop = el("searchDropdown");
           const searchVal = val.trim();
@@ -1265,7 +1282,7 @@ MilkRecord POS`;
           if (searchVal || document.activeElement === el("custSearch")) {
               let html = '';
               selectedDropIndex = -1;
-              
+
               // Always show "Add New Customer" option at top
               if (searchVal) {
                   html += `
@@ -1280,7 +1297,7 @@ MilkRecord POS`;
                     </div>
                   `;
               }
-              
+
               // Show matching customers
               if (filtered.length > 0) {
                   html += filtered.map((c, i) => `
@@ -1290,7 +1307,7 @@ MilkRecord POS`;
                         <div style="font-size:11px; color:var(--muted);">${c.phone || 'No phone'}</div>
                       </div>
                       <div style="text-align:right;">
-                        ${c.advance > 0 ? `<div style="font-size:11px; color:#dc2626; font-weight:700;">📕 ₹${c.advance.toFixed(2)}</div>` : ''}
+                        ${c.balance > 0 ? `<div style="font-size:11px; color:#dc2626; font-weight:700;">📕 ₹${c.balance.toFixed(2)}</div>` : ''}
                         <div style="font-size:11px; color:var(--muted);">Bal: ₹${(c.balance || 0).toFixed(2)}</div>
                       </div>
                     </div>
@@ -1298,7 +1315,7 @@ MilkRecord POS`;
               } else if (!searchVal) {
                   html += '<div style="padding:15px; text-align:center; color:var(--muted); font-size:12px;">Start typing to search customers</div>';
               }
-              
+
               drop.innerHTML = html;
               drop.style.display = 'block';
           } else {
@@ -1340,10 +1357,10 @@ MilkRecord POS`;
         });
       }
       
-      // Add customer directly from dropdown (no popup)
-      function addCustomerDirect(name) {
+      // Add customer directly from dropdown (calls API)
+      async function addCustomerDirect(name) {
         if (!name) return;
-        
+
         // Check if customer already exists
         const existing = customers.find(c => c.name.toLowerCase() === name.toLowerCase());
         if (existing) {
@@ -1351,24 +1368,30 @@ MilkRecord POS`;
           showToast('Customer selected: ' + name);
           return;
         }
-        
-        // Add new customer directly
-        customers.push({ 
-          name: name, 
-          lastOrder: "No order yet", 
-          rate: 0, 
-          qty: 0, 
-          type: "Retail",
-          sub: 0,
-          balance: 0,
-          advance: 0
-        });
-        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
-        
-        selectCust(name);
-        el("custSearch").value = name;
-        el("searchDropdown").style.display = 'none';
-        showToast(name + ' added! ✅');
+
+        try {
+          // Create customer via API
+          const response = await fetch('/api/customers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name })
+          });
+
+          const result = await response.json();
+          
+          if (result.success) {
+            // Add to local array for immediate UI update
+            customers.push(result.customer);
+            
+            selectCust(name);
+            el("custSearch").value = name;
+            el("searchDropdown").style.display = 'none';
+            showToast(name + ' added to Supabase! ✅');
+          }
+        } catch (error) {
+          console.error('Error creating customer:', error);
+          showToast('❌ Failed to add customer');
+        }
       }
       
       // Show all customers when search is focused
@@ -1681,90 +1704,95 @@ MilkRecord POS`;
         showToast("Item removed");
       }
 
-      // Save entry with auto-customer creation
-     function saveEntry(mode) {
-    if(total === 0) return showToast("Cart empty");
-    const custName = el("activeCust").innerText;
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const itemsDetail = cart.map(i => `${i.qty}x ${i.name}`).join(" | ");
+      // Save entry with API call to Supabase
+      async function saveEntry(mode) {
+        if(total === 0) return showToast("Cart empty");
+        
+        const custName = el("activeCust").innerText;
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const itemsDetail = cart.map(i => `${i.qty}x ${i.name}`).join(" | ");
+        
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Saving...';
 
-    // Auto-create customer if new (typed name)
-    if (!customers.find(c => c.name === custName) && custName !== "Walking Customer") {
-        customers.push({ 
-          name: custName, 
-          lastOrder: itemsDetail, 
-          rate: cart[0]?.rate || 0, 
-          qty: cart[0]?.qty || 0,
-          type: "Retail",
-          sub: 0,
-          balance: 0,
-          advance: 0,
-          monthMilk: 0
-        });
-        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
-        console.log('Auto-created customer:', custName);
-    }
+        try {
+          // 1. Save sale to Supabase
+          const saleData = {
+            customer_name: custName,
+            items: cart,
+            total_amount: total,
+            payment_mode: mode
+          };
 
-    // Calculate total milk quantity for month tracking
-    const totalMilkQty = cart.filter(i => i.name.includes('Milk')).reduce((sum, i) => sum + i.qty, 0);
+          const response = await fetch('/api/sales', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(saleData)
+          });
 
-    // Save full cart data for replay
-    const newSale = {
-      date: new Date().toLocaleDateString(),
-      time,
-      customer: custName,
-      products: itemsDetail,
-      amount: total.toFixed(2),
-      method: mode,
-      cartItems: JSON.parse(JSON.stringify(cart)) // Save full cart for replay
-    };
+          const result = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(result.message || 'Failed to save sale');
+          }
 
-    // 1. Array mein add karo
-    exportHistory.push(newSale);
+          console.log('✅ Sale saved to Supabase:', result.sale);
 
-    // ✅ 2. FIX: Browser memory mein History save karo (Ye line zaroori hai)
-    localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
+          // 2. Update local history for immediate UI update
+          const newSale = {
+            date: new Date().toLocaleDateString(),
+            time,
+            customer: custName,
+            products: itemsDetail,
+            amount: total.toFixed(2),
+            method: mode,
+            cartItems: JSON.parse(JSON.stringify(cart))
+          };
 
-    // 3. UI update - Make clickable
-    const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px; cursor:pointer;" onclick="loadOrderFromHistory('${custName}', ${JSON.stringify(cart).replace(/"/g, '&quot;')})">
-      <div style="width:100%; display:flex; justify-content:space-between;">
-        <b>${custName}</b><b>₹${total.toFixed(2)}</b>
-      </div>
-      <div style="font-size:11px; color:var(--muted); font-weight:700;">
-        ${time} • 🛒 ${itemsDetail} • ${modeIcon(mode)} ${mode}
-        <span style="color:var(--blue); font-weight:700; margin-left:8px;">🔁 Click to reload</span>
-      </div>
-    </div>`;
-    el("historyToday").innerHTML = entry + el("historyToday").innerHTML;
+          exportHistory.push(newSale);
+          localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
 
-    // Customer persistence + advance tracking
-    let cIdx = customers.findIndex(c => c.name === custName);
-    if(cIdx !== -1) {
-        customers[cIdx].lastOrder = itemsDetail;
-        customers[cIdx].rate = cart[0]?.rate || 0;
-        customers[cIdx].qty = cart[0]?.qty || 0;
-        customers[cIdx].lastProductName = cart[0]?.name || '';
+          // 3. Update UI
+          const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px; cursor:pointer;" onclick="loadOrderFromHistory('${custName}', ${JSON.stringify(cart).replace(/"/g, '&quot;')})">
+            <div style="width:100%; display:flex; justify-content:space-between;">
+              <b>${custName}</b><b>₹${total.toFixed(2)}</b>
+            </div>
+            <div style="font-size:11px; color:var(--muted); font-weight:700;">
+              ${time} • 🛒 ${itemsDetail} • ${modeIcon(mode)} ${mode}
+              <span style="color:var(--blue); font-weight:700; margin-left:8px;">🔁 Click to reload</span>
+            </div>
+          </div>`;
+          el("historyToday").innerHTML = entry + el("historyToday").innerHTML;
 
-        // Update monthly milk tracking
-        if (!customers[cIdx].monthMilk) customers[cIdx].monthMilk = 0;
-        customers[cIdx].monthMilk += totalMilkQty;
-
-        // Handle Credit/Udhar - Add to customer balance
-        if (mode === 'Credit' || mode === 'Udhar') {
-            if (!customers[cIdx].balance) customers[cIdx].balance = 0;
-            customers[cIdx].balance += total;
+          // 4. Handle Credit/Udhar
+          if (mode === 'Credit' || mode === 'Udhar') {
+            // Update customer balance in Supabase
+            const customerResponse = await fetch('/api/customers', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: custName,
+                balance: total
+              })
+            });
+            
             showToast(`₹${total.toFixed(2)} added to Udhar ✅`);
-        } else {
-            showToast(`Saved ✅`);
-        }
+          } else {
+            showToast(`Saved to Supabase ✅`);
+          }
 
-        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
-    } else {
-        showToast(`Saved ✅`);
-    }
-    
-    resetCart();
-}
+          resetCart();
+
+        } catch (error) {
+          console.error('Error saving sale:', error);
+          showToast('❌ Failed to save: ' + error.message);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
+      }
 
 // Get payment mode icon
 function modeIcon(mode) {
