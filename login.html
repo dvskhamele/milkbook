@@ -193,6 +193,16 @@
             position: relative;
             z-index: 1;
         }
+        .setup-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+        .setup-link a {
+            color: #667eea;
+            font-weight: 700;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -275,9 +285,40 @@
                 💡 Perfect for testing the app!
             </p>
         </div>
+
+        <div class="setup-link">
+            <p>Have Supabase? <a href="test-supabase.html" target="_blank">Test Connection →</a></p>
+        </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        let supabase = null;
+        
+        // Load Supabase credentials
+        window.addEventListener('DOMContentLoaded', () => {
+            const supabaseUrl = localStorage.getItem('milkbook_supabase_url');
+            const supabaseKey = localStorage.getItem('milkbook_supabase_key');
+            
+            if (supabaseUrl && supabaseKey) {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                console.log('✅ Supabase initialized from saved credentials');
+            } else {
+                console.log('⚠️ No Supabase credentials. Using LocalStorage mode.');
+            }
+            
+            // Check existing session
+            const session = localStorage.getItem('milkbook_session');
+            if (session) {
+                const sessionData = JSON.parse(session);
+                if (sessionData.expires > Date.now()) {
+                    window.location.href = 'pos-demo.html';
+                } else {
+                    localStorage.removeItem('milkbook_session');
+                }
+            }
+        });
+
         // Switch between login and register tabs
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -316,8 +357,8 @@
             document.getElementById('successMessage').style.display = 'none';
         }
 
-        // Handle Login - WORKS WITHOUT SUPABASE
-        function handleLogin(event) {
+        // Handle Login
+        async function handleLogin(event) {
             event.preventDefault();
             
             const shop = document.getElementById('loginShop').value;
@@ -328,38 +369,76 @@
             btn.disabled = true;
             btn.innerHTML = '⏳ Logging in...';
             
-            // Demo login - ALWAYS WORKS
-            if (email === 'demo@milkrecord.in' && password === 'demo123') {
-                localStorage.setItem('milkbook_session', JSON.stringify({
-                    shop_name: shop,
-                    email: email,
-                    user_id: 'demo-user',
-                    expires: Date.now() + (24 * 60 * 60 * 1000)
-                }));
+            try {
+                // Demo login
+                if (email === 'demo@milkrecord.in' && password === 'demo123') {
+                    localStorage.setItem('milkbook_session', JSON.stringify({
+                        shop_name: shop,
+                        email: email,
+                        user_id: 'demo-user',
+                        expires: Date.now() + (24 * 60 * 60 * 1000)
+                    }));
+                    
+                    showSuccess('✅ Login successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = 'pos-demo.html';
+                    }, 1000);
+                    return;
+                }
                 
-                showSuccess('✅ Login successful! Redirecting...');
-                setTimeout(() => {
-                    window.location.href = 'pos-demo.html';
-                }, 1000);
-                return;
+                // Supabase login (if configured)
+                if (supabase) {
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+                    
+                    if (error) throw error;
+                    
+                    localStorage.setItem('milkbook_session', JSON.stringify({
+                        shop_name: shop,
+                        email: email,
+                        user_id: data.user.id,
+                        token: data.session.access_token,
+                        expires: Date.now() + (24 * 60 * 60 * 1000)
+                    }));
+                    
+                    showSuccess('✅ Login successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = 'pos-demo.html';
+                    }, 1000);
+                    return;
+                }
+                
+                // Fallback: LocalStorage login
+                const users = JSON.parse(localStorage.getItem('milkbook_users') || '[]');
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    localStorage.setItem('milkbook_session', JSON.stringify({
+                        shop_name: user.shop,
+                        email: email,
+                        user_id: user.id,
+                        expires: Date.now() + (24 * 60 * 60 * 1000)
+                    }));
+                    
+                    showSuccess('✅ Login successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = 'pos-demo.html';
+                    }, 1000);
+                } else {
+                    throw new Error('Invalid credentials. User not found.');
+                }
+                
+            } catch (error) {
+                showError('❌ ' + error.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Login to Dashboard';
             }
-            
-            // Regular login - also works with LocalStorage
-            localStorage.setItem('milkbook_session', JSON.stringify({
-                shop_name: shop,
-                email: email,
-                user_id: 'user-' + Date.now(),
-                expires: Date.now() + (24 * 60 * 60 * 1000)
-            }));
-            
-            showSuccess('✅ Login successful! Redirecting...');
-            setTimeout(() => {
-                window.location.href = 'pos-demo.html';
-            }, 1000);
         }
 
-        // Handle Register - WORKS WITHOUT SUPABASE
-        function handleRegister(event) {
+        // Handle Register
+        async function handleRegister(event) {
             event.preventDefault();
             
             const shop = document.getElementById('regShop').value;
@@ -371,55 +450,75 @@
             btn.disabled = true;
             btn.innerHTML = '⏳ Creating account...';
             
-            // Create account in LocalStorage
-            const users = JSON.parse(localStorage.getItem('milkbook_users') || '[]');
-            
-            // Check if email already exists
-            if (users.find(u => u.email === email)) {
-                showError('❌ Email already registered. Please login instead.');
+            try {
+                // Supabase registration (if configured)
+                if (supabase) {
+                    const { data, error } = await supabase.auth.signUp({
+                        email: email,
+                        password: password
+                    });
+                    
+                    if (error) throw error;
+                    
+                    // Create user profile in database
+                    try {
+                        await supabase.from('users').insert([{
+                            id: data.user.id,
+                            shop_id: data.user.id,
+                            shop_name: shop,
+                            phone: phone,
+                            role: 'admin'
+                        }]);
+                    } catch (dbError) {
+                        console.log('Note: Could not create profile table yet:', dbError.message);
+                    }
+                    
+                    showSuccess('✅ Account created! Please check your email.');
+                    setTimeout(() => {
+                        switchTab('login');
+                        document.getElementById('loginEmail').value = email;
+                    }, 2000);
+                    return;
+                }
+                
+                // Fallback: LocalStorage registration
+                const users = JSON.parse(localStorage.getItem('milkbook_users') || '[]');
+                
+                if (users.find(u => u.email === email)) {
+                    throw new Error('Email already registered. Please login instead.');
+                }
+                
+                const newUser = {
+                    id: 'user-' + Date.now(),
+                    shop: shop,
+                    email: email,
+                    phone: phone,
+                    password: password,
+                    created: new Date().toISOString()
+                };
+                
+                users.push(newUser);
+                localStorage.setItem('milkbook_users', JSON.stringify(users));
+                
+                // Auto-login
+                localStorage.setItem('milkbook_session', JSON.stringify({
+                    shop_name: shop,
+                    email: email,
+                    user_id: newUser.id,
+                    expires: Date.now() + (24 * 60 * 60 * 1000)
+                }));
+                
+                showSuccess('✅ Account created! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = 'pos-demo.html';
+                }, 1000);
+                
+            } catch (error) {
+                showError('❌ ' + error.message);
                 btn.disabled = false;
                 btn.innerHTML = 'Create Free Account';
-                return;
             }
-            
-            // Add new user
-            users.push({
-                id: 'user-' + Date.now(),
-                shop: shop,
-                email: email,
-                phone: phone,
-                password: password, // In production, hash this!
-                created: new Date().toISOString()
-            });
-            
-            localStorage.setItem('milkbook_users', JSON.stringify(users));
-            
-            // Auto-login
-            localStorage.setItem('milkbook_session', JSON.stringify({
-                shop_name: shop,
-                email: email,
-                user_id: 'user-' + Date.now(),
-                expires: Date.now() + (24 * 60 * 60 * 1000)
-            }));
-            
-            showSuccess('✅ Account created! Redirecting...');
-            setTimeout(() => {
-                window.location.href = 'pos-demo.html';
-            }, 1000);
         }
-
-        // Check if already logged in
-        window.addEventListener('DOMContentLoaded', () => {
-            const session = localStorage.getItem('milkbook_session');
-            if (session) {
-                const sessionData = JSON.parse(session);
-                if (sessionData.expires > Date.now()) {
-                    window.location.href = 'pos-demo.html';
-                } else {
-                    localStorage.removeItem('milkbook_session');
-                }
-            }
-        });
     </script>
 </body>
 </html>

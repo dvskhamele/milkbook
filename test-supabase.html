@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Connection Test - MilkRecord</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui; background: #f8fafc; padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: #1e293b; margin-bottom: 30px; }
+        .card { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .card h2 { color: #475569; font-size: 18px; margin-bottom: 15px; }
+        .status { padding: 8px 16px; border-radius: 8px; font-weight: 700; display: inline-block; margin-bottom: 15px; }
+        .status.error { background: #fee2e2; color: #991b1b; }
+        .status.success { background: #dcfce7; color: #166534; }
+        .status.warning { background: #fef3c7; color: #92400e; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; color: #475569; margin-bottom: 8px; font-size: 14px; }
+        .form-group input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; }
+        .form-group input:focus { outline: none; border-color: #3b82f6; }
+        button { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; margin: 5px; }
+        button:hover { background: #2563eb; }
+        button.success { background: #16a34a; }
+        button.success:hover { background: #15803d; }
+        button.error { background: #dc2626; }
+        button.error:hover { background: #b91c1c; }
+        pre { background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 12px; max-height: 300px; overflow-y: auto; }
+        .success-text { color: #16a34a; font-weight: 700; }
+        .error-text { color: #dc2626; font-weight: 700; }
+        .info-box { background: #f0f9ff; border: 2px solid #3b82f6; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .info-box h3 { color: #1e40af; margin-bottom: 10px; font-size: 15px; }
+        .info-box code { background: white; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #475569; }
+        .step { background: #f8fafc; padding: 12px; border-left: 4px solid #3b82f6; margin: 10px 0; }
+        .step strong { color: #1e293b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Supabase Connection Test</h1>
+
+        <div class="card">
+            <h2>Step 1: Enter Your Supabase Credentials</h2>
+            <div class="info-box">
+                <h3>📍 Where to find these:</h3>
+                <div class="step"><strong>1.</strong> Go to <a href="https://supabase.com" target="_blank">supabase.com</a></div>
+                <div class="step"><strong>2.</strong> Open your project (or create new)</div>
+                <div class="step"><strong>3.</strong> Click Settings ⚙️ → API</div>
+                <div class="step"><strong>4.</strong> Copy <strong>Project URL</strong> and <strong>anon/public key</strong></div>
+            </div>
+            <div class="form-group">
+                <label>Supabase URL</label>
+                <input type="text" id="supabaseUrl" placeholder="https://xxxxx.supabase.co" />
+            </div>
+            <div class="form-group">
+                <label>Supabase Anon Key</label>
+                <input type="text" id="supabaseKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+            </div>
+            <button onclick="saveCredentials()">💾 Save Credentials</button>
+            <button class="success" onclick="testConnection()">🔌 Test Connection</button>
+            <button class="error" onclick="clearCredentials()">🗑️ Clear</button>
+        </div>
+
+        <div class="card">
+            <h2>Step 2: Connection Status</h2>
+            <div id="connectionStatus">
+                <div class="status warning">⏳ Not tested yet</div>
+            </div>
+            <div id="connectionDetails"></div>
+        </div>
+
+        <div class="card">
+            <h2>Step 3: Test Database Operations</h2>
+            <button onclick="testCreateUser()">👤 Test Register</button>
+            <button onclick="testLogin()">🔐 Test Login</button>
+            <button onclick="testCreateData()">📝 Test Create Data</button>
+            <button onclick="testReadData()">📖 Test Read Data</button>
+            <button class="error" onclick="clearTestData()">🗑️ Clear Test Data</button>
+        </div>
+
+        <div class="card">
+            <h2>Console Output</h2>
+            <pre id="consoleOutput">Ready to test...</pre>
+        </div>
+
+        <div class="card">
+            <h2>Step 4: Deploy to App</h2>
+            <div class="info-box">
+                <h3>Once tests pass:</h3>
+                <div class="step"><strong>1.</strong> Credentials are saved in your browser</div>
+                <div class="step"><strong>2.</strong> They will be used for login.html</div>
+                <div class="step"><strong>3.</strong> All data will sync to Supabase</div>
+                <div class="step"><strong>4.</strong> Access from any device!</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        let supabase = null;
+
+        // Load saved credentials
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUrl = localStorage.getItem('milkbook_supabase_url');
+            const savedKey = localStorage.getItem('milkbook_supabase_key');
+            
+            if (savedUrl && savedKey) {
+                document.getElementById('supabaseUrl').value = savedUrl;
+                document.getElementById('supabaseKey').value = savedKey;
+                log('✅ Loaded saved credentials');
+                initializeSupabase(savedUrl, savedKey);
+            } else {
+                log('⚠️ No saved credentials. Enter your Supabase credentials above.');
+            }
+        });
+
+        // Save credentials
+        function saveCredentials() {
+            const url = document.getElementById('supabaseUrl').value.trim();
+            const key = document.getElementById('supabaseKey').value.trim();
+            
+            if (!url || !key) {
+                log('❌ Please enter both URL and Key');
+                return;
+            }
+            
+            localStorage.setItem('milkbook_supabase_url', url);
+            localStorage.setItem('milkbook_supabase_key', key);
+            
+            log('✅ Credentials saved!');
+            initializeSupabase(url, key);
+            alert('Credentials saved! Click "Test Connection" to verify.');
+        }
+
+        // Initialize Supabase
+        function initializeSupabase(url, key) {
+            try {
+                supabase = window.supabase.createClient(url, key);
+                log('✅ Supabase client initialized');
+                return true;
+            } catch (error) {
+                log('❌ Failed to initialize Supabase: ' + error.message);
+                return false;
+            }
+        }
+
+        // Test connection
+        async function testConnection() {
+            const output = document.getElementById('consoleOutput');
+            const statusDiv = document.getElementById('connectionStatus');
+            
+            output.textContent = 'Testing Supabase connection...\n\n';
+            statusDiv.innerHTML = '<div class="status warning">⏳ Testing...</div>';
+            
+            const url = localStorage.getItem('milkbook_supabase_url');
+            const key = localStorage.getItem('milkbook_supabase_key');
+            
+            if (!url || !key) {
+                output.textContent += '❌ No credentials found. Please enter and save credentials first.\n';
+                statusDiv.innerHTML = '<div class="status error">❌ No Credentials</div>';
+                return;
+            }
+            
+            if (!supabase) {
+                initializeSupabase(url, key);
+            }
+            
+            try {
+                // Test by trying to fetch from a table
+                const { data, error } = await supabase.from('shops').select('id').limit(1);
+                
+                if (error) {
+                    if (error.message.includes('relation') || error.message.includes('does not exist')) {
+                        output.textContent += '✅ Connection successful!\n';
+                        output.textContent += '⚠️ Database tables not found. You need to create them.\n\n';
+                        output.textContent += 'Next step: Run the SQL schema in Supabase SQL Editor\n';
+                        output.textContent += 'See SUPABASE_SETUP.md for the SQL code\n';
+                        statusDiv.innerHTML = '<div class="status warning">⚠️ Connected - Tables Missing</div>';
+                    } else {
+                        throw error;
+                    }
+                } else {
+                    output.textContent += '✅ Connection successful!\n';
+                    output.textContent += `✅ Found ${data?.length || 0} shop(s) in database\n\n`;
+                    output.textContent += '✅ Supabase is fully connected and working!\n';
+                    statusDiv.innerHTML = '<div class="status success">✅ Connected & Working</div>';
+                }
+            } catch (error) {
+                output.textContent += `❌ Connection failed: ${error.message}\n\n`;
+                output.textContent += 'Possible issues:\n';
+                output.textContent += '1. Invalid URL or Key\n';
+                output.textContent += '2. Network error\n';
+                output.textContent += '3. Supabase project not active\n';
+                statusDiv.innerHTML = '<div class="status error">❌ Connection Failed</div>';
+            }
+        }
+
+        // Test create user (register)
+        async function testCreateUser() {
+            if (!supabase) {
+                log('❌ Supabase not initialized');
+                return;
+            }
+            
+            log('👤 Testing user registration...');
+            
+            const testEmail = `test_${Date.now()}@milkrecord.in`;
+            const testPassword = 'test123';
+            
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: testEmail,
+                    password: testPassword
+                });
+                
+                if (error) throw error;
+                
+                log(`✅ User created: ${testEmail}`);
+                log(`📝 User ID: ${data.user.id}`);
+                
+                // Save test user credentials for login test
+                localStorage.setItem('milkbook_test_email', testEmail);
+                localStorage.setItem('milkbook_test_password', testPassword);
+                
+                alert(`✅ Test user created!\nEmail: ${testEmail}\nPassword: ${testPassword}\n\nCheck your email for confirmation link (if email confirmation is enabled)`);
+            } catch (error) {
+                log(`❌ Failed to create user: ${error.message}`);
+                alert('❌ Failed: ' + error.message);
+            }
+        }
+
+        // Test login
+        async function testLogin() {
+            if (!supabase) {
+                log('❌ Supabase not initialized');
+                return;
+            }
+            
+            log('🔐 Testing login...');
+            
+            const testEmail = localStorage.getItem('milkbook_test_email') || prompt('Enter test email:');
+            const testPassword = localStorage.getItem('milkbook_test_password') || prompt('Enter test password:');
+            
+            if (!testEmail || !testPassword) {
+                log('❌ No credentials provided');
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: testEmail,
+                    password: testPassword
+                });
+                
+                if (error) throw error;
+                
+                log(`✅ Login successful!`);
+                log(`📝 User ID: ${data.user.id}`);
+                log(`🔑 Access Token: ${data.session.access_token.substring(0, 50)}...`);
+                
+                alert('✅ Login successful! Check console for details.');
+            } catch (error) {
+                log(`❌ Login failed: ${error.message}`);
+                alert('❌ Failed: ' + error.message);
+            }
+        }
+
+        // Test create data
+        async function testCreateData() {
+            if (!supabase) {
+                log('❌ Supabase not initialized');
+                return;
+            }
+            
+            log('📝 Testing data creation...');
+            
+            try {
+                // Create a test shop
+                const { data: shop, error: shopError } = await supabase
+                    .from('shops')
+                    .insert([{
+                        name: `Test Shop ${Date.now()}`,
+                        location: 'Test Location'
+                    }])
+                    .select()
+                    .single();
+                
+                if (shopError) throw shopError;
+                
+                log(`✅ Shop created: ${shop.name}`);
+                log(`📝 Shop ID: ${shop.id}`);
+                
+                // Save for read test
+                localStorage.setItem('milkbook_test_shop_id', shop.id);
+                
+                alert(`✅ Data created successfully!\nShop: ${shop.name}`);
+            } catch (error) {
+                log(`❌ Failed to create data: ${error.message}`);
+                alert('❌ Failed: ' + error.message + '\n\nMake sure you have created the database tables by running the SQL schema.');
+            }
+        }
+
+        // Test read data
+        async function testReadData() {
+            if (!supabase) {
+                log('❌ Supabase not initialized');
+                return;
+            }
+            
+            log('📖 Testing data read...');
+            
+            try {
+                const { data: shops, error } = await supabase.from('shops').select('*');
+                
+                if (error) throw error;
+                
+                log(`✅ Read successful!`);
+                log(`📊 Found ${shops.length} shop(s):`);
+                shops.forEach(shop => {
+                    log(`   - ${shop.name} (ID: ${shop.id.substring(0, 8)}...)`);
+                });
+                
+                alert(`✅ Read successful!\nFound ${shops.length} shops`);
+            } catch (error) {
+                log(`❌ Failed to read data: ${error.message}`);
+                alert('❌ Failed: ' + error.message);
+            }
+        }
+
+        // Clear test data
+        async function clearTestData() {
+            if (!confirm('Clear all test data from Supabase? This cannot be undone.')) {
+                return;
+            }
+            
+            if (!supabase) {
+                log('❌ Supabase not initialized');
+                return;
+            }
+            
+            log('🗑️ Clearing test data...');
+            
+            try {
+                // Delete test shops
+                const { error } = await supabase
+                    .from('shops')
+                    .delete()
+                    .ilike('name', 'Test Shop%');
+                
+                if (error) throw error;
+                
+                log('✅ Test data cleared');
+                alert('✅ Test data cleared!');
+            } catch (error) {
+                log(`❌ Failed to clear data: ${error.message}`);
+                alert('❌ Failed: ' + error.message);
+            }
+        }
+
+        // Clear credentials
+        function clearCredentials() {
+            if (!confirm('Clear saved Supabase credentials?')) {
+                return;
+            }
+            
+            localStorage.removeItem('milkbook_supabase_url');
+            localStorage.removeItem('milkbook_supabase_key');
+            localStorage.removeItem('milkbook_test_email');
+            localStorage.removeItem('milkbook_test_password');
+            localStorage.removeItem('milkbook_test_shop_id');
+            
+            document.getElementById('supabaseUrl').value = '';
+            document.getElementById('supabaseKey').value = '';
+            
+            supabase = null;
+            
+            log('✅ Credentials cleared');
+            alert('✅ Credentials cleared. Enter new credentials to continue.');
+        }
+
+        // Log helper
+        function log(message) {
+            const output = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+    </script>
+</body>
+</html>
