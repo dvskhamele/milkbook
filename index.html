@@ -3926,12 +3926,16 @@ document.addEventListener('keydown', (e) => {
 
         if (e.key === "Enter") {
             e.preventDefault();
-            if (curIdx !== -1 && curIdx < formOrder.length - 1) {
+            // If on last field (fBalance, fAnimalType, fActive) or Create button → Create farmer
+            if (curIdx >= 4 || active.id === "btnCreateFarmer" || active.id === "fActive" || active.id === "fBalance") {
+                el("btnCreateFarmer").click();
+                setTimeout(() => {
+                  el("searchInput").focus();
+                }, 150);
+            } else if (curIdx !== -1 && curIdx < formOrder.length - 1) {
+                // Move to next field
                 el(formOrder[curIdx + 1]).focus();
                 if (el(formOrder[curIdx + 1]).tagName === "INPUT") el(formOrder[curIdx + 1]).select();
-            } else if (active.id === "btnCreateFarmer" || active.id === "fActive") {
-                el("btnCreateFarmer").click();
-                setTimeout(() => el("searchInput").focus(), 150);
             }
         }
 
