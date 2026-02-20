@@ -5,16 +5,16 @@
  */
 
 // Supabase Configuration - REPLACE THESE WITH YOUR CREDENTIALS
-const SUPABASE_URL = 'https://demo-test.supabase.co';  // Demo URL (will fail, falls back to LocalStorage)
-const SUPABASE_ANON_KEY = 'demo-key';  // Demo key (will fail, falls back to LocalStorage)
+const MILKBOOK_SUPABASE_URL = 'https://demo-test.supabase.co';  // Demo URL (will fail, falls back to LocalStorage)
+const MILKBOOK_SUPABASE_ANON_KEY = 'demo-key';  // Demo key (will fail, falls back to LocalStorage)
 
-// Initialize Supabase
-let supabase = null;
+// Initialize Supabase client
+let milkbookSupabaseClient = null;
 let useSupabase = false;
 
 if (typeof window !== 'undefined' && window.supabase) {
   try {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    milkbookSupabaseClient = window.supabase.createClient(MILKBOOK_SUPABASE_URL, MILKBOOK_SUPABASE_ANON_KEY);
     console.log('📡 Supabase client initialized');
   } catch (error) {
     console.warn('⚠️ Supabase init failed, using LocalStorage:', error.message);
@@ -23,11 +23,11 @@ if (typeof window !== 'undefined' && window.supabase) {
 
 // Test Supabase connection
 async function testSupabaseConnection() {
-  if (!supabase) return false;
+  if (!milkbookSupabaseClient) return false;
   
   try {
     // Try to fetch from a table (will fail if credentials invalid)
-    const { error } = await supabase.from('farmers').select('id').limit(1);
+    const { error } = await milkbookSupabaseClient.from('farmers').select('id').limit(1);
     
     if (error) {
       console.warn('⚠️ Supabase connection failed:', error.message);
@@ -53,7 +53,7 @@ const MilkBookDB = {
     async getAll() {
       if (useSupabase && supabase) {
         try {
-          const { data, error } = await supabase.from('farmers').select('*');
+          const { data, error } = await milkbookSupabaseClient.from('farmers').select('*');
           if (error) throw error;
           console.log('✅ Loaded farmers from Supabase:', data?.length || 0);
           return { farmers: data || [] };
@@ -78,7 +78,7 @@ const MilkBookDB = {
       
       if (useSupabase && supabase) {
         try {
-          const { data, error } = await supabase.from('farmers').insert([newFarmer]).select();
+          const { data, error } = await milkbookSupabaseClient.from('farmers').insert([newFarmer]).select();
           if (error) throw error;
           console.log('✅ Farmer saved to Supabase:', newFarmer.name);
           return data[0];
@@ -99,7 +99,7 @@ const MilkBookDB = {
     async update(id, updates) {
       if (useSupabase && supabase) {
         try {
-          const { data, error } = await supabase.from('farmers').update(updates).eq('id', id).select();
+          const { data, error } = await milkbookSupabaseClient.from('farmers').update(updates).eq('id', id).select();
           if (error) throw error;
           console.log('✅ Farmer updated in Supabase');
           return data[0];
@@ -123,7 +123,7 @@ const MilkBookDB = {
     async delete(id) {
       if (useSupabase && supabase) {
         try {
-          const { error } = await supabase.from('farmers').delete().eq('id', id);
+          const { error } = await milkbookSupabaseClient.from('farmers').delete().eq('id', id);
           if (error) throw error;
           console.log('✅ Farmer deleted from Supabase');
           return true;
@@ -146,7 +146,7 @@ const MilkBookDB = {
     async getAll(filters = {}) {
       if (useSupabase && supabase) {
         try {
-          let query = supabase.from('milk_intake_entries').select('*, farmers(name, phone)');
+          let query = milkbookSupabaseClient.from('milk_intake_entries').select('*, farmers(name, phone)');
           
           if (filters.date) query = query.eq('date', filters.date);
           if (filters.farmer_id) query = query.eq('farmer_id', filters.farmer_id);
@@ -176,7 +176,7 @@ const MilkBookDB = {
       
       if (useSupabase && supabase) {
         try {
-          const { data, error } = await supabase.from('milk_intake_entries').insert([newEntry]).select();
+          const { data, error } = await milkbookSupabaseClient.from('milk_intake_entries').insert([newEntry]).select();
           if (error) throw error;
           console.log('✅ Entry saved to Supabase');
           return data[0];
@@ -197,7 +197,7 @@ const MilkBookDB = {
     async update(id, updates) {
       if (useSupabase && supabase) {
         try {
-          const { data, error } = await supabase.from('milk_intake_entries').update(updates).eq('id', id).select();
+          const { data, error } = await milkbookSupabaseClient.from('milk_intake_entries').update(updates).eq('id', id).select();
           if (error) throw error;
           console.log('✅ Entry updated in Supabase');
           return data[0];
@@ -223,7 +223,7 @@ const MilkBookDB = {
     async getAll() {
       if (useSupabase && supabase) {
         try {
-          const { data, error } = await supabase.from('customers').select('*');
+          const { data, error } = await milkbookSupabaseClient.from('customers').select('*');
           if (error) throw error;
           console.log('✅ Loaded customers from Supabase:', data?.length || 0);
           return { customers: data || [] };
@@ -248,7 +248,7 @@ const MilkBookDB = {
       
       if (useSupabase && supabase) {
         try {
-          const { data, error } = await supabase.from('customers').insert([newCustomer]).select();
+          const { data, error } = await milkbookSupabaseClient.from('customers').insert([newCustomer]).select();
           if (error) throw error;
           console.log('✅ Customer saved to Supabase');
           return data[0];
@@ -269,7 +269,7 @@ const MilkBookDB = {
     async update(id, updates) {
       if (useSupabase && supabase) {
         try {
-          const { data, error } = await supabase.from('customers').update(updates).eq('id', id).select();
+          const { data, error } = await milkbookSupabaseClient.from('customers').update(updates).eq('id', id).select();
           if (error) throw error;
           console.log('✅ Customer updated in Supabase');
           return data[0];
@@ -295,7 +295,7 @@ const MilkBookDB = {
     async getAll(filters = {}) {
       if (useSupabase && supabase) {
         try {
-          let query = supabase.from('retail_sales').select('*');
+          let query = milkbookSupabaseClient.from('retail_sales').select('*');
           
           if (filters.date) query = query.eq('date', filters.date);
           
@@ -324,7 +324,7 @@ const MilkBookDB = {
       
       if (useSupabase && supabase) {
         try {
-          const { data, error } = await supabase.from('retail_sales').insert([newSale]).select();
+          const { data, error } = await milkbookSupabaseClient.from('retail_sales').insert([newSale]).select();
           if (error) throw error;
           console.log('✅ Sale saved to Supabase');
           return data[0];

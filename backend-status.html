@@ -67,26 +67,34 @@
       const statusDiv = document.getElementById('statusContent');
       const setupCard = document.getElementById('setupCard');
       
-      const status = window.MilkBookDB.getStatus();
-      
-      if (status.useSupabase) {
-        statusDiv.innerHTML = `
-          <div class="status success">✅ Supabase Connected</div>
-          <p style="margin-top: 10px;">Connected to Supabase database</p>
-          <p><strong>URL:</strong> <code>${SUPABASE_URL.substring(0, 40)}...</code></p>
-          <p style="margin-top: 15px; font-size: 14px; color: #64748b;">
-            ✅ Data syncs across devices
-          </p>
-        `;
-        setupCard.style.display = 'none';
+      if (window.MilkBookDB && typeof window.MilkBookDB.getStatus === 'function') {
+        const status = window.MilkBookDB.getStatus();
+        
+        if (status.useSupabase) {
+          statusDiv.innerHTML = `
+            <div class="status success">✅ Supabase Connected</div>
+            <p style="margin-top: 10px;">Connected to Supabase database</p>
+            <p><strong>URL:</strong> <code>${MILKBOOK_SUPABASE_URL.substring(0, 40)}...</code></p>
+            <p style="margin-top: 15px; font-size: 14px; color: #64748b;">
+              ✅ Data syncs across devices
+            </p>
+          `;
+          setupCard.style.display = 'none';
+        } else {
+          statusDiv.innerHTML = `
+            <div class="status warning">💾 LocalStorage Mode</div>
+            <p style="margin-top: 10px;">Using browser storage (works offline)</p>
+            <p><strong>Current setup:</strong> Demo credentials (will use LocalStorage)</p>
+            <p style="margin-top: 15px; font-size: 14px; color: #64748b;">
+              💡 Perfect for single-device use. Add Supabase credentials for multi-device sync.
+            </p>
+          `;
+          setupCard.style.display = 'block';
+        }
       } else {
         statusDiv.innerHTML = `
-          <div class="status warning">💾 LocalStorage Mode</div>
-          <p style="margin-top: 10px;">Using browser storage (works offline)</p>
-          <p><strong>Current setup:</strong> Demo credentials (will use LocalStorage)</p>
-          <p style="margin-top: 15px; font-size: 14px; color: #64748b;">
-            💡 Perfect for single-device use. Add Supabase credentials for multi-device sync.
-          </p>
+          <div class="status error">❌ Backend Not Loaded</div>
+          <p style="margin-top: 10px;">Please refresh the page</p>
         `;
         setupCard.style.display = 'block';
       }
@@ -97,6 +105,11 @@
       const output = document.getElementById('output');
       output.textContent = 'Testing backend connection...\n\n';
 
+      if (!window.MilkBookDB) {
+        output.textContent += '❌ Backend not loaded! Refresh page.\n';
+        return;
+      }
+      
       const status = window.MilkBookDB.getStatus();
       output.textContent += `Backend Mode: ${status.message}\n\n`;
       
@@ -130,7 +143,7 @@
           output.textContent += '   - Perfect for single device\n';
           output.textContent += '\n📋 To enable Supabase:\n';
           output.textContent += '   1. Get credentials from supabase.com\n';
-          output.textContent += '   2. Edit supabase-backend.js lines 8-9\n';
+          output.textContent += '   2. Edit supabase-backend.js lines 5-6\n';
           output.textContent += '   3. Redeploy to Vercel\n';
         } else {
           output.textContent += '\n✅ Using Supabase (cloud database)\n';
