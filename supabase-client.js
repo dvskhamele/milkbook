@@ -7,10 +7,11 @@
 const SUPABASE_URL = 'YOUR_SUPABASE_URL';
 const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 
-let supabase = null;
+// Only create client if not already created by CDN
+let milkbookSupabase = null;
 
 if (typeof window !== 'undefined' && window.supabase) {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  milkbookSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
 // Check if configured
@@ -28,29 +29,29 @@ if (!IS_CONFIGURED) {
 const MilkBookDB = {
   farmers: {
     async getAll() {
-      if (!supabase) return { farmers: [] };
-      const { data, error } = await supabase.from('farmers').select('*');
+      if (!milkbookSupabase) return { farmers: [] };
+      const { data, error } = await milkbookSupabase.from('farmers').select('*');
       if (error) throw error;
       return { farmers: data || [] };
     },
     
     async create(farmer) {
-      if (!supabase) return null;
-      const { data, error } = await supabase.from('farmers').insert([farmer]).select();
+      if (!milkbookSupabase) return null;
+      const { data, error } = await milkbookSupabase.from('farmers').insert([farmer]).select();
       if (error) throw error;
       return data[0];
     },
     
     async update(id, updates) {
-      if (!supabase) return null;
-      const { data, error } = await supabase.from('farmers').update(updates).eq('id', id).select();
+      if (!milkbookSupabase) return null;
+      const { data, error } = await milkbookSupabase.from('farmers').update(updates).eq('id', id).select();
       if (error) throw error;
       return data[0];
     },
     
     async delete(id) {
-      if (!supabase) return null;
-      const { error } = await supabase.from('farmers').delete().eq('id', id);
+      if (!milkbookSupabase) return null;
+      const { error } = await milkbookSupabase.from('farmers').delete().eq('id', id);
       if (error) throw error;
       return true;
     }
@@ -58,8 +59,8 @@ const MilkBookDB = {
   
   entries: {
     async getAll(filters = {}) {
-      if (!supabase) return { entries: [] };
-      let query = supabase.from('milk_intake_entries').select('*, farmers(name, phone)');
+      if (!milkbookSupabase) return { entries: [] };
+      let query = milkbookSupabase.from('milk_intake_entries').select('*, farmers(name, phone)');
       
       if (filters.date) query = query.eq('date', filters.date);
       if (filters.farmer_id) query = query.eq('farmer_id', filters.farmer_id);
@@ -70,15 +71,15 @@ const MilkBookDB = {
     },
     
     async create(entry) {
-      if (!supabase) return null;
-      const { data, error } = await supabase.from('milk_intake_entries').insert([entry]).select();
+      if (!milkbookSupabase) return null;
+      const { data, error } = await milkbookSupabase.from('milk_intake_entries').insert([entry]).select();
       if (error) throw error;
       return data[0];
     },
     
     async update(id, updates) {
-      if (!supabase) return null;
-      const { data, error } = await supabase.from('milk_intake_entries').update(updates).eq('id', id).select();
+      if (!milkbookSupabase) return null;
+      const { data, error } = await milkbookSupabase.from('milk_intake_entries').update(updates).eq('id', id).select();
       if (error) throw error;
       return data[0];
     }
@@ -86,22 +87,22 @@ const MilkBookDB = {
   
   customers: {
     async getAll() {
-      if (!supabase) return { customers: [] };
-      const { data, error } = await supabase.from('customers').select('*');
+      if (!milkbookSupabase) return { customers: [] };
+      const { data, error } = await milkbookSupabase.from('customers').select('*');
       if (error) throw error;
       return { customers: data || [] };
     },
     
     async create(customer) {
-      if (!supabase) return null;
-      const { data, error } = await supabase.from('customers').insert([customer]).select();
+      if (!milkbookSupabase) return null;
+      const { data, error } = await milkbookSupabase.from('customers').insert([customer]).select();
       if (error) throw error;
       return data[0];
     },
     
     async update(id, updates) {
-      if (!supabase) return null;
-      const { data, error } = await supabase.from('customers').update(updates).eq('id', id).select();
+      if (!milkbookSupabase) return null;
+      const { data, error } = await milkbookSupabase.from('customers').update(updates).eq('id', id).select();
       if (error) throw error;
       return data[0];
     }
@@ -109,8 +110,8 @@ const MilkBookDB = {
   
   sales: {
     async getAll(filters = {}) {
-      if (!supabase) return { sales: [] };
-      let query = supabase.from('retail_sales').select('*');
+      if (!milkbookSupabase) return { sales: [] };
+      let query = milkbookSupabase.from('retail_sales').select('*');
       
       if (filters.date) query = query.eq('date', filters.date);
       
@@ -120,8 +121,8 @@ const MilkBookDB = {
     },
     
     async create(sale) {
-      if (!supabase) return null;
-      const { data, error } = await supabase.from('retail_sales').insert([sale]).select();
+      if (!milkbookSupabase) return null;
+      const { data, error } = await milkbookSupabase.from('retail_sales').insert([sale]).select();
       if (error) throw error;
       return data[0];
     }
@@ -131,29 +132,29 @@ const MilkBookDB = {
 // Auth operations
 const MilkBookAuth = {
   async login(email, password) {
-    if (!supabase) throw new Error('Supabase not configured');
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (!milkbookSupabase) throw new Error('Supabase not configured');
+    const { data, error } = await milkbookSupabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     return data;
   },
   
   async signup(email, password, shopName) {
-    if (!supabase) throw new Error('Supabase not configured');
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (!milkbookSupabase) throw new Error('Supabase not configured');
+    const { data, error } = await milkbookSupabase.auth.signUp({ email, password });
     if (error) throw error;
     
     // Create shop and user profile
     if (data.user) {
-      await supabase.from('shops').insert([{ id: data.user.id, name: shopName }]);
-      await supabase.from('users').insert([{ id: data.user.id, shop_id: data.user.id, role: 'admin' }]);
+      await milkbookSupabase.from('shops').insert([{ id: data.user.id, name: shopName }]);
+      await milkbookSupabase.from('users').insert([{ id: data.user.id, shop_id: data.user.id, role: 'admin' }]);
     }
     
     return data;
   },
   
   async logout() {
-    if (!supabase) return;
-    await supabase.auth.signOut();
+    if (!milkbookSupabase) return;
+    await milkbookSupabase.auth.signOut();
     localStorage.removeItem('milkbook_session');
   },
   
