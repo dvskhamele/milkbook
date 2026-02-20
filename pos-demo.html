@@ -739,6 +739,32 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
           const shift = (hrs >= 4 && hrs < 16) ? (currentLang === 'en' ? 'Morning Shift' : 'सुबह की पाली') : (currentLang === 'en' ? 'Evening Shift' : 'शाम की पाली');
           el("todayLabel").textContent = `${dateStr} | ${shift}`;
+          
+          // Load shop name and user info from session
+          loadUserInfo();
+      }
+      
+      // Load user info from session
+      function loadUserInfo() {
+          const session = localStorage.getItem('milkbook_session');
+          if (session) {
+              try {
+                  const sessionData = JSON.parse(session);
+                  const shopTitle = el("shopTitle");
+                  const todayLabel = el("todayLabel");
+                  
+                  if (shopTitle && sessionData.shop_name) {
+                      shopTitle.textContent = sessionData.shop_name;
+                  }
+                  
+                  if (todayLabel && sessionData.email) {
+                      const dateStr = todayLabel.textContent.split('|')[0] || '';
+                      todayLabel.textContent = `${dateStr} | 👤 ${sessionData.email}`;
+                  }
+              } catch (error) {
+                  console.error('Error loading session:', error);
+              }
+          }
       }
 
       // Logic: Hindi Translation Dictionary
