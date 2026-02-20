@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MilkBook - Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>MilkRecord - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -21,7 +16,6 @@
             justify-content: center;
             padding: 20px;
         }
-        
         .login-container {
             background: white;
             border-radius: 24px;
@@ -30,42 +24,32 @@
             max-width: 420px;
             padding: 40px;
         }
-        
         .logo {
             text-align: center;
             margin-bottom: 30px;
         }
-        
-        .logo-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .logo img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
             border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            margin: 0 auto 15px;
         }
-        
         .logo h1 {
             font-size: 28px;
             font-weight: 900;
             color: #1e293b;
+            margin-top: 15px;
         }
-        
         .logo p {
             color: #64748b;
             font-size: 14px;
             margin-top: 5px;
         }
-        
         .login-tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
         }
-        
         .tab-btn {
             flex: 1;
             padding: 12px;
@@ -76,17 +60,14 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        
         .tab-btn.active {
             border-color: #667eea;
             background: #f5f3ff;
             color: #667eea;
         }
-        
         .form-group {
             margin-bottom: 20px;
         }
-        
         .form-group label {
             display: block;
             font-weight: 600;
@@ -94,7 +75,6 @@
             margin-bottom: 8px;
             font-size: 14px;
         }
-        
         .form-group input {
             width: 100%;
             padding: 14px 16px;
@@ -104,26 +84,11 @@
             font-weight: 600;
             transition: all 0.2s;
         }
-        
         .form-group input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        
-        .pin-inputs {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        .pin-input {
-            width: 60px !important;
-            height: 60px;
-            text-align: center;
-            font-size: 24px !important;
-        }
-        
         .login-btn {
             width: 100%;
             padding: 16px;
@@ -136,18 +101,15 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        
         .login-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
         }
-        
         .login-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
-        
         .error-message {
             background: #fee2e2;
             color: #dc2626;
@@ -157,7 +119,6 @@
             font-weight: 600;
             display: none;
         }
-        
         .success-message {
             background: #dcfce7;
             color: #16a34a;
@@ -167,27 +128,23 @@
             font-weight: 600;
             display: none;
         }
-        
         .divider {
             text-align: center;
             margin: 20px 0;
             color: #94a3b8;
             font-size: 14px;
         }
-        
         .signup-link {
             text-align: center;
             margin-top: 20px;
             color: #64748b;
             font-size: 14px;
         }
-        
         .signup-link a {
             color: #667eea;
             font-weight: 700;
             text-decoration: none;
         }
-        
         .loading {
             display: inline-block;
             width: 20px;
@@ -197,121 +154,127 @@
             border-top-color: white;
             animation: spin 1s ease-in-out infinite;
         }
-        
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        .demo-credentials {
+            background: #f0f9ff;
+            border: 1px solid #3b82f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+        .demo-credentials h4 {
+            color: #1e40af;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .demo-credentials p {
+            color: #1e40af;
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="logo">
-            <div class="logo-icon">💧</div>
-            <h1>MilkBook</h1>
-            <p>Dairy Shop Management</p>
+            <img src="logo.jpg" alt="MilkRecord Logo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥛</text></svg>'" />
+            <h1>MilkRecord</h1>
+            <p>Dairy Shop Management System</p>
         </div>
-        
+
         <div class="login-tabs">
-            <button class="tab-btn active" onclick="switchTab('pin')">PIN Login</button>
-            <button class="tab-btn" onclick="switchTab('password')">Password</button>
+            <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+            <button class="tab-btn" onclick="switchTab('register')">Register</button>
         </div>
-        
+
         <div class="error-message" id="errorMessage"></div>
         <div class="success-message" id="successMessage"></div>
-        
-        <!-- PIN Login Form -->
-        <form id="pinForm" onsubmit="handlePinLogin(event)">
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-group">
-                <label>Shop ID</label>
-                <input type="text" id="pinShopId" placeholder="Enter your Shop ID" required />
+                <label>Shop Name</label>
+                <input type="text" id="loginShopName" placeholder="Enter your shop name" required />
             </div>
-            
             <div class="form-group">
-                <label>User ID</label>
-                <input type="text" id="pinUserId" placeholder="Enter your User ID" required />
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="Enter your email" required />
             </div>
-            
-            <div class="form-group">
-                <label>Enter PIN</label>
-                <div class="pin-inputs">
-                    <input type="text" class="pin-input" maxlength="1" pattern="[0-9]" required />
-                    <input type="text" class="pin-input" maxlength="1" pattern="[0-9]" required />
-                    <input type="text" class="pin-input" maxlength="1" pattern="[0-9]" required />
-                    <input type="text" class="pin-input" maxlength="1" pattern="[0-9]" required />
-                    <input type="text" class="pin-input" maxlength="1" pattern="[0-9]" required />
-                    <input type="text" class="pin-input" maxlength="1" pattern="[0-9]" required />
-                </div>
-            </div>
-            
-            <button type="submit" class="login-btn" id="pinLoginBtn">
-                Login
-            </button>
-        </form>
-        
-        <!-- Password Login Form -->
-        <form id="passwordForm" style="display: none;" onsubmit="handlePasswordLogin(event)">
-            <div class="form-group">
-                <label>Email or Phone</label>
-                <input type="text" id="passwordEmail" placeholder="Enter your email or phone" required />
-            </div>
-            
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="passwordInput" placeholder="Enter your password" required />
+                <input type="password" id="loginPassword" placeholder="Enter your password" required />
             </div>
-            
-            <button type="submit" class="login-btn" id="passwordLoginBtn">
+            <button type="submit" class="login-btn" id="loginBtn">
                 Login
             </button>
         </form>
-        
-        <div class="signup-link">
-            Don't have an account? <a href="#" onclick="alert('Contact admin to create account')">Contact Admin</a>
+
+        <!-- Register Form -->
+        <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label>Shop Name</label>
+                <input type="text" id="regShopName" placeholder="Enter your shop name" required />
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="regEmail" placeholder="Enter your email" required />
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" id="regPhone" placeholder="Enter your phone number" required />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="regPassword" placeholder="Create a password (min 6 characters)" required minlength="6" />
+            </div>
+            <button type="submit" class="login-btn" id="registerBtn">
+                Create Account
+            </button>
+        </form>
+
+        <div class="demo-credentials">
+            <h4>📝 Demo Credentials</h4>
+            <p><strong>Shop:</strong> Gopal Dairy Shop</p>
+            <p><strong>Email:</strong> demo@milkrecord.in</p>
+            <p><strong>Password:</strong> demo123</p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
     <script>
-        // Get Supabase client from config
-        const supabase = window.MilkBookConfig.getSupabase();
+        // Supabase Configuration
+        // REPLACE THESE WITH YOUR ACTUAL CREDENTIALS
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
         
-        // Check if Supabase is configured
-        if (!window.MilkBookConfig.isConfigured()) {
-          alert('⚠️ Supabase not configured! Please check your .env file');
+        let supabase = null;
+        
+        // Initialize Supabase if credentials are set
+        if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('✅ Supabase initialized');
+        } else {
+            console.warn('⚠️ Supabase not configured. Edit login.html with your credentials.');
         }
 
-        // Switch between PIN and Password login
+        // Switch between login and register tabs
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
-            if (tab === 'pin') {
-                document.getElementById('pinForm').style.display = 'block';
-                document.getElementById('passwordForm').style.display = 'none';
+            if (tab === 'login') {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('registerForm').style.display = 'none';
             } else {
-                document.getElementById('pinForm').style.display = 'none';
-                document.getElementById('passwordForm').style.display = 'block';
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('registerForm').style.display = 'block';
             }
             
             hideMessages();
         }
-        
-        // PIN input auto-focus
-        document.querySelectorAll('.pin-input').forEach((input, index) => {
-            input.addEventListener('input', (e) => {
-                if (e.target.value.length === 1 && index < 5) {
-                    document.querySelectorAll('.pin-input')[index + 1].focus();
-                }
-            });
-            
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
-                    document.querySelectorAll('.pin-input')[index - 1].focus();
-                }
-            });
-        });
-        
+
         // Show error message
         function showError(message) {
             const errorEl = document.getElementById('errorMessage');
@@ -319,7 +282,7 @@
             errorEl.style.display = 'block';
             setTimeout(() => errorEl.style.display = 'none', 5000);
         }
-        
+
         // Show success message
         function showSuccess(message) {
             const successEl = document.getElementById('successMessage');
@@ -327,78 +290,48 @@
             successEl.style.display = 'block';
             setTimeout(() => successEl.style.display = 'none', 3000);
         }
-        
+
         // Hide all messages
         function hideMessages() {
             document.getElementById('errorMessage').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
         }
-        
-        // Handle PIN login
-        async function handlePinLogin(event) {
+
+        // Handle Login
+        async function handleLogin(event) {
             event.preventDefault();
             
-            const shopId = document.getElementById('pinShopId').value;
-            const userId = document.getElementById('pinUserId').value;
-            const pinInputs = document.querySelectorAll('.pin-input');
-            const pin = Array.from(pinInputs).map(input => input.value).join('');
+            const shopName = document.getElementById('loginShopName').value;
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
             
-            if (pin.length !== 6) {
-                showError('PIN must be 6 digits');
-                return;
-            }
-            
-            const btn = document.getElementById('pinLoginBtn');
+            const btn = document.getElementById('loginBtn');
             btn.disabled = true;
             btn.innerHTML = '<span class="loading"></span> Logging in...';
             
             try {
-                // Verify PIN with backend
-                const response = await fetch('/.netlify/functions/auth/verify-pin', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ shop_id: shopId, user_id: userId, pin })
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.message || 'Invalid PIN');
+                // Check for demo credentials
+                if (email === 'demo@milkrecord.in' && password === 'demo123') {
+                    // Demo login - use localStorage
+                    localStorage.setItem('milkbook_session', JSON.stringify({
+                        shop_name: shopName,
+                        email: email,
+                        user_id: 'demo-user',
+                        expires: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+                    }));
+                    
+                    showSuccess('Login successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = 'pos-demo.html';
+                    }, 1000);
+                    return;
                 }
                 
-                // Store session
-                localStorage.setItem('milkbook_session', JSON.stringify({
-                    shop_id: shopId,
-                    user_id: userId,
-                    token: data.token,
-                    expires: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
-                }));
+                // Supabase login
+                if (!supabase) {
+                    throw new Error('Supabase not configured. Please use demo credentials or add your Supabase credentials in login.html');
+                }
                 
-                showSuccess('Login successful! Redirecting...');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
-                
-            } catch (error) {
-                showError(error.message || 'Login failed. Please try again.');
-                btn.disabled = false;
-                btn.innerHTML = 'Login';
-            }
-        }
-        
-        // Handle password login
-        async function handlePasswordLogin(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById('passwordEmail').value;
-            const password = document.getElementById('passwordInput').value;
-            
-            const btn = document.getElementById('passwordLoginBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading"></span> Logging in...';
-            
-            try {
-                // Login with Supabase Auth
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
                     password: password
@@ -419,16 +352,18 @@
                 
                 // Store session
                 localStorage.setItem('milkbook_session', JSON.stringify({
-                    shop_id: profile.shop_id,
+                    shop_name: shopName,
+                    email: email,
                     user_id: data.user.id,
-                    token: data.session.access_token,
+                    shop_id: profile.shop_id,
                     role: profile.role,
+                    token: data.session.access_token,
                     expires: Date.now() + (24 * 60 * 60 * 1000)
                 }));
                 
                 showSuccess('Login successful! Redirecting...');
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = 'pos-demo.html';
                 }, 1000);
                 
             } catch (error) {
@@ -437,15 +372,78 @@
                 btn.innerHTML = 'Login';
             }
         }
-        
+
+        // Handle Register
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const shopName = document.getElementById('regShopName').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const password = document.getElementById('regPassword').value;
+            
+            const btn = document.getElementById('registerBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Creating account...';
+            
+            try {
+                if (!supabase) {
+                    throw new Error('Supabase not configured. Please use demo credentials or add your Supabase credentials in login.html');
+                }
+                
+                // Create Supabase user
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+                
+                if (authError) throw authError;
+                
+                // Create shop
+                const { data: shopData, error: shopError } = await supabase
+                    .from('shops')
+                    .insert([{
+                        id: authData.user.id,
+                        name: shopName
+                    }])
+                    .select()
+                    .single();
+                
+                if (shopError) throw shopError;
+                
+                // Create user profile
+                const { error: profileError } = await supabase
+                    .from('users')
+                    .insert([{
+                        id: authData.user.id,
+                        shop_id: authData.user.id,
+                        role: 'admin',
+                        phone: phone
+                    }]);
+                
+                if (profileError) throw profileError;
+                
+                showSuccess('Account created! Please check your email to verify.');
+                setTimeout(() => {
+                    switchTab('login');
+                    document.getElementById('loginEmail').value = email;
+                }, 2000);
+                
+            } catch (error) {
+                showError(error.message || 'Registration failed. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = 'Create Account';
+            }
+        }
+
         // Check if already logged in
-        window.addEventListener('load', async () => {
+        window.addEventListener('DOMContentLoaded', () => {
             const session = localStorage.getItem('milkbook_session');
             if (session) {
                 const sessionData = JSON.parse(session);
                 if (sessionData.expires > Date.now()) {
                     // Valid session, redirect to app
-                    window.location.href = 'index.html';
+                    window.location.href = 'pos-demo.html';
                 } else {
                     // Expired session, clear it
                     localStorage.removeItem('milkbook_session');
