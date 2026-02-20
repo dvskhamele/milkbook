@@ -1733,7 +1733,7 @@ MilkRecord POS`;
         showToast("Item removed");
       }
 
-      // Save entry with API call to Supabase
+      // Save entry with API call to Supabase - FULL END-TO-END TRACKING
       async function saveEntry(mode) {
         if(total === 0) return showToast("Cart empty");
         
@@ -1747,12 +1747,39 @@ MilkRecord POS`;
         btn.innerHTML = '⏳ Saving...';
 
         try {
-          // 1. Save sale to Supabase
+          // 1. Find or create customer
+          let customerId = null;
+          let existingCustomer = customers.find(c => c.name.toLowerCase() === custName.toLowerCase());
+          
+          if (!existingCustomer && custName !== "Walking Customer") {
+            // Create new customer
+            const custResponse = await fetch('/api/customers', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: custName })
+            });
+            const custResult = await custResponse.json();
+            if (custResult.success) {
+              customerId = custResult.customer.id;
+              customers.push(custResult.customer);
+            }
+          } else if (existingCustomer) {
+            customerId = existingCustomer.id;
+          }
+
+          // 2. Calculate credit amount
+          const paymentAmount = parseFloat(el("paymentAmount").value) || total;
+          const creditAmount = mode === 'Credit' ? total : Math.max(0, total - paymentAmount);
+
+          // 3. Save sale to Supabase with FULL details
           const saleData = {
+            customer_id: customerId,
             customer_name: custName,
             items: cart,
             total_amount: total,
-            payment_mode: mode
+            paid_amount: paymentAmount,
+            credit_amount: creditAmount,
+            payment_mode: mode.toLowerCase()
           };
 
           const response = await fetch('/api/sales', {
@@ -1769,7 +1796,19 @@ MilkRecord POS`;
 
           console.log('✅ Sale saved to Supabase:', result.sale);
 
-          // 2. Update local history for immediate UI update
+          // 4. Update customer balance if credit
+          if (creditAmount > 0 && customerId) {
+            await fetch('/api/customers', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id: customerId,
+                balance: creditAmount
+              })
+            });
+          }
+
+          // 5. Update local history for immediate UI
           const newSale = {
             date: new Date().toLocaleDateString(),
             time,
@@ -1777,37 +1816,29 @@ MilkRecord POS`;
             products: itemsDetail,
             amount: total.toFixed(2),
             method: mode,
-            cartItems: JSON.parse(JSON.stringify(cart))
+            cartItems: JSON.parse(JSON.stringify(cart)),
+            credit: creditAmount
           };
 
           exportHistory.push(newSale);
           localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
 
-          // 3. Update UI
+          // 6. Update UI
           const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px; cursor:pointer;" onclick="loadOrderFromHistory('${custName}', ${JSON.stringify(cart).replace(/"/g, '&quot;')})">
             <div style="width:100%; display:flex; justify-content:space-between;">
               <b>${custName}</b><b>₹${total.toFixed(2)}</b>
             </div>
             <div style="font-size:11px; color:var(--muted); font-weight:700;">
               ${time} • 🛒 ${itemsDetail} • ${modeIcon(mode)} ${mode}
+              ${creditAmount > 0 ? `<span style="color:#dc2626; font-weight:700;"> • 📕 ₹${creditAmount.toFixed(2)} Udhar</span>` : ''}
               <span style="color:var(--blue); font-weight:700; margin-left:8px;">🔁 Click to reload</span>
             </div>
           </div>`;
           el("historyToday").innerHTML = entry + el("historyToday").innerHTML;
 
-          // 4. Handle Credit/Udhar
-          if (mode === 'Credit' || mode === 'Udhar') {
-            // Update customer balance in Supabase
-            const customerResponse = await fetch('/api/customers', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                name: custName,
-                balance: total
-              })
-            });
-            
-            showToast(`₹${total.toFixed(2)} added to Udhar ✅`);
+          // 7. Show success message
+          if (creditAmount > 0) {
+            showToast(`Saved! ₹${creditAmount.toFixed(2)} added to Udhar ✅`);
           } else {
             showToast(`Saved to Supabase ✅`);
           }
