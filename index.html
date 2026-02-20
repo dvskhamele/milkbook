@@ -4419,7 +4419,7 @@ function setupKeyboardNavigation() {
       el('searchInput').focus();
       return;
     }
-    
+
     // Only activate Enter when not in modal
     if (document.querySelector('.overlay[style*="display: flex"]')) return;
 
@@ -4436,17 +4436,28 @@ function setupKeyboardNavigation() {
         }
       } else if (keyboardMode === 'liters') {
         // Enter in liters → Focus fat
+        console.log('Enter in Liters → Moving to Fat');
         keyboardMode = 'fat';
-        el('fatInput').focus();
+        const fatInput = el('fatInput');
+        if (fatInput) {
+          fatInput.focus();
+          fatInput.select();
+        }
       } else if (keyboardMode === 'fat') {
         // Enter in fat → Focus SNF
+        console.log('Enter in Fat → Moving to SNF');
         keyboardMode = 'snf';
-        el('snfInput').focus();
+        const snfInput = el('snfInput');
+        if (snfInput) {
+          snfInput.focus();
+          snfInput.select();
+        }
       } else if (keyboardMode === 'snf') {
         // Enter in SNF → Save entry
+        console.log('Enter in SNF → Saving');
         el('btnSave').click();
         keyboardMode = 'search';
-        el('searchInput').focus();
+        setTimeout(() => el('searchInput').focus(), 100);
       }
     }
   });
@@ -4456,19 +4467,36 @@ function setupKeyboardNavigation() {
     el('searchInput').focus();
   }, 500);
 
-  // Track focus changes
-  ['searchInput', 'qtyInput', 'fatInput', 'snfInput'].forEach(id => {
+  // Track focus changes - Enhanced with blur handling
+  const inputModes = {
+    'searchInput': 'search',
+    'qtyInput': 'liters',
+    'fatInput': 'fat',
+    'snfInput': 'snf'
+  };
+
+  Object.keys(inputModes).forEach(id => {
     const input = el(id);
     if (input) {
+      // On focus - set mode
       input.addEventListener('focus', function() {
-        if (id === 'searchInput') keyboardMode = 'search';
-        else if (id === 'qtyInput') keyboardMode = 'liters';
-        else if (id === 'fatInput') keyboardMode = 'fat';
-        else if (id === 'snfInput') keyboardMode = 'snf';
+        keyboardMode = inputModes[id];
+        console.log('Focus:', id, '→ Mode:', keyboardMode);
+      });
+      
+      // On blur - keep mode for a short time
+      input.addEventListener('blur', function() {
+        setTimeout(() => {
+          const newlyFocused = document.activeElement;
+          if (!Object.keys(inputModes).includes(newlyFocused.id)) {
+            // If focus moved outside inputs, reset to search
+            keyboardMode = 'search';
+          }
+        }, 100);
       });
     }
   });
-  
+
   // Prevent Enter on Add New button
   const addNewBtn = document.getElementById('btnAddFarmerMain');
   if (addNewBtn) {
