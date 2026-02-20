@@ -183,11 +183,12 @@
             <div class="sync-msg"><span class="status-dot"></span> Cloud Active</div>
             <div style="font-size: 9px; color: var(--muted);">Offline-First Data</div>
           </div>
+          <button class="pillbtn" onclick="openModal('settingsModal')">⚙️</button>
           <button class="pillbtn primary" onclick="location.href='index.html'">🍼 <span id="btnIntakeText">Milk Intake</span></button>
           <button class="pillbtn" id="btnMem" onclick="renderMemory()">🧠 Memory</button>
           <button class="pillbtn" id="btnHist" onclick="openModal('historyModal')">🧾 History</button>
           <button class="pillbtn" id="btnExp" style="background:#eef2ff;" onclick="exportDetailedExcel()">📊 Export</button>
-          
+
           <button class="pillbtn" id="langSwitch" onclick="toggleLanguage()">🌐 HI/EN</button>
         </div>
       </div>
@@ -483,6 +484,27 @@
                 <button onclick="closeAndDiscard()" style="margin-top:15px; padding:10px; background:#f1f5f9; color:#64748b; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">
                     ❌ Discard and Close
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shop Settings Modal -->
+    <div class="overlay" id="settingsModal">
+        <div class="modal" style="width:450px; height:auto;">
+            <div class="panelHeader"><span>⚙️ Shop Settings</span> <button onclick="closeModal('settingsModal')">✖</button></div>
+            <div style="padding:20px; display:flex; flex-direction:column; gap:15px;">
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:var(--muted); display:block; margin-bottom:5px;">Shop Name</label>
+                    <input type="text" id="shopNameInput" placeholder="e.g., Gopal Dairy Shop" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--line); font-weight:700;" />
+                </div>
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:var(--muted); display:block; margin-bottom:5px;">Shop Phone (for invoice)</label>
+                    <input type="tel" id="shopPhoneInput" placeholder="e.g., 9876543210" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--line); font-weight:700;" inputmode="tel" />
+                </div>
+                <div style="background:#f0f9ff; padding:12px; border-radius:8px; border:1px solid #3b82f6;">
+                    <p style="font-size:12px; color:#1e40af; margin:0;">💡 Tip: Select booth or enter custom shop name. This appears on invoices and WhatsApp messages.</p>
+                </div>
+                <button onclick="saveShopSettings()" style="padding:15px; background:var(--green); color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:14px;">💾 Save Settings</button>
             </div>
         </div>
     </div>
@@ -917,8 +939,19 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         });
         const invoiceNo = 'INV-' + Date.now().toString().slice(-6);
         
-        // Get customer object for phone number
+        // Get customer object for contact details
         const customer = customers.find(c => c.name === customerName);
+        
+        // Get shop name from booth selection or localStorage
+        const booth = localStorage.getItem('milkbook_booth') || 'main';
+        const boothNames = {
+          'main': 'Main Booth',
+          'village-a': 'Village A Booth',
+          'village-b': 'Village B Booth',
+          'market': 'Market Booth'
+        };
+        const shopName = localStorage.getItem('milkbook_shop_name') || boothNames[booth] || 'Gopal Dairy Shop';
+        const shopPhone = localStorage.getItem('milkbook_shop_phone') || '';
 
         // Create invoice HTML
         const invoiceHTML = `
@@ -934,27 +967,47 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
               body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
               .header { text-align: center; border-bottom: 3px solid #3b82f6; padding-bottom: 15px; margin-bottom: 20px; }
               .header h1 { color: #1e293b; margin: 0; font-size: 24px; }
-              .header p { color: #64748b; margin: 5px 0; }
-              .info { display: flex; justify-content: space-between; margin-bottom: 20px; }
-              .info div { font-size: 14px; }
+              .header p { color: #64748b; margin: 5px 0; font-size: 14px; }
+              .shop-info { background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+              .shop-info h2 { margin: 0 0 5px 0; color: #1e293b; font-size: 18px; }
+              .shop-info p { margin: 0; color: #64748b; font-size: 13px; }
+              .info { display: flex; justify-content: space-between; margin-bottom: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; }
+              .info div { font-size: 14px; line-height: 1.6; }
+              .customer-details { font-weight: 600; color: #1e293b; }
+              .customer-contact { font-size: 12px; color: #64748b; margin-top: 4px; }
               table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
               th { background: #f1f5f9; padding: 10px; text-align: left; font-weight: 700; }
               td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
-              .total { text-align: right; font-size: 18px; font-weight: 900; color: #1e293b; }
+              .total { text-align: right; font-size: 18px; font-weight: 900; color: #1e293b; padding: 10px; background: #f0fdf4; border-radius: 8px; }
               .payment { background: #f0fdf4; padding: 15px; border-radius: 8px; margin-top: 15px; }
               .footer { text-align: center; margin-top: 30px; padding-top: 15px; border-top: 2px solid #e2e8f0; color: #64748b; font-size: 12px; }
-              .print-btn { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; margin-top: 20px; }
-              .print-btn:hover { background: #2563eb; }
+              .btn-group { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+              .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; }
+              .btn-print { background: #3b82f6; color: white; }
+              .btn-whatsapp { background: #25D366; color: white; }
+              .btn:hover { opacity: 0.9; }
             </style>
           </head>
           <body>
+            <div class="shop-info">
+              <h2>${shopName}</h2>
+              ${shopPhone ? `<p>📱 +91${shopPhone}</p>` : ''}
+            </div>
             <div class="header">
-              <h1>🧾 MilkRecord Invoice</h1>
+              <h1>🧾 Tax Invoice</h1>
               <p>${invoiceNo} | ${date}</p>
             </div>
             <div class="info">
-              <div><strong>Customer:</strong><br>${customerName}${customer && customer.phone ? `<br>📱 +91${customer.phone}` : ''}</div>
-              <div><strong>Payment:</strong><br>${paymentMode} - ₹${paymentAmount.toFixed(2)}</div>
+              <div>
+                <div class="customer-details"><strong>Customer:</strong><br>${customerName}</div>
+                ${customer && customer.phone ? `<div class="customer-contact">📱 +91${customer.phone}</div>` : ''}
+                ${customer && customer.email ? `<div class="customer-contact">✉️ ${customer.email}</div>` : ''}
+              </div>
+              <div style="text-align: right;">
+                <strong>Payment:</strong><br>
+                ${paymentMode} - ₹${paymentAmount.toFixed(2)}<br>
+                ${creditAmount > 0 ? `<span style="color: #dc2626;">Credit (Udhar): ₹${creditAmount.toFixed(2)}</span>` : ''}
+              </div>
             </div>
             <table>
               <thead>
@@ -982,17 +1035,20 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
             <div class="payment">
               <strong>Amount Paid:</strong> ₹${paymentAmount.toFixed(2)}<br>
               ${creditAmount > 0 ? `<strong>Credit (Udhar):</strong> ₹${creditAmount.toFixed(2)}` : ''}
-              ${creditAmount > 0 ? `<br><strong>Remaining Balance:</strong> ₹${creditAmount.toFixed(2)}` : ''}
             </div>
             <div class="footer">
               <p>Thank you for your business! 🙏</p>
-              <p>MilkRecord POS | Generated: ${date}</p>
+              <p>${shopName} | MilkRecord POS</p>
+              <p>Generated: ${date}</p>
             </div>
-            <button class="print-btn no-print" onclick="window.print()">🖨️ Print Invoice</button>
+            <div class="btn-group no-print">
+              <button class="btn btn-print" onclick="window.print()">🖨️ Print Invoice</button>
+              <a href="https://wa.me/${customer && customer.phone ? '91' + customer.phone.replace(/\D/g, '') : ''}?text=${encodeURIComponent(generateWhatsAppMessage(invoiceNo, date, customerName, paymentAmount, creditAmount))}" target="_blank" class="btn btn-whatsapp">💬 Share on WhatsApp</a>
+            </div>
           </body>
           </html>
         `;
-        
+
         // Create blob and download
         const blob = new Blob([invoiceHTML], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
@@ -1003,8 +1059,36 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
+
         showToast('Invoice downloaded! 📄');
+      }
+      
+      // Generate WhatsApp message
+      function generateWhatsAppMessage(invoiceNo, date, customerName, paymentAmount, creditAmount) {
+        const booth = localStorage.getItem('milkbook_booth') || 'main';
+        const boothNames = {
+          'main': 'Main Booth',
+          'village-a': 'Village A Booth',
+          'village-b': 'Village B Booth',
+          'market': 'Market Booth'
+        };
+        const shopName = localStorage.getItem('milkbook_shop_name') || boothNames[booth] || 'Gopal Dairy Shop';
+        
+        let message = `*${shopName}*\n`;
+        message += `🧾 Invoice: ${invoiceNo}\n`;
+        message += `📅 Date: ${date}\n\n`;
+        message += `*Customer:* ${customerName}\n\n`;
+        message += `*Items:*\n`;
+        cart.forEach(item => {
+          message += `• ${item.name} - ${item.qty} x ₹${item.rate} = ₹${(item.qty * item.rate).toFixed(2)}\n`;
+        });
+        message += `\n*Total: ₹${total.toFixed(2)}*`;
+        message += `\nPaid: ₹${paymentAmount.toFixed(2)}`;
+        if (creditAmount > 0) {
+          message += `\n*Credit (Udhar): ₹${creditAmount.toFixed(2)}*`;
+        }
+        message += `\n\nThank you for your business! 🙏`;
+        return message;
       }
       
       // Print invoice in new tab
@@ -2253,12 +2337,29 @@ function updateBooth() {
   const booth = el("boothSelect").value;
   const boothNames = {
     'main': 'Main Booth',
-    'village-a': 'Village A',
-    'village-b': 'Village B',
-    'market': 'Market'
+    'village-a': 'Village A Booth',
+    'village-b': 'Village B Booth',
+    'market': 'Market Booth'
   };
   localStorage.setItem('milkbook_booth', booth);
+  localStorage.setItem('milkbook_shop_name', boothNames[booth]);
   showToast(`Booth: ${boothNames[booth]}`);
+}
+
+// Save shop settings
+function saveShopSettings() {
+  const shopName = el("shopNameInput").value.trim();
+  const shopPhone = el("shopPhoneInput").value.trim();
+  
+  if (shopName) {
+    localStorage.setItem('milkbook_shop_name', shopName);
+  }
+  if (shopPhone) {
+    localStorage.setItem('milkbook_shop_phone', shopPhone);
+  }
+  
+  closeModal('settingsModal');
+  showToast('Shop settings saved! ✅');
 }
 
 // Load saved booth on startup
@@ -2266,6 +2367,30 @@ window.addEventListener('DOMContentLoaded', function() {
   const savedBooth = localStorage.getItem('milkbook_booth');
   if (savedBooth && el('boothSelect')) {
     el('boothSelect').value = savedBooth;
+    // Also set shop name from booth
+    const boothNames = {
+      'main': 'Main Booth',
+      'village-a': 'Village A Booth',
+      'village-b': 'Village B Booth',
+      'market': 'Market Booth'
+    };
+    if (!localStorage.getItem('milkbook_shop_name')) {
+      localStorage.setItem('milkbook_shop_name', boothNames[savedBooth]);
+    }
+  }
+  
+  // Load shop settings if opening settings modal
+  const settingsModal = document.getElementById('settingsModal');
+  if (settingsModal) {
+    settingsModal.addEventListener('click', function(e) {
+      if (e.target === settingsModal) {
+        // Load current settings
+        const currentName = localStorage.getItem('milkbook_shop_name') || '';
+        const currentPhone = localStorage.getItem('milkbook_shop_phone') || '';
+        el('shopNameInput').value = currentName;
+        el('shopPhoneInput').value = currentPhone;
+      }
+    });
   }
 });
 
