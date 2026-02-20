@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Setup Supabase - MilkRecord</title>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .setup-box { background: white; padding: 40px; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 500px; width: 100%; }
+        h1 { color: #1e293b; margin-bottom: 10px; }
+        p { color: #64748b; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; color: #475569; margin-bottom: 8px; font-size: 14px; }
+        input { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 14px; font-family: monospace; }
+        input:focus { outline: none; border-color: #667eea; }
+        button { width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3); }
+        .info { background: #f0f9ff; border: 2px solid #3b82f6; padding: 20px; border-radius: 12px; margin: 20px 0; }
+        .info h3 { color: #1e40af; margin-bottom: 15px; font-size: 15px; }
+        .step { background: white; padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 13px; }
+        .step strong { color: #1e40af; }
+        .success { background: #dcfce7; color: #166534; padding: 15px; border-radius: 8px; margin-top: 20px; display: none; }
+        .error { background: #fee2e2; color: #dc2626; padding: 15px; border-radius: 8px; margin-top: 20px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="setup-box">
+        <h1>🔧 Setup Supabase</h1>
+        <p>Enter your credentials once - they'll be saved securely</p>
+        
+        <div class="info">
+            <h3>📍 Get Your Credentials:</h3>
+            <div class="step"><strong>1.</strong> Go to <a href="https://supabase.com" target="_blank">supabase.com</a></div>
+            <div class="step"><strong>2.</strong> Open your project</div>
+            <div class="step"><strong>3.</strong> Click Settings ⚙️ → API</div>
+            <div class="step"><strong>4.</strong> Copy <strong>Project URL</strong> and <strong>anon/public key</strong></div>
+        </div>
+        
+        <form onsubmit="saveCredentials(event)">
+            <div class="form-group">
+                <label>Supabase URL</label>
+                <input type="text" id="supabaseUrl" placeholder="https://xxxxx.supabase.co" required />
+            </div>
+            <div class="form-group">
+                <label>Supabase Anon Key</label>
+                <input type="text" id="supabaseKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." required />
+            </div>
+            <button type="submit">💾 Save & Continue</button>
+        </form>
+        
+        <div class="success" id="successMsg">
+            ✅ Credentials saved! Redirecting to login...
+        </div>
+        
+        <div class="error" id="errorMsg">
+            ❌ Invalid credentials. Please check and try again.
+        </div>
+        
+        <p style="text-align: center; margin-top: 20px; font-size: 13px;">
+            <a href="login.html" style="color: #667eea; font-weight: 700;">Skip → Go to Login</a>
+        </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Check if already configured
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUrl = localStorage.getItem('milkbook_supabase_url');
+            const savedKey = localStorage.getItem('milkbook_supabase_key');
+            
+            if (savedUrl && savedKey) {
+                // Already configured, test connection
+                testAndRedirect(savedUrl, savedKey);
+            }
+        });
+
+        async function saveCredentials(event) {
+            event.preventDefault();
+            
+            const url = document.getElementById('supabaseUrl').value.trim();
+            const key = document.getElementById('supabaseKey').value.trim();
+            
+            if (!url || !key) {
+                showError('Please enter both URL and Key');
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('milkbook_supabase_url', url);
+            localStorage.setItem('milkbook_supabase_key', key);
+            
+            // Test connection
+            const success = await testAndRedirect(url, key);
+            
+            if (success) {
+                showSuccess();
+            } else {
+                showError('Connection failed. Please check your credentials.');
+            }
+        }
+
+        async function testAndRedirect(url, key) {
+            try {
+                const supabase = window.supabase.createClient(url, key);
+                
+                // Test connection
+                const { error } = await supabase.from('shops').select('id').limit(1);
+                
+                // Even if table doesn't exist, connection is valid
+                if (error && !error.message.includes('relation')) {
+                    throw error;
+                }
+                
+                return true;
+            } catch (err) {
+                console.error('Connection test failed:', err);
+                return false;
+            }
+        }
+
+        function showSuccess() {
+            document.getElementById('successMsg').style.display = 'block';
+            document.getElementById('errorMsg').style.display = 'none';
+            
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        }
+
+        function showError(msg) {
+            const errorEl = document.getElementById('errorMsg');
+            errorEl.textContent = '❌ ' + msg;
+            errorEl.style.display = 'block';
+            document.getElementById('successMsg').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
