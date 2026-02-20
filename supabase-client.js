@@ -1,271 +1,180 @@
 /**
- * Supabase Client for Browser
- * 
- * This client is used in the browser to interact with Supabase.
- * It uses the anon/public key which is safe to expose in client-side code.
+ * MilkBook Supabase Client
+ * Direct Supabase connection for Vercel deployment
  */
 
-// Supabase configuration - Replace with your actual values
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // e.g., https://xxxxx.supabase.co
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Your anon/public key
+// Initialize Supabase
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 
-// Simple Supabase client implementation
-class SupabaseClient {
-  constructor(url, anonKey) {
-    this.url = url;
-    this.anonKey = anonKey;
-    this.headers = {
-      'apikey': anonKey,
-      'Authorization': `Bearer ${anonKey}`,
-      'Content-Type': 'application/json'
-    };
-  }
+let supabase = null;
 
-  // Auth methods
-  auth = {
-    signUp: async ({ email, password, options }) => {
-      const response = await fetch(`${this.url}/auth/v1/signup`, {
-        method: 'POST',
-        headers: this.headers,
-        body: JSON.stringify({
-          email,
-          password,
-          data: options?.data || {}
-        })
-      });
-      return response.json();
-    },
-
-    signInWithPassword: async ({ email, password }) => {
-      const response = await fetch(`${this.url}/auth/v1/token?grant_type=password`, {
-        method: 'POST',
-        headers: this.headers,
-        body: JSON.stringify({ email, password })
-      });
-      return response.json();
-    },
-
-    signOut: async () => {
-      const response = await fetch(`${this.url}/auth/v1/logout`, {
-        method: 'POST',
-        headers: this.headers
-      });
-      return response.ok;
-    },
-
-    getSession: async () => {
-      const session = localStorage.getItem('supabase_session');
-      return session ? JSON.parse(session) : null;
-    },
-
-    setSession: (session) => {
-      localStorage.setItem('supabase_session', JSON.stringify(session));
-    }
-  };
-
-  // Database methods
-  from(table) {
-    return {
-      select: (columns = '*') => {
-        return {
-          eq: async (column, value) => {
-            const response = await fetch(
-              `${this.url}/rest/v1/${table}?${column}=eq.${value}`,
-              { headers: this.headers }
-            );
-            return { data: await response.json(), error: null };
-          },
-          then: async () => {
-            const response = await fetch(
-              `${this.url}/rest/v1/${table}?select=${columns}`,
-              { headers: this.headers }
-            );
-            const data = await response.json();
-            return { data, error: null };
-          }
-        };
-      },
-
-      insert: (rows) => {
-        return {
-          select: async () => {
-            const response = await fetch(
-              `${this.url}/rest/v1/${table}?select=*`,
-              {
-                method: 'POST',
-                headers: this.headers,
-                body: JSON.stringify(rows)
-              }
-            );
-            const data = await response.json();
-            return { data: Array.isArray(data) ? data[0] : data, error: null };
-          }
-        };
-      },
-
-      update: (updates) => {
-        return {
-          eq: async (column, value) => {
-            const response = await fetch(
-              `${this.url}/rest/v1/${table}?${column}=eq.${value}`,
-              {
-                method: 'PATCH',
-                headers: this.headers,
-                body: JSON.stringify(updates)
-              }
-            );
-            return { data: await response.json(), error: null };
-          }
-        };
-      },
-
-      delete: () => {
-        return {
-          eq: async (column, value) => {
-            const response = await fetch(
-              `${this.url}/rest/v1/${table}?${column}=eq.${value}`,
-              {
-                method: 'DELETE',
-                headers: this.headers
-              }
-            );
-            return { data: null, error: response.ok ? null : { message: 'Delete failed' } };
-          }
-        };
-      }
-    };
-  }
+if (typeof window !== 'undefined' && window.supabase) {
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-// Create and export client instance
-const supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Check if configured
+const IS_CONFIGURED = SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
 
-// API helper functions for MilkBook
-const api = {
-  // Farmers API
+// Use Supabase if configured
+const USE_SUPABASE = IS_CONFIGURED && localStorage.getItem('milkbook_use_supabase') === 'true';
+
+console.log('📊 MilkBook:', USE_SUPABASE ? '✅ Supabase Connected' : '⚠️ LocalStorage Only');
+if (!IS_CONFIGURED) {
+  console.warn('⚠️ Supabase not configured! Edit supabase-client.js with your credentials');
+}
+
+// Database operations
+const MilkBookDB = {
   farmers: {
-    getAll: async (dairyCenterId) => {
-      const response = await fetch(`/api/farmers?dairy_center_id=${dairyCenterId}`);
-      return response.json();
+    async getAll() {
+      if (!supabase) return { farmers: [] };
+      const { data, error } = await supabase.from('farmers').select('*');
+      if (error) throw error;
+      return { farmers: data || [] };
     },
-    create: async (farmer) => {
-      const response = await fetch('/api/farmers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(farmer)
-      });
-      return response.json();
+    
+    async create(farmer) {
+      if (!supabase) return null;
+      const { data, error } = await supabase.from('farmers').insert([farmer]).select();
+      if (error) throw error;
+      return data[0];
     },
-    update: async (id, updates) => {
-      const response = await fetch(`/api/farmers?id=${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
-      });
-      return response.json();
+    
+    async update(id, updates) {
+      if (!supabase) return null;
+      const { data, error } = await supabase.from('farmers').update(updates).eq('id', id).select();
+      if (error) throw error;
+      return data[0];
     },
-    delete: async (id) => {
-      const response = await fetch(`/api/farmers?id=${id}`, {
-        method: 'DELETE'
-      });
-      return response.json();
+    
+    async delete(id) {
+      if (!supabase) return null;
+      const { error } = await supabase.from('farmers').delete().eq('id', id);
+      if (error) throw error;
+      return true;
     }
   },
-
-  // Milk Entries API
-  milkEntries: {
-    getAll: async (params) => {
-      const queryString = new URLSearchParams(params).toString();
-      const response = await fetch(`/api/milk-entries?${queryString}`);
-      return response.json();
+  
+  entries: {
+    async getAll(filters = {}) {
+      if (!supabase) return { entries: [] };
+      let query = supabase.from('milk_intake_entries').select('*, farmers(name, phone)');
+      
+      if (filters.date) query = query.eq('date', filters.date);
+      if (filters.farmer_id) query = query.eq('farmer_id', filters.farmer_id);
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return { entries: data || [] };
     },
-    create: async (entry) => {
-      const response = await fetch('/api/milk-entries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(entry)
-      });
-      return response.json();
+    
+    async create(entry) {
+      if (!supabase) return null;
+      const { data, error } = await supabase.from('milk_intake_entries').insert([entry]).select();
+      if (error) throw error;
+      return data[0];
     },
-    update: async (id, updates) => {
-      const response = await fetch(`/api/milk-entries?id=${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
-      });
-      return response.json();
-    },
-    delete: async (id) => {
-      const response = await fetch(`/api/milk-entries?id=${id}`, {
-        method: 'DELETE'
-      });
-      return response.json();
+    
+    async update(id, updates) {
+      if (!supabase) return null;
+      const { data, error } = await supabase.from('milk_intake_entries').update(updates).eq('id', id).select();
+      if (error) throw error;
+      return data[0];
     }
   },
-
-  // Payments API
-  payments: {
-    getAll: async (params) => {
-      const queryString = new URLSearchParams(params).toString();
-      const response = await fetch(`/api/payments?${queryString}`);
-      return response.json();
+  
+  customers: {
+    async getAll() {
+      if (!supabase) return { customers: [] };
+      const { data, error } = await supabase.from('customers').select('*');
+      if (error) throw error;
+      return { customers: data || [] };
     },
-    create: async (payment) => {
-      const response = await fetch('/api/payments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payment)
-      });
-      return response.json();
+    
+    async create(customer) {
+      if (!supabase) return null;
+      const { data, error } = await supabase.from('customers').insert([customer]).select();
+      if (error) throw error;
+      return data[0];
     },
-    update: async (id, updates) => {
-      const response = await fetch(`/api/payments?id=${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
-      });
-      return response.json();
-    },
-    delete: async (id) => {
-      const response = await fetch(`/api/payments?id=${id}`, {
-        method: 'DELETE'
-      });
-      return response.json();
+    
+    async update(id, updates) {
+      if (!supabase) return null;
+      const { data, error } = await supabase.from('customers').update(updates).eq('id', id).select();
+      if (error) throw error;
+      return data[0];
     }
   },
-
-  // Sales API
+  
   sales: {
-    getAll: async (params) => {
-      const queryString = new URLSearchParams(params).toString();
-      const response = await fetch(`/api/sales?${queryString}`);
-      return response.json();
+    async getAll(filters = {}) {
+      if (!supabase) return { sales: [] };
+      let query = supabase.from('retail_sales').select('*');
+      
+      if (filters.date) query = query.eq('date', filters.date);
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return { sales: data || [] };
     },
-    create: async (sale) => {
-      const response = await fetch('/api/sales', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sale)
-      });
-      return response.json();
-    },
-    update: async (id, updates) => {
-      const response = await fetch(`/api/sales?id=${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
-      });
-      return response.json();
-    },
-    delete: async (id) => {
-      const response = await fetch(`/api/sales?id=${id}`, {
-        method: 'DELETE'
-      });
-      return response.json();
+    
+    async create(sale) {
+      if (!supabase) return null;
+      const { data, error } = await supabase.from('retail_sales').insert([sale]).select();
+      if (error) throw error;
+      return data[0];
     }
   }
 };
 
+// Auth operations
+const MilkBookAuth = {
+  async login(email, password) {
+    if (!supabase) throw new Error('Supabase not configured');
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data;
+  },
+  
+  async signup(email, password, shopName) {
+    if (!supabase) throw new Error('Supabase not configured');
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+    
+    // Create shop and user profile
+    if (data.user) {
+      await supabase.from('shops').insert([{ id: data.user.id, name: shopName }]);
+      await supabase.from('users').insert([{ id: data.user.id, shop_id: data.user.id, role: 'admin' }]);
+    }
+    
+    return data;
+  },
+  
+  async logout() {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    localStorage.removeItem('milkbook_session');
+  },
+  
+  isLoggedIn() {
+    const session = localStorage.getItem('milkbook_session');
+    if (!session) return false;
+    const sessionData = JSON.parse(session);
+    return sessionData.expires > Date.now();
+  },
+  
+  getSession() {
+    const session = localStorage.getItem('milkbook_session');
+    if (!session) return null;
+    return JSON.parse(session);
+  }
+};
+
 // Export for use in browser
-window.supabase = supabase;
-window.milkbookApi = api;
+if (typeof window !== 'undefined') {
+  window.MilkBookDB = MilkBookDB;
+  window.MilkBookAuth = MilkBookAuth;
+  window.USE_SUPABASE = USE_SUPABASE;
+  window.IS_CONFIGURED = IS_CONFIGURED;
+}

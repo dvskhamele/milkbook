@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MilkBook - Database Status Check</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; padding: 40px 20px; max-width: 900px; margin: 0 auto; }
+        h1 { color: #1e293b; margin-bottom: 30px; }
+        .status-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .status-title { font-size: 18px; font-weight: 700; color: #1e293b; }
+        .status-badge { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+        .status-badge.success { background: #dcfce7; color: #166534; }
+        .status-badge.error { background: #fee2e2; color: #991b1b; }
+        .status-badge.warning { background: #fef3c7; color: #92400e; }
+        .status-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .status-item:last-child { border-bottom: none; }
+        .status-label { color: #64748b; font-size: 14px; }
+        .status-value { font-weight: 700; color: #1e293b; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin: 5px; }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-success { background: #22c55e; color: white; }
+        .btn-warning { background: #f59e0b; color: white; }
+        pre { background: #f1f5f9; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+        .test-section { margin-top: 30px; }
+        .test-btn { margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Database Connection Status</h1>
+
+    <div class="status-card">
+        <div class="status-header">
+            <div class="status-title">Configuration</div>
+            <div class="status-badge" id="configBadge">Checking...</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">Supabase URL</div>
+            <div class="status-value" id="supabaseUrl">—</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">API Mode</div>
+            <div class="status-value" id="apiMode">—</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">Session</div>
+            <div class="status-value" id="sessionStatus">—</div>
+        </div>
+    </div>
+
+    <div class="status-card">
+        <div class="status-header">
+            <div class="status-title">Local Storage Data</div>
+            <div class="status-badge warning" id="localStorageBadge">Checking...</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">Farmers</div>
+            <div class="status-value" id="farmersCount">0</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">Milk Entries</div>
+            <div class="status-value" id="entriesCount">0</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">Customers (POS)</div>
+            <div class="status-value" id="customersCount">0</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">Sales History</div>
+            <div class="status-value" id="salesCount">0</div>
+        </div>
+    </div>
+
+    <div class="status-card">
+        <div class="status-header">
+            <div class="status-title">Database Test</div>
+            <div class="status-badge" id="dbTestBadge">Not Tested</div>
+        </div>
+        <div id="dbTestResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Run Tests</h2>
+        <button class="btn btn-primary" onclick="testDatabase()">Test Database Connection</button>
+        <button class="btn btn-success" onclick="enableAPIMode()">Enable API Mode (Save to DB)</button>
+        <button class="btn btn-warning" onclick="exportLocalStorage()">Export LocalStorage Data</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Console Output</h2>
+        <pre id="consoleOutput">Ready to test...</pre>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script>
+        // Initialize status check
+        window.addEventListener('DOMContentLoaded', async () => {
+            await checkConfiguration();
+            await checkLocalStorage();
+        });
+
+        async function checkConfiguration() {
+            const configBadge = document.getElementById('configBadge');
+            const apiModeEl = document.getElementById('apiMode');
+            const sessionEl = document.getElementById('sessionStatus');
+
+            if (window.IS_CONFIGURED) {
+                configBadge.textContent = 'Configured';
+                configBadge.className = 'status-badge success';
+                document.getElementById('supabaseUrl').textContent = SUPABASE_URL.substring(0, 40) + '...';
+
+                // Check session
+                const session = localStorage.getItem('milkbook_session');
+                if (session) {
+                    const sessionData = JSON.parse(session);
+                    if (sessionData.expires > Date.now()) {
+                        sessionEl.textContent = 'Active (' + sessionData.user_id.substring(0, 8) + '...)';
+                        sessionEl.style.color = '#16a34a';
+                    } else {
+                        sessionEl.textContent = 'Expired';
+                        sessionEl.style.color = '#dc2626';
+                    }
+                } else {
+                    sessionEl.textContent = 'No Session';
+                    sessionEl.style.color = '#64748b';
+                }
+
+                // Check Supabase mode
+                const useSupabase = localStorage.getItem('milkbook_use_supabase') === 'true';
+                apiModeEl.textContent = useSupabase ? 'Supabase (Database)' : 'LocalStorage Only';
+                apiModeEl.style.color = useSupabase ? '#16a34a' : '#dc2626';
+            } else {
+                configBadge.textContent = 'Not Configured';
+                configBadge.className = 'status-badge error';
+                document.getElementById('supabaseUrl').textContent = 'Not set';
+                apiModeEl.textContent = 'N/A';
+                sessionEl.textContent = 'N/A';
+            }
+        }
+
+        async function checkLocalStorage() {
+            const badge = document.getElementById('localStorageBadge');
+            
+            const farmers = JSON.parse(localStorage.getItem('milkbook_farmers') || '[]');
+            const entries = JSON.parse(localStorage.getItem('milkbook_entries') || '[]');
+            const customers = JSON.parse(localStorage.getItem('mr_pos_customers') || '[]');
+            const sales = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+
+            document.getElementById('farmersCount').textContent = farmers.length;
+            document.getElementById('entriesCount').textContent = entries.length;
+            document.getElementById('customersCount').textContent = customers.length;
+            document.getElementById('salesCount').textContent = sales.length;
+
+            const total = farmers.length + entries.length + customers.length + sales.length;
+            if (total > 0) {
+                badge.textContent = `${total} records`;
+                badge.className = 'status-badge warning';
+            } else {
+                badge.textContent = 'Empty';
+                badge.className = 'status-badge error';
+            }
+        }
+
+        async function testDatabase() {
+            const badge = document.getElementById('dbTestBadge');
+            const results = document.getElementById('dbTestResults');
+            const output = document.getElementById('consoleOutput');
+
+            badge.textContent = 'Testing...';
+            badge.className = 'status-badge warning';
+            output.textContent = 'Testing Supabase connection...\n';
+
+            if (!window.IS_CONFIGURED) {
+                badge.textContent = 'Not Configured';
+                badge.className = 'status-badge error';
+                output.textContent += '❌ Supabase credentials not set in supabase-client.js\n';
+                results.innerHTML = '<div style="color: #dc2626; padding: 10px;">Edit supabase-client.js with your Supabase credentials</div>';
+                return;
+            }
+
+            try {
+                // Test 1: Check connection
+                output.textContent += '1. Testing connection...\n';
+                const { farmers, error } = await window.MilkBookDB.farmers.getAll();
+                
+                if (error) {
+                    throw new Error(`Farmers table error: ${error.message}`);
+                }
+
+                output.textContent += `✅ Connection successful! Found ${farmers ? farmers.length : 0} farmer(s)\n`;
+
+                // Test 2: Check all tables
+                output.textContent += '2. Checking tables...\n';
+                const tables = ['farmers', 'milk_intake_entries', 'users', 'customers', 'retail_sales'];
+                let tableStatus = '';
+
+                for (const table of tables) {
+                    try {
+                        const result = await window.MilkBookDB[table].getAll();
+                        const count = (result[table] || []).length;
+                        tableStatus += `✅ ${table}: ${count} records\n`;
+                    } catch (e) {
+                        tableStatus += `❌ ${table}: ${e.message}\n`;
+                    }
+                }
+
+                output.textContent += tableStatus;
+                results.innerHTML = `<pre style="background: #f0fdf4; padding: 15px; border-radius: 8px;">${tableStatus.replace(/✅/g, '<span style="color: #16a34a;">✓</span>').replace(/❌/g, '<span style="color: #dc2626;">✗</span>')}</pre>`;
+
+                badge.textContent = 'Connected';
+                badge.className = 'status-badge success';
+
+            } catch (error) {
+                output.textContent += `❌ Error: ${error.message}\n`;
+                badge.textContent = 'Failed';
+                badge.className = 'status-badge error';
+                results.innerHTML = `<div style="color: #dc2626; padding: 10px;">❌ ${error.message}</div>`;
+            }
+        }
+
+        function enableAPIMode() {
+            localStorage.setItem('milkbook_use_supabase', 'true');
+            alert('Supabase Mode Enabled! Data will now be saved to database.\n\nMake sure you have:\n1. Set Supabase credentials in supabase-client.js\n2. Created database tables (see VERCEL_DEPLOYMENT.md)\n3. Deployed to Vercel');
+            location.reload();
+        }
+
+        function exportLocalStorage() {
+            const data = {
+                farmers: JSON.parse(localStorage.getItem('milkbook_farmers') || '[]'),
+                entries: JSON.parse(localStorage.getItem('milkbook_entries') || '[]'),
+                customers: JSON.parse(localStorage.getItem('mr_pos_customers') || '[]'),
+                sales: JSON.parse(localStorage.getItem('mr_sales_history') || '[]'),
+                exportedAt: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `milkbook-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('LocalStorage data exported! Check your downloads folder.');
+        }
+    </script>
+</body>
+</html>

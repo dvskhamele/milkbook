@@ -1,40 +1,25 @@
 {
   "name": "milkrecord",
   "version": "1.0.0",
-  "description": "MilkRecord - Offline-first dairy collection system for Indian VLCCs, FPOs, and semi-organized dairies",
-  "main": "server.js",
+  "description": "MilkRecord - Dairy management system with Vercel + Supabase",
+  "main": "index.html",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
+    "dev": "vercel dev",
     "build": "echo 'Static site - no build required'",
-    "deploy": "vercel --prod",
-    "preview": "vercel",
-    "vercel-dev": "vercel dev"
+    "deploy": "vercel --prod"
   },
   "keywords": [
     "milkrecord",
     "dairy",
     "milk-collection",
-    "vlcc",
-    "fpo",
-    "india",
-    "pwa",
-    "offline-first",
+    "pos",
     "vercel",
-    "serverless"
+    "supabase"
   ],
   "author": "MilkRecord Team",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/your-username/milkrecord.git"
-  },
-  "devDependencies": {
-    "vercel": "^32.0.0"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.39.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1"
   }
 }
