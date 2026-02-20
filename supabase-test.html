@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Supabase Connection Test</title>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: system-ui; max-width: 800px; margin: 40px auto; padding: 20px; background: #f8fafc; }
+    .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .status { padding: 8px 16px; border-radius: 8px; font-weight: 700; display: inline-block; }
+    .status.error { background: #fee2e2; color: #991b1b; }
+    .status.success { background: #dcfce7; color: #166534; }
+    .status.warning { background: #fef3c7; color: #92400e; }
+    h1 { color: #1e293b; }
+    h2 { color: #475569; font-size: 18px; margin-top: 0; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+    button { background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; margin: 5px; }
+    button:hover { background: #2563eb; }
+    pre { background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+    .step { padding: 10px; margin: 10px 0; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>🔧 Supabase Connection Status</h1>
+
+  <div class="card">
+    <h2>Current Status</h2>
+    <div id="statusContent">Checking...</div>
+  </div>
+
+  <div class="card">
+    <h2>Quick Fix</h2>
+    <div class="step">
+      <strong>Step 1:</strong> Get credentials from https://supabase.com → Settings → API
+    </div>
+    <div class="step">
+      <strong>Step 2:</strong> Edit <a href="https://github.com/dvskhamele/milkbook/edit/main/supabase-client.js" target="_blank">supabase-client.js</a> on GitHub
+    </div>
+    <div class="step">
+      <strong>Step 3:</strong> Replace lines 7-8 with your credentials
+    </div>
+    <div class="step">
+      <strong>Step 4:</strong> Commit changes (Vercel auto-deploys!)
+    </div>
+    <button onclick="enableSupabase()">Enable Supabase Mode</button>
+    <button onclick="testConnection()">Test Connection</button>
+  </div>
+
+  <div class="card">
+    <h2>Console Output</h2>
+    <pre id="output">Ready to test...</pre>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+  <script>
+    // Show current status
+    function showStatus() {
+      const statusDiv = document.getElementById('statusContent');
+      
+      if (!window.IS_CONFIGURED) {
+        statusDiv.innerHTML = `
+          <div class="status error">❌ Not Configured</div>
+          <p style="margin-top: 10px;">Supabase credentials are still placeholders in supabase-client.js</p>
+          <p><strong>Current values:</strong></p>
+          <code>SUPABASE_URL = 'YOUR_SUPABASE_URL'</code><br>
+          <code>SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'</code>
+        `;
+      } else if (!window.USE_SUPABASE) {
+        statusDiv.innerHTML = `
+          <div class="status warning">⚠️ Configured but Not Enabled</div>
+          <p style="margin-top: 10px;">Credentials are set but Supabase mode is not enabled</p>
+          <p><strong>Click "Enable Supabase Mode" button above</strong></p>
+        `;
+      } else {
+        statusDiv.innerHTML = `
+          <div class="status success">✅ Supabase Connected</div>
+          <p style="margin-top: 10px;">Ready to save data to database!</p>
+        `;
+      }
+    }
+
+    // Enable Supabase mode
+    function enableSupabase() {
+      localStorage.setItem('milkbook_use_supabase', 'true');
+      document.getElementById('output').textContent = '✅ Supabase mode enabled! Refreshing...';
+      setTimeout(() => location.reload(), 1000);
+    }
+
+    // Test connection
+    async function testConnection() {
+      const output = document.getElementById('output');
+      output.textContent = 'Testing connection...\n';
+
+      if (!window.IS_CONFIGURED) {
+        output.textContent += '❌ Supabase not configured!\n';
+        output.textContent += '\nEdit supabase-client.js lines 7-8 with your credentials:\n';
+        output.textContent += '  const SUPABASE_URL = \'https://your-project.supabase.co\';\n';
+        output.textContent += '  const SUPABASE_ANON_KEY = \'your-anon-key\';\n';
+        return;
+      }
+
+      if (!window.USE_SUPABASE) {
+        output.textContent += '⚠️ Supabase configured but not enabled\n';
+        output.textContent += '\nClick "Enable Supabase Mode" button first\n';
+        return;
+      }
+
+      try {
+        // Test farmers table
+        output.textContent += '1. Testing farmers table...\n';
+        const farmers = await window.MilkBookDB.farmers.getAll();
+        output.textContent += `   ✅ Found ${farmers.farmers.length} farmer(s)\n`;
+
+        // Test entries table
+        output.textContent += '2. Testing milk_intake_entries table...\n';
+        const entries = await window.MilkBookDB.entries.getAll();
+        output.textContent += `   ✅ Found ${entries.entries.length} entry(ies)\n`;
+
+        // Test customers table
+        output.textContent += '3. Testing customers table...\n';
+        const customers = await window.MilkBookDB.customers.getAll();
+        output.textContent += `   ✅ Found ${customers.customers.length} customer(s)\n`;
+
+        // Test sales table
+        output.textContent += '4. Testing retail_sales table...\n';
+        const sales = await window.MilkBookDB.sales.getAll();
+        output.textContent += `   ✅ Found ${sales.sales.length} sale(s)\n`;
+
+        output.textContent += '\n✅ All tables accessible! Supabase is working!\n';
+
+      } catch (error) {
+        output.textContent += `❌ Error: ${error.message}\n`;
+        output.textContent += '\nPossible fixes:\n';
+        output.textContent += '1. Make sure tables exist (see SUPABASE_FIX_GUIDE.md)\n';
+        output.textContent += '2. Check RLS policies are set correctly\n';
+        output.textContent += '3. Verify credentials are correct\n';
+      }
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', showStatus);
+  </script>
+</body>
+</html>
