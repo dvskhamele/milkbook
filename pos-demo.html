@@ -1870,7 +1870,7 @@ MilkRecord POS`;
         }
       }
       
-      // Auto-download invoice (no new tab, just download)
+      // Auto-download invoice (SILENT - no print dialog, no focus change)
       function downloadInvoiceAuto(customerName, paymentAmount, paymentMode, creditAmount, invoiceId) {
         const date = new Date();
         const dateStr = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -1881,68 +1881,37 @@ MilkRecord POS`;
         const session = localStorage.getItem('milkbook_session');
         const shopName = session ? JSON.parse(session).shop_name : 'MilkRecord POS';
         
-        const invoiceHTML = `
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Invoice ${invoiceNo}</title>
-  <style>
-    @media print { body { padding: 10px; } .no-print { display: none; } }
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: 0 auto; }
-    .header { text-align: center; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; margin-bottom: 15px; }
-    .header h1 { color: #1e293b; margin: 0; font-size: 20px; }
-    .header p { color: #64748b; margin: 5px 0; font-size: 12px; }
-    .info { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 12px; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-    th { background: #f1f5f9; padding: 8px; text-align: left; font-weight: 700; font-size: 12px; }
-    td { padding: 8px; border-bottom: 1px solid #e2e8f0; font-size: 12px; }
-    .total { text-align: right; font-size: 16px; font-weight: 900; color: #1e293b; padding: 10px; background: #f0fdf4; border-radius: 6px; }
-    .footer { text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 10px; }
-  </style>
-</head>
-<body onload="window.print(); setTimeout(() => window.close(), 500);">
-  <div class="header">
-    <h1>🧾 ${shopName}</h1>
-    <p>${invoiceNo} | ${dateStr} ${timeStr}</p>
-  </div>
-  <div class="info">
-    <div><strong>Customer:</strong><br>${customerName}</div>
-    <div><strong>Payment:</strong><br>${paymentMode} - ₹${paymentAmount.toFixed(2)}</div>
-  </div>
-  <table>
-    <thead>
-      <tr><th>Item</th><th style="text-align:center">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr>
-    </thead>
-    <tbody>
-      ${cart.map(item => `
-        <tr>
-          <td>${item.name}</td>
-          <td style="text-align:center">${item.qty}</td>
-          <td style="text-align:right">₹${item.rate}</td>
-          <td style="text-align:right">₹${(item.qty * item.rate).toFixed(2)}</td>
-        </tr>
-      `).join('')}
-    </tbody>
-  </table>
-  <div class="total">Total: ₹${total.toFixed(2)}</div>
-  ${creditAmount > 0 ? `<div style="background:#fef2f2; padding:10px; border-radius:6px; margin-top:10px; color:#dc2626; font-weight:700;">Credit (Udhar): ₹${creditAmount.toFixed(2)}</div>` : ''}
-  <div class="footer">
-    <p>Thank you! 🙏</p>
-    <p>${shopName}</p>
-  </div>
-</body>
-</html>`;
-
-        // Create blob and trigger download
-        const blob = new Blob([invoiceHTML], { type: 'text/html' });
+        // Create simple text invoice for download
+        let invoiceText = `${shopName}\n`;
+        invoiceText += `${invoiceNo} | ${dateStr} ${timeStr}\n`;
+        invoiceText += `━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+        invoiceText += `Customer: ${customerName}\n`;
+        invoiceText += `Payment: ${paymentMode} - ₹${paymentAmount.toFixed(2)}\n\n`;
+        invoiceText += `ITEMS:\n`;
+        cart.forEach(item => {
+          invoiceText += `  ${item.name} x${item.qty} @ ₹${item.rate} = ₹${(item.qty * item.rate).toFixed(2)}\n`;
+        });
+        invoiceText += `\n━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+        invoiceText += `TOTAL: ₹${total.toFixed(2)}\n`;
+        if (creditAmount > 0) {
+          invoiceText += `CREDIT (Udhar): ₹${creditAmount.toFixed(2)}\n`;
+        }
+        invoiceText += `\nThank you! 🙏\n`;
+        invoiceText += `${shopName}\n`;
+        
+        // Create blob and download SILENTLY (no print, no focus)
+        const blob = new Blob([invoiceText], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Invoice-${invoiceNo}.html`;
+        a.download = `Invoice-${invoiceNo}.txt`;
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        
+        // No console log, no alert - completely silent
       }
       
       // Send WhatsApp reminder for credit
