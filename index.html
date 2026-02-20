@@ -3591,39 +3591,62 @@ el("snfInput").oninput = (e) => {
         }
       });
       
-      el("btnCreateFarmer").onclick = () => {
+      el("btnCreateFarmer").onclick = async () => {
         const f = {
-          id: uid("f"),
           name: el("fName").value.trim(),
           phone: el("fPhone").value.trim(),
           address: el("fAddress").value.trim(),
           balance: Number(el("fBalance").value) || 0,
           active: el("fActive").value === "1",
-          animalType: el("fAnimalType").value // ✅ Ye line add karein
+          animalType: el("fAnimalType").value
         };
         if (!f.name) {
           showToast("Name required");
           console.error('❌ Farmer creation failed: Name is required');
           return;
         }
-        farmers.push(f);
-        saveFarmers(farmers);
-        console.log('✅ Farmer created:', f);
-        console.log('💾 Saved to LocalStorage. Total farmers:', farmers.length);
-        
-        // Try to save to Supabase if enabled
-        if (window.USE_SUPABASE && window.MilkBookDB) {
-          window.MilkBookDB.farmers.create(f).then(() => {
-            console.log('✅ Also saved to Supabase!');
-          }).catch(err => {
-            console.error('⚠️ Could not save to Supabase:', err);
+
+        const btn = el("btnCreateFarmer");
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Creating...';
+
+        try {
+          // Create farmer via API
+          const response = await fetch('/api/farmers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(f)
           });
+
+          const result = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(result.message || 'Failed to create farmer');
+          }
+
+          console.log('✅ Farmer created in Supabase:', result.farmer.id);
+
+          // Also save locally for immediate UI
+          const localFarmer = {
+            id: result.farmer.id,
+            ...f
+          };
+          farmers.push(localFarmer);
+          saveFarmers(farmers);
+
+          selectedFarmerId = localFarmer.id;
+          closeOverlay("overlayFarmer");
+          renderAll();
+          showToast("Farmer created in Supabase! ✅");
+
+        } catch (error) {
+          console.error('Error creating farmer:', error);
+          showToast('❌ Failed: ' + error.message);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '✅ Create';
         }
-        
-        selectedFarmerId = f.id;
-        closeOverlay("overlayFarmer");
-        renderAll();
-        showToast("Farmer created! ✅");
       };
 
       // Close overlays
