@@ -224,19 +224,12 @@
           </a>
         </div>
         <div class="hdr-actions">
-          <div style="margin-right: 10px; text-align: right;">
-            <div class="sync-msg"><span class="status-dot"></span> Cloud Active</div>
-            <div style="font-size: 9px; color: var(--muted);">Offline-First Data</div>
-          </div>
-          <button class="pillbtn primary" onclick="location.href='index.html'">🍼 <span id="btnIntakeText">Milk Intake</span></button>
-          <button class="pillbtn" id="langSwitch" onclick="toggleLanguage()">🌐 HI/EN</button>
-          
-          <!-- Profile Dropdown -->
+          <!-- Profile Dropdown (Top Right) -->
           <div style="position: relative; display: inline-block;">
             <button class="pillbtn" onclick="toggleProfileDropdown()" style="background:#f8fafc; border-color:#e2e8f0;">
               👤 <span id="profileName">User</span> ▼
             </button>
-            <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 200px; z-index: 1000;">
+            <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 220px; z-index: 1000;">
               <div style="padding: 12px; border-bottom: 1px solid var(--line);">
                 <div style="font-weight: 700; font-size: 13px;" id="dropdownEmail">user@email.com</div>
                 <div style="font-size: 11px; color: var(--muted);" id="dropdownShop">Shop Name</div>
@@ -244,6 +237,7 @@
               <button onclick="openModal('settingsModal'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">⚙️ Settings</button>
               <button onclick="exportDetailedExcel(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">📊 Export Data</button>
               <button onclick="openModal('historyModal'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🧾 History</button>
+              <button onclick="toggleLanguage(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🌐 HI/EN Language</button>
               <div style="border-top: 1px solid var(--line); margin: 4px 0;"></div>
               <button onclick="logout()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
             </div>

@@ -1289,12 +1289,8 @@
             <div class="sub" id="todayLabel">—</div>
           </div>
         </div>
-         <div class="hdr-actions">
-          <button class="pillbtn primary" onclick="location.href='pos-demo.html'">
-            <span>🍼</span> <span id="btnIntakeText">Milk sales</span>
-          </button>
-          
-          <!-- Profile Dropdown -->
+        <div class="hdr-actions">
+          <!-- Profile Dropdown (Top Right) -->
           <div style="position: relative; display: inline-block;">
             <button class="pillbtn" onclick="toggleProfileDropdown()" style="background:#f8fafc; border-color:#e2e8f0;">
               👤 <span id="profileName">User</span> ▼
@@ -1523,39 +1519,25 @@
                   </select>
                 </div>
 
-                <div class="rateCard">
-                  <label>Rate Mode</label>
-                  <div class="modeRow">
-                    <button class="modeBtn active" id="btnRateModeAuto">
-                      💰 Auto
-                    </button>
-                    <button class="modeBtn" id="btnRateModeManual">
-                      ✍️ Manual
-                    </button>
+                <!-- Manual Rate Override -->
+                <div class="manualOverride">
+                  <div class="left">📷 Manual Rate Override</div>
+                  <div style="display: flex; align-items: center; gap: 12px">
+                    <div class="rtag" id="rateTypeLabel">Rate: Auto</div>
+                    <div class="manualRateRow" id="manualRateRow">
+                      <input
+                        id="manualRateInput"
+                        inputmode="decimal"
+                        placeholder="Rate/L"
+                      />
+                      <button id="manualRateApply">✔️</button>
+                    </div>
                   </div>
                 </div>
+
+                <div style="flex: 1"></div>
               </div>
             </div>
-
-            <!-- Manual Rate Override -->
-            <div class="manualOverride">
-              <div class="left">📷 Manual Rate Override</div>
-              <div style="display: flex; align-items: center; gap: 12px">
-                <div class="rtag" id="rateTypeLabel">Rate: Auto</div>
-                <div class="manualRateRow" id="manualRateRow">
-                  <input
-                    id="manualRateInput"
-                    inputmode="decimal"
-                    placeholder="Rate/L"
-                  />
-                  <button id="manualRateApply">✔️</button>
-                </div>
-              </div>
-            </div>
-
-            <div style="flex: 1"></div>
-          </div>
-        </div>
 
         <!-- RIGHT -->
         <div class="panel">
@@ -2416,8 +2398,9 @@ function playSuccessSound() {
       const trailMini = el("trailMini");
 
       const animalSelect = el("animalSelect");
-      const btnRateModeAuto = el("btnRateModeAuto");
-      const btnRateModeManual = el("btnRateModeManual");
+      const manualRateInput = el("manualRateInput");
+      const manualRateApply = el("manualRateApply");
+      const rateTypeLabel = el("rateTypeLabel");
 
       const qtyInput = el("qtyInput");
       const fatInput = el("fatInput");
@@ -2535,15 +2518,13 @@ function calcYield() {
       }
 
       function getRatePerLiter() {
-    // 1. Check karo agar Manual mode on hai aur dabba khali nahi hai
-    if (rateMode === "manual") {
-        const mInput = el("manualRateInput").value;
-        if (mInput && Number(mInput) > 0) {
-            return round2(Number(mInput));
-        }
+    // Check if manual rate override has a value
+    const mInput = el("manualRateInput").value;
+    if (mInput && Number(mInput) > 0) {
+        return round2(Number(mInput));
     }
-    
-    // 2. Varna purana Auto logic chale
+
+    // Auto calculate from fat
     const f = Number(el("fatInput").value) || 0;
     const a = el("animalSelect").value;
     if (a === "buffalo") {
@@ -2649,6 +2630,10 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
     const dummyCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (dummyCtx.state === 'suspended') dummyCtx.resume();
     // ----------------------------
+                
+                // Auto-fill from previous entry for this farmer
+                loadFarmerMemory(f.id);
+                
                 renderAll();
                 el("qtyInput").focus();
                 el("qtyInput").select();
@@ -2866,6 +2851,50 @@ return `
     showToast("Editing: " + entry.farmerName + " ✏️");
     el("qtyInput").focus();
 }
+
+      // Load farmer memory (previous values)
+      function loadFarmerMemory(farmerId) {
+        if (!farmerId) return;
+        
+        const memory = JSON.parse(localStorage.getItem('mr_farmer_memory') || '{}');
+        const farmerMemory = memory[farmerId];
+        
+        if (farmerMemory) {
+          // Auto-fill previous values
+          if (farmerMemory.animal) animal = farmerMemory.animal;
+          if (farmerMemory.fat) {
+            fat = farmerMemory.fat;
+            if (fatInput) fatInput.value = fat.toFixed(1);
+          }
+          if (farmerMemory.snf) {
+            snf = farmerMemory.snf;
+            if (snfInput) snfInput.value = snf.toFixed(1);
+          }
+          if (farmerMemory.rate) {
+            if (manualRateInput) manualRateInput.value = farmerMemory.rate;
+          }
+          
+          console.log('✅ Loaded farmer memory:', farmerMemory);
+        }
+      }
+      
+      // Save farmer memory
+      function saveFarmerMemory(farmerId) {
+        if (!farmerId) return;
+        
+        const memory = JSON.parse(localStorage.getItem('mr_farmer_memory') || '{}');
+        
+        memory[farmerId] = {
+          animal: animal,
+          fat: fat,
+          snf: snf,
+          rate: manualRateInput && manualRateInput.value ? Number(manualRateInput.value) : 0,
+          lastUpdated: Date.now()
+        };
+        
+        localStorage.setItem('mr_farmer_memory', JSON.stringify(memory));
+      }
+
       function renderTrust() {
     const farmer = getFarmerById(selectedFarmerId);
     // ✅ AUTO SELECT LOGIC:
@@ -2926,16 +2955,14 @@ return `
     // animal dropdown sync
     animalSelect.value = animal;
 
-    // rate mode UI
-    btnRateModeAuto.classList.toggle("active", rateMode === "auto");
-    btnRateModeManual.classList.toggle("active", rateMode === "manual");
-
-    if (rateMode === "manual") {
+    // Manual rate UI - show if has value
+    const hasManualRate = manualRateInput && manualRateInput.value && Number(manualRateInput.value) > 0;
+    if (hasManualRate) {
         rateTypeLabel.textContent = "Rate: Manual";
-        manualRateRow.style.display = "grid";
+        manualRateRow.style.display = "flex";
     } else {
         rateTypeLabel.textContent = "Rate: Auto";
-        manualRateRow.style.display = "none";
+        manualRateRow.style.display = "flex";
     }
 
     // HOLD badge
@@ -3170,6 +3197,9 @@ function playSuccessSound() {
     });
 
     // --- ✅ RESET LOGIC FOR NEXT FARMER ---
+    // Save farmer memory BEFORE reset
+    saveFarmerMemory(farmer.id);
+    
     qty = 0;
     fat = 0;
     snf = 0;
@@ -3519,19 +3549,17 @@ el("snfInput").oninput = (e) => {
         renderTrust();
       };
 
-      // Rate mode
-      btnRateModeAuto.onclick = () => {
-        rateMode = "auto";
-        renderTrust();
-      };
-      btnRateModeManual.onclick = () => {
-        rateMode = "manual";
-        renderTrust();
-      };
+      // Manual rate override
       el("manualRateApply").onclick = () => {
         manualRate = Number(manualRateInput.value) || 0;
         renderTrust();
       };
+      
+      // Clear manual rate on farmer change
+      function clearManualRate() {
+        manualRate = 0;
+        if (manualRateInput) manualRateInput.value = '';
+      }
 
       // Save / Hold / Undo
       el("btnSave").onclick = saveEntry;
