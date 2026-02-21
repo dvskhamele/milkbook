@@ -183,8 +183,19 @@
         overflow: hidden;
         min-height: 0;
       }
-      
-      /* Mobile-first: Stack panels vertically on small screens */
+
+      /* Tablet-first: Side by side on tablets and up */
+      @media (min-width: 769px) {
+        .core {
+          grid-template-columns: 1.1fr 0.9fr;
+        }
+        .panel {
+          max-height: calc(100vh - 180px);
+          overflow-y: auto;
+        }
+      }
+
+      /* Mobile: Stack panels vertically on small screens */
       @media (max-width: 768px) {
         .core {
           grid-template-columns: 1fr;
@@ -208,12 +219,6 @@
         }
         #farmerCount {
           order: 3;
-        }
-        /* Source Strength indicator moves to bottom on mobile */
-        [style*="Source Strength"] {
-          order: 4;
-          margin-left: 0 !important;
-          width: 100%;
         }
       }
 
@@ -1290,6 +1295,11 @@
           </div>
         </div>
         <div class="hdr-actions">
+          <!-- Switch to POS -->
+          <button class="pillbtn primary" onclick="location.href='pos-demo.html'" style="background:#2563eb; border-color:#2563eb;">
+            🛒 POS
+          </button>
+          
           <!-- Profile Dropdown (Top Right) -->
           <div style="position: relative; display: inline-block;">
             <button class="pillbtn" onclick="toggleProfileDropdown()" style="background:#f8fafc; border-color:#e2e8f0;">
