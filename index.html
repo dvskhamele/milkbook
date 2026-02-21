@@ -3961,14 +3961,33 @@ document.addEventListener('keydown', (e) => {
 
         if (e.key === "Enter") {
             e.preventDefault();
-            // If on last field (fBalance, fAnimalType, fActive) or Create button → Create farmer
-            if (curIdx >= 4 || active.id === "btnCreateFarmer" || active.id === "fActive" || active.id === "fBalance") {
+            
+            // On fBalance → Move to Animal Type selection
+            if (active.id === "fBalance") {
+                el("fAnimalType").focus();
+                return;
+            }
+            
+            // On fAnimalType or fActive → Create farmer
+            if (active.id === "fAnimalType" || active.id === "fActive") {
                 el("btnCreateFarmer").click();
                 setTimeout(() => {
                   el("searchInput").focus();
                 }, 150);
-            } else if (curIdx !== -1 && curIdx < formOrder.length - 1) {
-                // Move to next field
+                return;
+            }
+            
+            // On Create button → Create farmer
+            if (active.id === "btnCreateFarmer") {
+                el("btnCreateFarmer").click();
+                setTimeout(() => {
+                  el("searchInput").focus();
+                }, 150);
+                return;
+            }
+            
+            // Move to next field
+            if (curIdx !== -1 && curIdx < formOrder.length - 1) {
                 el(formOrder[curIdx + 1]).focus();
                 if (el(formOrder[curIdx + 1]).tagName === "INPUT") el(formOrder[curIdx + 1]).select();
             }

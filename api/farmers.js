@@ -33,14 +33,28 @@ module.exports = async (req, res) => {
     if (req.method === 'POST') {
       const { name, phone, address, balance, animal_type } = req.body;
       
+      // Default shop ID
+      const defaultShopId = '00000000-0000-0000-0000-000000000001';
+
       const { data, error } = await supabase
         .from('farmers')
-        .insert([{ name, phone, address, balance: balance || 0, animal_type: animal_type || 'cow' }])
+        .insert([{ 
+          shop_id: defaultShopId,
+          name, 
+          phone, 
+          address, 
+          balance: balance || 0, 
+          animal_type: animal_type || 'cow' 
+        }])
         .select()
         .single();
-      
-      if (error) throw error;
-      
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      console.log('✅ Farmer created:', data.id);
       return res.status(201).json({ success: true, farmer: data });
     }
 
