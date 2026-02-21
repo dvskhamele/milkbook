@@ -1294,34 +1294,14 @@
             <div class="sub" id="todayLabel">—</div>
           </div>
         </div>
-        <div class="hdr-actions">
+        <div class="hdr-actions" style="flex: 1; justify-content: flex-end;">
           <!-- Switch to POS -->
           <button class="pillbtn primary" onclick="location.href='pos-demo.html'" style="background:#2563eb; border-color:#2563eb;">
             🛒 POS
           </button>
 
-          <!-- Profile Dropdown (Top Right) -->
-          <div style="position: relative; display: inline-block;">
-            <button class="pillbtn" onclick="toggleProfileDropdown()" style="background:#f8fafc; border-color:#e2e8f0;">
-              👤 <span id="profileName">User</span> ▼
-            </button>
-            <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 200px; z-index: 1000;">
-              <div style="padding: 12px; border-bottom: 1px solid var(--line);">
-                <div style="font-weight: 700; font-size: 13px;" id="dropdownEmail">user@email.com</div>
-                <div style="font-size: 11px; color: var(--muted);" id="dropdownShop">Shop Name</div>
-              </div>
-              <button onclick="openRateEditor(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">📋 Rate Chart</button>
-              <button onclick="openOverlay('overlayHistory'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🧾 History</button>
-              <button onclick="toggleLanguage(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🌐 HI/EN</button>
-              <div style="border-top: 1px solid var(--line); margin: 4px 0;"></div>
-              <button onclick="logout(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Booth/Collection Point Selector -->
-        <div style="display: flex; align-items: center; gap: 8px; margin: 0 15px;">
-          <div style="display: flex; flex-direction: column;">
+          <!-- Booth/Collection Point Selector -->
+          <div style="display: flex; flex-direction: column; margin: 0 10px;">
             <label style="font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 4px;">Booth:</label>
             <select id="collectionPointSelect" onchange="updateCollectionPoint()" style="padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-weight: 700; font-size: 13px; min-width: 180px; background: white;">
               <option value="DEFAULT">Default Booth</option>
@@ -1332,14 +1312,14 @@
               <option value="GANDHI_CHOWK">Gandhi Chowk Booth</option>
             </select>
           </div>
-        </div>
-        
-        <!-- Hardware Indicator -->
-        <div style="font-size: 12px; font-weight: 900; color: #64748b; display: flex; align-items: center; gap: 4px; margin: 0 10px;">
-          <span style="color: #9ca3af;">●</span> Reading: Manual
-        </div>
-        
-        <div id="ratePillContainer" style="display: flex; align-items: center; gap: 8px; margin-left: 15px;">
+
+          <!-- Hardware Indicator -->
+          <div style="font-size: 12px; font-weight: 900; color: #64748b; display: flex; align-items: center; gap: 4px; margin: 0 10px; white-space: nowrap;">
+            <span style="color: #9ca3af;">●</span> Reading: Manual
+          </div>
+
+          <!-- Rate Pill Container -->
+          <div id="ratePillContainer" style="display: flex; align-items: center; gap: 8px; margin: 0 10px;">
     <div id="ratePill" onclick="openRateEditor()" style="background: #e3f2fd; color: #1565c0; padding: 8px 16px; border-radius: 999px; font-weight: 1000; cursor: pointer; border: 1px solid #bbdefb; font-size: 14px; display: flex; align-items: center; gap: 6px;">
         <span id="rateDisplay">Rate: ₹0.00</span>
         <span style="font-size: 10px; opacity: 0.6;">✏️</span>
@@ -1380,22 +1360,23 @@
         </div>
     </div>
 </div>
-        <div style="display: flex; align-items: center; gap: 10px">
-          <div class="hdr-actions">
-            <button class="pillbtn" id="btnHistoryMain">🧾 History</button>
-            <button class="pillbtn" id="langSwitch" style="background: #f1f5f9">
-              🌐 HI/EN
-            </button>
-          </div>
 
-          <div class="hdr-right">
-            <!-- <div class="timer" id="timerBox">⏱ 00:00</div> -->
-            <button class="iconbtn" id="btnLeader" title="Leader (Weekly)">
-              🏆
+          <!-- Profile Dropdown (Top Right) -->
+          <div style="position: relative; display: inline-block; margin-left: 10px;">
+            <button class="pillbtn" onclick="toggleProfileDropdown()" style="background:#f8fafc; border-color:#e2e8f0;">
+              👤 <span id="profileName">User</span> ▼
             </button>
-            <button class="iconbtn" id="btnSettings" title="Settings">
-              ⚙️
-            </button>
+            <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 200px; z-index: 1000;">
+              <div style="padding: 12px; border-bottom: 1px solid var(--line);">
+                <div style="font-weight: 700; font-size: 13px;" id="dropdownEmail">user@email.com</div>
+                <div style="font-size: 11px; color: var(--muted);" id="dropdownShop">Shop Name</div>
+              </div>
+              <button onclick="openRateEditor(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">📋 Rate Chart</button>
+              <button onclick="openOverlay('overlayHistory'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🧾 History</button>
+              <button onclick="toggleLanguage(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🌐 HI/EN</button>
+              <div style="border-top: 1px solid var(--line); margin: 4px 0;"></div>
+              <button onclick="logout(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
+            </div>
           </div>
         </div>
       </div>
