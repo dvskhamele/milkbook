@@ -2444,8 +2444,19 @@ function playSuccessSound() {
   }
   // Iske andar density update add karein
   if (document.activeElement !== el("densityInput")) {
-  el("densityInput").value = clr;
-}
+    el("densityInput").value = clr;
+  }
+  
+  // Manual rate input ko current rate se pre-fill karo
+  if (manualRateInput && document.activeElement !== manualRateInput) {
+    if (!manualRate || manualRate === 0) {
+      // Auto mode: Current rate se pre-fill
+      manualRateInput.value = settings.cowBase ? Number(settings.cowBase).toFixed(2) : "";
+    } else {
+      // Manual mode: User ka entered value dikhao
+      manualRateInput.value = manualRate.toFixed(2);
+    }
+  }
 }
   function calculateSNFFromCLR() {
   if (clr > 0) {
@@ -2982,15 +2993,21 @@ return `
     // animal dropdown sync
     animalSelect.value = animal;
 
-    // Manual rate UI - show if has value
-    const hasManualRate = manualRateInput && manualRateInput.value && Number(manualRateInput.value) > 0;
-    if (hasManualRate) {
-        rateTypeLabel.textContent = "Rate: Manual";
-        manualRateRow.style.display = "flex";
-    } else {
+    // Manual rate UI - always show, pre-fill with current rate
+    if (!manualRate || manualRate === 0) {
         rateTypeLabel.textContent = "Rate: Auto";
-        manualRateRow.style.display = "flex";
+        // Auto mode: Pre-fill with current base rate
+        if (manualRateInput) {
+            manualRateInput.value = settings.cowBase ? Number(settings.cowBase).toFixed(2) : "";
+        }
+    } else {
+        rateTypeLabel.textContent = "Rate: Manual";
+        // Manual mode: Show user's entered value
+        if (manualRateInput) {
+            manualRateInput.value = manualRate.toFixed(2);
+        }
     }
+    manualRateRow.style.display = "flex";
 
     // HOLD badge
     const hold = loadHold();
