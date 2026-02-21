@@ -61,6 +61,26 @@ module.exports = async (req, res) => {
       }
       
       console.log('✅ Sale saved:', data.id);
+      
+      // Create audit log
+      try {
+        await fetch('https://milkrecord.in/api/audit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: customer_id || 'anonymous',
+            user_email: customer_name,
+            action: 'create',
+            table_name: 'retail_sales',
+            record_id: data.id,
+            new_data: { customer_name, items, total_amount, paid_amount, credit_amount, payment_mode },
+            notes: `Sale created: ${customer_name}, ₹${total_amount}`
+          })
+        });
+      } catch (auditError) {
+        console.error('Failed to create audit log:', auditError);
+      }
+      
       return res.status(201).json({ success: true, sale: data });
     }
 

@@ -55,6 +55,26 @@ module.exports = async (req, res) => {
       }
 
       console.log('✅ Farmer created:', data.id);
+      
+      // Create audit log
+      try {
+        await fetch('https://milkrecord.in/api/audit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: data.id,
+            user_email: name,
+            action: 'create',
+            table_name: 'farmers',
+            record_id: data.id,
+            new_data: { name, phone, address, balance, animal_type },
+            notes: `Farmer created: ${name}`
+          })
+        });
+      } catch (auditError) {
+        console.error('Failed to create audit log:', auditError);
+      }
+      
       return res.status(201).json({ success: true, farmer: data });
     }
 

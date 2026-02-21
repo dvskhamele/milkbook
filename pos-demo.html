@@ -2477,16 +2477,60 @@ function addNewProductFromModal() {
 // Filter products by search
 function filterProducts(query) {
   const search = query.toLowerCase().trim();
-  const cards = document.querySelectorAll('.p-card');
+  const grid = document.getElementById("productGrid");
+  const cards = grid.querySelectorAll('.p-card');
   
+  let visibleCount = 0;
+  let hasAddCard = grid.querySelector('.p-card.add-new-product');
+
   cards.forEach(card => {
+    // Skip the "Add New Product" card
+    if (card.classList.contains('add-new-product')) {
+      return;
+    }
+    
     const text = card.textContent.toLowerCase();
     if (search === '' || text.includes(search)) {
       card.style.display = 'flex';
+      visibleCount++;
     } else {
       card.style.display = 'none';
     }
   });
+
+  // Show "Add New Product" card if search has no results
+  if (search !== '' && visibleCount === 0) {
+    if (!hasAddCard) {
+      // Create "Add New Product" card
+      const addCard = document.createElement('div');
+      addCard.className = 'p-card add-new-product';
+      addCard.style.background = '#f0fdf4';
+      addCard.style.borderColor = '#16a34a';
+      addCard.innerHTML = `
+        <div style="font-size:48px; color:#16a34a; font-weight:900;">➕</div>
+        <div style="font-weight:900; color:#16a34a; font-size:10px; margin-top:4px;">Add "${escapeHtml(search)}"</div>
+        <small style="color:#15803d; font-size:9px;">Click to create</small>
+      `;
+      addCard.onclick = function() {
+        openModal('addProductModal');
+        setTimeout(() => {
+          el("newProdName").value = search.charAt(0).toUpperCase() + search.slice(1);
+          el("newProdPrice").focus();
+        }, 300);
+      };
+      
+      // Insert before the regular "Add" button
+      const regularAddBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
+      if (regularAddBtn) {
+        grid.insertBefore(addCard, regularAddBtn);
+      }
+    } else {
+      hasAddCard.style.display = 'flex';
+      hasAddCard.querySelector('div:nth-child(2)').innerHTML = `Add "${escapeHtml(search)}"`;
+    }
+  } else if (hasAddCard) {
+    hasAddCard.style.display = 'none';
+  }
 }
 
 // Close customer search dropdown
