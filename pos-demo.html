@@ -228,13 +228,26 @@
             <div class="sync-msg"><span class="status-dot"></span> Cloud Active</div>
             <div style="font-size: 9px; color: var(--muted);">Offline-First Data</div>
           </div>
-          <button class="pillbtn" onclick="openModal('settingsModal')">⚙️</button>
           <button class="pillbtn primary" onclick="location.href='index.html'">🍼 <span id="btnIntakeText">Milk Intake</span></button>
-          <button class="pillbtn" id="btnMem" onclick="renderMemory()">🧠 Memory</button>
-          <button class="pillbtn" id="btnHist" onclick="openModal('historyModal')">🧾 History</button>
-          <button class="pillbtn" id="btnExp" style="background:#eef2ff;" onclick="exportDetailedExcel()">📊 Export</button>
           <button class="pillbtn" id="langSwitch" onclick="toggleLanguage()">🌐 HI/EN</button>
-          <button class="pillbtn" id="btnLogout" onclick="logout()" style="background:#fef2f2; color:#dc2626; border-color:#fca5a5;">🚪 Logout</button>
+          
+          <!-- Profile Dropdown -->
+          <div style="position: relative; display: inline-block;">
+            <button class="pillbtn" onclick="toggleProfileDropdown()" style="background:#f8fafc; border-color:#e2e8f0;">
+              👤 <span id="profileName">User</span> ▼
+            </button>
+            <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 200px; z-index: 1000;">
+              <div style="padding: 12px; border-bottom: 1px solid var(--line);">
+                <div style="font-weight: 700; font-size: 13px;" id="dropdownEmail">user@email.com</div>
+                <div style="font-size: 11px; color: var(--muted);" id="dropdownShop">Shop Name</div>
+              </div>
+              <button onclick="openModal('settingsModal'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">⚙️ Settings</button>
+              <button onclick="exportDetailedExcel(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">📊 Export Data</button>
+              <button onclick="openModal('historyModal'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🧾 History</button>
+              <div style="border-top: 1px solid var(--line); margin: 4px 0;"></div>
+              <button onclick="logout()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -880,19 +893,43 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           if (confirm('Are you sure you want to logout?')) {
               // Clear session
               localStorage.removeItem('milkbook_session');
-              
+
               // Clear any other stored data if needed
               // localStorage.removeItem('milkbook_supabase_url');
               // localStorage.removeItem('milkbook_supabase_key');
-              
+
               showToast('Logged out successfully!');
-              
+
               // Redirect to login page
               setTimeout(() => {
                   window.location.href = 'login.html';
               }, 500);
           }
       }
+      
+      // Toggle profile dropdown
+      function toggleProfileDropdown() {
+          const dropdown = document.getElementById('profileDropdown');
+          dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+          
+          // Load user info
+          const session = localStorage.getItem('milkbook_session');
+          if (session) {
+              const data = JSON.parse(session);
+              document.getElementById('profileName').textContent = data.shop_name || 'User';
+              document.getElementById('dropdownEmail').textContent = data.email || 'user@email.com';
+              document.getElementById('dropdownShop').textContent = data.shop_name || 'Shop';
+          }
+      }
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+          const dropdown = document.getElementById('profileDropdown');
+          const button = e.target.closest('button');
+          if (dropdown && (!button || !button.onclick?.toString().includes('toggleProfileDropdown'))) {
+              dropdown.style.display = 'none';
+          }
+      });
 
       // Calculate credit based on payment amount
       function calculateCredit() {
