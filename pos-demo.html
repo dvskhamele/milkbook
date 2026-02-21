@@ -167,9 +167,11 @@
       .summary-box { background: linear-gradient(180deg, var(--blue), var(--blue2)); color: #fff; padding: 20px; border-radius: 18px; margin: 15px; text-align: center; }
       .amt { font-size: 42px; font-weight: 1200; }
       
-      .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 15px 15px; }
-      .pay-btn { height: 45px; border-radius: 12px; border: none; font-weight: 1000; cursor: pointer; }
-      .pay-btn.credit { grid-column: 1/-1; background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+      .pay-grid { display: flex; gap: 8px; padding: 0 15px 15px; flex-wrap: wrap; }
+      .pay-btn { flex: 1; min-width: 80px; height: 38px; border-radius: 10px; border: none; font-weight: 900; font-size: 11px; cursor: pointer; transition: all 0.15s; }
+      .pay-btn:hover { transform: translateY(-1px); }
+      .pay-btn:active { transform: scale(0.98); }
+      .pay-btn.credit { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; min-width: 100%; }
 
       .recent-table { width: 100%; border-collapse: collapse; font-size: 13px; }
       .recent-table td { padding: 10px; border-bottom: 1px solid var(--line); font-weight: 700; vertical-align: middle; }
@@ -1736,22 +1738,24 @@ MilkRecord POS`;
         cart.forEach((i, index) => {
           const itemAmount = i.rate * i.qty;
           total += itemAmount;
-          tbody.innerHTML += `<tr>
-            <td>${i.name}<br><small style="color:var(--muted); font-weight:700;">₹${i.rate}/unit</small></td>
-            <td>
-              <input type="number" value="${i.qty}" min="0.1" step="0.1"
-                onchange="updateItemQty(${index}, this.value)"
-                style="width:70px; padding:4px; border:1px solid var(--line); border-radius:6px; font-weight:700; text-align:center;"
-                title="Quantity" />
+          tbody.innerHTML += `<tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:8px 0;">
+              <div style="font-weight:700; font-size:13px;">${i.name}</div>
+              <div style="font-size:11px; color:var(--muted); font-weight:700;">₹${i.rate}/unit</div>
             </td>
-            <td>
-              <input type="number" value="${itemAmount.toFixed(2)}" min="1" step="1"
-                onchange="updateItemAmount(${index}, this.value)"
-                style="width:80px; padding:4px; border:1px solid var(--line); border-radius:6px; font-weight:700; text-align:center;"
-                title="Amount in ₹" />
+            <td style="padding:8px 4px;">
+              <div style="display:flex; align-items:center; gap:4px;">
+                <button onclick="decreaseQty(${index})" style="width:28px; height:28px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:6px; font-weight:900; font-size:16px; cursor:pointer; color:#64748b;">−</button>
+                <input type="number" value="${i.qty}" min="0.1" step="0.1"
+                  onchange="updateItemQty(${index}, this.value)"
+                  style="width:60px; padding:4px; border:1px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center; font-size:13px;"
+                  title="Quantity" />
+                <button onclick="increaseQty(${index})" style="width:28px; height:28px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:6px; font-weight:900; font-size:16px; cursor:pointer; color:#16a34a;">+</button>
+              </div>
             </td>
-            <td style="text-align:right;">
-              <button onclick="removeItem(${index})" style="background:#fecaca; color:#7f1d1d; border:none; border-radius:6px; padding:4px 8px; cursor:pointer; font-weight:700; font-size:12px;">✕ Remove</button>
+            <td style="padding:8px 4px; text-align:right; font-weight:700; font-size:13px;">₹${itemAmount.toFixed(2)}</td>
+            <td style="padding:8px 0; text-align:right;">
+              <button onclick="removeItem(${index})" style="background:#fecaca; color:#dc2626; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-weight:700; font-size:11px;">✕ Remove</button>
             </td>
           </tr>`;
         });
@@ -1774,6 +1778,23 @@ MilkRecord POS`;
         updateCardBadges();
       }
       
+      // Decrease quantity
+      function decreaseQty(index) {
+        const newQty = Math.max(0.1, cart[index].qty - 0.5);
+        cart[index].qty = Math.round(newQty * 10) / 10;
+        if (cart[index].qty <= 0) {
+          removeItem(index);
+        } else {
+          updateUI();
+        }
+      }
+      
+      // Increase quantity
+      function increaseQty(index) {
+        cart[index].qty = Math.round((cart[index].qty + 0.5) * 10) / 10;
+        updateUI();
+      }
+      
       // Update quantity badges on product cards
       function updateCardBadges() {
         // Reset all badges first
@@ -1781,37 +1802,72 @@ MilkRecord POS`;
           badge.style.display = 'none';
         });
         
-        // Remove highlight from all cards
+        // Remove all highlights and reset icon sizes
         document.querySelectorAll('.p-card').forEach(card => {
           card.style.boxShadow = '';
+          card.style.border = '';
+          const emoji = card.querySelector('.emoji');
+          if (emoji) {
+            // Reset to default size based on card data-qty
+            const defaultQty = parseFloat(card.getAttribute('data-qty'));
+            if (defaultQty >= 2) {
+              emoji.style.fontSize = '56px';
+            } else if (defaultQty >= 1) {
+              emoji.style.fontSize = '48px';
+            } else {
+              emoji.style.fontSize = '32px';
+            }
+          }
         });
 
         // Update badges for items in cart
         cart.forEach(item => {
-          // Find all cards that match this product by checking onclick attribute
+          // Find all cards that match this product
           document.querySelectorAll('.p-card').forEach(card => {
             const onclick = card.getAttribute('onclick') || '';
             
             // Check if this card's onclick matches the item
             if (onclick.includes(`'${item.name}'`)) {
               const badge = card.querySelector('.qty-badge');
+              const emoji = card.querySelector('.emoji');
+              const nameDiv = card.querySelector('div[style*="font-weight: 900"]');
+              
               if (badge) {
-                // Show badge with total quantity for this product
+                // Show badge with quantity
                 badge.textContent = item.qty;
                 badge.style.display = 'block';
-                card.style.boxShadow = '0 0 0 3px #dc2626';
+                
+                // Highlight based on quantity
+                if (item.qty >= 2) {
+                  card.style.boxShadow = '0 0 0 3px #dc2626';
+                  card.style.border = '2px solid #dc2626';
+                } else if (item.qty >= 1) {
+                  card.style.boxShadow = '0 0 0 3px #3b82f6';
+                  card.style.border = '2px solid #3b82f6';
+                } else {
+                  card.style.boxShadow = '0 0 0 3px #16a34a';
+                  card.style.border = '2px solid #16a34a';
+                }
               }
               
-              // Adjust icon size based on quantity
-              const emoji = card.querySelector('.emoji');
+              // Update icon size based on cart quantity
               if (emoji) {
                 if (item.qty >= 2) {
-                  emoji.style.fontSize = '56px'; // Large for 2L+
+                  emoji.style.fontSize = '64px'; // Extra large for 2L+
+                  emoji.style.filter = 'brightness(1.2)';
                 } else if (item.qty >= 1) {
-                  emoji.style.fontSize = '48px'; // Medium for 1L
+                  emoji.style.fontSize = '52px'; // Large for 1L
+                  emoji.style.filter = 'brightness(1.1)';
                 } else {
-                  emoji.style.fontSize = '32px'; // Small for 0.5L
+                  emoji.style.fontSize = '36px'; // Medium for 0.5L
+                  emoji.style.filter = 'brightness(1)';
                 }
+              }
+              
+              // Update name to show quantity
+              if (nameDiv) {
+                const baseName = item.name.replace(/\s*\(\d+x\)$/, '');
+                nameDiv.textContent = `${baseName} (${item.qty}x)`;
               }
             }
           });
