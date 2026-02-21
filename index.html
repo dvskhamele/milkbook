@@ -177,8 +177,8 @@
       /* CORE */
       .core {
         height: 100%;
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
+        display: grid !important;
+        grid-template-columns: 1.1fr 0.9fr !important;
         gap: 14px;
         overflow: hidden;
         min-height: 0;
@@ -187,7 +187,7 @@
       /* Tablet-first: Side by side on tablets and up */
       @media (min-width: 769px) {
         .core {
-          grid-template-columns: 1.1fr 0.9fr;
+          grid-template-columns: 1.1fr 0.9fr !important;
         }
         .panel {
           max-height: calc(100vh - 180px);
@@ -198,7 +198,7 @@
       /* Mobile: Stack panels vertically on small screens */
       @media (max-width: 768px) {
         .core {
-          grid-template-columns: 1fr;
+          grid-template-columns: 1fr !important;
           grid-template-rows: auto auto;
           overflow-y: auto;
         }
