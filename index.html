@@ -2902,7 +2902,7 @@ return `
 
     rateView.textContent = `₹${r.toFixed(2)}`;
     amountView.textContent = `₹${a.toFixed(2)}`;
-    trailMini.textContent = `${round2(qty).toFixed(1)} L × ₹${r.toFixed(2)}/L`;
+    trailMini.textContent = `${round2(qty).toFixed(1)} L × ₹${r.toFixed(2)}/L (Fat: ${fat.toFixed(1)}%)`;
 
     // Update inline cow/buff quantities
     updateInlineQuantities();

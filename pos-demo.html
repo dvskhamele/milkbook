@@ -274,22 +274,22 @@
             </div>
 
             <!-- Buffalo Products -->
-            <div class="p-card buff" onclick="tapAdd('Buff Milk', 100, 1)" data-qty="1" id="prod-buff-1l-a">
+            <div class="p-card buff" onclick="tapAdd('Buff 2L', 200, 2)" data-qty="2" id="prod-buff-2l">
+              <span class="emoji" style="font-size: 56px;">🐃</span>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 2L</div>
+              <small style="font-size: 10px; margin-top: 2px;">₹200</small>
+              <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
+            </div>
+            <div class="p-card buff" onclick="tapAdd('Buff 1L', 100, 1)" data-qty="1" id="prod-buff-1l">
               <span class="emoji" style="font-size: 48px;">🐃</span>
               <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 1L</div>
               <small style="font-size: 10px; margin-top: 2px;">₹100</small>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
             </div>
-            <div class="p-card buff" onclick="tapAdd('Buff Milk', 80, 1)" data-qty="1" id="prod-buff-1l-b">
-              <span class="emoji" style="font-size: 48px;">🐃</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 1L</div>
-              <small style="font-size: 10px; margin-top: 2px;">₹80</small>
-              <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-            </div>
-            <div class="p-card buff" onclick="tapAdd('Buff Milk', 40, 0.5)" data-qty="0.5" id="prod-buff-05l">
+            <div class="p-card buff" onclick="tapAdd('Buff 0.5L', 50, 0.5)" data-qty="0.5" id="prod-buff-05l">
               <span class="emoji" style="font-size: 32px;">🐃</span>
               <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Buff 0.5L</div>
-              <small style="font-size: 10px; margin-top: 2px;">₹40</small>
+              <small style="font-size: 10px; margin-top: 2px;">₹50</small>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
             </div>
 
@@ -1546,12 +1546,15 @@ MilkRecord POS`;
           searchInput.style.borderColor = '#22c55e';
           searchInput.style.background = '#f0fdf4';
           el("searchDropdown").style.display = "none";
-          
+
           // Update hidden activeCust element for backwards compatibility
           const activeCustEl = el("activeCust");
           if (activeCustEl) activeCustEl.innerText = name;
-          
+
           showToast("Customer: " + name);
+
+          // Auto-fill from customer memory (previous orders)
+          loadCustomerMemory(name);
 
           // Auto-fill frequent buys / last invoice from memory
           const customer = customers.find(c => c.name === name);
@@ -1569,7 +1572,7 @@ MilkRecord POS`;
             updateUI();
             showToast(`Loaded ${customer.frequentBuys.length} frequent items ✅`);
           }
-          
+
           // Show advance toggle for this customer
           showAdvanceSection(name);
       }
@@ -1804,9 +1807,60 @@ MilkRecord POS`;
                 badge.style.display = 'block';
                 card.style.boxShadow = '0 0 0 3px #dc2626';
               }
+              
+              // Adjust icon size based on quantity
+              const emoji = card.querySelector('.emoji');
+              if (emoji) {
+                if (item.qty >= 2) {
+                  emoji.style.fontSize = '56px'; // Large for 2L+
+                } else if (item.qty >= 1) {
+                  emoji.style.fontSize = '48px'; // Medium for 1L
+                } else {
+                  emoji.style.fontSize = '32px'; // Small for 0.5L
+                }
+              }
             }
           });
         });
+      }
+      
+      // Load customer memory (previous orders)
+      function loadCustomerMemory(customerName) {
+        if (!customerName || customerName === 'Walking Customer') return;
+        
+        const memory = JSON.parse(localStorage.getItem('mr_customer_memory') || '{}');
+        const customerMemory = memory[customerName];
+        
+        if (customerMemory && customerMemory.items && customerMemory.items.length > 0) {
+          // Clear current cart
+          cart = [];
+          
+          // Load previous items
+          customerMemory.items.forEach(item => {
+            cart.push({
+              name: item.name,
+              rate: item.rate,
+              qty: item.qty
+            });
+          });
+          
+          updateUI();
+          showToast(`Loaded memory: ${customerMemory.items.length} items ✅`);
+        }
+      }
+      
+      // Save customer memory
+      function saveCustomerMemory(customerName) {
+        if (!customerName || customerName === 'Walking Customer') return;
+        
+        const memory = JSON.parse(localStorage.getItem('mr_customer_memory') || '{}');
+        
+        memory[customerName] = {
+          items: JSON.parse(JSON.stringify(cart)),
+          lastUpdated: Date.now()
+        };
+        
+        localStorage.setItem('mr_customer_memory', JSON.stringify(memory));
       }
       
       // Update item quantity (amount auto-calculates)
@@ -1914,6 +1968,9 @@ MilkRecord POS`;
               })
             });
           }
+
+          // Save customer memory (for auto-fill next time)
+          saveCustomerMemory(custName);
 
           // 5. Update local history for immediate UI
           const newSale = {
