@@ -373,6 +373,16 @@
         text-overflow: ellipsis;
         max-width: 210px;
       }
+      .editFarmerBtn {
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .fcard:hover .editFarmerBtn {
+        opacity: 0.7;
+      }
+      .editFarmerBtn:hover {
+        opacity: 1 !important;
+      }
       .fsel {
         outline: 3px solid rgba(22, 163, 74, 0.45);
         box-shadow: 0 0 0 6px rgba(22, 163, 74, 0.1);
@@ -2461,7 +2471,7 @@ function playSuccessSound() {
       }
       function filterFarmers() {
         let list = activeFarmers();
-        
+
         // Filter by selected booth/collection point (show farmers from selected booth first)
         if (selectedCollectionPointId && selectedCollectionPointId !== 'DEFAULT') {
           // Sort: Farmers from selected booth first, then others
@@ -2473,11 +2483,27 @@ function playSuccessSound() {
             return 0;
           });
         }
-        
+
         if (!farmerSearch.trim()) return list;
         const q = farmerSearch.trim().toLowerCase();
         return list.filter((f) => (f.name || "").toLowerCase().includes(q));
       }
+
+      // Edit farmer name
+      function editFarmerName(farmerId) {
+        const farmer = getFarmerById(farmerId);
+        if (!farmer) return;
+        
+        const newName = prompt("Edit farmer name:", farmer.name);
+        if (newName && newName.trim() !== "" && newName !== farmer.name) {
+          farmer.name = newName.trim();
+          saveFarmers(farmers);
+          renderFarmers();
+          renderAll();
+          showToast(`Name updated: ${farmer.name} ✅`);
+        }
+      }
+
       function ensureSelectedFarmer() {
         const list = activeFarmers();
         if (!selectedFarmerId && list.length) {
@@ -2612,10 +2638,11 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
 
             card.innerHTML = `
                 <div class="fimg">${imgHTML}</div>
-                <div style="min-width:0;">
+                <div style="min-width:0; flex: 1;">
                     <div class="fname" title="${escapeHtml(f.name || "")}">${escapeHtml(f.name || "")}</div>
                     <div class="fsub">${f.phone || ""} • ₹${round2(Number(f.balance || 0)).toFixed(2)}</div>
                 </div>
+                <button class="editFarmerBtn" onclick="event.stopPropagation(); editFarmerName('${f.id}')" title="Edit Name" style="background:none; border:none; cursor:pointer; font-size:16px; padding:4px 8px; opacity:0.6;">✏️</button>
                 ${isSel ? `<div class="badge">Selected</div>` : ``}
             `;
 
@@ -3331,9 +3358,9 @@ function showAuditProof(entryId) {
         const rt = e.rateMode === "manual" ? "Manual" : "Auto";
         return `
     <div class="cardRow">
-      <div style="min-width:0;">
+      <div style="min-width:0; flex: 1;">
         <div class="title">${escapeHtml(e.farmerName || "")}</div>
-        <div class="meta">${t} • ${icon} • ${e.qty}L • Fat ${e.fat}% • SNF ${e.snf} • ${rt}</div>
+        <div class="meta">${t} • ${icon} <strong style="color: #16a34a; font-size: 15px;">${e.qty} L</strong> • Fat ${e.fat}% • SNF ${e.snf} • ${rt}</div>
       </div>
       <div class="val">₹${Number(e.amount || 0).toFixed(2)}</div>
     </div>
