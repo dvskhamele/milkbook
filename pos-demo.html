@@ -51,10 +51,29 @@
         .brand-text .sub-text { display: none; }
         .pillbtn { height: 26px; font-size: 9px; }
       }
+      
+      /* Mobile: Fixed footer for save buttons */
+      @media (max-width: 768px) {
+        body { padding-bottom: 70px; }
+        .mobile-footer { display: block !important; }
+        .bottom { display: none !important; }
+      }
 
       /* --- CORE LAYOUT --- */
       .core { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 14px; }
-      .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; max-height: calc(100vh - 200px); }
+      .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; max-height: calc(100vh - 140px); }
+      
+      /* Mobile: Stack panels vertically with 100% width */
+      @media (max-width: 768px) {
+        .core { grid-template-columns: 1fr; gap: 10px; }
+        .panel { max-height: none; }
+        .left-panel { order: 1; }
+        .right-panel { order: 2; }
+      }
+      
+      @media (max-width: 480px) {
+        .core { gap: 8px; }
+      }
       .panelHeader { padding: 12px 16px; border-bottom: 1px solid var(--line); font-weight: 1000; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
 
       /* --- SEARCH & PERSISTENCE AREA --- */
@@ -293,7 +312,7 @@
           </div>
         </div>
 
-        <div class="panel">
+        <div class="panel left-panel">
           <div class="panelHeader" style="padding: 8px 12px; height: 40px; background: #f8fafc; border-bottom: 1px solid var(--line);">
             <!-- Hidden element for active customer (for backwards compatibility) -->
             <span id="activeCust" style="display:none;">Walking Customer</span>
@@ -378,10 +397,20 @@
         </div>
       </div>
 
+      <!-- Fixed Footer for Mobile -->
       <div class="bottom" style="flex-shrink: 0;">
         <button class="panicBtn" style="background:#22c55e; color:#064e3b;" onclick="saveAndInvoice()"><span>🟢 SAVE</span> <span class="subnote">invoice + WhatsApp</span></button>
         <button class="panicBtn" style="background:#fde68a; color:#78350f;" onclick="holdCart()"><span id="txtHold">🟡 HOLD</span> <span class="subnote">save</span></button>
         <button class="panicBtn" style="background:#fef3c7; color:#92400e; font-size:18px;" onclick="showHeldCarts()" title="View held orders">📋 <span class="subnote" id="heldCount">0</span></button>
+      </div>
+    </div>
+
+    <!-- Mobile Fixed Footer (sticky at bottom) -->
+    <div class="mobile-footer" id="mobileFooter" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid var(--line); padding: 10px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 1000;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 50px; gap: 8px;">
+        <button class="panicBtn" style="background:#22c55e; color:#064e3b; padding: 12px 8px; font-size: 12px;" onclick="saveAndInvoice()">🟢 SAVE</button>
+        <button class="panicBtn" style="background:#fde68a; color:#78350f; padding: 12px 8px; font-size: 12px;" onclick="holdCart()">🟡 HOLD</button>
+        <button class="panicBtn" style="background:#fef3c7; color:#92400e; font-size: 16px; padding: 12px 4px;" onclick="showHeldCarts()">📋 <span id="heldCountMobile">0</span></button>
       </div>
     </div>
 
@@ -2255,9 +2284,15 @@ function clearTodayHistory() {
         } else if (holdBtn) {
           holdBtn.innerHTML = `🟡 HOLD <span class="subnote">save</span>`;
         }
-        
+
         if (heldCountEl) {
           heldCountEl.textContent = heldCarts.length;
+        }
+        
+        // Sync mobile footer count
+        const heldCountMobile = document.getElementById('heldCountMobile');
+        if (heldCountMobile) {
+          heldCountMobile.textContent = heldCarts.length;
         }
       }
       
@@ -2658,7 +2693,7 @@ window.addEventListener('DOMContentLoaded', function() {
       localStorage.setItem('milkbook_shop_name', boothNames[savedBooth]);
     }
   }
-  
+
   // Load shop settings if opening settings modal
   const settingsModal = document.getElementById('settingsModal');
   if (settingsModal) {
@@ -2672,6 +2707,23 @@ window.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+  
+  // Show mobile footer on small screens
+  function checkMobileFooter() {
+    const mobileFooter = document.getElementById('mobileFooter');
+    const desktopFooter = document.querySelector('.bottom');
+    if (window.innerWidth <= 768) {
+      if (mobileFooter) mobileFooter.style.display = 'block';
+      if (desktopFooter) desktopFooter.style.display = 'none';
+    } else {
+      if (mobileFooter) mobileFooter.style.display = 'none';
+      if (desktopFooter) desktopFooter.style.display = 'flex';
+    }
+  }
+  
+  // Check on load and resize
+  checkMobileFooter();
+  window.addEventListener('resize', checkMobileFooter);
 });
 
 // Keyboard Navigation - Full End-to-End Invoice Creation
