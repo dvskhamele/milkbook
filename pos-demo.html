@@ -1713,40 +1713,33 @@ MilkRecord POS`;
       
       // Update quantity badges on product cards
       function updateCardBadges() {
-        // Product name to card ID mapping
-        const productMap = {
-          'Cow Milk': ['prod-cow-1l', 'prod-cow-05l'],
-          'Buff Milk': ['prod-buff-1l-a', 'prod-buff-1l-b', 'prod-buff-05l'],
-          'Paneer': ['prod-paneer'],
-          'Ghee': ['prod-ghee'],
-          'Milk Cake': ['prod-milkcake']
-        };
-        
-        // Reset all badges
+        // Reset all badges first
         document.querySelectorAll('.qty-badge').forEach(badge => {
           badge.style.display = 'none';
-          badge.textContent = '0';
         });
         
+        // Remove highlight from all cards
+        document.querySelectorAll('.p-card').forEach(card => {
+          card.style.boxShadow = '';
+        });
+
         // Update badges for items in cart
         cart.forEach(item => {
-          const cardIds = productMap[item.name];
-          if (cardIds) {
-            cardIds.forEach(id => {
-              const card = document.getElementById(id);
-              if (card) {
-                const badge = card.querySelector('.qty-badge');
-                if (badge) {
-                  const cardQty = parseFloat(card.getAttribute('data-qty'));
-                  if (cardQty === item.qty) {
-                    badge.textContent = item.qty;
-                    badge.style.display = 'block';
-                    card.style.boxShadow = '0 0 0 3px #dc2626';
-                  }
-                }
+          // Find all cards that match this product by checking onclick attribute
+          document.querySelectorAll('.p-card').forEach(card => {
+            const onclick = card.getAttribute('onclick') || '';
+            
+            // Check if this card's onclick matches the item
+            if (onclick.includes(`'${item.name}'`)) {
+              const badge = card.querySelector('.qty-badge');
+              if (badge) {
+                // Show badge with total quantity for this product
+                badge.textContent = item.qty;
+                badge.style.display = 'block';
+                card.style.boxShadow = '0 0 0 3px #dc2626';
               }
-            });
-          }
+            }
+          });
         });
       }
       
@@ -2445,7 +2438,7 @@ function addNewProductFromModal() {
 
   if (!name || !price) return showToast("Name and Price required!");
 
-  // Create new product card
+  // Create new product card with qty-badge
   const grid = el("productGrid");
   const newCard = document.createElement('div');
   newCard.className = 'p-card';
@@ -2455,6 +2448,7 @@ function addNewProductFromModal() {
     <span class="emoji" style="font-size: 48px;">${emoji}</span>
     <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">${name}</div>
     <small style="font-size: 10px; margin-top: 2px;">₹${price}/${unit}</small>
+    <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
   `;
 
   // Insert before ADD PRODUCT button
@@ -2558,6 +2552,7 @@ function loadCustomProducts() {
       ${p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div class="emoji">📦</div>`}
       <div>${p.name}</div>
       <small>₹${p.price}</small>
+      <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
     `;
     grid.insertBefore(newCard, addCardBtn);
   });
