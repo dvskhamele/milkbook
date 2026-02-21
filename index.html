@@ -2352,6 +2352,7 @@ function playSuccessSound() {
       let entries = loadEntries();
 
       let selectedFarmerId = null;
+      let selectedCollectionPointId = "DEFAULT";
 
       let qty = 0.0;
       let fat = 0.0;
@@ -3617,8 +3618,10 @@ el("snfInput").oninput = (e) => {
       el("btnHold").onclick = holdCurrent;
       el("btnUndo").onclick = undoLast;
 
-      // History
-      el("btnHistoryMain").onclick = () => openOverlay("overlayHistory");
+      // History (if button exists)
+      if (el("btnHistoryMain")) {
+        el("btnHistoryMain").onclick = () => openOverlay("overlayHistory");
+      }
       el("todayPrev").onclick = () => {
         todayPage--;
         renderHistory();
@@ -4555,8 +4558,6 @@ const defaultCollectionPoints = [
   { id: "MAIN_MARKET", name: "Main Market Booth" },
   { id: "GANDHI_CHOWK", name: "Gandhi Chowk Booth" }
 ];
-
-let selectedCollectionPointId = "DEFAULT";
 
 function updateCollectionPoint() {
   const select = document.getElementById('collectionPointSelect');
