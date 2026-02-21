@@ -3116,7 +3116,12 @@ function playSuccessSound() {
     oscillator.start();
     oscillator.stop(audioCtx.currentTime + 0.15);
 }
+      let isSaving = false; // Prevent double-save
       function saveEntry() {
+    if (isSaving) {
+        showToast("Already saving...");
+        return;
+    }
     if (!canSave()) {
         showToast("Need: Farmer + Qty + Fat");
         return;
@@ -3126,7 +3131,9 @@ function playSuccessSound() {
         showToast("Select farmer");
         return;
     }
-    
+
+    isSaving = true; // Lock save
+
     const before = farmerBalanceBefore(farmer);
     const ratePerL = getRatePerLiter();
     const amount = getAmount();
@@ -3146,11 +3153,11 @@ function playSuccessSound() {
         fat: round2(fat),
         snf: round2(snf),
         paymentMode: document.querySelector('input[name="payMode"]:checked').value,
-        
+
         // 🎯 SNAPSHOT LOGIC: Rate ko value ki tarah chipka do
-        rateSnapshot: round2(currentRate), 
+        rateSnapshot: round2(currentRate),
         amount: round2(currentAmount),
-        
+
         // Audit Metadata
         rateMode: rateMode, // auto ya manual
         animal: animal,
@@ -3223,9 +3230,11 @@ function playSuccessSound() {
 
     // Snapshot update (आज का हिसाब)
     if (typeof updateSnapshotData === "function") updateSnapshotData();
-    
+
     updateDailySummaryButton();
     showToast(`Entry Saved (${selectedPayMode === 'Cash' ? 'नकद' : 'उधार'}) ✅`);
+    
+    isSaving = false; // Unlock save
 }
 // Isse kisi bhi purani entry ka metadata check kar sakte hain
 function showAuditProof(entryId) {
