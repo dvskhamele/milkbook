@@ -2583,7 +2583,7 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
       function renderFarmers() {
     const activeCount = activeFarmers().length;
     farmerCount.textContent = `${activeCount} 👤`;
-    
+
     // Debug logging
     console.log('Farmers:', farmers.length, 'Active:', activeCount);
 
@@ -2595,30 +2595,22 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
     const pageItems = list.slice(start, start + FARMERS_PER_PAGE);
 
     farmerGrid.innerHTML = "";
-    
-    // Show message if no farmers
-    if (list.length === 0) {
-      farmerGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--muted); font-weight: 700;">No farmers yet.<br>Click "＋ Farmer" to add your first farmer!</div>';
-      el("prevFarmers").disabled = true;
-      el("nextFarmers").disabled = true;
-      return;
-    }
 
     const toShow = [...pageItems];
     while (toShow.length < FARMERS_PER_PAGE) toShow.push(null);
 
-    toShow.forEach((f) => {
+    toShow.forEach((f, index) => {
         const card = document.createElement("div");
         card.className = "fcard";
 
         if (f) {
             // --- 1. Focus & Double Click Support (NAYA) ---
-            card.setAttribute("tabindex", "0"); 
-            
+            card.setAttribute("tabindex", "0");
+
             // Double Click logic: Yahan kisan ke card par double tap karne se dabba khulega
-            card.ondblclick = (e) => { 
-                e.stopPropagation(); 
-                openFarmerDetail(f.id); 
+            card.ondblclick = (e) => {
+                e.stopPropagation();
+                openFarmerDetail(f.id);
             };
             // ----------------------------------------------
 
@@ -2647,15 +2639,35 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
                 el("qtyInput").focus();
                 el("qtyInput").select();
             });
-            
+
             // Double-click to view transaction history
             card.addEventListener("dblclick", (e) => {
                 e.stopPropagation();
                 openFarmerTransactions(f.id);
             });
 
+        } else if (index === 0 && farmerSearch && list.length === 0) {
+            // "Add New Farmer" card when search has no results
+            card.style.opacity = 1;
+            card.style.background = '#f0fdf4';
+            card.style.borderColor = '#16a34a';
+            card.innerHTML = `
+                <div class="fimg" style="font-size: 32px;">➕</div>
+                <div style="min-width:0;">
+                    <div class="fname" style="color: #16a34a;">Add "${escapeHtml(farmerSearch)}"</div>
+                    <div class="fsub">Click to create new farmer</div>
+                </div>
+            `;
+            card.addEventListener("click", () => {
+                // Open farmer modal and pre-fill name
+                openOverlay("overlayFarmer");
+                setTimeout(() => {
+                    el("fName").value = farmerSearch;
+                    el("fPhone").focus();
+                }, 300);
+            });
         } else {
-            // "Add Farmer" wala card (Empty Slot)
+            // Empty slot
             card.style.opacity = 0.4;
             card.innerHTML = `
                 <div class="fimg">➕</div>
