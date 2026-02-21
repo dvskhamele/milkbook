@@ -57,6 +57,7 @@
       /* APP FRAME */
       .app {
         height: 100%;
+        width: 100%;
         display: grid;
         grid-template-rows: 70px 1fr 96px;
         gap: 14px;
@@ -178,16 +179,17 @@
       .core {
         height: 100%;
         display: grid !important;
-        grid-template-columns: 1.1fr 0.9fr !important;
+        grid-template-columns: 1fr 1fr !important;
         gap: 14px;
         overflow: hidden;
         min-height: 0;
+        width: 100%;
       }
 
       /* Tablet-first: Side by side on tablets and up */
       @media (min-width: 769px) {
         .core {
-          grid-template-columns: 1.1fr 0.9fr !important;
+          grid-template-columns: 1fr 1fr !important;
         }
         .panel {
           max-height: calc(100vh - 180px);
