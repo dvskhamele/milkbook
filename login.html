@@ -263,6 +263,9 @@
                 <strong>Password:</strong>
                 <code>demo123</code>
             </div>
+            <button onclick="quickDemoLogin()" style="width: 100%; margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;">
+                🚀 Quick Login with Demo Account
+            </button>
             <p style="color: #64748b; font-size: 12px; margin-top: 12px; text-align: center;">
                 💡 Perfect for testing the app!
             </p>
@@ -306,6 +309,16 @@
         function hideMessages() {
             document.getElementById('errorMessage').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Quick demo login (one-click)
+        function quickDemoLogin() {
+            // Pre-fill form
+            document.getElementById('loginEmail').value = 'demo@milkrecord.in';
+            document.getElementById('loginPassword').value = 'demo123';
+            
+            // Auto-submit
+            handleLogin({ preventDefault: () => {} });
         }
 
         // Check existing session
@@ -407,7 +420,14 @@
                 }, 1000);
                 
             } catch (error) {
-                showError('❌ ' + error.message);
+                let errorMsg = error.message;
+                
+                // Check for database table errors
+                if (errorMsg.includes('table') || errorMsg.includes('schema') || errorMsg.includes('relation')) {
+                    errorMsg = 'Database not set up yet. Please use Demo Account or contact admin to create database tables.';
+                }
+                
+                showError('❌ ' + errorMsg);
                 btn.disabled = false;
                 btn.innerHTML = 'Create Free Account';
             }
