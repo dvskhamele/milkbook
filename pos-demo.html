@@ -217,8 +217,8 @@
           <button class="pillbtn" id="btnMem" onclick="renderMemory()">🧠 Memory</button>
           <button class="pillbtn" id="btnHist" onclick="openModal('historyModal')">🧾 History</button>
           <button class="pillbtn" id="btnExp" style="background:#eef2ff;" onclick="exportDetailedExcel()">📊 Export</button>
-
           <button class="pillbtn" id="langSwitch" onclick="toggleLanguage()">🌐 HI/EN</button>
+          <button class="pillbtn" id="btnLogout" onclick="logout()" style="background:#fef2f2; color:#dc2626; border-color:#fca5a5;">🚪 Logout</button>
         </div>
       </div>
 
@@ -827,7 +827,7 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           if (btnCash) btnCash.textContent = t.cash;
           const btnCredit = el("btnCredit");
           if (btnCredit) btnCredit.textContent = t.credit;
-          
+
           const txtHold = el("txtHold");
           if (txtHold) txtHold.textContent = t.hold;
           const txtDone = el("txtDone");
@@ -839,6 +839,25 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
           document.querySelectorAll("[data-en]").forEach(i => i.textContent = currentLang === 'en' ? i.dataset.en : i.dataset.hi);
           updateShift();
           showToast(currentLang === 'en' ? "English Enabled" : "हिंदी सक्रिय");
+      }
+
+      // Logout function
+      function logout() {
+          if (confirm('Are you sure you want to logout?')) {
+              // Clear session
+              localStorage.removeItem('milkbook_session');
+              
+              // Clear any other stored data if needed
+              // localStorage.removeItem('milkbook_supabase_url');
+              // localStorage.removeItem('milkbook_supabase_key');
+              
+              showToast('Logged out successfully!');
+              
+              // Redirect to login page
+              setTimeout(() => {
+                  window.location.href = 'login.html';
+              }, 500);
+          }
       }
 
       // Calculate credit based on payment amount

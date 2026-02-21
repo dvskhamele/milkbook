@@ -1293,6 +1293,7 @@
           <button class="pillbtn primary" onclick="location.href='pos-demo.html'">
             <span>🍼</span> <span id="btnIntakeText">Milk sales</span>
           </button>
+          <button class="pillbtn" onclick="logout()" style="background:#fef2f2; color:#dc2626; border-color:#fca5a5;">🚪 Logout</button>
           </div>
         
         <!-- Booth/Collection Point Selector -->
@@ -3544,6 +3545,21 @@ el("snfInput").oninput = (e) => {
       };
       el("btnExport").onclick = exportJSON;
       el("btnClearToday").onclick = clearToday;
+      
+      // Logout function
+      function logout() {
+          if (confirm('Are you sure you want to logout?')) {
+              // Clear session
+              localStorage.removeItem('milkbook_session');
+              
+              showToast('Logged out successfully!');
+              
+              // Redirect to login page
+              setTimeout(() => {
+                  window.location.href = 'login.html';
+              }, 500);
+          }
+      }
 
       // Leader
       el("btnLeader").onclick = () => openOverlay("overlayLeader");
