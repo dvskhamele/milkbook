@@ -256,13 +256,13 @@
 
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0">
             <!-- Cow Products -->
-            <div class="p-card cow" onclick="tapAdd('Cow Milk', 64, 1)" data-qty="1" id="prod-cow-1l">
+            <div class="p-card cow" onclick="tapAdd('Cow 1L', 64, 1)" data-qty="1" id="prod-cow-1l">
               <span class="emoji" style="font-size: 48px;">🐄</span>
               <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Cow 1L</div>
               <small style="font-size: 10px; margin-top: 2px;">₹64</small>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
             </div>
-            <div class="p-card cow" onclick="tapAdd('Cow Milk', 32, 0.5)" data-qty="0.5" id="prod-cow-05l">
+            <div class="p-card cow" onclick="tapAdd('Cow 0.5L', 32, 0.5)" data-qty="0.5" id="prod-cow-05l">
               <span class="emoji" style="font-size: 32px;">🐄</span>
               <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Cow 0.5L</div>
               <small style="font-size: 10px; margin-top: 2px;">₹32</small>
@@ -1823,12 +1823,20 @@ MilkRecord POS`;
 
           // Update badges for items in cart
           cart.forEach(item => {
-            // Find all cards that match this product
-            document.querySelectorAll('.p-card').forEach(card => {
-              const onclick = card.getAttribute('onclick') || '';
-
-              // Check if this card's onclick matches the item
-              if (onclick.includes(`'${item.name}'`)) {
+            // Find card by ID based on product name
+            let cardId = null;
+            if (item.name === 'Cow 1L') cardId = 'prod-cow-1l';
+            else if (item.name === 'Cow 0.5L') cardId = 'prod-cow-05l';
+            else if (item.name === 'Buff 2L') cardId = 'prod-buff-2l';
+            else if (item.name === 'Buff 1L') cardId = 'prod-buff-1l';
+            else if (item.name === 'Buff 0.5L') cardId = 'prod-buff-05l';
+            else if (item.name === 'Paneer') cardId = 'prod-paneer';
+            else if (item.name === 'Ghee') cardId = 'prod-ghee';
+            else if (item.name === 'Milk Cake') cardId = 'prod-milkcake';
+            
+            if (cardId) {
+              const card = document.getElementById(cardId);
+              if (card) {
                 const badge = card.querySelector('.qty-badge');
                 const emoji = card.querySelector('.emoji');
                 const nameDiv = card.querySelector('div[style*="font-weight: 900"]');
@@ -1867,11 +1875,11 @@ MilkRecord POS`;
 
                 // Update name to show quantity
                 if (nameDiv) {
-                  const baseName = item.name.replace(/\s*\(\d+x\)$/, '');
+                  const baseName = item.name;
                   nameDiv.textContent = `${baseName} (${item.qty}x)`;
                 }
               }
-            });
+            }
           });
         } catch (error) {
           console.error('Error updating card badges:', error);
