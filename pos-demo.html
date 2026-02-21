@@ -1797,81 +1797,85 @@ MilkRecord POS`;
       
       // Update quantity badges on product cards
       function updateCardBadges() {
-        // Reset all badges first
-        document.querySelectorAll('.qty-badge').forEach(badge => {
-          badge.style.display = 'none';
-        });
-        
-        // Remove all highlights and reset icon sizes
-        document.querySelectorAll('.p-card').forEach(card => {
-          card.style.boxShadow = '';
-          card.style.border = '';
-          const emoji = card.querySelector('.emoji');
-          if (emoji) {
-            // Reset to default size based on card data-qty
-            const defaultQty = parseFloat(card.getAttribute('data-qty'));
-            if (defaultQty >= 2) {
-              emoji.style.fontSize = '56px';
-            } else if (defaultQty >= 1) {
-              emoji.style.fontSize = '48px';
-            } else {
-              emoji.style.fontSize = '32px';
-            }
-          }
-        });
+        try {
+          // Reset all badges first
+          document.querySelectorAll('.qty-badge').forEach(badge => {
+            badge.style.display = 'none';
+          });
 
-        // Update badges for items in cart
-        cart.forEach(item => {
-          // Find all cards that match this product
+          // Remove all highlights and reset icon sizes
           document.querySelectorAll('.p-card').forEach(card => {
-            const onclick = card.getAttribute('onclick') || '';
-            
-            // Check if this card's onclick matches the item
-            if (onclick.includes(`'${item.name}'`)) {
-              const badge = card.querySelector('.qty-badge');
-              const emoji = card.querySelector('.emoji');
-              const nameDiv = card.querySelector('div[style*="font-weight: 900"]');
-              
-              if (badge) {
-                // Show badge with quantity
-                badge.textContent = item.qty;
-                badge.style.display = 'block';
-                
-                // Highlight based on quantity
-                if (item.qty >= 2) {
-                  card.style.boxShadow = '0 0 0 3px #dc2626';
-                  card.style.border = '2px solid #dc2626';
-                } else if (item.qty >= 1) {
-                  card.style.boxShadow = '0 0 0 3px #3b82f6';
-                  card.style.border = '2px solid #3b82f6';
-                } else {
-                  card.style.boxShadow = '0 0 0 3px #16a34a';
-                  card.style.border = '2px solid #16a34a';
-                }
-              }
-              
-              // Update icon size based on cart quantity
-              if (emoji) {
-                if (item.qty >= 2) {
-                  emoji.style.fontSize = '64px'; // Extra large for 2L+
-                  emoji.style.filter = 'brightness(1.2)';
-                } else if (item.qty >= 1) {
-                  emoji.style.fontSize = '52px'; // Large for 1L
-                  emoji.style.filter = 'brightness(1.1)';
-                } else {
-                  emoji.style.fontSize = '36px'; // Medium for 0.5L
-                  emoji.style.filter = 'brightness(1)';
-                }
-              }
-              
-              // Update name to show quantity
-              if (nameDiv) {
-                const baseName = item.name.replace(/\s*\(\d+x\)$/, '');
-                nameDiv.textContent = `${baseName} (${item.qty}x)`;
+            card.style.boxShadow = '';
+            card.style.border = '';
+            const emoji = card.querySelector('.emoji');
+            if (emoji) {
+              // Reset to default size based on card data-qty
+              const defaultQty = parseFloat(card.getAttribute('data-qty'));
+              if (defaultQty >= 2) {
+                emoji.style.fontSize = '56px';
+              } else if (defaultQty >= 1) {
+                emoji.style.fontSize = '48px';
+              } else {
+                emoji.style.fontSize = '32px';
               }
             }
           });
-        });
+
+          // Update badges for items in cart
+          cart.forEach(item => {
+            // Find all cards that match this product
+            document.querySelectorAll('.p-card').forEach(card => {
+              const onclick = card.getAttribute('onclick') || '';
+
+              // Check if this card's onclick matches the item
+              if (onclick.includes(`'${item.name}'`)) {
+                const badge = card.querySelector('.qty-badge');
+                const emoji = card.querySelector('.emoji');
+                const nameDiv = card.querySelector('div[style*="font-weight: 900"]');
+
+                if (badge) {
+                  // Show badge with quantity
+                  badge.textContent = item.qty;
+                  badge.style.display = 'block';
+
+                  // Highlight based on quantity
+                  if (item.qty >= 2) {
+                    card.style.boxShadow = '0 0 0 3px #dc2626';
+                    card.style.border = '2px solid #dc2626';
+                  } else if (item.qty >= 1) {
+                    card.style.boxShadow = '0 0 0 3px #3b82f6';
+                    card.style.border = '2px solid #3b82f6';
+                  } else {
+                    card.style.boxShadow = '0 0 0 3px #16a34a';
+                    card.style.border = '2px solid #16a34a';
+                  }
+                }
+
+                // Update icon size based on cart quantity
+                if (emoji) {
+                  if (item.qty >= 2) {
+                    emoji.style.fontSize = '64px';
+                    emoji.style.filter = 'brightness(1.2)';
+                  } else if (item.qty >= 1) {
+                    emoji.style.fontSize = '52px';
+                    emoji.style.filter = 'brightness(1.1)';
+                  } else {
+                    emoji.style.fontSize = '36px';
+                    emoji.style.filter = 'brightness(1)';
+                  }
+                }
+
+                // Update name to show quantity
+                if (nameDiv) {
+                  const baseName = item.name.replace(/\s*\(\d+x\)$/, '');
+                  nameDiv.textContent = `${baseName} (${item.qty}x)`;
+                }
+              }
+            });
+          });
+        } catch (error) {
+          console.error('Error updating card badges:', error);
+        }
       }
       
       // Load customer memory (previous orders)
