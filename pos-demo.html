@@ -3244,19 +3244,35 @@ function loadCustomProducts() {
   });
 }
 
-// Edit Products Modal - with 5 editable steps per product
+// Edit Products Modal - shows custom products from localStorage
 function openEditInventory() {
   const list = el("editInventoryList");
-  const products = [
-    { name: 'Cow 1L', emoji: '🐄', rate: 64, unit: 'L', steps: [1, 2, 5, 10, 20] },
-    { name: 'Cow 0.5L', emoji: '🐄', rate: 32, unit: 'L', steps: [0.5, 1, 2, 5, 10] },
-    { name: 'Buff 2L', emoji: '🐃', rate: 200, unit: 'L', steps: [2, 5, 10, 20, 50] },
-    { name: 'Buff 1L', emoji: '🐃', rate: 100, unit: 'L', steps: [1, 2, 5, 10, 20] },
-    { name: 'Buff 0.5L', emoji: '🐃', rate: 50, unit: 'L', steps: [0.5, 1, 2, 5, 10] },
-    { name: 'Paneer', emoji: '🧀', rate: 320, unit: 'kg', steps: [0.25, 0.5, 1, 2, 5] },
-    { name: 'Ghee', emoji: '🍯', rate: 180, unit: 'g', steps: [0.25, 0.5, 1, 2, 5] },
-    { name: 'Milk Cake', emoji: '🍰', rate: 300, unit: 'kg', steps: [0.5, 1, 2, 5, 10] }
-  ];
+  
+  // Get custom products from localStorage
+  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  
+  // Group by product name (since each product can have multiple step cards)
+  const productGroups = {};
+  customProducts.forEach(p => {
+    if (!productGroups[p.name]) {
+      productGroups[p.name] = {
+        name: p.name,
+        emoji: p.emoji || '📦',
+        rate: p.price,
+        unit: p.unit || 'unit',
+        steps: []
+      };
+    }
+    productGroups[p.name].steps.push(p.step);
+  });
+  
+  const products = Object.values(productGroups);
+
+  if (products.length === 0) {
+    list.innerHTML = '<div style="padding:20px; text-align:center; color:#64748b;">No custom products yet. Add products using the ➕ button in product grid.</div>';
+    openModal('editInventoryModal');
+    return;
+  }
 
   list.innerHTML = products.map((p, i) => `
     <div style="padding:12px; background:#f8fafc; border-radius:10px; border:1px solid var(--line);">
@@ -3273,22 +3289,22 @@ function openEditInventory() {
       <div style="display:grid; grid-template-columns: repeat(4, 1fr) 80px; gap:6px;">
         <div style="display:flex; flex-direction:column; gap:2px;">
           <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">1</label>
-          <input type="number" id="editStep_${i}_0" value="${p.steps[0]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
+          <input type="number" id="editStep_${i}_0" value="${p.steps[0] || ''}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
         <div style="display:flex; flex-direction:column; gap:2px;">
           <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">2</label>
-          <input type="number" id="editStep_${i}_1" value="${p.steps[1]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
+          <input type="number" id="editStep_${i}_1" value="${p.steps[1] || ''}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
         <div style="display:flex; flex-direction:column; gap:2px;">
           <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">3</label>
-          <input type="number" id="editStep_${i}_2" value="${p.steps[2]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
+          <input type="number" id="editStep_${i}_2" value="${p.steps[2] || ''}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
         <div style="display:flex; flex-direction:column; gap:2px;">
           <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">4</label>
-          <input type="number" id="editStep_${i}_3" value="${p.steps[3]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
+          <input type="number" id="editStep_${i}_3" value="${p.steps[3] || ''}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
         <div style="display:flex; flex-direction:column; gap:2px; justify-content:flex-end;">
-          <button onclick="removeProduct(${i}, '${p.name}')" style="padding:6px; background:#fecaca; color:#dc2626; border:1px solid #ef4444; border-radius:4px; font-weight:700; text-align:center; font-size:10px; cursor:pointer; width:100%; height:28px;" title="Remove this product">🗑️ Remove</button>
+          <button onclick="removeProduct('${p.name}')" style="padding:6px; background:#fecaca; color:#dc2626; border:1px solid #ef4444; border-radius:4px; font-weight:700; text-align:center; font-size:10px; cursor:pointer; width:100%; height:28px;" title="Remove this product">🗑️ Remove</button>
         </div>
       </div>
 
@@ -3342,7 +3358,7 @@ function updateProductWithSteps(index, oldName) {
   setTimeout(() => location.reload(), 1000);
 }
 
-function removeProduct(index, productName) {
+function removeProduct(productName) {
   if (!confirm(`Remove "${productName}" from product list?`)) return;
 
   const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
