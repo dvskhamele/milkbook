@@ -3270,7 +3270,7 @@ function openEditInventory() {
       <div style="font-size:10px; font-weight:700; color:var(--muted); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
         <span>⚡</span> Quick Steps (edit or set 0 to disable):
       </div>
-      <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:6px;">
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr) 80px; gap:6px;">
         <div style="display:flex; flex-direction:column; gap:2px;">
           <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">1</label>
           <input type="number" id="editStep_${i}_0" value="${p.steps[0]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
@@ -3287,9 +3287,8 @@ function openEditInventory() {
           <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">4</label>
           <input type="number" id="editStep_${i}_3" value="${p.steps[3]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
-        <div style="display:flex; flex-direction:column; gap:2px;">
-          <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">5</label>
-          <input type="number" id="editStep_${i}_4" value="${p.steps[4]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
+        <div style="display:flex; flex-direction:column; gap:2px; justify-content:flex-end;">
+          <button onclick="removeProduct(${i}, '${p.name}')" style="padding:6px; background:#fecaca; color:#dc2626; border:1px solid #ef4444; border-radius:4px; font-weight:700; text-align:center; font-size:10px; cursor:pointer; width:100%; height:28px;" title="Remove this product">🗑️ Remove</button>
         </div>
       </div>
 
@@ -3304,24 +3303,23 @@ function updateProductWithSteps(index, oldName) {
   const newName = el(`editName_${index}`).value;
   const newRate = parseFloat(el(`editRate_${index}`).value);
   const newUnit = el(`editUnit_${index}`).value;
-  
-  // Get all 5 step values
+
+  // Get 4 step values (5th is now Remove button)
   const newSteps = [
     parseFloat(el(`editStep_${index}_0`).value) || 0,
     parseFloat(el(`editStep_${index}_1`).value) || 0,
     parseFloat(el(`editStep_${index}_2`).value) || 0,
-    parseFloat(el(`editStep_${index}_3`).value) || 0,
-    parseFloat(el(`editStep_${index}_4`).value) || 0
+    parseFloat(el(`editStep_${index}_3`).value) || 0
   ];
 
   if (!newName || !newRate || newRate <= 0) return showToast('Invalid name or rate!');
 
   // Update in localStorage (for custom products)
   const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
-  
+
   // Remove old product cards for this product
   const filteredProducts = customProducts.filter(p => p.name !== oldName);
-  
+
   // Add new product cards for each non-zero step
   newSteps.forEach(step => {
     if (step !== 0) {
@@ -3333,11 +3331,26 @@ function updateProductWithSteps(index, oldName) {
       });
     }
   });
-  
+
   localStorage.setItem('mr_pos_custom_products', JSON.stringify(filteredProducts));
 
   const activeSteps = newSteps.filter(s => s !== 0);
   showToast(`${newName} updated! ₹${newRate}/${newUnit} (${activeSteps.length} steps: ${activeSteps.join(', ')}) ✅`);
+  closeModal('editInventoryModal');
+
+  // Reload page to apply changes
+  setTimeout(() => location.reload(), 1000);
+}
+
+function removeProduct(index, productName) {
+  if (!confirm(`Remove "${productName}" from product list?`)) return;
+
+  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  const filteredProducts = customProducts.filter(p => p.name !== productName);
+
+  localStorage.setItem('mr_pos_custom_products', JSON.stringify(filteredProducts));
+
+  showToast(`${productName} removed ✅`);
   closeModal('editInventoryModal');
 
   // Reload page to apply changes
