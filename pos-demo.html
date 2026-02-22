@@ -502,8 +502,8 @@
           </div>
 
           <!-- Cart Items (Top Priority - Visible Without Scroll) -->
-          <div style="padding:15px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); max-height: none; min-height: 300px; flex: 1; overflow-y: auto;" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)" ondragleave="handleCartDragOut(event)">
-            <table class="recent-table"><tbody id="cartItems"></tbody></table>
+          <div style="padding:15px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); max-height: none; min-height: 300px; flex: 1; overflow-y: auto;" ondragover="handleCartDragOverTbody(event)" ondrop="handleCartDropTbody(event)" ondragleave="handleCartDragOut(event)">
+            <table class="recent-table"><tbody id="cartItems" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)"></tbody></table>
           </div>
 
           <!-- Fixed Payment Section -->
@@ -2811,7 +2811,15 @@ function clearTodayHistory() {
         e.preventDefault();
         e.stopPropagation();
         e.dataTransfer.dropEffect = 'move';
-        this.style.borderTop = '3px solid #3b82f6';
+        
+        // Find the row being dragged over
+        const row = e.target.closest('tr');
+        if (row && row !== draggedCartItem) {
+          // Remove highlight from all rows
+          document.querySelectorAll('#cartItems tr').forEach(r => r.style.borderTop = '');
+          // Add highlight to this row
+          row.style.borderTop = '3px solid #3b82f6';
+        }
         return false;
       }
 
@@ -2825,29 +2833,56 @@ function clearTodayHistory() {
       }
 
       function handleCartDrop(e) {
-        e.stopPropagation();
         e.preventDefault();
+        e.stopPropagation();
         
-        // Remove border highlights and dragging class
+        console.log('🛒 handleCartDrop called');
+        console.log('  e.target:', e.target);
+        console.log('  draggedCartItem:', draggedCartItem);
+        
+        // Find the row being dropped on
+        const targetRow = e.target.closest('tr');
+        console.log('  targetRow:', targetRow);
+        
+        // Remove all border highlights
         document.querySelectorAll('#cartItems tr').forEach(tr => {
           tr.style.borderTop = '';
           tr.classList.remove('dragging');
         });
         
-        if (draggedCartItem && this !== draggedCartItem) {
-          const dropIndex = parseInt(this.getAttribute('data-index'));
-          console.log('🛒 Drop:', draggedCartIndex, '->', dropIndex);
-
-          // Reorder cart array
-          const draggedItem = cart[draggedCartIndex];
-          cart.splice(draggedCartIndex, 1);
-          cart.splice(dropIndex, 0, draggedItem);
-
-          updateUI();
-          showToast('Item reordered ✓');
+        if (!targetRow || !draggedCartItem || targetRow === draggedCartItem) {
+          console.log('  Drop cancelled: invalid target');
+          draggedCartItem = null;
+          draggedCartIndex = null;
+          return false;
         }
+        
+        const dropIndex = parseInt(targetRow.getAttribute('data-index'));
+        console.log('🛒 Drop:', draggedCartIndex, '->', dropIndex);
+
+        // Reorder cart array
+        const draggedItem = cart[draggedCartIndex];
+        cart.splice(draggedCartIndex, 1);
+        cart.splice(dropIndex, 0, draggedItem);
+
+        updateUI();
+        showToast('Item reordered ✓');
+        
         draggedCartItem = null;
         draggedCartIndex = null;
+        return false;
+      }
+
+      // Handlers for tbody
+      function handleCartDragOverTbody(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+      }
+
+      function handleCartDropTbody(e) {
+        e.preventDefault();
+        // Let the row's drop handler deal with it
         return false;
       }
 
