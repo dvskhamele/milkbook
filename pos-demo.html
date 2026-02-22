@@ -56,16 +56,18 @@
         html, body {
           position: relative;
           overflow: auto;
+          height: auto;
+          min-height: 100%;
         }
         .app {
           padding: 8px;
           gap: 8px;
-          height: 100vh;
-          height: 100dvh;
+          height: auto;
+          min-height: 100vh;
           display: flex;
           flex-direction: column;
         }
-        .topbar { height: 36px; padding: 4px 6px; }
+        .topbar { height: 36px; padding: 4px 6px; flex-shrink: 0; }
         .logo-box { width: 24px; height: 24px; }
         .brand-text .title { font-size: 11px; max-width: 80px; }
         .brand-text .sub-text { font-size: 8px; }
@@ -73,8 +75,8 @@
         .pillbtn span { display: none; }
         .pillbtn.primary span { display: inline; }
         .hdr-actions > div:first-child { display: none; }
-        .core { grid-template-columns: 1fr; }
-        .panel { max-height: none; }
+        .core { grid-template-columns: 1fr; height: auto; min-height: auto; }
+        .panel { max-height: none !important; height: auto; }
       }
       
       @media (max-width: 480px) {
@@ -114,8 +116,8 @@
       /* Mobile: Stack panels vertically with 100% width */
       @media (max-width: 767px) {
         .app { padding: 8px; gap: 8px; }
-        .core { grid-template-columns: 1fr; gap: 10px; height: auto; }
-        .panel { max-height: none; border-radius: 16px; }
+        .core { grid-template-columns: 1fr; gap: 10px; height: auto; min-height: auto; }
+        .panel { max-height: none !important; height: auto; border-radius: 16px; }
         .left-panel { order: 1; }
         .right-panel { order: 2; }
         .product-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 6px; }
