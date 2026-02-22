@@ -357,68 +357,7 @@
           </div>
 
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
-            <!-- Cow Products with multiple step cards -->
-            <div class="p-card cow" onclick="tapAdd('Cow 1L', 64, 1)" data-qty="1" data-step="1" data-name="Cow 1L" data-price="64" data-unit="L" id="prod-cow-1l" draggable="true" ondragstart="handleDragStart(event)">
-              <span class="emoji" style="font-size: 48px;">🐄</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Cow 1L <span style="font-size:9px; color:#64748b;">(1x)</span></div>
-              <small style="font-size: 10px; margin-top: 2px;">₹64</small>
-              <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-cow-1l')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
-              <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-            </div>
-            <div class="p-card cow" onclick="tapAdd('Cow 0.5L', 32, 0.5)" data-qty="0.5" data-step="0.5" data-name="Cow 0.5L" data-price="32" data-unit="L" id="prod-cow-05l" draggable="true" ondragstart="handleDragStart(event)">
-              <span class="emoji" style="font-size: 32px;">🐄</span>
-              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Cow 0.5L <span style="font-size:9px; color:#64748b;">(0.5x)</span></div>
-              <small style="font-size: 10px; margin-top: 2px;">₹32</small>
-              <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-cow-05l')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
-              <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-            </div>
-
-            <!-- Buffalo Products with multiple step cards -->
-            <div class="p-card buff" onclick="tapAdd('Buff 2L', 200, 2)" data-qty="2" data-step="2" data-name="Buff 2L" data-price="200" data-unit="L" id="prod-buff-2l" draggable="true" ondragstart="handleDragStart(event)">
-              <span class="emoji" style="font-size: 56px;">🐃</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 2L <span style="font-size:9px; color:#64748b;">(2x)</span></div>
-              <small style="font-size: 10px; margin-top: 2px;">₹200</small>
-              <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-buff-2l')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
-              <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-            </div>
-            <div class="p-card buff" onclick="tapAdd('Buff 1L', 100, 1)" data-qty="1" data-step="1" data-name="Buff 1L" data-price="100" data-unit="L" id="prod-buff-1l" draggable="true" ondragstart="handleDragStart(event)">
-              <span class="emoji" style="font-size: 48px;">🐃</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 1L <span style="font-size:9px; color:#64748b;">(1x)</span></div>
-              <small style="font-size: 10px; margin-top: 2px;">₹100</small>
-              <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-buff-1l')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
-              <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-            </div>
-            <div class="p-card buff" onclick="tapAdd('Buff 0.5L', 50, 0.5)" data-qty="0.5" data-step="0.5" data-name="Buff 0.5L" data-price="50" data-unit="L" id="prod-buff-05l" draggable="true" ondragstart="handleDragStart(event)">
-              <span class="emoji" style="font-size: 32px;">🐃</span>
-              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Buff 0.5L <span style="font-size:9px; color:#64748b;">(0.5x)</span></div>
-              <small style="font-size: 10px; margin-top: 2px;">₹50</small>
-              <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-buff-05l')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
-              <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-            </div>
-
-            <!-- Other Products -->
-            <div class="p-card" style="border-left:3px solid #fbbf24" onclick="tapAdd('Paneer', 320, 1)" data-qty="1" data-step="1" data-name="Paneer" data-price="320" data-unit="kg" id="prod-paneer" draggable="true" ondragstart="handleDragStart(event)">
-              <span class="emoji" style="font-size: 48px;">🧀</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Paneer <span style="font-size:9px; color:#64748b;">(1x)</span></div>
-              <small style="font-size: 10px; margin-top: 2px;">₹320</small>
-              <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-paneer')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
-              <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-            </div>
-            <div class="p-card" style="border-left:3px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)" data-qty="0.25" data-step="0.25" data-name="Ghee" data-price="180" data-unit="g" id="prod-ghee" draggable="true" ondragstart="handleDragStart(event)">
-              <span class="emoji" style="font-size: 36px;">🍯</span>
-              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Ghee <span style="font-size:9px; color:#64748b;">(0.25x)</span></div>
-              <small style="font-size: 10px; margin-top: 2px;">₹180</small>
-              <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-ghee')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
-              <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-            </div>
-            <div class="p-card" onclick="tapAdd('Milk Cake', 300, 1)" data-qty="1" data-step="1" data-name="Milk Cake" data-price="300" data-unit="kg" id="prod-milkcake" draggable="true" ondragstart="handleDragStart(event)">
-              <span class="emoji" style="font-size: 48px;">🍰</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Milk Cake <span style="font-size:9px; color:#64748b;">(1x)</span></div>
-              <small style="font-size: 10px; margin-top: 2px;">₹300</small>
-              <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-milkcake')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
-              <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-            </div>
-
+            <!-- Products loaded dynamically from localStorage -->
             <!-- Add & Edit Buttons -->
             <div class="p-card" style="border: 2px dashed #3b82f6; background: #eff6ff;" onclick="openModal('addProductModal')">
               <div style="font-size:48px; color:#3b82f6; font-weight: 900;">➕</div>
@@ -3209,6 +3148,13 @@ function addNewProduct() {
 // Load custom products on page load
 function loadCustomProducts() {
   const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  
+  // If no custom products, create defaults (first-time setup)
+  if (customProducts.length === 0) {
+    createDefaultProducts();
+    return;
+  }
+  
   const grid = el("productGrid");
   const addCardBtn = grid.querySelector('.p-card[onclick*="addProduct"]');
 
@@ -3244,6 +3190,25 @@ function loadCustomProducts() {
   });
 }
 
+// Create default products on first-time setup
+function createDefaultProducts() {
+  const defaultProducts = [
+    { name: 'Cow 1L', emoji: '🐄', price: 64, unit: 'L', step: 1 },
+    { name: 'Cow 0.5L', emoji: '🐄', price: 32, unit: 'L', step: 0.5 },
+    { name: 'Buff 2L', emoji: '🐃', price: 200, unit: 'L', step: 2 },
+    { name: 'Buff 1L', emoji: '🐃', price: 100, unit: 'L', step: 1 },
+    { name: 'Buff 0.5L', emoji: '🐃', price: 50, unit: 'L', step: 0.5 },
+    { name: 'Paneer', emoji: '🧀', price: 320, unit: 'kg', step: 1 },
+    { name: 'Ghee', emoji: '🍯', price: 180, unit: 'g', step: 0.25 },
+    { name: 'Milk Cake', emoji: '🍰', price: 300, unit: 'kg', step: 1 }
+  ];
+  
+  localStorage.setItem('mr_pos_custom_products', JSON.stringify(defaultProducts));
+  
+  // Load the newly created products
+  loadCustomProducts();
+}
+
 // Edit Products Modal - shows custom products from localStorage
 function openEditInventory() {
   const list = el("editInventoryList");
@@ -3269,7 +3234,14 @@ function openEditInventory() {
   const products = Object.values(productGroups);
 
   if (products.length === 0) {
-    list.innerHTML = '<div style="padding:20px; text-align:center; color:#64748b;">No custom products yet. Add products using the ➕ button in product grid.</div>';
+    list.innerHTML = `
+      <div style="padding:30px; text-align:center;">
+        <div style="font-size:48px; margin-bottom:15px;">📦</div>
+        <h3 style="margin:0 0 10px 0; color:#1e293b;">No products yet</h3>
+        <p style="color:#64748b; font-size:13px; margin:0 0 20px 0;">Add your first product to get started</p>
+        <button onclick="closeModal('editInventoryModal'); setTimeout(() => openModal('addProductModal'), 300);" style="padding:12px 24px; background:#3b82f6; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer;">➕ Add Product</button>
+      </div>
+    `;
     openModal('editInventoryModal');
     return;
   }
