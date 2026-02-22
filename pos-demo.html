@@ -3050,43 +3050,24 @@ function convertMilkToProduct() {
 
 // Add new product card from modal - creates multiple cards for each step
 function addNewProductFromModal() {
-  console.log('=== addNewProductFromModal called ===');
-  
   const name = el("pName").value.trim();
   const price = parseFloat(el("pPrice").value);
   const unit = el("pUnit").value.trim() || 'unit';
   const emoji = el("pEmoji").value.trim() || '📦';
 
-  console.log('Input values:', { name, price, unit, emoji });
-
   // Get all step values
   const stepInputs = document.querySelectorAll('.pStep');
-  console.log('Found step inputs:', stepInputs.length);
-  
-  const steps = Array.from(stepInputs).map((input, idx) => {
-    const val = parseFloat(input.value) || 0;
-    console.log(`  Step ${idx + 1}: input.value="${input.value}", parsed=${val}`);
-    return val;
-  });
-
-  console.log('Steps array:', steps);
+  const steps = Array.from(stepInputs).map(input => parseFloat(input.value) || 0);
 
   if (!name || !price) return showToast("Name and Price required!");
 
   const grid = el("productGrid");
   const addCardBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
-  let cardsCreated = 0;
 
   // Create a card for each non-zero step
-  steps.forEach((step, idx) => {
-    console.log(`Processing step ${idx + 1}: value=${step}`);
-    if (step === 0) {
-      console.log(`  Skipping step ${idx + 1} (value is 0)`);
-      return; // Skip zero steps
-    }
+  steps.forEach(step => {
+    if (step === 0) return; // Skip zero steps
 
-    cardsCreated++;
-    console.log(`  Creating card for step ${idx + 1}...`);
     const newCard = document.createElement('div');
     newCard.className = 'p-card';
     newCard.setAttribute('data-qty', '1');
@@ -3108,10 +3089,7 @@ function addNewProductFromModal() {
     `;
 
     grid.insertBefore(newCard, addCardBtn);
-    console.log(`  Card ${idx + 1} inserted into grid`);
   });
-
-  console.log(`Total cards created: ${cardsCreated}`);
 
   // Save to localStorage
   const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
@@ -3121,20 +3099,18 @@ function addNewProductFromModal() {
     }
   });
   localStorage.setItem('mr_pos_custom_products', JSON.stringify(customProducts));
-  console.log('Saved to localStorage:', customProducts.filter(p => p.name === name));
 
   // Close modal and clear
   closeModal('addProductModal');
   el("pName").value = "";
   el("pPrice").value = "";
+  el("pUnit").value = "";
   el("pEmoji").value = "";
-  // Reset step inputs to defaults
-  stepInputs.forEach((input, i) => {
-    const defaults = [1, 2, 5, 10, 20];
-    input.value = defaults[i] || 1;
+  document.querySelectorAll('.pStep').forEach((input, i) => {
+    input.value = [1, 2, 5, 10, 20][i];
   });
-  
-  showToast(`${cardsCreated} product cards added! ✅`);
+
+  showToast(`Created ${steps.filter(s => s !== 0).length} product cards for ${name}`);
 }
 
 // Edit individual product card
@@ -3237,13 +3213,31 @@ function loadCustomProducts() {
   const addCardBtn = grid.querySelector('.p-card[onclick*="addProduct"]');
 
   customProducts.forEach(p => {
+    // Check if card already exists to prevent duplicates
+    const existingCard = Array.from(grid.querySelectorAll('.p-card')).find(card => {
+      const cardName = card.querySelector('div[style*="font-weight: 900"]')?.textContent?.replace(/\s*\([^)]*\)\s*$/, '');
+      const cardPrice = card.querySelector('small')?.textContent?.replace('₹', '').split('/')[0];
+      return cardName === p.name && cardPrice === String(p.price);
+    });
+    
+    if (existingCard) return; // Skip if already exists
+
     const newCard = document.createElement('div');
     newCard.className = 'p-card';
-    newCard.onclick = function() { tapAdd(p.name, p.price, 1); };
+    newCard.setAttribute('data-qty', '1');
+    newCard.setAttribute('data-step', p.step || 1);
+    newCard.setAttribute('draggable', 'true');
+    newCard.ondragstart = handleDragStart;
+    newCard.onclick = function() { tapAdd(p.name, p.price, p.step || 1); };
+
+    const stepDisplay = (p.step || 1) < 0 ? `(${p.step}x)` : `(${p.step}x)`;
+    const nameDisplay = (p.step || 1) < 0 ? `${p.name} ${stepDisplay}` : `${p.name} ${stepDisplay}`;
+
     newCard.innerHTML = `
-      ${p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div class="emoji">📦</div>`}
-      <div>${p.name}</div>
-      <small>₹${p.price}</small>
+      <span class="emoji" style="font-size: 48px;">${p.emoji || '📦'}</span>
+      <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">${nameDisplay}</div>
+      <small style="font-size: 10px; margin-top: 2px;">₹${p.price}/${p.unit || 'unit'}</small>
+      <button class="edit-prod-btn" onclick="event.stopPropagation(); editProductCard(this)" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
       <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
     `;
     grid.insertBefore(newCard, addCardBtn);
