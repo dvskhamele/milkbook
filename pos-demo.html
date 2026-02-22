@@ -129,6 +129,9 @@
         .summary-box .amt { font-size: 32px; }
         /* Cart items scrollable on mobile */
         .recent-table tbody { max-height: 300px; overflow-y: auto; }
+        /* Payment grid 2x2 on mobile */
+        .pay-grid { grid-template-columns: 1fr 1fr !important; }
+        .pay-btn { height: 42px; font-size: 12px; }
       }
 
       @media (max-width: 480px) {
@@ -235,7 +238,7 @@
       .summary-box { background: linear-gradient(180deg, var(--blue), var(--blue2)); color: #fff; padding: 20px; border-radius: 18px; margin: 15px; text-align: center; }
       .amt { font-size: 42px; font-weight: 1200; }
       
-      .pay-grid { display: flex; gap: 8px; padding: 0 15px 15px; flex-wrap: wrap; }
+      .pay-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 0 15px 10px; }
       .pay-btn { flex: 1; min-width: 80px; height: 38px; border-radius: 10px; border: none; font-weight: 900; font-size: 11px; cursor: pointer; transition: all 0.15s; }
       .pay-btn:hover { transform: translateY(-1px); }
       .pay-btn:active { transform: scale(0.98); }
@@ -480,28 +483,14 @@
             <div id="creditDisplay" style="font-size: 12px; color: #64748b; font-weight: 700; margin-top: 8px; text-align: center;"></div>
           </div>
 
-          <div class="pay-grid">
+          <div class="pay-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px;">
             <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534;" onclick="saveEntry('Cash')">CASH</button>
             <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af;" onclick="saveEntry('UPI')">UPI</button>
-            <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')">LIKH LO (Credit)</button>
+            <button class="pay-btn" style="background:#fef3c7; color:#92400e;" onclick="holdCart()">🟡 HOLD</button>
+            <button class="pay-btn" style="background:#f1f5f9; color:#475569;" onclick="showHeldCarts()">📋 <span id="heldCount">0</span></button>
           </div>
+          <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="width: 100%; margin-top: 6px;">LIKH LO (Credit)</button>
         </div>
-      </div>
-
-      <!-- Fixed Footer for Mobile -->
-      <div class="bottom" style="flex-shrink: 0;">
-        <button class="panicBtn" style="background:#22c55e; color:#064e3b;" onclick="saveAndInvoice()"><span>🟢 SAVE</span> <span class="subnote">invoice + WhatsApp</span></button>
-        <button class="panicBtn" style="background:#fde68a; color:#78350f;" onclick="holdCart()"><span id="txtHold">🟡 HOLD</span> <span class="subnote">save</span></button>
-        <button class="panicBtn" style="background:#fef3c7; color:#92400e; font-size:18px;" onclick="showHeldCarts()" title="View held orders">📋 <span class="subnote" id="heldCount">0</span></button>
-      </div>
-    </div>
-
-    <!-- Mobile Fixed Footer (sticky at bottom) -->
-    <div class="mobile-footer" id="mobileFooter" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid var(--line); padding: 10px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 1000;">
-      <div style="display: grid; grid-template-columns: 1fr 1fr 50px; gap: 8px;">
-        <button class="panicBtn" style="background:#22c55e; color:#064e3b; padding: 12px 8px; font-size: 12px;" onclick="saveAndInvoice()">🟢 SAVE</button>
-        <button class="panicBtn" style="background:#fde68a; color:#78350f; padding: 12px 8px; font-size: 12px;" onclick="holdCart()">🟡 HOLD</button>
-        <button class="panicBtn" style="background:#fef3c7; color:#92400e; font-size: 16px; padding: 12px 4px;" onclick="showHeldCarts()">📋 <span id="heldCountMobile">0</span></button>
       </div>
     </div>
 
