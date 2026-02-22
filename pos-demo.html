@@ -95,15 +95,15 @@
       }
 
       /* --- CORE LAYOUT --- */
-      .core { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; height: calc(100vh - 140px); }
+      .core { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1; min-height: 0; }
       .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
-      .left-panel { overflow: hidden; }
-      .right-panel { overflow-y: auto; }
+      .left-panel { overflow: hidden; display: flex; flex-direction: column; }
+      .right-panel { overflow-y: auto; display: flex; flex-direction: column; }
 
       /* Tablet (768px - 1024px): Side by side with adjusted heights */
       @media (min-width: 768px) and (max-width: 1024px) {
-        .core { grid-template-columns: 1fr 1fr; gap: 10px; height: calc(100vh - 120px); }
-        .panel { max-height: calc(100vh - 140px); }
+        .core { grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; min-height: 0; }
+        .panel { max-height: none; }
         .product-grid { grid-template-columns: repeat(4, 1fr) !important; }
       }
 
@@ -116,7 +116,7 @@
       /* Mobile: Stack panels vertically with 100% width */
       @media (max-width: 767px) {
         .app { padding: 6px; gap: 6px; }
-        .core { grid-template-columns: 1fr; gap: 8px; height: auto; min-height: auto; }
+        .core { grid-template-columns: 1fr; gap: 8px; height: auto; min-height: auto; flex: 1; }
         .panel { max-height: none !important; height: auto; border-radius: 12px; }
         .left-panel { order: 1; }
         .right-panel { order: 2; }
@@ -197,7 +197,7 @@
 
       .add-btn { height: 40px; padding: 0 15px; border-radius: 10px; border: none; background: var(--blue); color: #fff; font-weight: 1000; cursor: pointer; }
 
-      .product-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px; overflow-y: auto; flex: 1; outline: none; }
+      .product-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px; overflow-y: auto; flex: 1; outline: none; align-content: start; }
       .p-card {
         background: #fff;
         border: none;
