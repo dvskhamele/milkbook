@@ -469,7 +469,7 @@
           </div>
 
           <!-- Cart Items (Top Priority - Visible Without Scroll) -->
-          <div style="padding:15px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); max-height: 400px; overflow-y:auto; flex: 1;">
+          <div style="padding:15px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); max-height: none; min-height: 300px; flex: 1; overflow-y: auto;">
             <table class="recent-table"><tbody id="cartItems"></tbody></table>
           </div>
 
@@ -2594,8 +2594,29 @@ function clearTodayHistory() {
         openModal('heldCartsModal');
       }
       
-      function openModal(id) { el(id).style.display = "flex"; }
-      function closeModal(id) { el(id).style.display = "none"; }
+      function openModal(id) { 
+        const modal = el(id);
+        if (modal) {
+          modal.style.display = "flex";
+          // Focus first input in modal
+          const firstInput = modal.querySelector('input, select, textarea');
+          if (firstInput) setTimeout(() => firstInput.focus(), 100);
+        }
+      }
+      function closeModal(id) { 
+        const modal = el(id);
+        if (modal) modal.style.display = "none"; 
+      }
+      
+      // Close modal when clicking on overlay (outside modal content)
+      document.querySelectorAll('.overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) {
+            overlay.style.display = 'none';
+          }
+        });
+      });
+      
       function showToast(msg) { const t = el("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1500); }
       
       window.onload = () => {
@@ -3032,6 +3053,8 @@ document.addEventListener('keydown', function(e) {
   
   // Enter key handling
   if (e.key === 'Enter') {
+    e.preventDefault(); // Prevent default form submission
+    
     // In search box - select first result or current customer
     if (document.activeElement === el("custSearch")) {
       const firstResult = document.querySelector('.drop-item');
@@ -3043,17 +3066,18 @@ document.addEventListener('keydown', function(e) {
       if (firstProduct) firstProduct.focus();
       return;
     }
-    
+
     // In add customer modal - navigate fields
-    if (el("addCustModal").style.display === 'flex') {
+    if (el("addCustModal") && el("addCustModal").style.display === 'flex') {
       if (document.activeElement === el("newName")) {
         el("subQty").focus();
+        el("subQty").select();
       } else if (document.activeElement === el("subQty")) {
         addCust();
       }
       return;
     }
-    
+
     // In cart quantity/amount fields - move to next
     if (document.activeElement.tagName === 'INPUT' &&
         document.activeElement.type === 'number' &&
@@ -3068,6 +3092,12 @@ document.addEventListener('keydown', function(e) {
       }
       return;
     }
+    
+    // In payment amount field - save invoice
+    if (document.activeElement === el("paymentAmount")) {
+      saveAndInvoice();
+      return;
+    }
   }
   
   // Escape - clear search
@@ -3076,10 +3106,7 @@ document.addEventListener('keydown', function(e) {
       el("custSearch").value = "";
       el("searchDropdown").style.display = "none";
     }
-    // Close any open modals
-    closeModal('addCustModal');
-    closeModal('memoryModal');
-    closeModal('historyModal');
+    // Don't close modals on Escape - user might be typing
     return;
   }
   
