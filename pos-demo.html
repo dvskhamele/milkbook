@@ -248,6 +248,7 @@
       .p-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
       .recent-table tr[draggable="true"]:hover { cursor: grab; }
       .recent-table tr[draggable="true"]:active { cursor: grabbing; }
+      .recent-table tr[draggable="true"] { transition: all 0.2s; }
       .recent-table tr.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
@@ -1932,7 +1933,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           const bgOpacity = (purchaseCount[i.name] / maxAmount) * 0.3;
           const bgColor = `rgba(59, 130, 246, ${bgOpacity})`;
           
-          tbody.innerHTML += `<tr style="border-bottom:1px solid #f1f5f9; background:${bgColor};" draggable="true" ondragstart="handleCartDragStart(event)" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)" data-index="${index}">
+          tbody.innerHTML += `<tr style="border-bottom:1px solid #f1f5f9; background:${bgColor};" draggable="true" ondragstart="handleCartDragStart(event)" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)" ondragend="handleCartDragEnd(event)" data-index="${index}">
             <td style="padding:8px 0;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <span style="font-size:${emojiSize}px;">${getEmojiForProduct(i.name)}</span>
@@ -2800,35 +2801,53 @@ function clearTodayHistory() {
       function handleCartDragStart(e) {
         draggedCartItem = this;
         draggedCartIndex = parseInt(this.getAttribute('data-index'));
-        this.style.opacity = '0.4';
-        this.style.background = 'rgba(59, 130, 246, 0.1)';
+        this.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', draggedCartIndex);
+        console.log('🛒 Drag started:', draggedCartIndex);
       }
 
       function handleCartDragOver(e) {
         e.preventDefault();
+        e.stopPropagation();
         e.dataTransfer.dropEffect = 'move';
+        this.style.borderTop = '3px solid #3b82f6';
         return false;
+      }
+
+      function handleCartDragEnd(e) {
+        this.classList.remove('dragging');
+        // Remove all border highlights
+        document.querySelectorAll('#cartItems tr').forEach(tr => {
+          tr.style.borderTop = '';
+          tr.classList.remove('dragging');
+        });
       }
 
       function handleCartDrop(e) {
         e.stopPropagation();
+        e.preventDefault();
+        
+        // Remove border highlights and dragging class
+        document.querySelectorAll('#cartItems tr').forEach(tr => {
+          tr.style.borderTop = '';
+          tr.classList.remove('dragging');
+        });
+        
         if (draggedCartItem && this !== draggedCartItem) {
           const dropIndex = parseInt(this.getAttribute('data-index'));
-          
+          console.log('🛒 Drop:', draggedCartIndex, '->', dropIndex);
+
           // Reorder cart array
           const draggedItem = cart[draggedCartIndex];
           cart.splice(draggedCartIndex, 1);
           cart.splice(dropIndex, 0, draggedItem);
-          
+
           updateUI();
-          showToast('Item reordered');
+          showToast('Item reordered ✓');
         }
-        if (draggedCartItem) {
-          draggedCartItem.style.opacity = '1';
-          draggedCartItem.style.background = '';
-        }
+        draggedCartItem = null;
+        draggedCartIndex = null;
         return false;
       }
 
