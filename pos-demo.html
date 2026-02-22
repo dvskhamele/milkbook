@@ -1638,7 +1638,7 @@ MilkRecord POS`;
           showAdvanceSection(name);
       }
       
-      // Show advance/cut ledger
+      // Show advance/cut ledger - ONLY if customer has credit history
       function showAdvanceSection(customerName) {
         const customer = customers.find(c => c.name === customerName);
         if (!customer) {
@@ -1647,23 +1647,29 @@ MilkRecord POS`;
           el("udharThresholdNudge").style.display = "none";
           return;
         }
-        
+
         // Initialize advance if not exists
         if (!customer.advance) customer.advance = 0;
         if (!customer.monthMilk) customer.monthMilk = 0;
-        
+
         el("monthMilk").textContent = customer.monthMilk.toFixed(1) + ' L';
         el("currentAdvance").textContent = '₹' + customer.advance.toFixed(2);
-        
-        // Show advance toggle button with existing advance amount
+
+        // Show advance toggle button ONLY if customer has unpaid/credit history
         const advanceBtn = el("advanceToggleBtn");
-        advanceBtn.style.display = "flex";
-        if (customer.advance > 0) {
-          advanceBtn.innerHTML = `📕 Udhar: ₹${customer.advance.toFixed(2)}`;
+        if (customer.advance > 0 || customer.balance < 0) {
+          // Customer has credit history - show button
+          advanceBtn.style.display = "flex";
+          if (customer.advance > 0) {
+            advanceBtn.innerHTML = `📕 Udhar: ₹${customer.advance.toFixed(2)}`;
+          } else {
+            advanceBtn.innerHTML = '📕 Advance / Udhar';
+          }
         } else {
-          advanceBtn.innerHTML = '📕 Advance / Udhar';
+          // No credit history - hide button
+          advanceBtn.style.display = "none";
         }
-        
+
         // Show Udhar threshold nudge if high credit
         const udharNudge = el("udharThresholdNudge");
         if (udharNudge) {
