@@ -728,12 +728,13 @@
 
       /* RIGHT BODY */
       .trustBody {
-        padding: 14px;
+        padding: 10px;
         display: flex;
         flex-direction: column;
-        gap: 14px;
+        gap: 8px;
         overflow-y: auto;
         max-height: calc(100vh - 180px);
+        flex: 1;
       }
       .amountBox {
         background: linear-gradient(180deg, var(--blue), var(--blue2));
@@ -807,9 +808,10 @@
         min-height: 0;
         display: flex;
         flex-direction: column;
+        flex: 1;
       }
       .recentHead {
-        padding: 12px 14px;
+        padding: 10px 14px;
         border-bottom: 1px solid var(--line);
         display: flex;
         justify-content: space-between;
@@ -825,6 +827,8 @@
         padding: 10px 14px 14px;
         min-height: 0;
         overflow: auto;
+        flex: 1;
+        max-height: none;
       }
       table {
         width: 100%;
@@ -1683,43 +1687,43 @@
             </div>
 
             <!-- Inline Cow/Buff Quantity Tracker -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-              <div style="background: #dcfce7; border: 2px solid #16a34a; border-radius: 12px; padding: 12px; text-align: center;">
-                <div style="font-size: 11px; font-weight: 700; color: #166534; margin-bottom: 4px;">🐄 COW (L)</div>
-                <div style="font-size: 24px; font-weight: 900; color: #166534;" id="cowQtyInline">0.0</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+              <div style="background: #dcfce7; border: 2px solid #16a34a; border-radius: 8px; padding: 6px; text-align: center;">
+                <div style="font-size: 9px; font-weight: 700; color: #166534; margin-bottom: 2px;">🐄 COW (L)</div>
+                <div style="font-size: 18px; font-weight: 900; color: #166534;" id="cowQtyInline">0.0</div>
               </div>
-              <div style="background: #fee2e2; border: 2px solid #dc2626; border-radius: 12px; padding: 12px; text-align: center;">
-                <div style="font-size: 11px; font-weight: 700; color: #7f1d1d; margin-bottom: 4px;">🐃 BUFF (L)</div>
-                <div style="font-size: 24px; font-weight: 900; color: #7f1d1d;" id="buffQtyInline">0.0</div>
+              <div style="background: #fee2e2; border: 2px solid #dc2626; border-radius: 8px; padding: 6px; text-align: center;">
+                <div style="font-size: 9px; font-weight: 700; color: #7f1d1d; margin-bottom: 2px;">🐃 BUFF (L)</div>
+                <div style="font-size: 18px; font-weight: 900; color: #7f1d1d;" id="buffQtyInline">0.0</div>
               </div>
             </div>
 
-            <div class="balances">
-              <div class="balCard balOld">
-                <div class="t" id="oldBalLabel">OLD BALANCE</div>
-                <div class="v" id="balBefore">₹0.00</div>
+            <div class="balances" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+              <div class="balCard balOld" style="padding: 6px;">
+                <div class="t" id="oldBalLabel" style="font-size: 8px;">OLD BALANCE</div>
+                <div class="v" id="balBefore" style="font-size: 14px;">₹0.00</div>
               </div>
-              <div class="balCard balNew">
-                <div class="t" id="newBalLabel">NEW BALANCE</div>
-                <div class="v" id="balAfter">₹0.00</div>
+              <div class="balCard balNew" style="padding: 6px;">
+                <div class="t" id="newBalLabel" style="font-size: 8px;">NEW BALANCE</div>
+                <div class="v" id="balAfter" style="font-size: 14px;">₹0.00</div>
               </div>
-              <div style="padding: 10px; background: #f8fafc; border-radius: 12px; margin: 10px 0; border: 1px solid var(--line);">
-    <div style="font-weight: 1000; font-size: 10px; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.5px;">भुगतान (PAYMENT MODE)</div>
-    <div style="display: flex; gap: 6px;">
+            </div>
+            <div style="padding: 6px; background: #f8fafc; border-radius: 8px; margin: 6px 0; border: 1px solid var(--line);">
+    <div style="font-weight: 1000; font-size: 9px; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.5px;">भुगतान (PAYMENT MODE)</div>
+    <div style="display: flex; gap: 4px;">
         <label style="flex: 1; cursor: pointer;">
             <input type="radio" name="payMode" value="Cash" checked style="display: none;" onchange="updatePayUI()">
-            <div id="optCash" style="text-align: center; padding: 8px; border-radius: 8px; border: 2px solid var(--green); background: var(--soft-green); font-weight: 1000; font-size: 12px; transition: 0.2s;">नकद</div>
+            <div id="optCash" style="text-align: center; padding: 6px; border-radius: 6px; border: 2px solid var(--green); background: var(--soft-green); font-weight: 1000; font-size: 11px; transition: 0.2s;">नकद</div>
         </label>
         <label style="flex: 1; cursor: pointer;">
             <input type="radio" name="payMode" value="Credit" style="display: none;" onchange="updatePayUI()">
-            <div id="optCredit" style="text-align: center; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: #fff; font-weight: 1000; font-size: 12px; transition: 0.2s;">उधार</div>
+            <div id="optCredit" style="text-align: center; padding: 6px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-weight: 1000; font-size: 11px; transition: 0.2s;">उधार</div>
         </label>
     </div>
-    <div style="text-align: center; margin-top: 6px;" title="Settlement traceability & deductions tracking available in collection center system.">
-      <span style="font-size: 14px; cursor: help;">⚠️</span>
+    <div style="text-align: center; margin-top: 4px;" title="Settlement traceability & deductions tracking available in collection center system.">
+      <span style="font-size: 12px; cursor: help;">⚠️</span>
     </div>
 </div>
-            </div>
             <div id="dailySummaryWrapper" style="display: none; margin-top: 15px;">
         <button class="pillbtn" id="btnDailySummary" style="width: 100%; background: #25d366; color: white; border: none; font-weight: bold; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
              💬 Send Today's Summary
