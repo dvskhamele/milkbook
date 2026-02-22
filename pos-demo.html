@@ -127,6 +127,8 @@
         .p-card small { font-size: 9px; }
         .summary-box { margin: 10px; padding: 15px; }
         .summary-box .amt { font-size: 32px; }
+        /* Cart items scrollable on mobile */
+        .recent-table tbody { max-height: 300px; overflow-y: auto; }
       }
 
       @media (max-width: 480px) {
@@ -467,7 +469,7 @@
           </div>
 
           <!-- Cart Items (Top Priority - Visible Without Scroll) -->
-          <div style="padding:15px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); max-height: 200px; overflow-y:auto;">
+          <div style="padding:15px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); max-height: 400px; overflow-y:auto; flex: 1;">
             <table class="recent-table"><tbody id="cartItems"></tbody></table>
           </div>
 
