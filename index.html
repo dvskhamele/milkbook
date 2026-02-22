@@ -2159,8 +2159,8 @@
 
     <!-- ADD FARMER MODAL -->
     <div class="overlay" id="overlayFarmer">
-      <div class="modal">
-        <div class="modalHead">
+      <div class="modal" style="height: auto; max-height: 90vh; display: flex; flex-direction: column;">
+        <div class="modalHead" style="flex-shrink: 0;">
           <div class="left">
             <button class="closeBtn" data-close="overlayFarmer">✖</button>
             <div>➕ Add Farmer</div>
@@ -2168,7 +2168,7 @@
           <div class="muted">Photo optional</div>
         </div>
 
-        <div class="modalBody onecol" style="overflow-y: auto; max-height: 60vh;">
+        <div class="modalBody onecol" style="overflow-y: auto; flex: 1; min-height: 0;">
           <div class="modalCol">
             <h3>👤 Farmer Form</h3>
             <div class="formGrid">
@@ -3871,41 +3871,85 @@ el("snfInput").oninput = (e) => {
         btn.innerHTML = '⏳ Creating...';
 
         try {
-          // Create farmer via API
+          // Try API first, fallback to local storage
           const response = await fetch('/api/farmers', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(f)
-          });
+          }).catch(() => null);
 
-          const result = await response.json();
-          
-          if (!response.ok) {
-            throw new Error(result.message || 'Failed to create farmer');
+          if (response && response.ok) {
+            const result = await response.json();
+            console.log('✅ Farmer created in Supabase:', result.farmer.id);
+            
+            const localFarmer = {
+              id: result.farmer.id,
+              ...f
+            };
+            farmers.push(localFarmer);
+            saveFarmers(farmers);
+            selectedFarmerId = localFarmer.id;
+            showToast("Farmer created in Supabase! ✅");
+          } else {
+            // Fallback to local storage
+            const localFarmer = {
+              id: "f" + Date.now(),
+              ...f
+            };
+            farmers.push(localFarmer);
+            saveFarmers(farmers);
+            selectedFarmerId = localFarmer.id;
+            showToast("Farmer created (Local) ✅");
           }
+          
+          closeOverlay("overlayFarmer");
+          renderAll();
 
-          console.log('✅ Farmer created in Supabase:', result.farmer.id);
-
-          // Also save locally for immediate UI
+        } catch (error) {
+          console.error('Error creating farmer:', error);
+          // Final fallback to local storage
           const localFarmer = {
-            id: result.farmer.id,
+            id: "f" + Date.now(),
             ...f
           };
           farmers.push(localFarmer);
           saveFarmers(farmers);
-
           selectedFarmerId = localFarmer.id;
           closeOverlay("overlayFarmer");
           renderAll();
-          showToast("Farmer created in Supabase! ✅");
-
-        } catch (error) {
-          console.error('Error creating farmer:', error);
-          showToast('❌ Failed: ' + error.message);
+          showToast("Farmer created (Local) ✅");
         } finally {
           btn.disabled = false;
           btn.innerHTML = '✅ Create';
         }
+      };
+
+      // Demo Farmers
+      el("btnDemoFarmers").onclick = () => {
+        const demoFarmers = [
+          { id: "f1", name: "Raj Kumar", phone: "9876543210", address: "Vadgaon", balance: 0, active: true, animalType: "cow" },
+          { id: "f2", name: "Suresh Patil", phone: "9876543211", address: "Shivaji Nagar", balance: 500, active: true, animalType: "buffalo" },
+          { id: "f3", name: "Anita Desai", phone: "9876543212", address: "Market Yard", balance: 0, active: true, animalType: "both" },
+          { id: "f4", name: "Vikram More", phone: "9876543213", address: "Gandhi Chowk", balance: 1000, active: true, animalType: "cow" },
+          { id: "f5", name: "Priya Jadhav", phone: "9876543214", address: "Station Road", balance: 0, active: true, animalType: "buffalo" }
+        ];
+        
+        let added = 0;
+        demoFarmers.forEach(df => {
+          if (!farmers.find(f => f.phone === df.phone)) {
+            farmers.push(df);
+            added++;
+          }
+        });
+        
+        if (added > 0) {
+          saveFarmers(farmers);
+          showToast(`Added ${added} demo farmers ✅`);
+          renderAll();
+        } else {
+          showToast("Demo farmers already exist");
+        }
+        closeOverlay("overlayFarmer");
       };
 
       // Close overlays
