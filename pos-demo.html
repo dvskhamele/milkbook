@@ -577,41 +577,41 @@
 
     <!-- Add Product Modal -->
     <div class="overlay" id="addProductModal">
-        <div class="modal" style="width:450px; height:auto;">
+        <div class="modal" style="width:90vw; max-width:550px; height:auto; max-height:90vh; overflow-y:auto;">
             <div class="panelHeader"><span>📦 Add New Product</span> <button onclick="closeModal('addProductModal')">✖</button></div>
             <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
-                <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
+                <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                  <input type="number" id="pPrice" placeholder="Price (₹)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
-                  <input type="text" id="pUnit" placeholder="Unit (L/kg/g)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
+                  <input type="number" id="pPrice" placeholder="Price (₹)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
+                  <input type="text" id="pUnit" placeholder="Unit (L/kg/g)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                  <input type="text" id="pEmoji" placeholder="Emoji (e.g., 🥛, 🧀)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px;">
+                  <input type="text" id="pEmoji" placeholder="Emoji (e.g., 🥛, 🧀)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
                 </div>
-                
+
                 <!-- Editable Steps Section -->
                 <div style="background:#f8fafc; padding:16px; border-radius:10px; border:1px solid var(--line);">
                   <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
                     <span>⚡</span> Quick Steps (edit values for product cards)
                   </div>
-                  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:10px;">
-                    <div style="display:flex; flex-direction:column; gap:4px;">
+                  <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
+                    <div style="display:flex; flex-direction:column; gap:4px; flex:0 0 calc(20% - 10px); min-width:80px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 1</label>
                       <input type="number" class="pStep" value="1" step="0.1" style="padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:14px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="display:flex; flex-direction:column; gap:4px; flex:0 0 calc(20% - 10px); min-width:80px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 2</label>
                       <input type="number" class="pStep" value="2" step="0.1" style="padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:14px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="display:flex; flex-direction:column; gap:4px; flex:0 0 calc(20% - 10px); min-width:80px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 3</label>
                       <input type="number" class="pStep" value="5" step="0.1" style="padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:14px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="display:flex; flex-direction:column; gap:4px; flex:0 0 calc(20% - 10px); min-width:80px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 4</label>
                       <input type="number" class="pStep" value="10" step="0.1" style="padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:14px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="display:flex; flex-direction:column; gap:4px; flex:0 0 calc(20% - 10px); min-width:80px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 5</label>
                       <input type="number" class="pStep" value="20" step="0.1" style="padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:14px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
@@ -3176,24 +3176,24 @@ function openEditInventory() {
       <div style="font-size:11px; font-weight:700; color:var(--muted); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
         <span>⚡</span> Quick Steps (edit or set 0 to disable):
       </div>
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap:8px;">
-        <div style="display:flex; flex-direction:column; gap:3px;">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
+        <div style="display:flex; flex-direction:column; gap:3px; flex:0 0 calc(20% - 8px); min-width:70px;">
           <label style="font-size:9px; font-weight:700; color:var(--muted); text-align:center;">Step 1</label>
           <input type="number" id="editStep_${i}_0" value="${p.steps[0]}" step="0.1" style="padding:8px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:13px; width:100%; box-sizing:border-box;" />
         </div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
+        <div style="display:flex; flex-direction:column; gap:3px; flex:0 0 calc(20% - 8px); min-width:70px;">
           <label style="font-size:9px; font-weight:700; color:var(--muted); text-align:center;">Step 2</label>
           <input type="number" id="editStep_${i}_1" value="${p.steps[1]}" step="0.1" style="padding:8px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:13px; width:100%; box-sizing:border-box;" />
         </div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
+        <div style="display:flex; flex-direction:column; gap:3px; flex:0 0 calc(20% - 8px); min-width:70px;">
           <label style="font-size:9px; font-weight:700; color:var(--muted); text-align:center;">Step 3</label>
           <input type="number" id="editStep_${i}_2" value="${p.steps[2]}" step="0.1" style="padding:8px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:13px; width:100%; box-sizing:border-box;" />
         </div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
+        <div style="display:flex; flex-direction:column; gap:3px; flex:0 0 calc(20% - 8px); min-width:70px;">
           <label style="font-size:9px; font-weight:700; color:var(--muted); text-align:center;">Step 4</label>
           <input type="number" id="editStep_${i}_3" value="${p.steps[3]}" step="0.1" style="padding:8px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:13px; width:100%; box-sizing:border-box;" />
         </div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
+        <div style="display:flex; flex-direction:column; gap:3px; flex:0 0 calc(20% - 8px); min-width:70px;">
           <label style="font-size:9px; font-weight:700; color:var(--muted); text-align:center;">Step 5</label>
           <input type="number" id="editStep_${i}_4" value="${p.steps[4]}" step="0.1" style="padding:8px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:13px; width:100%; box-sizing:border-box;" />
         </div>
