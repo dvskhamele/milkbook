@@ -214,17 +214,39 @@
 
         // Load data from localStorage
         function loadData() {
-            // Load inventory (purchases)
-            const inventoryData = JSON.parse(localStorage.getItem('mr_inventory') || '[]');
-            inventory = inventoryData;
+            // Load inventory (purchases) from multiple sources
+            const mrInventory = JSON.parse(localStorage.getItem('mr_inventory') || '[]');
+            const milkbookData = JSON.parse(localStorage.getItem('milkbook_data') || '{}');
+            const inventoryEntries = milkbookData.inventory || [];
+            
+            // Combine inventory sources
+            inventory = [
+                ...mrInventory.map(item => ({
+                    name: item.name || item.product,
+                    qty: parseFloat(item.qty) || 0,
+                    cost: parseFloat(item.cost) || parseFloat(item.rate) || 0,
+                    date: item.date,
+                    supplier: item.supplier || 'Unknown',
+                    type: item.type || 'Purchase'
+                })),
+                ...inventoryEntries.map(item => ({
+                    name: item.item || item.name,
+                    qty: parseFloat(item.quantity) || 0,
+                    cost: parseFloat(item.cost) || parseFloat(item.rate) || 0,
+                    date: item.date,
+                    supplier: item.supplier || 'Unknown',
+                    type: item.action || 'Purchase'
+                }))
+            ];
 
-            // Load sales
+            // Load sales from multiple sources
             const salesHistory = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
             const posSales = JSON.parse(localStorage.getItem('mr_pos_sales') || '[]');
             const auditHistory = JSON.parse(localStorage.getItem('mr_pos_history') || '[]');
+            const milkbookSales = milkbookData.sales || [];
             
             // Combine all sales sources
-            let allSales = [...salesHistory, ...posSales, ...auditHistory];
+            let allSales = [...salesHistory, ...posSales, ...auditHistory, ...milkbookSales];
             
             // Remove duplicates
             const uniqueSales = [];
