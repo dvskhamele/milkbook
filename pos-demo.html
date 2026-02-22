@@ -253,17 +253,47 @@
       .recent-table tr.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
-      .p-card .emoji { font-size: 36px; margin-bottom: 2px; display: block; transition: all 0.2s; }
-      .p-card div { font-weight: 900; font-size: 10px; line-height: 1.2; transition: all 0.2s; }
-      .p-card small { color: #64748b; font-weight: 700; font-size: 9px; margin-top: 2px; transition: all 0.2s; }
-
-      /* Dynamic styling based on quantity */
-      .p-card[data-qty="0.5"] .emoji { font-size: 28px; }
-      .p-card[data-qty="0.5"] div { font-weight: 700; color: #64748b; }
-      .p-card[data-qty="1"] .emoji { font-size: 36px; }
-      .p-card[data-qty="1"] div { font-weight: 900; color: #1e293b; }
-      .p-card[data-qty="2"] .emoji { font-size: 44px; }
-      .p-card[data-qty="2"] div { font-weight: 900; color: #166534; }
+      
+      /* Strict card sizing based on step value */
+      .p-card[data-step="0.25"] { min-height: 75px; }
+      .p-card[data-step="0.25"] .emoji { font-size: 28px; }
+      .p-card[data-step="0.25"] div { font-size: 9px; }
+      .p-card[data-step="0.25"] small { font-size: 8px; }
+      
+      .p-card[data-step="0.5"] { min-height: 80px; }
+      .p-card[data-step="0.5"] .emoji { font-size: 30px; }
+      .p-card[data-step="0.5"] div { font-size: 9px; }
+      .p-card[data-step="0.5"] small { font-size: 8px; }
+      
+      .p-card[data-step="1"] { min-height: 90px; }
+      .p-card[data-step="1"] .emoji { font-size: 36px; }
+      .p-card[data-step="1"] div { font-size: 10px; }
+      .p-card[data-step="1"] small { font-size: 9px; }
+      
+      .p-card[data-step="2"] { min-height: 95px; }
+      .p-card[data-step="2"] .emoji { font-size: 42px; }
+      .p-card[data-step="2"] div { font-size: 11px; }
+      .p-card[data-step="2"] small { font-size: 9px; }
+      
+      .p-card[data-step="5"] { min-height: 100px; }
+      .p-card[data-step="5"] .emoji { font-size: 46px; }
+      .p-card[data-step="5"] div { font-size: 11px; }
+      .p-card[data-step="5"] small { font-size: 10px; }
+      
+      .p-card[data-step="10"] { min-height: 105px; }
+      .p-card[data-step="10"] .emoji { font-size: 50px; }
+      .p-card[data-step="10"] div { font-size: 12px; }
+      .p-card[data-step="10"] small { font-size: 10px; }
+      
+      .p-card[data-step="20"] { min-height: 110px; }
+      .p-card[data-step="20"] .emoji { font-size: 54px; }
+      .p-card[data-step="20"] div { font-size: 12px; }
+      .p-card[data-step="20"] small { font-size: 10px; }
+      
+      .p-card[data-step="50"] { min-height: 115px; }
+      .p-card[data-step="50"] .emoji { font-size: 58px; }
+      .p-card[data-step="50"] div { font-size: 12px; }
+      .p-card[data-step="50"] small { font-size: 10px; }
 
       .qty-bar { display: flex; gap: 10px; padding: 12px 15px; background: #f8fafc; border-top: 1px solid var(--line); }
       .qty-btn { flex: 1; height: 45px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-weight: 1000; cursor: pointer; }
@@ -3052,9 +3082,9 @@ function addNewProductFromModal() {
     const nameDisplay = step < 0 ? `${name} ${stepDisplay}` : `${name} ${stepDisplay}`;
 
     newCard.innerHTML = `
-      <span class="emoji" style="font-size: 48px;">${emoji}</span>
-      <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">${nameDisplay}</div>
-      <small style="font-size: 10px; margin-top: 2px;">₹${price}/${unit}</small>
+      <span class="emoji">${emoji}</span>
+      <div style="font-weight: 900; margin-top: 2px;">${nameDisplay}</div>
+      <small>₹${price}/${unit}</small>
       <button class="edit-prod-btn" onclick="event.stopPropagation(); editProductCard(this)" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
       <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
     `;
@@ -3239,9 +3269,9 @@ function loadCustomProducts() {
       const nameDisplay = (step || 1) < 0 ? `${p.name} ${stepDisplay}` : `${p.name} ${stepDisplay}`;
 
       newCard.innerHTML = `
-        <span class="emoji" style="font-size: 48px;">${p.emoji || '📦'}</span>
-        <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">${nameDisplay}</div>
-        <small style="font-size: 10px; margin-top: 2px;">₹${p.price}/${p.unit || 'unit'}</small>
+        <span class="emoji">${p.emoji || '📦'}</span>
+        <div style="font-weight: 900; margin-top: 2px;">${nameDisplay}</div>
+        <small>₹${p.price}/${p.unit || 'unit'}</small>
         <button class="edit-prod-btn" onclick="event.stopPropagation(); editProductCard(this)" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
         <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
       `;
