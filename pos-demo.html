@@ -221,6 +221,9 @@
       .p-card[draggable="true"]:hover { cursor: grab; }
       .p-card[draggable="true"]:active { cursor: grabbing; }
       .p-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
+      .recent-table tr[draggable="true"]:hover { cursor: grab; }
+      .recent-table tr[draggable="true"]:active { cursor: grabbing; }
+      .recent-table tr.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
       .p-card .emoji { font-size: 48px; margin-bottom: 4px; display: block; transition: all 0.2s; }
@@ -328,6 +331,10 @@
           </div>
 
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+            <!-- Drop zone hint -->
+            <div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #64748b; font-size: 12px; border: 2px dashed #e2e8f0; border-radius: 8px; margin: 8px;">
+              💡 Drag products here to reorder • Drag to right panel to add to cart
+            </div>
             <!-- Cow Products with multiple step cards -->
             <div class="p-card cow" onclick="tapAdd('Cow 1L', 64, 1)" data-qty="1" data-step="1" data-name="Cow 1L" data-price="64" data-unit="L" id="prod-cow-1l" draggable="true" ondragstart="handleDragStart(event)">
               <span class="emoji" style="font-size: 48px;">🐄</span>
@@ -402,11 +409,11 @@
           </div>
         </div>
 
-        <div class="panel left-panel">
+        <div class="panel left-panel" ondragover="handleProductDragToCart(event)" ondrop="handleProductDragToCart(event)">
           <div class="panelHeader" style="padding: 8px 12px; height: 40px; background: #f8fafc; border-bottom: 1px solid var(--line);">
             <!-- Hidden element for active customer (for backwards compatibility) -->
             <span id="activeCust" style="display:none;">Walking Customer</span>
-            
+
             <!-- Customer Search -->
             <div style="position: relative; width: 100%;">
               <input type="text" id="custSearch" placeholder="👤 Search customer..." oninput="handleSearch(this.value)" style="width: 100%; padding: 8px 8px 8px 30px; border: 2px solid #3b82f6; border-radius: 8px; font-weight: 700; font-size: 13px; background: white;" />
@@ -469,7 +476,7 @@
           </div>
 
           <!-- Cart Items (Top Priority - Visible Without Scroll) -->
-          <div style="padding:15px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); max-height: none; min-height: 300px; flex: 1; overflow-y: auto;">
+          <div style="padding:15px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); max-height: none; min-height: 300px; flex: 1; overflow-y: auto;" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)" ondragleave="handleCartDragOut(event)">
             <table class="recent-table"><tbody id="cartItems"></tbody></table>
           </div>
 
@@ -1399,28 +1406,27 @@ let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
         const customerName = el("activeCust").innerText;
         const date = new Date().toLocaleDateString('en-IN');
         const invoiceNo = 'INV-' + Date.now().toString().slice(-6);
-        
-        // Build WhatsApp message
-        let message = `*🧾 MilkRecord Invoice*
-Invoice No: ${invoiceNo}
-Date: ${date}
 
-*Customer:* ${customerName}
+        // Build WhatsApp message with emojis
+        let message = `🧾 *MilkRecord Invoice*
+📅 ${date} | 🔖 ${invoiceNo}
 
-*Items:*
-${cart.map(item => `• ${item.name} - ${item.qty} x ₹${item.rate} = ₹${(item.qty * item.rate).toFixed(2)}`).join('\n')}
+👤 *Customer:* ${customerName}
 
-*Total:* ₹${total.toFixed(2)}
-*Paid:* ₹${paymentAmount.toFixed(2)}
-${creditAmount > 0 ? `*Credit (Udhar):* ₹${creditAmount.toFixed(2)}` : ''}
-${creditAmount > 0 ? `*Remaining Balance:* ₹${creditAmount.toFixed(2)}` : ''}
+🛒 *Items:*
+${cart.map(item => `${getEmojiForProduct(item.name)} ${item.name} - ${item.qty} x ₹${item.rate} = ₹${(item.qty * item.rate).toFixed(2)}`).join('\n')}
 
-Thank you! 🙏
-MilkRecord POS`;
+💰 *Total:* ₹${total.toFixed(2)}
+💵 *Paid:* ₹${paymentAmount.toFixed(2)}
+${creditAmount > 0 ? `📒 *Credit (Udhar):* ₹${creditAmount.toFixed(2)}` : ''}
+${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
+
+🙏 Thank you!
+🏪 MilkRecord POS`;
 
         // Encode for WhatsApp
         const encodedMessage = encodeURIComponent(message);
-        
+
         // Get customer phone or open WhatsApp picker
         let whatsappUrl;
         if (customer && customer.phone) {
@@ -1428,7 +1434,7 @@ MilkRecord POS`;
         } else {
           whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
         }
-        
+
         // Open WhatsApp
         window.open(whatsappUrl, '_blank');
         showToast('Opening WhatsApp... 💬');
@@ -1854,6 +1860,14 @@ MilkRecord POS`;
       // adjustQty removed - use inline quantity editing instead
       function updateUI() {
         const tbody = el("cartItems"); tbody.innerHTML = ""; total = 0;
+        
+        // Calculate purchase frequency for each item
+        const purchaseCount = {};
+        cart.forEach(item => {
+          purchaseCount[item.name] = (purchaseCount[item.name] || 0) + (item.qty * item.rate);
+        });
+        const maxAmount = Math.max(...Object.values(purchaseCount), 1);
+        
         cart.forEach((i, index) => {
           const itemAmount = i.rate * i.qty;
           total += itemAmount;
@@ -1861,7 +1875,11 @@ MilkRecord POS`;
           // Calculate emoji size based on quantity (scale from 24px to 48px)
           const emojiSize = Math.min(48, Math.max(24, 24 + (i.qty * 4)));
           
-          tbody.innerHTML += `<tr style="border-bottom:1px solid #f1f5f9;">
+          // Calculate background darkness based on purchase amount (0-0.3 opacity)
+          const bgOpacity = (purchaseCount[i.name] / maxAmount) * 0.3;
+          const bgColor = `rgba(59, 130, 246, ${bgOpacity})`;
+          
+          tbody.innerHTML += `<tr style="border-bottom:1px solid #f1f5f9; background:${bgColor};" draggable="true" ondragstart="handleCartDragStart(event)" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)" data-index="${index}">
             <td style="padding:8px 0;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <span style="font-size:${emojiSize}px;">${getEmojiForProduct(i.name)}</span>
@@ -1883,7 +1901,7 @@ MilkRecord POS`;
               </div>
             </td>
             <td style="padding:8px 4px;">
-              <input type="number" value="${itemAmount.toFixed(2)}" 
+              <input type="number" value="${itemAmount.toFixed(2)}"
                 onchange="updateItemAmount(${index}, this.value)"
                 onblur="updateItemAmount(${index}, this.value)"
                 style="width:80px; padding:6px; border:1px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:right; font-size:13px;"
@@ -2110,38 +2128,40 @@ MilkRecord POS`;
         showToast("Item removed");
       }
 
-      // Save entry with API call to Supabase - FULL END-TO-END TRACKING
+      // Save entry - FULLY OFFLINE MODE
       async function saveEntry(mode) {
         if(total === 0) return showToast("Cart empty");
-        
+
         const custName = el("activeCust").innerText;
         const customer = customers.find(c => c.name === custName);
         const customerPhone = customer?.phone;
         const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         const itemsDetail = cart.map(i => `${i.qty}x ${i.name}`).join(" | ");
-        
+
         const btn = event.target;
         const originalText = btn.innerHTML;
         btn.disabled = true;
         btn.innerHTML = '⏳ Saving...';
 
         try {
-          // 1. Find or create customer
+          // 1. Find or create customer (offline)
           let customerId = null;
           let existingCustomer = customers.find(c => c.name.toLowerCase() === custName.toLowerCase());
-          
+
           if (!existingCustomer && custName !== "Walking Customer") {
-            // Create new customer
-            const custResponse = await fetch('/api/customers', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name: custName })
-            });
-            const custResult = await custResponse.json();
-            if (custResult.success) {
-              customerId = custResult.customer.id;
-              customers.push(custResult.customer);
-            }
+            // Create new customer locally
+            customerId = "cust_" + Date.now();
+            const newCustomer = {
+              id: customerId,
+              name: custName,
+              phone: "",
+              balance: 0,
+              advance: 0,
+              monthMilk: 0,
+              createdAt: Date.now()
+            };
+            customers.push(newCustomer);
+            localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
           } else if (existingCustomer) {
             customerId = existingCustomer.id;
           }
@@ -2150,41 +2170,33 @@ MilkRecord POS`;
           const paymentAmount = parseFloat(el("paymentAmount").value) || total;
           const creditAmount = mode === 'Credit' ? total : Math.max(0, total - paymentAmount);
 
-          // 3. Save sale to Supabase with FULL details
+          // 3. Save sale locally (offline mode)
           const saleData = {
+            id: "sale_" + Date.now(),
             customer_id: customerId,
             customer_name: custName,
-            items: cart,
+            items: JSON.parse(JSON.stringify(cart)),
             total_amount: total,
             paid_amount: paymentAmount,
             credit_amount: creditAmount,
-            payment_mode: mode.toLowerCase()
+            payment_mode: mode.toLowerCase(),
+            createdAt: Date.now()
           };
 
-          const response = await fetch('/api/sales', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(saleData)
-          });
+          // Save to localStorage
+          const sales = JSON.parse(localStorage.getItem('mr_pos_sales') || '[]');
+          sales.push(saleData);
+          localStorage.setItem('mr_pos_sales', JSON.stringify(sales));
 
-          const result = await response.json();
-          
-          if (!response.ok) {
-            throw new Error(result.message || 'Failed to save sale');
-          }
+          console.log('✅ Sale saved locally:', saleData);
 
-          console.log('✅ Sale saved to Supabase:', result.sale);
-
-          // 4. Update customer balance if credit
+          // 4. Update customer balance if credit (offline)
           if (creditAmount > 0 && customerId) {
-            await fetch('/api/customers', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                id: customerId,
-                balance: creditAmount
-              })
-            });
+            const customer = customers.find(c => c.id === customerId);
+            if (customer) {
+              customer.balance = (customer.balance || 0) + creditAmount;
+              localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+            }
           }
 
           // Save customer memory (for auto-fill next time)
@@ -2705,13 +2717,81 @@ function clearTodayHistory() {
 
         const grid = document.getElementById('productGrid');
         const addBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
-        
+
         order.forEach(id => {
           const card = document.getElementById(id);
           if (card && addBtn) {
             grid.insertBefore(card, addBtn);
           }
         });
+      }
+
+      // Drag and Drop for Cart Items
+      let draggedCartItem = null;
+      let draggedCartIndex = null;
+
+      function handleCartDragStart(e) {
+        draggedCartItem = this;
+        draggedCartIndex = parseInt(this.getAttribute('data-index'));
+        this.style.opacity = '0.4';
+        this.style.background = 'rgba(59, 130, 246, 0.1)';
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedCartIndex);
+      }
+
+      function handleCartDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+      }
+
+      function handleCartDrop(e) {
+        e.stopPropagation();
+        if (draggedCartItem && this !== draggedCartItem) {
+          const dropIndex = parseInt(this.getAttribute('data-index'));
+          
+          // Reorder cart array
+          const draggedItem = cart[draggedCartIndex];
+          cart.splice(draggedCartIndex, 1);
+          cart.splice(dropIndex, 0, draggedItem);
+          
+          updateUI();
+          showToast('Item reordered');
+        }
+        if (draggedCartItem) {
+          draggedCartItem.style.opacity = '1';
+          draggedCartItem.style.background = '';
+        }
+        return false;
+      }
+
+      // Drag product to cart (add to cart)
+      function handleProductDragToCart(e) {
+        e.preventDefault();
+        const card = draggedCard;
+        if (card) {
+          const onclick = card.getAttribute('onclick');
+          const match = onclick.match(/tapAdd\('([^']+)',\s*([\d.]+),\s*([\d.]+)\)/);
+          if (match) {
+            const name = match[1];
+            const rate = parseFloat(match[2]);
+            const step = parseFloat(match[3]);
+            tapAdd(name, rate, step, step);
+            showToast(`${name} added to cart`);
+          }
+        }
+        return false;
+      }
+
+      // Drag cart item out to remove
+      function handleCartDragOut(e) {
+        e.preventDefault();
+        if (draggedCartItem) {
+          const index = parseInt(draggedCartItem.getAttribute('data-index'));
+          removeItem(index);
+          showToast('Item removed');
+        }
+        return false;
       }
 
       window.onload = () => {
