@@ -1431,21 +1431,25 @@ MilkRecord POS`;
       // Logic: Persistent Search Dropdown with Keyboard Support
       let selectedDropIndex = -1;
       
-      // Load customers from API on page load
-      async function loadCustomers() {
+      // Load customers from localStorage (offline mode)
+      function loadCustomers() {
         try {
-          const response = await fetch('/api/customers');
-          const result = await response.json();
-          
-          if (result.success && result.customers) {
-            customers = result.customers;
-            console.log('✅ Loaded', customers.length, 'customers from Supabase');
+          const stored = localStorage.getItem('mr_pos_customers');
+          if (stored) {
+            customers = JSON.parse(stored);
+            console.log('✅ Loaded', customers.length, 'customers (Offline)');
+          } else {
+            // Initialize with empty array
+            customers = [];
+            localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+            console.log('✅ Initialized customer storage (Offline)');
           }
         } catch (error) {
           console.error('Error loading customers:', error);
+          customers = [];
         }
       }
-      
+
       // Load customers on page load
       loadCustomers();
 
@@ -1537,8 +1541,8 @@ MilkRecord POS`;
         });
       }
       
-      // Add customer directly from dropdown (calls API)
-      async function addCustomerDirect(name) {
+      // Add customer directly from dropdown (offline mode)
+      function addCustomerDirect(name) {
         if (!name) return;
 
         // Check if customer already exists
@@ -1549,29 +1553,27 @@ MilkRecord POS`;
           return;
         }
 
-        try {
-          // Create customer via API
-          const response = await fetch('/api/customers', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: name })
-          });
+        // Create customer locally (offline mode)
+        const newCustomer = {
+          id: "cust_" + Date.now(),
+          name: name,
+          phone: "",
+          email: "",
+          balance: 0,
+          advance: 0,
+          monthMilk: 0,
+          frequentBuys: [],
+          createdAt: Date.now()
+        };
 
-          const result = await response.json();
-          
-          if (result.success) {
-            // Add to local array for immediate UI update
-            customers.push(result.customer);
-            
-            selectCust(name);
-            el("custSearch").value = name;
-            el("searchDropdown").style.display = 'none';
-            showToast(name + ' added to Supabase! ✅');
-          }
-        } catch (error) {
-          console.error('Error creating customer:', error);
-          showToast('❌ Failed to add customer');
-        }
+        // Add to local array for immediate UI update
+        customers.push(newCustomer);
+        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+
+        selectCust(name);
+        el("custSearch").value = name;
+        el("searchDropdown").style.display = 'none';
+        showToast(name + ' added (Offline) ✅');
       }
       
       // Show all customers when search is focused
