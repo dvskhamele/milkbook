@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock & Profit Report - MilkBook POS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2563eb",
+                        "success": "#16a34a",
+                        "warning": "#f59e0b",
+                        "danger": "#dc2626",
+                        "background-main": "#f8fafc",
+                        "text-main": "#1e293b",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        @media print {
+            .print-hidden { display: none !important; }
+            body { background: white; }
+            .stat-card, .table-container { box-shadow: none; border: 1px solid #e2e8f0; }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+    <!-- Global Navbar -->
+    <div id="globalNavbar"></div>
+    <script src="global-nav.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded">Inventory</span>
+                        <span class="text-xs font-medium text-slate-500" id="reportDate"></span>
+                    </div>
+                    <h1 class="text-3xl font-black tracking-tight uppercase">Stock & Profit Report</h1>
+                    <p class="text-slate-500 mt-1">Track purchases, sales, stock, and profit</p>
+                </div>
+                <div class="flex gap-3 print-hidden">
+                    <button onclick="window.print()" class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">print</span>
+                        Print
+                    </button>
+                    <button onclick="exportToCSV()" class="px-4 py-2 bg-success text-white rounded-xl font-bold text-sm hover:bg-success/90 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">download</span>
+                        Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-blue-600">shopping_cart</span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-500 uppercase">Total Purchased</div>
+                            <div class="text-2xl font-black text-slate-900" id="totalPurchased">₹0</div>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500" id="purchaseItems">0 items bought</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-green-600">sell</span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-500 uppercase">Total Sold</div>
+                            <div class="text-2xl font-black text-slate-900" id="totalSold">₹0</div>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500" id="soldItems">0 items sold</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-purple-600">inventory</span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-500 uppercase">Current Stock</div>
+                            <div class="text-2xl font-black text-slate-900" id="currentStock">₹0</div>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500">Value of unsold items</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-amber-600">trending_up</span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-500 uppercase">Total Profit</div>
+                            <div class="text-2xl font-black text-slate-900" id="totalProfit">₹0</div>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500" id="profitMargin">0% margin</div>
+                </div>
+            </div>
+
+            <!-- Product Breakdown Table -->
+            <div class="table-container mb-8">
+                <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">inventory_2</span>
+                        Product-wise Stock & Profit
+                    </h3>
+                    <div class="text-sm text-slate-500" id="productCount">0 products</div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                            <tr>
+                                <th class="px-6 py-4 text-left font-bold">Product</th>
+                                <th class="px-6 py-4 text-right font-bold">Purchased</th>
+                                <th class="px-6 py-4 text-right font-bold">Sold</th>
+                                <th class="px-6 py-4 text-right font-bold">In Stock</th>
+                                <th class="px-6 py-4 text-right font-bold">Buy Price</th>
+                                <th class="px-6 py-4 text-right font-bold">Sell Price</th>
+                                <th class="px-6 py-4 text-right font-bold">Profit</th>
+                                <th class="px-6 py-4 text-right font-bold">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTable" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Summary -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Low Stock Alert -->
+                <div class="table-container">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span class="material-symbols-outlined text-warning">warning</span>
+                            Low Stock Alert
+                        </h3>
+                    </div>
+                    <div class="p-6" id="lowStockAlerts">
+                        <p class="text-slate-500 text-center py-8">All products well stocked ✅</p>
+                    </div>
+                </div>
+
+                <!-- Top Profit Products -->
+                <div class="table-container">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span class="material-symbols-outlined text-success">emoji_events</span>
+                            Top Profit Products
+                        </h3>
+                    </div>
+                    <div class="p-6" id="topProfitProducts">
+                        <p class="text-slate-500 text-center py-8">No sales data yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global variables
+        let inventory = [];
+        let sales = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            updateDateDisplay();
+        });
+
+        // Load data from localStorage
+        function loadData() {
+            // Load inventory (purchases)
+            const inventoryData = JSON.parse(localStorage.getItem('mr_inventory') || '[]');
+            inventory = inventoryData;
+
+            // Load sales
+            const salesHistory = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+            const posSales = JSON.parse(localStorage.getItem('mr_pos_sales') || '[]');
+            const auditHistory = JSON.parse(localStorage.getItem('mr_pos_history') || '[]');
+            
+            // Combine all sales sources
+            let allSales = [...salesHistory, ...posSales, ...auditHistory];
+            
+            // Remove duplicates
+            const uniqueSales = [];
+            const seen = new Set();
+            allSales.forEach(sale => {
+                const id = sale.id || sale.timestamp || JSON.stringify(sale);
+                if (!seen.has(id)) {
+                    seen.add(id);
+                    uniqueSales.push(sale);
+                }
+            });
+            
+            sales = uniqueSales;
+            
+            // Generate report
+            generateReport();
+        }
+
+        // Generate full report
+        function generateReport() {
+            calculateMetrics();
+            generateProductTable();
+            generateLowStockAlerts();
+            generateTopProfitProducts();
+        }
+
+        // Calculate key metrics
+        function calculateMetrics() {
+            let totalPurchased = 0;
+            let totalSold = 0;
+            let totalCost = 0;
+            let totalRevenue = 0;
+            let purchaseItems = 0;
+            let soldItems = 0;
+
+            // Calculate from inventory
+            inventory.forEach(item => {
+                totalPurchased += (parseFloat(item.cost) || 0) * (parseFloat(item.qty) || 0);
+                purchaseItems += parseFloat(item.qty) || 0;
+            });
+
+            // Calculate from sales
+            sales.forEach(sale => {
+                const items = sale.items || sale.cart || sale.cartItems || [];
+                items.forEach(item => {
+                    const qty = parseFloat(item.qty) || 0;
+                    const rate = parseFloat(item.rate) || 0;
+                    totalSold += qty * rate;
+                    totalRevenue += qty * rate;
+                    soldItems += qty;
+                });
+            });
+
+            // Calculate current stock value (purchased - sold at cost price)
+            const currentStock = totalPurchased - totalCost;
+
+            // Calculate profit
+            const profit = totalRevenue - totalCost;
+            const profitMargin = totalRevenue > 0 ? (profit / totalRevenue * 100) : 0;
+
+            // Update display
+            document.getElementById('totalPurchased').textContent = `₹${totalPurchased.toFixed(2)}`;
+            document.getElementById('totalSold').textContent = `₹${totalSold.toFixed(2)}`;
+            document.getElementById('currentStock').textContent = `₹${currentStock.toFixed(2)}`;
+            document.getElementById('totalProfit').textContent = `₹${profit.toFixed(2)}`;
+            document.getElementById('purchaseItems').textContent = `${purchaseItems} items bought`;
+            document.getElementById('soldItems').textContent = `${soldItems} items sold`;
+            document.getElementById('profitMargin').textContent = `${profitMargin.toFixed(1)}% margin`;
+        }
+
+        // Generate product table
+        function generateProductTable() {
+            // Aggregate product data
+            const productData = {};
+
+            // From inventory (purchases)
+            inventory.forEach(item => {
+                const name = item.name || item.product || 'Unknown';
+                if (!productData[name]) {
+                    productData[name] = {
+                        name: name,
+                        purchasedQty: 0,
+                        purchasedCost: 0,
+                        soldQty: 0,
+                        soldRevenue: 0,
+                        avgCostPrice: 0,
+                        avgSellPrice: 0,
+                        sellCount: 0
+                    };
+                }
+                productData[name].purchasedQty += parseFloat(item.qty) || 0;
+                productData[name].purchasedCost += (parseFloat(item.cost) || 0) * (parseFloat(item.qty) || 0);
+            });
+
+            // From sales
+            sales.forEach(sale => {
+                const items = sale.items || sale.cart || sale.cartItems || [];
+                items.forEach(item => {
+                    const name = item.name || 'Unknown';
+                    const qty = parseFloat(item.qty) || 0;
+                    const rate = parseFloat(item.rate) || 0;
+                    
+                    if (!productData[name]) {
+                        productData[name] = {
+                            name: name,
+                            purchasedQty: 0,
+                            purchasedCost: 0,
+                            soldQty: 0,
+                            soldRevenue: 0,
+                            avgCostPrice: 0,
+                            avgSellPrice: 0,
+                            sellCount: 0
+                        };
+                    }
+                    productData[name].soldQty += qty;
+                    productData[name].soldRevenue += qty * rate;
+                    productData[name].avgSellPrice += rate;
+                    productData[name].sellCount += 1;
+                });
+            });
+
+            // Calculate averages and stock
+            const products = Object.values(productData).map(p => {
+                const inStock = p.purchasedQty - p.soldQty;
+                const avgCostPrice = p.purchasedQty > 0 ? p.purchasedCost / p.purchasedQty : 0;
+                const avgSellPrice = p.sellCount > 0 ? p.avgSellPrice / p.sellCount : 0;
+                const profit = p.soldRevenue - (p.soldQty * avgCostPrice);
+                const profitMargin = p.soldRevenue > 0 ? (profit / p.soldRevenue * 100) : 0;
+
+                return {
+                    ...p,
+                    inStock: inStock,
+                    avgCostPrice: avgCostPrice,
+                    avgSellPrice: avgSellPrice,
+                    profit: profit,
+                    profitMargin: profitMargin
+                };
+            });
+
+            // Sort by profit
+            products.sort((a, b) => b.profit - a.profit);
+
+            // Update product count
+            document.getElementById('productCount').textContent = `${products.length} products`;
+
+            // Generate table
+            const tbody = document.getElementById('productTable');
+            tbody.innerHTML = products.map(product => {
+                const stockStatus = product.inStock <= 0 ? 
+                    '<span class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-bold">Out of Stock</span>' :
+                    product.inStock < 10 ? 
+                    '<span class="px-2 py-1 bg-amber-100 text-amber-600 rounded text-xs font-bold">Low Stock</span>' :
+                    '<span class="px-2 py-1 bg-green-100 text-green-600 rounded text-xs font-bold">In Stock</span>';
+
+                const profitClass = product.profit >= 0 ? 'text-green-600' : 'text-red-600';
+
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-6 py-4 font-bold text-slate-900">${product.name}</td>
+                        <td class="px-6 py-4 text-right font-bold">${product.purchasedQty.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-bold">${product.soldQty.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-bold ${product.inStock <= 0 ? 'text-red-600' : product.inStock < 10 ? 'text-amber-600' : 'text-green-600'}">${product.inStock.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-bold text-slate-600">₹${product.avgCostPrice.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-bold text-slate-600">₹${product.avgSellPrice.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-bold ${profitClass}">₹${product.profit.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right">${stockStatus}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Generate low stock alerts
+        function generateLowStockAlerts() {
+            const productData = {};
+
+            inventory.forEach(item => {
+                const name = item.name || item.product || 'Unknown';
+                if (!productData[name]) {
+                    productData[name] = { purchasedQty: 0, soldQty: 0 };
+                }
+                productData[name].purchasedQty += parseFloat(item.qty) || 0;
+            });
+
+            sales.forEach(sale => {
+                const items = sale.items || sale.cart || sale.cartItems || [];
+                items.forEach(item => {
+                    const name = item.name || 'Unknown';
+                    if (!productData[name]) {
+                        productData[name] = { purchasedQty: 0, soldQty: 0 };
+                    }
+                    productData[name].soldQty += parseFloat(item.qty) || 0;
+                });
+            });
+
+            const lowStock = Object.entries(productData)
+                .filter(([name, data]) => (data.purchasedQty - data.soldQty) < 10 && (data.purchasedQty - data.soldQty) > 0)
+                .map(([name, data]) => ({
+                    name,
+                    inStock: data.purchasedQty - data.soldQty
+                }))
+                .sort((a, b) => a.inStock - b.inStock)
+                .slice(0, 5);
+
+            const container = document.getElementById('lowStockAlerts');
+            
+            if (lowStock.length === 0) {
+                container.innerHTML = '<p class="text-slate-500 text-center py-8">All products well stocked ✅</p>';
+            } else {
+                container.innerHTML = lowStock.map(item => `
+                    <div class="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-amber-600">warning</span>
+                            <span class="font-bold text-slate-700">${item.name}</span>
+                        </div>
+                        <span class="font-black text-amber-600">${item.inStock.toFixed(1)} left</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Generate top profit products
+        function generateTopProfitProducts() {
+            const productData = {};
+
+            inventory.forEach(item => {
+                const name = item.name || item.product || 'Unknown';
+                if (!productData[name]) {
+                    productData[name] = { cost: 0, qty: 0 };
+                }
+                productData[name].cost += (parseFloat(item.cost) || 0) * (parseFloat(item.qty) || 0);
+                productData[name].qty += parseFloat(item.qty) || 0;
+            });
+
+            sales.forEach(sale => {
+                const items = sale.items || sale.cart || sale.cartItems || [];
+                items.forEach(item => {
+                    const name = item.name || 'Unknown';
+                    const qty = parseFloat(item.qty) || 0;
+                    const rate = parseFloat(item.rate) || 0;
+                    
+                    if (!productData[name]) {
+                        productData[name] = { cost: 0, qty: 0, revenue: 0, soldQty: 0 };
+                    }
+                    productData[name].revenue += qty * rate;
+                    productData[name].soldQty += qty;
+                });
+            });
+
+            const topProfit = Object.entries(productData)
+                .map(([name, data]) => {
+                    const avgCost = data.qty > 0 ? data.cost / data.qty : 0;
+                    const profit = data.revenue - (data.soldQty * avgCost);
+                    return { name, profit, revenue: data.revenue };
+                })
+                .filter(p => p.profit > 0)
+                .sort((a, b) => b.profit - a.profit)
+                .slice(0, 5);
+
+            const container = document.getElementById('topProfitProducts');
+            
+            if (topProfit.length === 0) {
+                container.innerHTML = '<p class="text-slate-500 text-center py-8">No sales data yet</p>';
+            } else {
+                container.innerHTML = topProfit.map((product, i) => `
+                    <div class="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold text-amber-600">${i + 1}</div>
+                            <span class="font-bold text-slate-700">${product.name}</span>
+                        </div>
+                        <span class="font-black text-green-600">₹${product.profit.toFixed(2)}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Update date display
+        function updateDateDisplay() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('reportDate').textContent = now.toLocaleDateString('en-IN', options);
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            const productData = {};
+
+            inventory.forEach(item => {
+                const name = item.name || item.product || 'Unknown';
+                if (!productData[name]) {
+                    productData[name] = { purchasedQty: 0, purchasedCost: 0, soldQty: 0, soldRevenue: 0 };
+                }
+                productData[name].purchasedQty += parseFloat(item.qty) || 0;
+                productData[name].purchasedCost += (parseFloat(item.cost) || 0) * (parseFloat(item.qty) || 0);
+            });
+
+            sales.forEach(sale => {
+                const items = sale.items || sale.cart || sale.cartItems || [];
+                items.forEach(item => {
+                    const name = item.name || 'Unknown';
+                    const qty = parseFloat(item.qty) || 0;
+                    const rate = parseFloat(item.rate) || 0;
+                    
+                    if (!productData[name]) {
+                        productData[name] = { purchasedQty: 0, purchasedCost: 0, soldQty: 0, soldRevenue: 0 };
+                    }
+                    productData[name].soldQty += qty;
+                    productData[name].soldRevenue += qty * rate;
+                });
+            });
+
+            const headers = ['Product', 'Purchased Qty', 'Purchased Cost', 'Sold Qty', 'Sold Revenue', 'In Stock', 'Profit'];
+            const rows = Object.values(productData).map(p => {
+                const inStock = p.purchasedQty - p.soldQty;
+                const avgCost = p.purchasedQty > 0 ? p.purchasedCost / p.purchasedQty : 0;
+                const profit = p.soldRevenue - (p.soldQty * avgCost);
+                return [
+                    p.name,
+                    p.purchasedQty.toFixed(2),
+                    p.purchasedCost.toFixed(2),
+                    p.soldQty.toFixed(2),
+                    p.soldRevenue.toFixed(2),
+                    inStock.toFixed(2),
+                    profit.toFixed(2)
+                ].map(cell => `"${cell}"`).join(',');
+            });
+
+            const csv = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `stock_profit_report_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
