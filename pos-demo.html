@@ -602,41 +602,41 @@
 
     <!-- Add Product Modal -->
     <div class="overlay" id="addProductModal">
-        <div class="modal" style="width:95vw !important; max-width:700px !important; height:auto !important; max-height:90vh !important; overflow-y:auto !important; display:block !important; grid-template-rows:none !important;">
-            <div class="panelHeader"><span>📦 Add New Product</span> <button onclick="closeModal('addProductModal')">✖</button></div>
+        <div class="modal" style="width:90vw !important; max-width:500px !important; height:auto !important; max-height:90vh !important; overflow-y:auto !important; display:block !important; grid-template-rows:none !important;">
+            <div class="panelHeader"><span>📦 Add New Product</span> <button onclick="closeModal('addProductModal')" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b; padding:0; width:32px; height:32px; display:flex; align-items:center; justify-content:center;">✖</button></div>
             <div style="padding:20px; display:flex; flex-direction:column; gap:15px;">
                 <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
-                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                   <input type="number" id="pPrice" placeholder="Price (₹)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
                   <input type="text" id="pUnit" placeholder="Unit (L/kg/g)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
-                  <input type="text" id="pEmoji" placeholder="Emoji (🥛, 🧀)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
                 </div>
+                <input type="text" id="pEmoji" placeholder="Emoji (🥛, 🧀)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
 
                 <!-- Editable Steps Section -->
                 <div style="background:#f8fafc; padding:16px; border-radius:10px; border:1px solid var(--line);">
                   <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
                     <span>⚡</span> Quick Steps (edit values for product cards)
                   </div>
-                  <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:10px;">
+                  <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:8px;">
                     <div style="display:flex; flex-direction:column; gap:4px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 1</label>
-                      <input type="number" class="pStep" value="1" step="0.1" style="padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:14px; text-align:center; width:100%; box-sizing:border-box;" />
+                      <input type="number" class="pStep" value="1" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
                     <div style="display:flex; flex-direction:column; gap:4px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 2</label>
-                      <input type="number" class="pStep" value="2" step="0.1" style="padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:14px; text-align:center; width:100%; box-sizing:border-box;" />
+                      <input type="number" class="pStep" value="2" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
                     <div style="display:flex; flex-direction:column; gap:4px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 3</label>
-                      <input type="number" class="pStep" value="5" step="0.1" style="padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:14px; text-align:center; width:100%; box-sizing:border-box;" />
+                      <input type="number" class="pStep" value="5" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
                     <div style="display:flex; flex-direction:column; gap:4px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 4</label>
-                      <input type="number" class="pStep" value="10" step="0.1" style="padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:14px; text-align:center; width:100%; box-sizing:border-box;" />
+                      <input type="number" class="pStep" value="10" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
                     <div style="display:flex; flex-direction:column; gap:4px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 5</label>
-                      <input type="number" class="pStep" value="20" step="0.1" style="padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:14px; text-align:center; width:100%; box-sizing:border-box;" />
+                      <input type="number" class="pStep" value="20" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
                   </div>
                   <div style="font-size:10px; color:var(--muted); margin-top:10px; text-align:center;">💡 Set to 0 to disable. Negative values allowed.</div>
@@ -649,8 +649,8 @@
 
     <!-- Edit Products Modal -->
     <div class="overlay" id="editInventoryModal">
-        <div class="modal" style="width:95vw !important; max-width:800px !important; height:auto !important; max-height:80vh !important; display:block !important; grid-template-rows:none !important;">
-            <div class="panelHeader"><span>✏️ Edit Products</span> <button onclick="closeModal('editInventoryModal')">✖</button></div>
+        <div class="modal" style="width:90vw !important; max-width:500px !important; height:auto !important; max-height:80vh !important; display:block !important; grid-template-rows:none !important;">
+            <div class="panelHeader"><span>✏️ Edit Products</span> <button onclick="closeModal('editInventoryModal')" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b; padding:0; width:32px; height:32px; display:flex; align-items:center; justify-content:center;">✖</button></div>
             <div class="modalBody" id="editInventoryList" style="padding:20px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; max-height:60vh;"></div>
         </div>
     </div>
@@ -3224,39 +3224,39 @@ function openEditInventory() {
 
   list.innerHTML = products.map((p, i) => `
     <div style="padding:12px; background:#f8fafc; border-radius:10px; border:1px solid var(--line);">
-      <div style="display:grid; grid-template-columns: 40px 1fr 80px 60px; gap:8px; align-items:center; margin-bottom:8px;">
-        <div style="font-size:24px;">${p.emoji}</div>
-        <input type="text" id="editName_${i}" value="${p.name}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; font-size:13px;" />
-        <input type="number" id="editRate_${i}" value="${p.rate}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center; font-size:13px;" />
-        <input type="text" id="editUnit_${i}" value="${p.unit}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center; font-size:13px;" />
+      <div style="display:grid; grid-template-columns: 36px 1fr 70px 55px; gap:8px; align-items:center; margin-bottom:10px;">
+        <div style="font-size:20px;">${p.emoji}</div>
+        <input type="text" id="editName_${i}" value="${p.name}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; font-size:12px; min-width:0;" />
+        <input type="number" id="editRate_${i}" value="${p.rate}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center; font-size:12px;" />
+        <input type="text" id="editUnit_${i}" value="${p.unit}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center; font-size:12px;" />
       </div>
-      
-      <div style="font-size:11px; font-weight:700; color:var(--muted); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+
+      <div style="font-size:10px; font-weight:700; color:var(--muted); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
         <span>⚡</span> Quick Steps (edit or set 0 to disable):
       </div>
-      <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:10px;">
-        <div style="display:flex; flex-direction:column; gap:3px;">
-          <label style="font-size:9px; font-weight:700; color:var(--muted); text-align:center;">Step 1</label>
-          <input type="number" id="editStep_${i}_0" value="${p.steps[0]}" step="0.1" style="padding:8px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:13px; width:100%; box-sizing:border-box;" />
+      <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:6px;">
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">1</label>
+          <input type="number" id="editStep_${i}_0" value="${p.steps[0]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
-          <label style="font-size:9px; font-weight:700; color:var(--muted); text-align:center;">Step 2</label>
-          <input type="number" id="editStep_${i}_1" value="${p.steps[1]}" step="0.1" style="padding:8px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:13px; width:100%; box-sizing:border-box;" />
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">2</label>
+          <input type="number" id="editStep_${i}_1" value="${p.steps[1]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
-          <label style="font-size:9px; font-weight:700; color:var(--muted); text-align:center;">Step 3</label>
-          <input type="number" id="editStep_${i}_2" value="${p.steps[2]}" step="0.1" style="padding:8px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:13px; width:100%; box-sizing:border-box;" />
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">3</label>
+          <input type="number" id="editStep_${i}_2" value="${p.steps[2]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
-          <label style="font-size:9px; font-weight:700; color:var(--muted); text-align:center;">Step 4</label>
-          <input type="number" id="editStep_${i}_3" value="${p.steps[3]}" step="0.1" style="padding:8px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:13px; width:100%; box-sizing:border-box;" />
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">4</label>
+          <input type="number" id="editStep_${i}_3" value="${p.steps[3]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
-          <label style="font-size:9px; font-weight:700; color:var(--muted); text-align:center;">Step 5</label>
-          <input type="number" id="editStep_${i}_4" value="${p.steps[4]}" step="0.1" style="padding:8px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:13px; width:100%; box-sizing:border-box;" />
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">5</label>
+          <input type="number" id="editStep_${i}_4" value="${p.steps[4]}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
       </div>
-      
+
       <button onclick="updateProductWithSteps(${i}, '${p.name}')" style="margin-top:10px; padding:8px 16px; background:#22c55e; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12px; width:100%;">💾 Update Product</button>
     </div>
   `).join('');
