@@ -4361,28 +4361,25 @@ document.addEventListener('keydown', (e) => {
             const list = filterFarmers();
             const idx = cards.indexOf(active);
             let nextIdx = e.key === "ArrowRight" ? idx + 1 : idx - 1;
-            
+
             if (nextIdx >= 0 && nextIdx < cards.length && list[nextIdx]) {
                 cards[nextIdx].focus();
                 selectedFarmerId = list[nextIdx].id;
-                renderTrust(); 
+                renderTrust();
             }
         }
-        // --- QTY INPUT PAR SHIFT + ENTER KA LOGIC ---
-else if (active.id === "qtyInput") {
-    // Agar Shift + Enter dabayein toh seedha Advance modal khule
-    if (e.shiftKey && e.key === "Enter") {
-        e.preventDefault();
-        if (selectedFarmerId) {
-            openFarmerDetail(selectedFarmerId);
-        }
-    } 
-    // Normal Enter se agle field (Fat) par jaye
-    else if (e.key === "Enter") {
-        e.preventDefault();
-        el("fatInput").focus();
     }
-}
+    
+    // --- QTY INPUT PAR SHIFT + ENTER KA LOGIC ---
+    if (active.id === "qtyInput") {
+        // Agar Shift + Enter dabayein toh seedha Advance modal khule
+        if (e.shiftKey && e.key === "Enter") {
+            e.preventDefault();
+            if (selectedFarmerId) {
+                openFarmerDetail(selectedFarmerId);
+            }
+            return;
+        }
     }
 
     if (e.key === "Enter") {
@@ -4390,28 +4387,31 @@ else if (active.id === "qtyInput") {
         if (active.id === "searchInput") {
             const firstCard = el("farmerGrid").querySelector('.fcard');
             if (firstCard) firstCard.focus();
-        } 
+        }
         else if (active.classList.contains("fcard")) {
             const list = filterFarmers();
             const cards = Array.from(el("farmerGrid").children);
             const idx = cards.indexOf(active);
             if (list[idx]) {
                 selectedFarmerId = list[idx].id;
-                renderAll(); 
+                renderAll();
                 setTimeout(() => {
                     el("qtyInput").focus();
                     el("qtyInput").select();
-                }, 50); 
+                }, 50);
             }
         }
-        else if (active.id === "qtyInput") el("fatInput").focus();
+        else if (active.id === "qtyInput") {
+            el("fatInput").focus();
+            el("fatInput").select();
+        }
         else if (active.id === "fatInput") el("densityInput").focus();
         else if (active.id === "densityInput") el("snfInput").focus();
         else if (active.id === "snfInput") el("btnRateModeAuto").focus();
         else if (active.id === "btnRateModeAuto" || active.id === "btnRateModeManual") el("btnSave").focus();
         else if (active.id === "btnSave") {
             saveEntry();
-            el("searchInput").focus(); 
+            el("searchInput").focus();
             el("searchInput").value = "";
         }
     }
