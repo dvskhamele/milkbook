@@ -3209,12 +3209,20 @@ function addNewProduct() {
 
 // Load custom products on page load
 function loadCustomProducts() {
+  // Check if localStorage has been initialized
+  const hasInitialized = localStorage.getItem('mr_pos_initialized');
   const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
   
-  // If no custom products, create defaults (first-time setup)
-  if (customProducts.length === 0) {
+  // If no custom products AND never initialized, create defaults (first-time setup)
+  if (customProducts.length === 0 && !hasInitialized) {
     createDefaultProducts();
+    localStorage.setItem('mr_pos_initialized', 'true');
     return;
+  }
+  
+  // If products exist but not initialized, mark as initialized
+  if (customProducts.length > 0 && !hasInitialized) {
+    localStorage.setItem('mr_pos_initialized', 'true');
   }
   
   const grid = el("productGrid");
