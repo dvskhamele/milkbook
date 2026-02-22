@@ -700,7 +700,7 @@
         color: var(--muted);
       }
       .manualRateRow {
-        display: none;
+        display: flex !important;
         gap: 10px;
         grid-template-columns: 1fr auto;
         align-items: center;
@@ -3108,7 +3108,7 @@ return `
     // animal dropdown sync
     animalSelect.value = animal;
 
-    // Manual rate UI - always show, pre-fill with current rate
+    // Manual rate UI - always visible, pre-fill with current rate
     if (!manualRate || manualRate === 0) {
         rateTypeLabel.textContent = "Rate: Auto";
         // Auto mode: Pre-fill with current base rate
@@ -3126,7 +3126,6 @@ return `
             manualRateInput.placeholder = `Manual: ₹${manualVal}`;
         }
     }
-    manualRateRow.style.display = "flex";
 
     // HOLD badge
     const hold = loadHold();
