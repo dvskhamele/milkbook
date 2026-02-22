@@ -2572,6 +2572,12 @@ function playSuccessSound() {
       manualRateInput.placeholder = `Manual: ₹${manualRate.toFixed(2)}`;
     }
   }
+  
+  // Ensure manual rate input ALWAYS has a value (never empty)
+  if (manualRateInput && !manualRateInput.value) {
+    const currentRate = settings.cowBase ? Number(settings.cowBase).toFixed(2) : "0.00";
+    manualRateInput.value = currentRate;
+  }
 }
   function calculateSNFFromCLR() {
   if (clr > 0) {
@@ -3684,6 +3690,15 @@ function showAuditProof(entryId) {
       /***********************
        * EVENTS              *
        ***********************/
+      // Initialize manual rate input on page load
+      window.addEventListener('DOMContentLoaded', () => {
+        const manualRateInput = el("manualRateInput");
+        if (manualRateInput && settings.cowBase) {
+          manualRateInput.value = Number(settings.cowBase).toFixed(2);
+          manualRateInput.placeholder = `Auto: ₹${manualRateInput.value}`;
+        }
+      });
+      
       // Farmer search
       searchInput.addEventListener("input", (e) => {
         farmerSearch = e.target.value;
