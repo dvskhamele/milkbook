@@ -357,10 +357,6 @@
           </div>
 
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
-            <!-- Drop zone hint -->
-            <div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #64748b; font-size: 12px; border: 2px dashed #e2e8f0; border-radius: 8px; margin: 8px;">
-              💡 Drag products here to reorder • Drag to right panel to add to cart
-            </div>
             <!-- Cow Products with multiple step cards -->
             <div class="p-card cow" onclick="tapAdd('Cow 1L', 64, 1)" data-qty="1" data-step="1" data-name="Cow 1L" data-price="64" data-unit="L" id="prod-cow-1l" draggable="true" ondragstart="handleDragStart(event)">
               <span class="emoji" style="font-size: 48px;">🐄</span>
@@ -2804,7 +2800,6 @@ function clearTodayHistory() {
         this.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', draggedCartIndex);
-        console.log('🛒 Drag started:', draggedCartIndex);
       }
 
       function handleCartDragOver(e) {
@@ -2836,13 +2831,8 @@ function clearTodayHistory() {
         e.preventDefault();
         e.stopPropagation();
         
-        console.log('🛒 handleCartDrop called');
-        console.log('  e.target:', e.target);
-        console.log('  draggedCartItem:', draggedCartItem);
-        
         // Find the row being dropped on
         const targetRow = e.target.closest('tr');
-        console.log('  targetRow:', targetRow);
         
         // Remove all border highlights
         document.querySelectorAll('#cartItems tr').forEach(tr => {
@@ -2851,14 +2841,12 @@ function clearTodayHistory() {
         });
         
         if (!targetRow || !draggedCartItem || targetRow === draggedCartItem) {
-          console.log('  Drop cancelled: invalid target');
           draggedCartItem = null;
           draggedCartIndex = null;
           return false;
         }
         
         const dropIndex = parseInt(targetRow.getAttribute('data-index'));
-        console.log('🛒 Drop:', draggedCartIndex, '->', dropIndex);
 
         // Reorder cart array
         const draggedItem = cart[draggedCartIndex];
@@ -2866,7 +2854,6 @@ function clearTodayHistory() {
         cart.splice(dropIndex, 0, draggedItem);
 
         updateUI();
-        showToast('Item reordered ✓');
         
         draggedCartItem = null;
         draggedCartIndex = null;
@@ -2889,23 +2876,17 @@ function clearTodayHistory() {
       // Drag product to cart (add to cart)
       function handleProductDragToCart(e) {
         e.preventDefault();
-        console.log('📦 handleProductDragToCart:', e.type);
         if (!draggedCard || !(draggedCard instanceof Element)) {
-          console.log('  Invalid draggedCard');
           return false;
         }
-        console.log('  draggedCard:', draggedCard);
         const onclick = draggedCard.getAttribute('onclick');
-        console.log('  onclick:', onclick);
         if (onclick) {
           const match = onclick.match(/tapAdd\('([^']+)',\s*([\d.]+),\s*([\d.]+)\)/);
-          console.log('  match:', match);
           if (match) {
             const name = match[1];
             const rate = parseFloat(match[2]);
             const step = parseFloat(match[3]);
             tapAdd(name, rate, step, step);
-            showToast(`${name} added to cart`);
           }
         }
         return false;
