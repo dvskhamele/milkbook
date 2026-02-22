@@ -2889,10 +2889,17 @@ function clearTodayHistory() {
       // Drag product to cart (add to cart)
       function handleProductDragToCart(e) {
         e.preventDefault();
-        const card = draggedCard;
-        if (card) {
-          const onclick = card.getAttribute('onclick');
+        console.log('📦 handleProductDragToCart:', e.type);
+        if (!draggedCard || !(draggedCard instanceof Element)) {
+          console.log('  Invalid draggedCard');
+          return false;
+        }
+        console.log('  draggedCard:', draggedCard);
+        const onclick = draggedCard.getAttribute('onclick');
+        console.log('  onclick:', onclick);
+        if (onclick) {
           const match = onclick.match(/tapAdd\('([^']+)',\s*([\d.]+),\s*([\d.]+)\)/);
+          console.log('  match:', match);
           if (match) {
             const name = match[1];
             const rate = parseFloat(match[2]);
