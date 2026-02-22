@@ -64,17 +64,45 @@
       .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
       .left-panel { overflow: hidden; }
       .right-panel { overflow-y: auto; }
-      
+
+      /* Tablet (768px - 1024px): Side by side with adjusted heights */
+      @media (min-width: 768px) and (max-width: 1024px) {
+        .core { grid-template-columns: 1fr 1fr; gap: 10px; height: calc(100vh - 120px); }
+        .panel { max-height: calc(100vh - 140px); }
+        .product-grid { grid-template-columns: repeat(4, 1fr) !important; }
+      }
+
+      /* Desktop (1024px+): Full side by side */
+      @media (min-width: 1025px) {
+        .core { grid-template-columns: 1fr 1fr; gap: 14px; }
+        .product-grid { grid-template-columns: repeat(5, 1fr) !important; }
+      }
+
       /* Mobile: Stack panels vertically with 100% width */
-      @media (max-width: 768px) {
-        .core { grid-template-columns: 1fr; gap: 10px; }
-        .panel { max-height: none; }
+      @media (max-width: 767px) {
+        .app { padding: 8px; gap: 8px; }
+        .core { grid-template-columns: 1fr; gap: 10px; height: auto; }
+        .panel { max-height: none; border-radius: 16px; }
         .left-panel { order: 1; }
         .right-panel { order: 2; }
+        .product-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 6px; }
+        .p-card { padding: 6px 4px; }
+        .p-card .emoji { font-size: 36px; }
+        .p-card div { font-size: 10px; }
+        .p-card small { font-size: 9px; }
+        .summary-box { margin: 10px; padding: 15px; }
+        .summary-box .amt { font-size: 32px; }
       }
-      
+
       @media (max-width: 480px) {
         .core { gap: 8px; }
+        .product-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        .p-card .emoji { font-size: 32px; }
+        .topbar { height: 32px; }
+        .logo-box { width: 20px; height: 20px; font-size: 12px; }
+        .brand-text .title { font-size: 10px; max-width: 60px; }
+        .brand-text .sub-text { display: none; }
+        .pillbtn { height: 26px; font-size: 9px; }
       }
       .panelHeader { padding: 12px 16px; border-bottom: 1px solid var(--line); font-weight: 1000; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
 

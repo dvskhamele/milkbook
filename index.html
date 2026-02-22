@@ -175,7 +175,7 @@
         transform: translateY(1px);
       }
 
-      /* CORE */
+      /* CORE - Desktop Default (Side by Side) */
       .core {
         height: 100%;
         display: grid !important;
@@ -186,8 +186,26 @@
         width: 100%;
       }
 
-      /* Tablet-first: Side by side on tablets and up */
-      @media (min-width: 769px) {
+      /* Tablet (768px - 1024px): Side by side with adjusted heights */
+      @media (min-width: 768px) and (max-width: 1024px) {
+        .core {
+          grid-template-columns: 1fr 1fr !important;
+          gap: 10px;
+        }
+        .panel {
+          max-height: calc(100vh - 160px);
+          overflow-y: auto;
+        }
+        .actionBody {
+          max-height: calc(100vh - 120px);
+        }
+        .trustBody {
+          max-height: calc(100vh - 160px);
+        }
+      }
+
+      /* Desktop (1024px+): Full side by side */
+      @media (min-width: 1025px) {
         .core {
           grid-template-columns: 1fr 1fr !important;
         }
@@ -197,15 +215,24 @@
         }
       }
 
-      /* Mobile: Stack panels vertically on small screens */
-      @media (max-width: 768px) {
+      /* Mobile: Stack panels vertically (portrait) */
+      @media (max-width: 767px) {
+        .app {
+          padding: 8px;
+          gap: 10px;
+          grid-template-rows: auto 1fr auto;
+        }
         .core {
           grid-template-columns: 1fr !important;
           grid-template-rows: auto auto;
-          overflow-y: auto;
+          overflow-y: visible;
+          height: auto;
+          gap: 10px;
         }
         .panel {
           max-height: none;
+          height: auto;
+          border-radius: 16px;
         }
         .panelHeader {
           flex-wrap: wrap;
@@ -221,6 +248,56 @@
         }
         #farmerCount {
           order: 3;
+        }
+        .actionBody {
+          max-height: none;
+          overflow-y: visible;
+          padding-right: 4px;
+        }
+        .trustBody {
+          overflow-y: visible;
+          max-height: none;
+        }
+        /* Compact inputs on mobile */
+        .control {
+          padding: 8px;
+        }
+        .numBig input {
+          font-size: 24px;
+        }
+        .amountBox {
+          padding: 15px;
+        }
+        .amountBox .amt {
+          font-size: 42px;
+        }
+        /* Bottom buttons full width on mobile */
+        .bottom {
+          grid-template-columns: 1fr !important;
+          gap: 8px;
+          height: auto;
+        }
+        .panicBtn {
+          height: 50px;
+          font-size: 16px;
+        }
+      }
+
+      /* Extra small mobile (320px - 480px) */
+      @media (max-width: 480px) {
+        .topbar {
+          padding: 6px 8px;
+        }
+        .brand .title {
+          font-size: 14px;
+        }
+        .pillbtn {
+          height: 38px;
+          padding: 0 10px;
+          font-size: 11px;
+        }
+        .farmerGrid {
+          grid-template-columns: repeat(2, 1fr) !important;
         }
       }
 
