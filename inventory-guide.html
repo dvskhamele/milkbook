@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Guide - MilkBook POS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        .guide-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .section h2 {
+            color: #1e40af;
+            font-size: 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section h3 {
+            color: #1e293b;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+        }
+        .workflow-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-left: 4px solid #2563eb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+        .example-box {
+            background: #f0fdf4;
+            border: 2px solid #16a34a;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        .example-box code {
+            display: block;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            margin: 8px 0;
+        }
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+        .formula {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        ul li {
+            padding: 8px 0;
+            padding-left: 28px;
+            position: relative;
+        }
+        ul li::before {
+            content: '✅';
+            position: absolute;
+            left: 0;
+        }
+        .checklist li::before {
+            content: '☐';
+            color: #2563eb;
+            font-weight: bold;
+        }
+        @media print {
+            .btn-grid { display: none; }
+            body { background: white; }
+            .section { box-shadow: none; border: 1px solid #e2e8f0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <!-- Header -->
+        <div class="section" style="text-align: center; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white;">
+            <h1 style="font-size: 36px; margin-bottom: 8px;">📦 Store Inventory Guide</h1>
+            <p style="font-size: 18px; opacity: 0.9;">Complete workflow for tracking purchases, sales, stock & profit</p>
+            <p style="font-size: 14px; opacity: 0.8; margin-top: 16px;">Created for Hala Asaad</p>
+        </div>
+
+        <!-- Quick Access Buttons -->
+        <div class="btn-grid">
+            <a href="inventory.html" class="btn">
+                <span class="material-symbols-outlined text-blue-600">inventory_2</span>
+                <div>
+                    <div>Inventory</div>
+                    <div style="font-size: 12px; font-weight: 400; color: #64748b;">Record purchases</div>
+                </div>
+            </a>
+            <a href="collection.html" class="btn">
+                <span class="material-symbols-outlined text-green-600">water_drop</span>
+                <div>
+                    <div>Collection</div>
+                    <div style="font-size: 12px; font-weight: 400; color: #64748b;">Milk + products</div>
+                </div>
+            </a>
+            <a href="pos-demo.html" class="btn">
+                <span class="material-symbols-outlined text-purple-600">point_of_sale</span>
+                <div>
+                    <div>POS</div>
+                    <div style="font-size: 12px; font-weight: 400; color: #64748b;">Sell products</div>
+                </div>
+            </a>
+            <a href="stock-profit-report.html" class="btn">
+                <span class="material-symbols-outlined text-amber-600">trending_up</span>
+                <div>
+                    <div>Stock Report</div>
+                    <div style="font-size: 12px; font-weight: 400; color: #64748b;">View profit</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- What You Need -->
+        <div class="section">
+            <h2>
+                <span class="material-symbols-outlined">target</span>
+                What Store Owners Need
+            </h2>
+            <ul>
+                <li><strong>Enter products they bought</strong> (quantity + purchase price)</li>
+                <li><strong>Track what they sold</strong> (quantity + selling price)</li>
+                <li><strong>Know current stock</strong> (what's left in shop)</li>
+                <li><strong>Calculate profit</strong> (selling price - purchase price)</li>
+            </ul>
+        </div>
+
+        <!-- Complete Workflow -->
+        <div class="section">
+            <h2>
+                <span class="material-symbols-outlined">repeat</span>
+                Complete Workflow
+            </h2>
+            
+            <div class="workflow-box">
+                <h3 style="margin-top: 0;">1️⃣ Purchase Products</h3>
+                <p>Go to <strong>Inventory Page</strong> → Enter product details</p>
+                <div class="example-box">
+                    <strong>Example:</strong>
+                    <code>Product: Biscuits
+Quantity: 10 boxes
+Purchase Price: ₹50/box
+Total: ₹500
+
+→ Stock: +10 boxes
+→ Cost: ₹50/box</code>
+                </div>
+            </div>
+
+            <div class="workflow-box">
+                <h3 style="margin-top: 0;">2️⃣ Collect Products (Optional)</h3>
+                <p>Go to <strong>Collection Page</strong> → Record milk OR other products</p>
+                <div class="example-box">
+                    <strong>Example:</strong>
+                    <code>Milk: 50L @ ₹60/L = ₹3,000
+OR
+Paneer: 5kg @ ₹300/kg = ₹1,500
+
+→ Stock: +50L milk OR +5kg paneer</code>
+                </div>
+            </div>
+
+            <div class="workflow-box">
+                <h3 style="margin-top: 0;">3️⃣ Convert Products (Optional)</h3>
+                <p>Milk → Paneer/Ghee/etc.</p>
+                <div class="example-box">
+                    <strong>Example:</strong>
+                    <code>10L milk → 1kg paneer
+
+→ Milk stock: -10L
+→ Paneer stock: +1kg</code>
+                </div>
+            </div>
+
+            <div class="workflow-box">
+                <h3 style="margin-top: 0;">4️⃣ Sell Products</h3>
+                <p>Go to <strong>POS Page</strong> → Click product → Auto-deducts stock</p>
+                <div class="example-box">
+                    <strong>Example:</strong>
+                    <code>Sold: 3 boxes biscuits @ ₹70
+Total: ₹210
+
+→ Stock: -3 boxes (auto-deducted!)
+→ Revenue: ₹210
+→ Profit: ₹60 (₹20/box × 3)</code>
+                </div>
+            </div>
+
+            <div class="workflow-box">
+                <h3 style="margin-top: 0;">5️⃣ View Reports</h3>
+                <p>Go to <strong>Stock & Profit Report</strong> → See everything</p>
+                <div class="example-box">
+                    <strong>Report Shows:</strong>
+                    <code>Purchased: 10 boxes @ ₹50 = ₹500
+Sold: 3 boxes @ ₹70 = ₹210
+In Stock: 7 boxes (₹350 value)
+Profit: ₹60 (28.6% margin)</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Formulas -->
+        <div class="section">
+            <h2>
+                <span class="material-symbols-outlined">calculate</span>
+                Key Formulas
+            </h2>
+            
+            <div class="formula">
+                <strong>In Stock</strong> = Purchased Quantity - Sold Quantity
+            </div>
+            
+            <div class="formula">
+                <strong>Stock Value</strong> = In Stock × Purchase Price
+            </div>
+            
+            <div class="formula">
+                <strong>Profit</strong> = (Sold Quantity × Sell Price) - (Sold Quantity × Purchase Price)
+            </div>
+            
+            <div class="formula">
+                <strong>Profit Margin %</strong> = (Profit / Revenue) × 100
+            </div>
+        </div>
+
+        <!-- Daily Checklist -->
+        <div class="section">
+            <h2>
+                <span class="material-symbols-outlined">task</span>
+                Daily Checklist
+            </h2>
+            <ul class="checklist">
+                <li>Morning: Check Stock Report → See what's low</li>
+                <li>Purchase: Go to Inventory → Enter new stock</li>
+                <li>During Day: Use POS → Sell products (stock auto-deducts)</li>
+                <li>Evening: Check Stock Report → See profit & remaining stock</li>
+                <li>Weekly: Export report for accountant (CSV)</li>
+                <li>Monthly: Review top profit products</li>
+            </ul>
+        </div>
+
+        <!-- Report Example -->
+        <div class="section">
+            <h2>
+                <span class="material-symbols-outlined">receipt_long</span>
+                What Report Shows
+            </h2>
+            
+            <div class="example-box">
+                <strong>Product: Biscuits</strong>
+                <code>├─ Purchased: 10 boxes (what you bought)
+├─ Sold: 3 boxes (what customers bought)
+├─ In Stock: 7 boxes (what's left in shop)
+├─ Buy Price: ₹50 (what you paid)
+├─ Sell Price: ₹70 (what you charged)
+├─ Profit: ₹60 (money earned)
+└─ Status: ✅ In Stock</code>
+            </div>
+
+            <h3>Stock Status Colors:</h3>
+            <ul>
+                <li>🟢 <strong>In Stock</strong> = More than 10 units</li>
+                <li>🟡 <strong>Low Stock</strong> = Less than 10 units (reorder soon!)</li>
+                <li>🔴 <strong>Out of Stock</strong> = 0 units (reorder now!)</li>
+            </ul>
+        </div>
+
+        <!-- Data Integration -->
+        <div class="section">
+            <h2>
+                <span class="material-symbols-outlined">sync</span>
+                How Data Works
+            </h2>
+            <p><strong>Good news:</strong> It doesn't matter where you enter data!</p>
+            <p>The Stock Report automatically reads from ALL sources:</p>
+            <ul>
+                <li>Inventory page purchases</li>
+                <li>Collection page entries</li>
+                <li>POS page sales</li>
+                <li>Any other sales records</li>
+            </ul>
+            <div class="workflow-box">
+                <strong>Example:</strong> If you enter biscuits in Inventory and sell them in POS, the report will show:
+                <code>Purchased (from Inventory) - Sold (from POS) = In Stock + Profit ✅</code>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="section" style="text-align: center; background: #f8fafc;">
+            <p style="color: #64748b; margin-bottom: 16px;">
+                <strong>Need Help?</strong> Each page has simple forms - just fill in the blanks!
+            </p>
+            <p style="font-size: 12px; color: #94a3b8;">
+                Last updated: February 23, 2026 | MilkBook POS System
+            </p>
+        </div>
+    </div>
+</body>
+</html>
