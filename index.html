@@ -1649,9 +1649,10 @@
                       <input
                         id="manualRateInput"
                         inputmode="decimal"
-                        placeholder="Rate/L"
+                        placeholder="Auto: ₹64.00"
+                        style="min-width: 80px;"
                       />
-                      <button id="manualRateApply">✔️</button>
+                      <button id="manualRateApply" title="Apply this rate">✔️</button>
                     </div>
                   </div>
                 </div>
@@ -2562,10 +2563,13 @@ function playSuccessSound() {
   if (manualRateInput && document.activeElement !== manualRateInput) {
     if (!manualRate || manualRate === 0) {
       // Auto mode: Current rate se pre-fill
-      manualRateInput.value = settings.cowBase ? Number(settings.cowBase).toFixed(2) : "";
+      const currentRate = settings.cowBase ? Number(settings.cowBase).toFixed(2) : "0.00";
+      manualRateInput.value = currentRate;
+      manualRateInput.placeholder = `Auto: ₹${currentRate}`;
     } else {
       // Manual mode: User ka entered value dikhao
       manualRateInput.value = manualRate.toFixed(2);
+      manualRateInput.placeholder = `Manual: ₹${manualRate.toFixed(2)}`;
     }
   }
 }
@@ -3109,13 +3113,17 @@ return `
         rateTypeLabel.textContent = "Rate: Auto";
         // Auto mode: Pre-fill with current base rate
         if (manualRateInput) {
-            manualRateInput.value = settings.cowBase ? Number(settings.cowBase).toFixed(2) : "";
+            const currentRate = settings.cowBase ? Number(settings.cowBase).toFixed(2) : "0.00";
+            manualRateInput.value = currentRate;
+            manualRateInput.placeholder = `Auto: ₹${currentRate}`;
         }
     } else {
         rateTypeLabel.textContent = "Rate: Manual";
         // Manual mode: Show user's entered value
         if (manualRateInput) {
-            manualRateInput.value = manualRate.toFixed(2);
+            const manualVal = manualRate.toFixed(2);
+            manualRateInput.value = manualVal;
+            manualRateInput.placeholder = `Manual: ₹${manualVal}`;
         }
     }
     manualRateRow.style.display = "flex";
@@ -3649,13 +3657,30 @@ function showAuditProof(entryId) {
        * OVERLAYS HELPERS    *
        ***********************/
       function openOverlay(id) {
-        document.getElementById(id).style.display = "flex";
+        const overlay = document.getElementById(id);
+        if (overlay) {
+          overlay.style.display = "flex";
+          // Focus first input in the overlay
+          const firstInput = overlay.querySelector('input, select, textarea');
+          if (firstInput) setTimeout(() => firstInput.focus(), 100);
+        }
         if (id === "overlayHistory") renderHistory();
         if (id === "overlayLeader") renderLeader();
       }
       function closeOverlay(id) {
-        document.getElementById(id).style.display = "none";
+        const overlay = document.getElementById(id);
+        if (overlay) {
+          overlay.style.display = "none";
+        }
       }
+      // Close overlay when clicking outside modal
+      document.querySelectorAll('.overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) {
+            overlay.style.display = "none";
+          }
+        });
+      });
 
       /***********************
        * EVENTS              *
