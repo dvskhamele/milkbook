@@ -254,46 +254,36 @@
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
       
-      /* Strict card sizing based on step value */
-      .p-card[data-step="0.25"] { min-height: 75px; }
-      .p-card[data-step="0.25"] .emoji { font-size: 28px; }
-      .p-card[data-step="0.25"] div { font-size: 9px; }
-      .p-card[data-step="0.25"] small { font-size: 8px; }
+      /* Card sizing based on step RANK (not absolute value) */
+      /* Rank 1 (smallest step) */
+      .p-card[data-rank="1"] { min-height: 75px; }
+      .p-card[data-rank="1"] .emoji { font-size: 28px; }
+      .p-card[data-rank="1"] div { font-size: 9px; }
+      .p-card[data-rank="1"] small { font-size: 8px; }
       
-      .p-card[data-step="0.5"] { min-height: 80px; }
-      .p-card[data-step="0.5"] .emoji { font-size: 30px; }
-      .p-card[data-step="0.5"] div { font-size: 9px; }
-      .p-card[data-step="0.5"] small { font-size: 8px; }
+      /* Rank 2 */
+      .p-card[data-rank="2"] { min-height: 82px; }
+      .p-card[data-rank="2"] .emoji { font-size: 32px; }
+      .p-card[data-rank="2"] div { font-size: 10px; }
+      .p-card[data-rank="2"] small { font-size: 8px; }
       
-      .p-card[data-step="1"] { min-height: 90px; }
-      .p-card[data-step="1"] .emoji { font-size: 36px; }
-      .p-card[data-step="1"] div { font-size: 10px; }
-      .p-card[data-step="1"] small { font-size: 9px; }
+      /* Rank 3 */
+      .p-card[data-rank="3"] { min-height: 90px; }
+      .p-card[data-rank="3"] .emoji { font-size: 36px; }
+      .p-card[data-rank="3"] div { font-size: 10px; }
+      .p-card[data-rank="3"] small { font-size: 9px; }
       
-      .p-card[data-step="2"] { min-height: 95px; }
-      .p-card[data-step="2"] .emoji { font-size: 42px; }
-      .p-card[data-step="2"] div { font-size: 11px; }
-      .p-card[data-step="2"] small { font-size: 9px; }
+      /* Rank 4 */
+      .p-card[data-rank="4"] { min-height: 98px; }
+      .p-card[data-rank="4"] .emoji { font-size: 42px; }
+      .p-card[data-rank="4"] div { font-size: 11px; }
+      .p-card[data-rank="4"] small { font-size: 9px; }
       
-      .p-card[data-step="5"] { min-height: 100px; }
-      .p-card[data-step="5"] .emoji { font-size: 46px; }
-      .p-card[data-step="5"] div { font-size: 11px; }
-      .p-card[data-step="5"] small { font-size: 10px; }
-      
-      .p-card[data-step="10"] { min-height: 105px; }
-      .p-card[data-step="10"] .emoji { font-size: 50px; }
-      .p-card[data-step="10"] div { font-size: 12px; }
-      .p-card[data-step="10"] small { font-size: 10px; }
-      
-      .p-card[data-step="20"] { min-height: 110px; }
-      .p-card[data-step="20"] .emoji { font-size: 54px; }
-      .p-card[data-step="20"] div { font-size: 12px; }
-      .p-card[data-step="20"] small { font-size: 10px; }
-      
-      .p-card[data-step="50"] { min-height: 115px; }
-      .p-card[data-step="50"] .emoji { font-size: 58px; }
-      .p-card[data-step="50"] div { font-size: 12px; }
-      .p-card[data-step="50"] small { font-size: 10px; }
+      /* Rank 5 (largest step) */
+      .p-card[data-rank="5"] { min-height: 106px; }
+      .p-card[data-rank="5"] .emoji { font-size: 48px; }
+      .p-card[data-rank="5"] div { font-size: 11px; }
+      .p-card[data-rank="5"] small { font-size: 10px; }
 
       .qty-bar { display: flex; gap: 10px; padding: 12px 15px; background: #f8fafc; border-top: 1px solid var(--line); }
       .qty-btn { flex: 1; height: 45px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-weight: 1000; cursor: pointer; }
@@ -3064,15 +3054,26 @@ function addNewProductFromModal() {
 
   const grid = el("productGrid");
   const addCardBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
+  
+  // Calculate ranks for new steps
+  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  const allSteps = [...new Set([...customProducts.map(p => p.step), ...steps.filter(s => s !== 0)])].sort((a, b) => a - b);
+  const stepToRank = {};
+  const rankStep = Math.ceil(allSteps.length / 5);
+  allSteps.forEach((step, idx) => {
+    stepToRank[step] = Math.min(5, Math.floor(idx / rankStep) + 1);
+  });
 
   // Create a card for each non-zero step
   steps.forEach(step => {
     if (step === 0) return; // Skip zero steps
 
+    const rank = stepToRank[step] || 3;
     const newCard = document.createElement('div');
     newCard.className = 'p-card';
     newCard.setAttribute('data-qty', '1');
     newCard.setAttribute('data-step', step);
+    newCard.setAttribute('data-rank', rank);
     newCard.setAttribute('draggable', 'true');
     newCard.ondragstart = handleDragStart;
     newCard.onclick = function() { tapAdd(name, price, step); };
@@ -3093,7 +3094,6 @@ function addNewProductFromModal() {
   });
 
   // Save to localStorage
-  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
   steps.forEach(step => {
     if (step !== 0) {
       customProducts.push({name, price, unit, emoji, step});
@@ -3254,13 +3254,23 @@ function loadCustomProducts() {
       return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
     });
   }
+  
+  // Calculate step ranks (1-5 based on relative step sizes)
+  const allSteps = [...new Set(customProducts.map(p => p.step))].sort((a, b) => a - b);
+  const stepToRank = {};
+  const rankStep = Math.ceil(allSteps.length / 5); // Divide into 5 ranks
+  allSteps.forEach((step, idx) => {
+    stepToRank[step] = Math.min(5, Math.floor(idx / rankStep) + 1);
+  });
 
   products.forEach(p => {
     p.steps.forEach(step => {
+      const rank = stepToRank[step] || 3; // Default to rank 3
       const newCard = document.createElement('div');
       newCard.className = 'p-card';
       newCard.setAttribute('data-qty', '1');
       newCard.setAttribute('data-step', step || 1);
+      newCard.setAttribute('data-rank', rank);
       newCard.setAttribute('draggable', 'true');
       newCard.ondragstart = handleDragStart;
       newCard.onclick = function() { tapAdd(p.name, p.price, step || 1); };
