@@ -3198,26 +3198,55 @@ function loadCustomProducts() {
   const addCardBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
   if (!addCardBtn) return;
 
+  // Group products by name
+  const productGroups = {};
   customProducts.forEach(p => {
-    const newCard = document.createElement('div');
-    newCard.className = 'p-card';
-    newCard.setAttribute('data-qty', '1');
-    newCard.setAttribute('data-step', p.step || 1);
-    newCard.setAttribute('draggable', 'true');
-    newCard.ondragstart = handleDragStart;
-    newCard.onclick = function() { tapAdd(p.name, p.price, p.step || 1); };
+    if (!productGroups[p.name]) {
+      productGroups[p.name] = {
+        name: p.name,
+        emoji: p.emoji || '📦',
+        price: p.price,
+        unit: p.unit || 'unit',
+        steps: []
+      };
+    }
+    productGroups[p.name].steps.push(p.step);
+  });
+  
+  let products = Object.values(productGroups);
+  
+  // Apply saved product order if exists
+  const productOrder = JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]');
+  if (productOrder.length > 0) {
+    products.sort((a, b) => {
+      const indexA = productOrder.indexOf(a.name);
+      const indexB = productOrder.indexOf(b.name);
+      return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+    });
+  }
 
-    const stepDisplay = (p.step || 1) < 0 ? `(${p.step}x)` : `(${p.step}x)`;
-    const nameDisplay = (p.step || 1) < 0 ? `${p.name} ${stepDisplay}` : `${p.name} ${stepDisplay}`;
+  products.forEach(p => {
+    p.steps.forEach(step => {
+      const newCard = document.createElement('div');
+      newCard.className = 'p-card';
+      newCard.setAttribute('data-qty', '1');
+      newCard.setAttribute('data-step', step || 1);
+      newCard.setAttribute('draggable', 'true');
+      newCard.ondragstart = handleDragStart;
+      newCard.onclick = function() { tapAdd(p.name, p.price, step || 1); };
 
-    newCard.innerHTML = `
-      <span class="emoji" style="font-size: 48px;">${p.emoji || '📦'}</span>
-      <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">${nameDisplay}</div>
-      <small style="font-size: 10px; margin-top: 2px;">₹${p.price}/${p.unit || 'unit'}</small>
-      <button class="edit-prod-btn" onclick="event.stopPropagation(); editProductCard(this)" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
-      <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-    `;
-    grid.insertBefore(newCard, addCardBtn);
+      const stepDisplay = (step || 1) < 0 ? `(${step}x)` : `(${step}x)`;
+      const nameDisplay = (step || 1) < 0 ? `${p.name} ${stepDisplay}` : `${p.name} ${stepDisplay}`;
+
+      newCard.innerHTML = `
+        <span class="emoji" style="font-size: 48px;">${p.emoji || '📦'}</span>
+        <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">${nameDisplay}</div>
+        <small style="font-size: 10px; margin-top: 2px;">₹${p.price}/${p.unit || 'unit'}</small>
+        <button class="edit-prod-btn" onclick="event.stopPropagation(); editProductCard(this)" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
+        <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
+      `;
+      grid.insertBefore(newCard, addCardBtn);
+    });
   });
 }
 
@@ -3262,7 +3291,18 @@ function openEditInventory() {
     productGroups[p.name].steps.push(p.step);
   });
   
-  const products = Object.values(productGroups);
+  let products = Object.values(productGroups);
+  
+  // Apply saved product order if exists
+  const productOrder = JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]');
+  if (productOrder.length > 0) {
+    products.sort((a, b) => {
+      const indexA = productOrder.indexOf(a.name);
+      const indexB = productOrder.indexOf(b.name);
+      // If not in order, put at end
+      return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+    });
+  }
 
   if (products.length === 0) {
     list.innerHTML = `
@@ -3278,8 +3318,9 @@ function openEditInventory() {
   }
 
   list.innerHTML = products.map((p, i) => `
-    <div style="padding:12px; background:#f8fafc; border-radius:10px; border:1px solid var(--line);">
-      <div style="display:grid; grid-template-columns: 36px 1fr 70px 55px; gap:8px; align-items:center; margin-bottom:10px;">
+    <div style="padding:12px; background:#f8fafc; border-radius:10px; border:1px solid var(--line);" draggable="true" ondragstart="handleProductOrderDragStart(event)" ondragover="handleProductOrderDragOver(event)" ondrop="handleProductOrderDrop(event)" data-index="${i}">
+      <div style="display:grid; grid-template-columns: 30px 36px 1fr 70px 55px; gap:8px; align-items:center; margin-bottom:10px;">
+        <div style="font-size:18px; color:#94a3b8; cursor:grab;" title="Drag to reorder">⋮⋮</div>
         <div style="font-size:20px;">${p.emoji}</div>
         <input type="text" id="editName_${i}" value="${p.name}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; font-size:12px; min-width:0;" />
         <input type="number" id="editRate_${i}" value="${p.rate}" style="padding:8px; border:2px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:center; font-size:12px;" />
@@ -3376,7 +3417,83 @@ function removeProduct(productName) {
   setTimeout(() => location.reload(), 1000);
 }
 
-// Update booth selection
+// Drag and drop for product order in Edit Products modal
+let draggedProductIndex = null;
+
+function handleProductOrderDragStart(e) {
+  draggedProductIndex = parseInt(this.getAttribute('data-index'));
+  this.style.opacity = '0.4';
+  this.style.background = '#e0f2fe';
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleProductOrderDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  this.style.borderTop = '2px solid #3b82f6';
+  return false;
+}
+
+function handleProductOrderDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  const dropIndex = parseInt(this.getAttribute('data-index'));
+  
+  // Remove border highlights
+  document.querySelectorAll('#editInventoryList > div').forEach(div => {
+    div.style.borderTop = '';
+  });
+  
+  if (draggedProductIndex === null || draggedProductIndex === dropIndex) {
+    this.style.opacity = '1';
+    this.style.background = '#f8fafc';
+    return false;
+  }
+  
+  // Get current product order from localStorage
+  let productOrder = JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]');
+  
+  // Get all products from localStorage
+  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  
+  // If productOrder is empty, initialize it with current order
+  if (productOrder.length === 0) {
+    // Group products by name
+    const productGroups = {};
+    customProducts.forEach(p => {
+      if (!productGroups[p.name]) {
+        productGroups[p.name] = {
+          name: p.name,
+          emoji: p.emoji || '📦',
+          rate: p.price,
+          unit: p.unit || 'unit',
+          steps: []
+        };
+      }
+      productGroups[p.name].steps.push(p.step);
+    });
+    productOrder = Object.keys(productGroups);
+  }
+  
+  // Reorder
+  const draggedName = productOrder[draggedProductIndex];
+  productOrder.splice(draggedProductIndex, 1);
+  productOrder.splice(dropIndex, 0, draggedName);
+  
+  // Save new order
+  localStorage.setItem('mr_pos_product_order', JSON.stringify(productOrder));
+  
+  showToast('Product order updated ✅');
+  
+  // Reload modal to show new order
+  setTimeout(() => {
+    openEditInventory();
+  }, 300);
+  
+  return false;
+}
+
 function updateBooth() {
   const booth = el("boothSelect").value;
   const boothNames = {
