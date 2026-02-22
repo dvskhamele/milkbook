@@ -867,21 +867,155 @@
     <script>
       const el = (id) => document.getElementById(id);
       let cart = [], total = 0, exportHistory = [], currentLang = 'en';
-      let heldCarts = JSON.parse(localStorage.getItem('mr_held_carts') || '[]'); // Hold functionality
-      let lastRate = parseFloat(localStorage.getItem('mr_last_rate') || '64'); // Save/retrieve last rate
+      let heldCarts = JSON.parse(localStorage.getItem('mr_held_carts') || '[]');
+      let lastRate = parseFloat(localStorage.getItem('mr_last_rate') || '64');
       
+      // ============================================
+      // ROBUST DATA PERSISTENCE WITH AUDIT TRAIL
+      // ============================================
+      
+      // Generate unique session ID
+      const SESSION_ID = Date.now().toString(36) + Math.random().toString(36).substr(2);
+      
+      // Create data signature (simple hash for integrity check)
+      function createSignature(data) {
+        return btoa(unescape(encodeURIComponent(JSON.stringify(data)))).substr(0, 16);
+      }
+      
+      // Save data with audit trail
+      function saveData(key, data, action = 'update') {
+        try {
+          const timestamp = new Date().toISOString();
+          const signature = createSignature(data);
+          
+          // Save main data
+          const wrappedData = {
+            data: data,
+            signature: signature,
+            timestamp: timestamp,
+            sessionId: SESSION_ID
+          };
+          localStorage.setItem(key, JSON.stringify(wrappedData));
+          
+          // Add to audit trail
+          addToAuditTrail(key, action, signature);
+          
+          // Create backup
+          createBackup(key, wrappedData);
+          
+          console.log(`💾 [${timestamp}] Saved ${key} (${action})`);
+          return true;
+        } catch (error) {
+          console.error('❌ Save failed:', error);
+          return false;
+        }
+      }
+      
+      // Load data with signature verification
+      function loadData(key, defaultValue = null) {
+        try {
+          const wrapped = JSON.parse(localStorage.getItem(key) || 'null');
+          if (!wrapped || !wrapped.data) return defaultValue;
+          
+          // Verify signature
+          const expectedSig = createSignature(wrapped.data);
+          if (wrapped.signature !== expectedSig) {
+            console.warn('⚠️ Data signature mismatch for', key, '- attempting recovery');
+            return recoverData(key, defaultValue);
+          }
+          
+          console.log(`✅ [${wrapped.timestamp}] Loaded ${key}`);
+          return wrapped.data;
+        } catch (error) {
+          console.error('❌ Load failed:', error);
+          return recoverData(key, defaultValue);
+        }
+      }
+      
+      // Recovery from backup
+      function recoverData(key, defaultValue) {
+        const backup = localStorage.getItem(key + '_backup');
+        if (backup) {
+          try {
+            const wrapped = JSON.parse(backup);
+            console.log('🔄 Recovered from backup:', key);
+            return wrapped.data;
+          } catch (e) {
+            console.error('❌ Backup recovery failed:', key);
+          }
+        }
+        return defaultValue;
+      }
+      
+      // Create backup
+      function createBackup(key, data) {
+        localStorage.setItem(key + '_backup', JSON.stringify(data));
+      }
+      
+      // Audit trail
+      function addToAuditTrail(key, action, signature) {
+        const trail = JSON.parse(localStorage.getItem('mr_audit_trail') || '[]');
+        trail.push({
+          timestamp: new Date().toISOString(),
+          key: key,
+          action: action,
+          signature: signature,
+          sessionId: SESSION_ID
+        });
+        // Keep last 1000 entries
+        if (trail.length > 1000) trail.splice(0, trail.length - 1000);
+        localStorage.setItem('mr_audit_trail', JSON.stringify(trail));
+      }
+      
+      // Auto-save timer (every 5 seconds)
+      let autoSaveTimer = null;
+      function scheduleAutoSave() {
+        if (autoSaveTimer) clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(() => {
+          saveAllData();
+        }, 5000);
+      }
+      
+      // Save all data
+      function saveAllData() {
+        saveData('mr_pos_cart', cart, 'cart_update');
+        saveData('mr_pos_customers', customers, 'customers_update');
+        saveData('mr_pos_history', exportHistory, 'history_update');
+        saveData('mr_pos_custom_products', JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]'), 'products_update');
+        saveData('mr_pos_product_order', JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]'), 'order_update');
+        console.log('💾 Auto-saved all data');
+      }
+      
+      // Save before unload (browser close/tab close)
+      window.addEventListener('beforeunload', () => {
+        saveAllData();
+      });
+      
+      // Periodic backup (every 30 seconds)
+      setInterval(saveAllData, 30000);
+      
+      // Show data status indicator
+      function showDataStatus() {
+        const auditTrail = JSON.parse(localStorage.getItem('mr_audit_trail') || '[]');
+        const lastEntry = auditTrail[auditTrail.length - 1];
+        if (lastEntry) {
+          const time = new Date(lastEntry.timestamp).toLocaleTimeString();
+          console.log(`🛡️ Data Status: ${auditTrail.length} audit entries | Last save: ${time}`);
+        }
+      }
+      
+      // Initialize data from robust storage
+      customers = loadData('mr_pos_customers', [
+        { name: "Rahul Sharma", lastOrder: "1.5L Cow Milk", rate: 64, qty: 1.5, type: "Retail", sub: 1.5 },
+        { name: "Amit DCS", lastOrder: "1kg Paneer", rate: 320, qty: 1, type: "PACS", sub: 2 }
+      ]);
+
       // Escape HTML to prevent XSS
       function escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
       }
-      
-      // Load data from LocalStorage taaki refresh par na ude
-let customers = JSON.parse(localStorage.getItem('mr_pos_customers')) || [
-    { name: "Rahul Sharma", lastOrder: "1.5L Cow Milk", rate: 64, qty: 1.5, type: "Retail", sub: 1.5 },
-    { name: "Amit DCS", lastOrder: "1kg Paneer", rate: 320, qty: 1, type: "PACS", sub: 2 }
-];
 
 
       // Logic: 4am-4pm Morning, 4pm-4am Evening
@@ -1863,25 +1997,25 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
       // adjustQty removed - use inline quantity editing instead
       function updateUI() {
         const tbody = el("cartItems"); tbody.innerHTML = ""; total = 0;
-        
+
         // Calculate purchase frequency for each item
         const purchaseCount = {};
         cart.forEach(item => {
           purchaseCount[item.name] = (purchaseCount[item.name] || 0) + (item.qty * item.rate);
         });
         const maxAmount = Math.max(...Object.values(purchaseCount), 1);
-        
+
         cart.forEach((i, index) => {
           const itemAmount = i.rate * i.qty;
           total += itemAmount;
-          
+
           // Calculate emoji size based on quantity (scale from 24px to 48px)
           const emojiSize = Math.min(48, Math.max(24, 24 + (i.qty * 4)));
-          
+
           // Calculate background darkness based on purchase amount (0-0.3 opacity)
           const bgOpacity = (purchaseCount[i.name] / maxAmount) * 0.3;
           const bgColor = `rgba(59, 130, 246, ${bgOpacity})`;
-          
+
           tbody.innerHTML += `<tr style="border-bottom:1px solid #f1f5f9; background:${bgColor};" draggable="true" ondragstart="handleCartDragStart(event)" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)" ondragend="handleCartDragEnd(event)" data-index="${index}">
             <td style="padding:8px 0;">
               <div style="display:flex; align-items:center; gap:8px;">
@@ -1925,7 +2059,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           // Only auto-update if field is empty OR if it matches the previous total
           const currentValue = parseFloat(paymentInput.value) || 0;
           const wasExactMatch = Math.abs(currentValue - (parseFloat(paymentInput.dataset.prevTotal) || 0)) < 0.01;
-          
+
           if (!paymentInput.value || wasExactMatch || currentValue === total) {
             paymentInput.value = total.toFixed(2);
           }
@@ -1939,6 +2073,9 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
 
         // Update product card quantity badges
         updateCardBadges();
+        
+        // Auto-save cart changes
+        scheduleAutoSave();
       }
       
       // Get emoji for product name
@@ -2871,7 +3008,19 @@ function clearTodayHistory() {
     loadHistoryOnStart();
     loadCustomProducts();
     loadCardOrder(); // Load saved card order
+    
+    // Load cart from robust storage
+    const savedCart = loadData('mr_pos_cart', []);
+    if (savedCart && savedCart.length > 0) {
+      cart = savedCart;
+      updateUI();
+      console.log('🔄 Restored cart from previous session');
+    }
+    
     setInterval(updateShift, 60000);
+    
+    // Show data status
+    showDataStatus();
     
     // ESC key closes all modals
     document.addEventListener('keydown', function(e) {
