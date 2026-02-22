@@ -99,6 +99,17 @@
       .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
       .left-panel { overflow: hidden; display: flex; flex-direction: column; }
       .right-panel { overflow-y: auto; display: flex; flex-direction: column; }
+      
+      /* Fixed Payment Section at Bottom */
+      .payment-section {
+        position: sticky;
+        bottom: 0;
+        background: var(--panel);
+        border-top: 2px solid var(--line);
+        padding: 10px 15px;
+        z-index: 10;
+        box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+      }
 
       /* Tablet (768px - 1024px): Side by side with adjusted heights */
       @media (min-width: 768px) and (max-width: 1024px) {
@@ -132,6 +143,20 @@
         /* Payment grid 2x2 on mobile */
         .pay-grid { grid-template-columns: 1fr 1fr !important; gap: 4px; padding: 0 6px 6px; }
         .pay-btn { height: 40px; font-size: 11px; }
+        /* Fixed payment section on mobile */
+        .payment-section {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: white;
+          border-top: 2px solid #e2e8f0;
+          padding: 10px;
+          z-index: 100;
+          box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+        }
+        /* Add padding to right panel to prevent content hiding behind fixed payment */
+        .right-panel { padding-bottom: 180px; }
       }
 
       @media (max-width: 480px) {
@@ -480,20 +505,20 @@
             <table class="recent-table"><tbody id="cartItems"></tbody></table>
           </div>
 
-          <!-- Payment Section -->
-          <div style="padding: 0 15px 10px;">
+          <!-- Fixed Payment Section -->
+          <div class="payment-section">
             <div style="font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 8px;">💰 Customer Paid</div>
-            <input type="number" id="paymentAmount" placeholder="Enter amount (₹)" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-weight: 700; font-size: 16px;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
+            <input type="number" id="paymentAmount" placeholder="Enter amount (₹)" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-weight: 700; font-size: 16px; box-sizing:border-box;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
             <div id="creditDisplay" style="font-size: 12px; color: #16a34a; font-weight: 700; margin-top: 8px; text-align: center;"></div>
-          </div>
 
-          <div class="pay-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px;">
-            <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534;" onclick="saveEntry('Cash')">CASH</button>
-            <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af;" onclick="saveEntry('UPI')">UPI</button>
-            <button class="pay-btn" style="background:#fef3c7; color:#92400e;" onclick="holdCart()">🟡 HOLD</button>
-            <button class="pay-btn" style="background:#f1f5f9; color:#475569;" onclick="showHeldCarts()">📋 <span id="heldCount">0</span></button>
+            <div class="pay-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-top: 10px;">
+              <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534;" onclick="saveEntry('Cash')">CASH</button>
+              <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af;" onclick="saveEntry('UPI')">UPI</button>
+              <button class="pay-btn" style="background:#fef3c7; color:#92400e;" onclick="holdCart()">🟡 HOLD</button>
+              <button class="pay-btn" style="background:#f1f5f9; color:#475569;" onclick="showHeldCarts()">📋 <span id="heldCount">0</span></button>
+            </div>
+            <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="width: 100%; margin-top: 6px;">LIKH LO (Credit)</button>
           </div>
-          <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="width: 100%; margin-top: 6px;">LIKH LO (Credit)</button>
         </div>
       </div>
     </div>
