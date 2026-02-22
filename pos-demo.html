@@ -218,6 +218,9 @@
       .p-card:active { transform: scale(0.95); }
       .p-card.selected { border: 2px solid #3b82f6 !important; background: #eff6ff !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transform: scale(1.05); }
       .p-card.focused { outline: 2px solid #3b82f6; outline-offset: 2px; }
+      .p-card[draggable="true"]:hover { cursor: grab; }
+      .p-card[draggable="true"]:active { cursor: grabbing; }
+      .p-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
       .p-card .emoji { font-size: 48px; margin-bottom: 4px; display: block; transition: all 0.2s; }
@@ -324,64 +327,64 @@
             <input type="text" id="productSearch" placeholder="🔍 Search products..." oninput="filterProducts(this.value)" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; font-weight: 600;" onclick="event.stopPropagation()" />
           </div>
 
-          <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0">
-            <!-- Cow Products -->
-            <div class="p-card cow" onclick="tapAdd('Cow 1L', 64, 1)" data-qty="1" data-step="1" data-name="Cow 1L" data-price="64" data-unit="L" id="prod-cow-1l">
+          <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+            <!-- Cow Products with multiple step cards -->
+            <div class="p-card cow" onclick="tapAdd('Cow 1L', 64, 1)" data-qty="1" data-step="1" data-name="Cow 1L" data-price="64" data-unit="L" id="prod-cow-1l" draggable="true" ondragstart="handleDragStart(event)">
               <span class="emoji" style="font-size: 48px;">🐄</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Cow 1L</div>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Cow 1L <span style="font-size:9px; color:#64748b;">(1x)</span></div>
               <small style="font-size: 10px; margin-top: 2px;">₹64</small>
               <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-cow-1l')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
             </div>
-            <div class="p-card cow" onclick="tapAdd('Cow 0.5L', 32, 0.5)" data-qty="0.5" data-step="0.5" data-name="Cow 0.5L" data-price="32" data-unit="L" id="prod-cow-05l">
+            <div class="p-card cow" onclick="tapAdd('Cow 0.5L', 32, 0.5)" data-qty="0.5" data-step="0.5" data-name="Cow 0.5L" data-price="32" data-unit="L" id="prod-cow-05l" draggable="true" ondragstart="handleDragStart(event)">
               <span class="emoji" style="font-size: 32px;">🐄</span>
-              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Cow 0.5L</div>
+              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Cow 0.5L <span style="font-size:9px; color:#64748b;">(0.5x)</span></div>
               <small style="font-size: 10px; margin-top: 2px;">₹32</small>
               <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-cow-05l')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
             </div>
 
-            <!-- Buffalo Products -->
-            <div class="p-card buff" onclick="tapAdd('Buff 2L', 200, 2)" data-qty="2" data-step="2" data-name="Buff 2L" data-price="200" data-unit="L" id="prod-buff-2l">
+            <!-- Buffalo Products with multiple step cards -->
+            <div class="p-card buff" onclick="tapAdd('Buff 2L', 200, 2)" data-qty="2" data-step="2" data-name="Buff 2L" data-price="200" data-unit="L" id="prod-buff-2l" draggable="true" ondragstart="handleDragStart(event)">
               <span class="emoji" style="font-size: 56px;">🐃</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 2L</div>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 2L <span style="font-size:9px; color:#64748b;">(2x)</span></div>
               <small style="font-size: 10px; margin-top: 2px;">₹200</small>
               <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-buff-2l')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
             </div>
-            <div class="p-card buff" onclick="tapAdd('Buff 1L', 100, 1)" data-qty="1" data-step="1" data-name="Buff 1L" data-price="100" data-unit="L" id="prod-buff-1l">
+            <div class="p-card buff" onclick="tapAdd('Buff 1L', 100, 1)" data-qty="1" data-step="1" data-name="Buff 1L" data-price="100" data-unit="L" id="prod-buff-1l" draggable="true" ondragstart="handleDragStart(event)">
               <span class="emoji" style="font-size: 48px;">🐃</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 1L</div>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Buff 1L <span style="font-size:9px; color:#64748b;">(1x)</span></div>
               <small style="font-size: 10px; margin-top: 2px;">₹100</small>
               <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-buff-1l')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
             </div>
-            <div class="p-card buff" onclick="tapAdd('Buff 0.5L', 50, 0.5)" data-qty="0.5" data-step="0.5" data-name="Buff 0.5L" data-price="50" data-unit="L" id="prod-buff-05l">
+            <div class="p-card buff" onclick="tapAdd('Buff 0.5L', 50, 0.5)" data-qty="0.5" data-step="0.5" data-name="Buff 0.5L" data-price="50" data-unit="L" id="prod-buff-05l" draggable="true" ondragstart="handleDragStart(event)">
               <span class="emoji" style="font-size: 32px;">🐃</span>
-              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Buff 0.5L</div>
+              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Buff 0.5L <span style="font-size:9px; color:#64748b;">(0.5x)</span></div>
               <small style="font-size: 10px; margin-top: 2px;">₹50</small>
               <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-buff-05l')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
             </div>
 
             <!-- Other Products -->
-            <div class="p-card" style="border-left:3px solid #fbbf24" onclick="tapAdd('Paneer', 320, 1)" data-qty="1" data-step="1" data-name="Paneer" data-price="320" data-unit="kg" id="prod-paneer">
+            <div class="p-card" style="border-left:3px solid #fbbf24" onclick="tapAdd('Paneer', 320, 1)" data-qty="1" data-step="1" data-name="Paneer" data-price="320" data-unit="kg" id="prod-paneer" draggable="true" ondragstart="handleDragStart(event)">
               <span class="emoji" style="font-size: 48px;">🧀</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Paneer</div>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Paneer <span style="font-size:9px; color:#64748b;">(1x)</span></div>
               <small style="font-size: 10px; margin-top: 2px;">₹320</small>
               <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-paneer')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
             </div>
-            <div class="p-card" style="border-left:3px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)" data-qty="0.25" data-step="0.25" data-name="Ghee" data-price="180" data-unit="g" id="prod-ghee">
+            <div class="p-card" style="border-left:3px solid #fb923c" onclick="tapAdd('Ghee', 180, 0.25)" data-qty="0.25" data-step="0.25" data-name="Ghee" data-price="180" data-unit="g" id="prod-ghee" draggable="true" ondragstart="handleDragStart(event)">
               <span class="emoji" style="font-size: 36px;">🍯</span>
-              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Ghee</div>
+              <div style="font-size: 11px; font-weight: 700; margin-top: 4px; color: #64748b;">Ghee <span style="font-size:9px; color:#64748b;">(0.25x)</span></div>
               <small style="font-size: 10px; margin-top: 2px;">₹180</small>
               <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-ghee')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
             </div>
-            <div class="p-card" onclick="tapAdd('Milk Cake', 300, 1)" data-qty="1" data-step="1" data-name="Milk Cake" data-price="300" data-unit="kg" id="prod-milkcake">
+            <div class="p-card" onclick="tapAdd('Milk Cake', 300, 1)" data-qty="1" data-step="1" data-name="Milk Cake" data-price="300" data-unit="kg" id="prod-milkcake" draggable="true" ondragstart="handleDragStart(event)">
               <span class="emoji" style="font-size: 48px;">🍰</span>
-              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Milk Cake</div>
+              <div style="font-size: 11px; font-weight: 900; margin-top: 4px;">Milk Cake <span style="font-size:9px; color:#64748b;">(1x)</span></div>
               <small style="font-size: 10px; margin-top: 2px;">₹300</small>
               <button class="edit-prod-btn" onclick="event.stopPropagation(); editProduct('prod-milkcake')" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
               <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
@@ -405,10 +408,9 @@
             <span id="activeCust" style="display:none;">Walking Customer</span>
             
             <!-- Customer Search -->
-            <div style="position: relative; width: 100%; display: flex; gap: 6px; align-items: center;">
-              <input type="text" id="custSearch" placeholder="👤 Search customer..." oninput="handleSearch(this.value)" style="flex: 1; padding: 8px 8px 8px 30px; border: 2px solid #3b82f6; border-radius: 8px; font-weight: 700; font-size: 13px; background: white;" />
+            <div style="position: relative; width: 100%;">
+              <input type="text" id="custSearch" placeholder="👤 Search customer..." oninput="handleSearch(this.value)" style="width: 100%; padding: 8px 8px 8px 30px; border: 2px solid #3b82f6; border-radius: 8px; font-weight: 700; font-size: 13px; background: white;" />
               <span style="position: absolute; left: 10px; top: 8px; font-size: 14px;">🔎</span>
-              <button id="editBudgetBtn" onclick="editCustomerBudget()" style="display: none; padding: 8px 12px; background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; color: #92400e; white-space: nowrap;" title="Edit Customer Budget">💰 Edit Budget</button>
               <div id="searchDropdown" class="search-dropdown" onclick="event.stopPropagation()" style="top: 100%; border-radius: 0 0 8px 8px;"></div>
             </div>
           </div>
@@ -475,7 +477,7 @@
           <div style="padding: 0 15px 10px;">
             <div style="font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 8px;">💰 Customer Paid</div>
             <input type="number" id="paymentAmount" placeholder="Enter amount (₹)" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-weight: 700; font-size: 16px;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
-            <div id="creditDisplay" style="font-size: 12px; color: #64748b; font-weight: 700; margin-top: 8px; text-align: center;"></div>
+            <div id="creditDisplay" style="font-size: 12px; color: #16a34a; font-weight: 700; margin-top: 8px; text-align: center;"></div>
           </div>
 
           <div class="pay-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px;">
@@ -1618,10 +1620,6 @@ MilkRecord POS`;
           const activeCustEl = el("activeCust");
           if (activeCustEl) activeCustEl.innerText = name;
 
-          // Show edit budget button
-          const editBudgetBtn = el("editBudgetBtn");
-          if (editBudgetBtn) editBudgetBtn.style.display = "block";
-
           showToast("Customer: " + name);
 
           // Auto-fill from customer memory (previous orders)
@@ -1646,33 +1644,6 @@ MilkRecord POS`;
 
           // Show advance toggle for this customer
           showAdvanceSection(name);
-      }
-
-      // Edit customer budget
-      function editCustomerBudget() {
-        const customerName = el("activeCust").innerText;
-        if (!customerName || customerName === "Walking Customer") {
-          showToast("Select a customer first");
-          return;
-        }
-
-        const customer = customers.find(c => c.name === customerName);
-        if (!customer) return;
-
-        const currentBudget = customer.budget || 0;
-        const newBudget = prompt(`Edit budget for ${customerName}:\nCurrent: ₹${currentBudget.toFixed(2)}`, currentBudget.toFixed(2));
-        
-        if (newBudget === null) return; // Cancelled
-        
-        const budgetValue = parseFloat(newBudget);
-        if (isNaN(budgetValue) || budgetValue < 0) {
-          showToast("Invalid budget amount");
-          return;
-        }
-
-        customer.budget = budgetValue;
-        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
-        showToast(`Budget updated: ₹${budgetValue.toFixed(2)} ✅`);
       }
       
       // Show advance/cut ledger - ONLY if customer has credit history
@@ -2574,7 +2545,7 @@ function clearTodayHistory() {
         }
         closeModal('memoryModal');
       }
-      function resetCart() { cart = []; updateUI(); el("activeCust").innerText = "Walking Customer"; el("custSearch").value = ""; el("advanceSection").style.display = "none"; el("advanceToggleBtn").style.display = "none"; el("editBudgetBtn").style.display = "none"; }
+      function resetCart() { cart = []; updateUI(); el("activeCust").innerText = "Walking Customer"; el("custSearch").value = ""; el("advanceSection").style.display = "none"; el("advanceToggleBtn").style.display = "none"; }
       
       // Hold cart functionality
       function holdCart() {
@@ -2681,11 +2652,73 @@ function clearTodayHistory() {
       });
       
       function showToast(msg) { const t = el("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1500); }
-      
+
+      // Drag and Drop for Product Cards
+      let draggedCard = null;
+      let draggedCardId = null;
+
+      function handleDragStart(e) {
+        draggedCard = this;
+        draggedCardId = this.id;
+        this.style.opacity = '0.4';
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', this.id);
+      }
+
+      function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+      }
+
+      function handleDrop(e) {
+        e.stopPropagation();
+        if (draggedCard && this !== draggedCard) {
+          const grid = document.getElementById('productGrid');
+          const cards = Array.from(grid.querySelectorAll('.p-card'));
+          const draggedIndex = cards.indexOf(draggedCard);
+          const dropIndex = cards.indexOf(this);
+
+          if (draggedIndex < dropIndex) {
+            grid.insertBefore(draggedCard, this.nextSibling);
+          } else {
+            grid.insertBefore(draggedCard, this);
+          }
+
+          // Save card order to localStorage
+          saveCardOrder();
+        }
+        if (draggedCard) draggedCard.style.opacity = '1';
+        return false;
+      }
+
+      function saveCardOrder() {
+        const grid = document.getElementById('productGrid');
+        const cards = grid.querySelectorAll('.p-card:not([onclick*="addProduct"]):not([onclick*="openEdit"])');
+        const order = Array.from(cards).map(card => card.id);
+        localStorage.setItem('mr_pos_card_order', JSON.stringify(order));
+      }
+
+      function loadCardOrder() {
+        const order = JSON.parse(localStorage.getItem('mr_pos_card_order') || 'null');
+        if (!order) return;
+
+        const grid = document.getElementById('productGrid');
+        const addBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
+        
+        order.forEach(id => {
+          const card = document.getElementById(id);
+          if (card && addBtn) {
+            grid.insertBefore(card, addBtn);
+          }
+        });
+      }
+
       window.onload = () => {
     updateShift();
     loadHistoryOnStart();
     loadCustomProducts();
+    loadCardOrder(); // Load saved card order
     setInterval(updateShift, 60000);
     
     // ESC key closes all modals
