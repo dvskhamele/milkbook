@@ -3156,18 +3156,17 @@ function loadCustomProducts() {
   }
   
   const grid = el("productGrid");
-  const addCardBtn = grid.querySelector('.p-card[onclick*="addProduct"]');
+  if (!grid) return;
+  
+  // Clear existing product cards (keep Add and Edit buttons)
+  const existingCards = grid.querySelectorAll('.p-card:not([onclick*="addProductModal"]):not([onclick*="openEdit"])');
+  existingCards.forEach(card => card.remove());
+  
+  // Get the Add button to insert before it
+  const addCardBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
+  if (!addCardBtn) return;
 
   customProducts.forEach(p => {
-    // Check if card already exists to prevent duplicates
-    const existingCard = Array.from(grid.querySelectorAll('.p-card')).find(card => {
-      const cardName = card.querySelector('div[style*="font-weight: 900"]')?.textContent?.replace(/\s*\([^)]*\)\s*$/, '');
-      const cardPrice = card.querySelector('small')?.textContent?.replace('₹', '').split('/')[0];
-      return cardName === p.name && cardPrice === String(p.price);
-    });
-    
-    if (existingCard) return; // Skip if already exists
-
     const newCard = document.createElement('div');
     newCard.className = 'p-card';
     newCard.setAttribute('data-qty', '1');
