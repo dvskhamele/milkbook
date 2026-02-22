@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Reports & Analytics - MilkBook POS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2563eb",
+                        "primary-hover": "#1d4ed8",
+                        "success": "#16a34a",
+                        "warning": "#f59e0b",
+                        "danger": "#dc2626",
+                        "background-main": "#f8fafc",
+                        "surface-white": "#ffffff",
+                        "text-main": "#1e293b",
+                        "text-secondary": "#64748b",
+                        "border-subtle": "#e2e8f0",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    boxShadow: {
+                        "soft": "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
+                        "tile": "0 10px 15px -3px rgba(0, 0, 0, 0.05)",
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        @media print {
+            .print-hidden { display: none !important; }
+            body { background: white; }
+            .stat-card, .chart-container, .table-container {
+                box-shadow: none;
+                border: 1px solid #e2e8f0;
+            }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+    <!-- Global Navbar -->
+    <div id="globalNavbar"></div>
+    <script src="global-nav.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded">Analytics</span>
+                        <span class="text-xs font-medium text-slate-500" id="reportDate"></span>
+                    </div>
+                    <h1 class="text-3xl font-black tracking-tight uppercase">Sales Reports</h1>
+                    <p class="text-slate-500 mt-1">Track daily sales, products, and customer insights</p>
+                </div>
+                <div class="flex gap-3 print-hidden">
+                    <button onclick="setDateRange('today')" class="px-4 py-2 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90">Today</button>
+                    <button onclick="setDateRange('week')" class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50">This Week</button>
+                    <button onclick="setDateRange('month')" class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50">This Month</button>
+                    <button onclick="window.print()" class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">print</span>
+                        Print
+                    </button>
+                    <button onclick="exportToCSV()" class="px-4 py-2 bg-success text-white rounded-xl font-bold text-sm hover:bg-success/90 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">download</span>
+                        Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-blue-600">currency_rupee</span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-500 uppercase">Total Revenue</div>
+                            <div class="text-2xl font-black text-slate-900" id="totalRevenue">₹0</div>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500" id="revenueChange">vs yesterday</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-green-600">shopping_bag</span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-500 uppercase">Orders</div>
+                            <div class="text-2xl font-black text-slate-900" id="totalOrders">0</div>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500" id="ordersChange">vs yesterday</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-purple-600">people</span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-500 uppercase">Customers</div>
+                            <div class="text-2xl font-black text-slate-900" id="uniqueCustomers">0</div>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500">Unique customers served</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-amber-600">trending_up</span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-500 uppercase">Avg Order</div>
+                            <div class="text-2xl font-black text-slate-900" id="avgOrder">₹0</div>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500">Average order value</div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Hourly Sales Chart -->
+                <div class="chart-container">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">schedule</span>
+                        Hourly Sales Trend
+                    </h3>
+                    <div id="hourlyChart" class="h-64 flex items-end gap-2"></div>
+                </div>
+
+                <!-- Product Sales Chart -->
+                <div class="chart-container">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">pie_chart</span>
+                        Top Products Sold
+                    </h3>
+                    <div id="productChart" class="h-64"></div>
+                </div>
+            </div>
+
+            <!-- Product Breakdown Table -->
+            <div class="table-container mb-8">
+                <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">inventory</span>
+                        Products Sold Breakdown
+                    </h3>
+                    <div class="text-sm text-slate-500" id="productCount">0 products</div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                            <tr>
+                                <th class="px-6 py-4 text-left font-bold">Product</th>
+                                <th class="px-6 py-4 text-left font-bold">Category</th>
+                                <th class="px-6 py-4 text-right font-bold">Qty Sold</th>
+                                <th class="px-6 py-4 text-right font-bold">Revenue</th>
+                                <th class="px-6 py-4 text-right font-bold">% of Total</th>
+                                <th class="px-6 py-4 text-right font-bold">Orders</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTable" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="table-container">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">payment</span>
+                            Payment Methods
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div id="paymentMethods" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">credit_card</span>
+                            Credit/Udhar Summary
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div id="creditSummary" class="space-y-4"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="table-container">
+                <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">receipt_long</span>
+                        Recent Transactions
+                    </h3>
+                    <button onclick="viewAllTransactions()" class="text-sm font-bold text-primary hover:underline">View All</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                            <tr>
+                                <th class="px-6 py-4 text-left font-bold">Time</th>
+                                <th class="px-6 py-4 text-left font-bold">Customer</th>
+                                <th class="px-6 py-4 text-left font-bold">Items</th>
+                                <th class="px-6 py-4 text-right font-bold">Total</th>
+                                <th class="px-6 py-4 text-right font-bold">Payment</th>
+                                <th class="px-6 py-4 text-right font-bold">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentTransactions" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global variables
+        let currentSales = [];
+        let currentDateRange = 'today';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSalesData();
+            updateDateDisplay();
+        });
+
+        // Load sales from localStorage
+        function loadSalesData() {
+            // Try multiple storage keys for compatibility
+            const salesHistory = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+            const posSales = JSON.parse(localStorage.getItem('mr_pos_sales') || '[]');
+            const auditHistory = JSON.parse(localStorage.getItem('mr_pos_history') || '[]');
+            
+            // Combine all sources
+            let allSales = [...salesHistory, ...posSales, ...auditHistory];
+            
+            // Remove duplicates based on timestamp/id
+            const uniqueSales = [];
+            const seen = new Set();
+            allSales.forEach(sale => {
+                const id = sale.id || sale.timestamp || JSON.stringify(sale);
+                if (!seen.has(id)) {
+                    seen.add(id);
+                    uniqueSales.push(sale);
+                }
+            });
+            
+            // Filter by date range
+            currentSales = filterByDateRange(uniqueSales, currentDateRange);
+            
+            // Generate reports
+            generateReports();
+        }
+
+        // Filter sales by date range
+        function filterByDateRange(sales, range) {
+            const now = new Date();
+            const today = now.toLocaleDateString();
+            
+            if (range === 'today') {
+                return sales.filter(s => {
+                    const saleDate = s.date || new Date(s.timestamp || Date.now()).toLocaleDateString();
+                    return saleDate === today;
+                });
+            } else if (range === 'week') {
+                const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+                return sales.filter(s => {
+                    const saleDate = s.date ? new Date(s.date + ' ' + (s.time || '00:00')) : new Date(s.timestamp || Date.now());
+                    return saleDate >= weekAgo;
+                });
+            } else if (range === 'month') {
+                const monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+                return sales.filter(s => {
+                    const saleDate = s.date ? new Date(s.date + ' ' + (s.time || '00:00')) : new Date(s.timestamp || Date.now());
+                    return saleDate >= monthAgo;
+                });
+            }
+            return sales;
+        }
+
+        // Generate all reports
+        function generateReports() {
+            calculateKeyMetrics();
+            generateHourlyChart();
+            generateProductBreakdown();
+            generatePaymentMethods();
+            generateCreditSummary();
+            generateRecentTransactions();
+        }
+
+        // Calculate key metrics
+        function calculateKeyMetrics() {
+            const totalRevenue = currentSales.reduce((sum, sale) => sum + (parseFloat(sale.total_amount) || parseFloat(sale.amount) || 0), 0);
+            const totalOrders = currentSales.length;
+            const uniqueCustomers = new Set(currentSales.map(s => s.customer_name || s.customer)).size;
+            const avgOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+            document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toFixed(2)}`;
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('uniqueCustomers').textContent = uniqueCustomers;
+            document.getElementById('avgOrder').textContent = `₹${avgOrder.toFixed(2)}`;
+        }
+
+        // Generate hourly sales chart
+        function generateHourlyChart() {
+            const hourlyData = {};
+            for (let i = 0; i < 24; i++) hourlyData[i] = 0;
+
+            currentSales.forEach(sale => {
+                const time = sale.time || '00:00';
+                const hour = parseInt(time.split(':')[0]);
+                const amount = parseFloat(sale.total_amount) || parseFloat(sale.amount) || 0;
+                hourlyData[hour] += amount;
+            });
+
+            const maxAmount = Math.max(...Object.values(hourlyData), 1);
+            const container = document.getElementById('hourlyChart');
+            container.innerHTML = '';
+
+            for (let i = 6; i <= 22; i++) { // Show 6 AM to 10 PM
+                const amount = hourlyData[i] || 0;
+                const height = (amount / maxAmount) * 200;
+                const bar = document.createElement('div');
+                bar.className = 'flex-1 flex flex-col items-center gap-1';
+                bar.innerHTML = `
+                    <div class="w-full bg-primary rounded-t transition-all hover:bg-primary-hover" style="height: ${Math.max(height, 4)}px; min-height: 4px;"></div>
+                    <div class="text-xs text-slate-500 font-bold">${i}</div>
+                `;
+                container.appendChild(bar);
+            }
+        }
+
+        // Generate product breakdown
+        function generateProductBreakdown() {
+            const productData = {};
+            let totalRevenue = 0;
+
+            currentSales.forEach(sale => {
+                const items = sale.items || sale.cart || sale.cartItems || [];
+                items.forEach(item => {
+                    const name = item.name || 'Unknown';
+                    const qty = parseFloat(item.qty) || 0;
+                    const rate = parseFloat(item.rate) || 0;
+                    const amount = qty * rate;
+                    totalRevenue += amount;
+
+                    if (!productData[name]) {
+                        productData[name] = {
+                            name: name,
+                            category: getCategory(name),
+                            qty: 0,
+                            revenue: 0,
+                            orders: 0
+                        };
+                    }
+                    productData[name].qty += qty;
+                    productData[name].revenue += amount;
+                    productData[name].orders += 1;
+                });
+            });
+
+            // Sort by revenue
+            const sortedProducts = Object.values(productData).sort((a, b) => b.revenue - a.revenue);
+
+            // Update product count
+            document.getElementById('productCount').textContent = `${sortedProducts.length} products`;
+
+            // Generate table
+            const tbody = document.getElementById('productTable');
+            tbody.innerHTML = sortedProducts.map(product => {
+                const percentage = totalRevenue > 0 ? (product.revenue / totalRevenue * 100) : 0;
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-6 py-4 font-bold text-slate-900">${product.name}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 bg-slate-100 rounded text-xs font-bold">${product.category}</span>
+                        </td>
+                        <td class="px-6 py-4 text-right font-bold">${product.qty.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-bold text-green-600">₹${product.revenue.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <div class="w-16 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-primary rounded-full" style="width: ${percentage}%"></div>
+                                </div>
+                                <span class="text-xs font-bold text-slate-500">${percentage.toFixed(1)}%</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right font-bold text-slate-500">${product.orders}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Generate product chart (top 5)
+            generateProductChart(sortedProducts.slice(0, 5));
+        }
+
+        // Get product category
+        function getCategory(name) {
+            const lower = name.toLowerCase();
+            if (lower.includes('cow') || lower.includes('buff')) return 'Milk';
+            if (lower.includes('paneer')) return 'Dairy';
+            if (lower.includes('ghee')) return 'Dairy';
+            if (lower.includes('curd')) return 'Dairy';
+            if (lower.includes('cake')) return 'Sweets';
+            return 'Other';
+        }
+
+        // Generate product chart
+        function generateProductChart(topProducts) {
+            const container = document.getElementById('productChart');
+            const maxRevenue = Math.max(...topProducts.map(p => p.revenue), 1);
+
+            container.innerHTML = topProducts.map((product, i) => {
+                const width = (product.revenue / maxRevenue) * 100;
+                const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-amber-500', 'bg-red-500'];
+                return `
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 ${colors[i]} rounded-lg flex items-center justify-center text-white font-bold text-sm">${i + 1}</div>
+                        <div class="flex-1">
+                            <div class="text-sm font-bold text-slate-900">${product.name}</div>
+                            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden mt-1">
+                                <div class="h-full ${colors[i]} rounded-full" style="width: ${width}%"></div>
+                            </div>
+                        </div>
+                        <div class="text-right min-w-[80px]">
+                            <div class="text-sm font-black text-slate-900">₹${product.revenue.toFixed(0)}</div>
+                            <div class="text-xs text-slate-500">${product.qty.toFixed(1)} sold</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Generate payment methods breakdown
+        function generatePaymentMethods() {
+            const paymentData = {};
+            let total = 0;
+
+            currentSales.forEach(sale => {
+                const method = (sale.payment_mode || sale.method || 'Cash').toLowerCase();
+                const amount = parseFloat(sale.total_amount) || parseFloat(sale.amount) || 0;
+                total += amount;
+
+                if (!paymentData[method]) {
+                    paymentData[method] = { count: 0, amount: 0 };
+                }
+                paymentData[method].count += 1;
+                paymentData[method].amount += amount;
+            });
+
+            const container = document.getElementById('paymentMethods');
+            container.innerHTML = Object.entries(paymentData).map(([method, data]) => {
+                const percentage = total > 0 ? (data.amount / total * 100) : 0;
+                const icons = { cash: 'money', upi: 'phone_android', credit: 'credit_card', udhar: 'receipt_long' };
+                const colors = { cash: 'bg-green-100 text-green-600', upi: 'bg-blue-100 text-blue-600', credit: 'bg-purple-100 text-purple-600', udhar: 'bg-amber-100 text-amber-600' };
+                
+                return `
+                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 ${colors[method] || 'bg-slate-100 text-slate-600'} rounded-lg flex items-center justify-center">
+                                <span class="material-symbols-outlined">${icons[method] || 'payment'}</span>
+                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 capitalize">${method}</div>
+                                <div class="text-xs text-slate-500">${data.count} transactions</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-black text-slate-900">₹${data.amount.toFixed(2)}</div>
+                            <div class="text-xs text-slate-500">${percentage.toFixed(1)}%</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Generate credit summary
+        function generateCreditSummary() {
+            const creditSales = currentSales.filter(s => 
+                (s.payment_mode === 'credit' || s.payment_mode === 'udhar' || 
+                 s.method === 'Credit' || s.method === 'Udhar' ||
+                 (s.credit_amount || 0) > 0)
+            );
+
+            const totalCredit = creditSales.reduce((sum, s) => sum + (parseFloat(s.credit_amount) || parseFloat(s.total_amount) || 0), 0);
+            const creditCount = creditSales.length;
+
+            const container = document.getElementById('creditSummary');
+            container.innerHTML = `
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                        <div class="text-xs font-bold text-amber-600 uppercase mb-1">Total Credit</div>
+                        <div class="text-2xl font-black text-amber-700">₹${totalCredit.toFixed(2)}</div>
+                    </div>
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                        <div class="text-xs font-bold text-amber-600 uppercase mb-1">Credit Orders</div>
+                        <div class="text-2xl font-black text-amber-700">${creditCount}</div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-xs font-bold text-slate-500 uppercase mb-2">Top Credit Customers</div>
+                    ${generateTopCreditCustomers(creditSales)}
+                </div>
+            `;
+        }
+
+        // Generate top credit customers
+        function generateTopCreditCustomers(creditSales) {
+            const customerCredit = {};
+            creditSales.forEach(sale => {
+                const customer = sale.customer_name || sale.customer;
+                const amount = parseFloat(sale.credit_amount) || parseFloat(sale.total_amount) || 0;
+                customerCredit[customer] = (customerCredit[customer] || 0) + amount;
+            });
+
+            const sorted = Object.entries(customerCredit)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            return sorted.map(([customer, amount], i) => `
+                <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold text-amber-600">${i + 1}</div>
+                        <span class="font-bold text-slate-700">${customer}</span>
+                    </div>
+                    <span class="font-black text-amber-600">₹${amount.toFixed(2)}</span>
+                </div>
+            `).join('');
+        }
+
+        // Generate recent transactions
+        function generateRecentTransactions() {
+            const recent = currentSales.slice(0, 10);
+            const tbody = document.getElementById('recentTransactions');
+            
+            tbody.innerHTML = recent.map(sale => {
+                const items = sale.items || sale.cart || sale.cartItems || [];
+                const itemCount = items.length;
+                const method = (sale.payment_mode || sale.method || 'Cash').toLowerCase();
+                const isCredit = method === 'credit' || method === 'udhar';
+                
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-slate-900">${sale.time || 'N/A'}</div>
+                            <div class="text-xs text-slate-500">${sale.date || 'Today'}</div>
+                        </td>
+                        <td class="px-6 py-4 font-bold text-slate-700">${sale.customer_name || sale.customer || 'Walking Customer'}</td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-bold text-slate-700">${itemCount} items</div>
+                            <div class="text-xs text-slate-500 truncate max-w-[200px]">
+                                ${items.slice(0, 2).map(i => `${i.qty} ${i.name}`).join(', ')}${items.length > 2 ? '...' : ''}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right font-black text-green-600">₹${(parseFloat(sale.total_amount) || parseFloat(sale.amount) || 0).toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-2 py-1 bg-slate-100 rounded text-xs font-bold capitalize">${method}</span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            ${isCredit ? 
+                                '<span class="px-2 py-1 bg-amber-100 text-amber-600 rounded text-xs font-bold">Credit</span>' : 
+                                '<span class="px-2 py-1 bg-green-100 text-green-600 rounded text-xs font-bold">Paid</span>'
+                            }
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Set date range
+        function setDateRange(range) {
+            currentDateRange = range;
+            loadSalesData();
+            
+            // Update button styles
+            document.querySelectorAll('[onclick^="setDateRange"]').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white');
+                btn.classList.add('bg-white', 'border', 'border-slate-200');
+            });
+            event.target.classList.remove('bg-white', 'border', 'border-slate-200');
+            event.target.classList.add('bg-primary', 'text-white');
+        }
+
+        // Update date display
+        function updateDateDisplay() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('reportDate').textContent = now.toLocaleDateString('en-IN', options);
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            if (currentSales.length === 0) {
+                alert('No sales data to export!');
+                return;
+            }
+
+            const headers = ['Date', 'Time', 'Customer', 'Items', 'Total Amount', 'Payment Mode', 'Credit Amount'];
+            const rows = currentSales.map(sale => {
+                const items = sale.items || sale.cart || sale.cartItems || [];
+                const itemsStr = items.map(i => `${i.qty}x ${i.name}`).join('; ');
+                return [
+                    sale.date || new Date(sale.timestamp || Date.now()).toLocaleDateString(),
+                    sale.time || 'N/A',
+                    sale.customer_name || sale.customer || 'Walking Customer',
+                    itemsStr,
+                    sale.total_amount || sale.amount || 0,
+                    sale.payment_mode || sale.method || 'Cash',
+                    sale.credit_amount || 0
+                ].map(cell => `"${cell}"`).join(',');
+            });
+
+            const csv = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sales_report_${currentDateRange}_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // View all transactions
+        function viewAllTransactions() {
+            alert('Full transaction history feature coming soon!');
+        }
+    </script>
+</body>
+</html>
