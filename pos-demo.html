@@ -227,7 +227,7 @@
         background: #fff;
         border: none;
         border-radius: 8px;
-        padding: 8px 4px;
+        padding: 6px 4px;
         text-align: center;
         cursor: pointer;
         transition: all 0.15s;
@@ -237,6 +237,7 @@
         justify-content: center;
         box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         position: relative;
+        min-height: 90px;
       }
       .p-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
       .p-card:hover .edit-prod-btn { opacity: 1; }
@@ -252,16 +253,16 @@
       .recent-table tr.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
-      .p-card .emoji { font-size: 48px; margin-bottom: 4px; display: block; transition: all 0.2s; }
-      .p-card div { font-weight: 900; font-size: 11px; line-height: 1.2; transition: all 0.2s; }
-      .p-card small { color: #64748b; font-weight: 700; font-size: 10px; margin-top: 2px; transition: all 0.2s; }
-      
+      .p-card .emoji { font-size: 36px; margin-bottom: 2px; display: block; transition: all 0.2s; }
+      .p-card div { font-weight: 900; font-size: 10px; line-height: 1.2; transition: all 0.2s; }
+      .p-card small { color: #64748b; font-weight: 700; font-size: 9px; margin-top: 2px; transition: all 0.2s; }
+
       /* Dynamic styling based on quantity */
-      .p-card[data-qty="0.5"] .emoji { font-size: 32px; }
+      .p-card[data-qty="0.5"] .emoji { font-size: 28px; }
       .p-card[data-qty="0.5"] div { font-weight: 700; color: #64748b; }
-      .p-card[data-qty="1"] .emoji { font-size: 48px; }
+      .p-card[data-qty="1"] .emoji { font-size: 36px; }
       .p-card[data-qty="1"] div { font-weight: 900; color: #1e293b; }
-      .p-card[data-qty="2"] .emoji { font-size: 56px; }
+      .p-card[data-qty="2"] .emoji { font-size: 44px; }
       .p-card[data-qty="2"] div { font-weight: 900; color: #166534; }
 
       .qty-bar { display: flex; gap: 10px; padding: 12px 15px; background: #f8fafc; border-top: 1px solid var(--line); }
@@ -538,7 +539,7 @@
 
     <!-- Add Product Modal -->
     <div class="overlay" id="addProductModal">
-        <div class="modal" style="width:90vw !important; max-width:500px !important; height:auto !important; max-height:90vh !important; overflow-y:auto !important; display:block !important; grid-template-rows:none !important;">
+        <div class="modal" style="width:90vw !important; max-width:450px !important; height:auto !important; max-height:90vh !important; overflow-y:auto !important; display:block !important; grid-template-rows:none !important;">
             <div class="panelHeader"><span>📦 Add New Product</span> <button onclick="closeModal('addProductModal')" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b; padding:0; width:32px; height:32px; display:flex; align-items:center; justify-content:center;">✖</button></div>
             <div style="padding:20px; display:flex; flex-direction:column; gap:15px;">
                 <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
@@ -551,9 +552,9 @@
                 <!-- Editable Steps Section -->
                 <div style="background:#f8fafc; padding:16px; border-radius:10px; border:1px solid var(--line);">
                   <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
-                    <span>⚡</span> Quick Steps (edit values for product cards)
+                    <span>⚡</span> Quick Steps (default: 1, 2, 5)
                   </div>
-                  <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:8px;">
+                  <div id="stepInputsContainer" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
                     <div style="display:flex; flex-direction:column; gap:4px;">
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 1</label>
                       <input type="number" class="pStep" value="1" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
@@ -566,16 +567,9 @@
                       <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 3</label>
                       <input type="number" class="pStep" value="5" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:4px;">
-                      <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 4</label>
-                      <input type="number" class="pStep" value="10" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:4px;">
-                      <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 5</label>
-                      <input type="number" class="pStep" value="20" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
-                    </div>
                   </div>
-                  <div style="font-size:10px; color:var(--muted); margin-top:10px; text-align:center;">💡 Set to 0 to disable. Negative values allowed.</div>
+                  <button onclick="addStepInput()" id="addStepBtn" style="margin-top:10px; padding:8px; background:#eff6ff; color:#3b82f6; border:1px dashed #3b82f6; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; width:100%;">➕ Add Step (max 5)</button>
+                  <div style="font-size:10px; color:var(--muted); margin-top:10px; text-align:center;">💡 Set to 0 to disable. Edit more in Edit Products.</div>
                 </div>
 
                 <button class="add-btn" style="width:100%; background:var(--green);" onclick="addNewProductFromModal()">Create Product</button>
@@ -2636,19 +2630,29 @@ function clearTodayHistory() {
           // Focus first input in modal
           const firstInput = modal.querySelector('input, select, textarea');
           if (firstInput) setTimeout(() => firstInput.focus(), 100);
-          
-          // Debug: Log step input values when Add Product modal opens
+
+          // Reset step inputs when opening Add Product modal
           if (id === 'addProductModal') {
-            setTimeout(() => {
-              const stepInputs = document.querySelectorAll('.pStep');
-              console.log('=== Modal Opened - Step Inputs Debug ===');
-              console.log('Total step inputs found:', stepInputs.length);
-              stepInputs.forEach((input, idx) => {
-                const rect = input.getBoundingClientRect();
-                console.log(`Step ${idx + 1}: value="${input.value}", visible=${rect.width > 0}, width=${rect.width.toFixed(0)}px`);
-              });
-              console.log('Modal width:', modal.querySelector('.modal').offsetWidth, 'px');
-            }, 200);
+            stepCount = 3;
+            const container = document.getElementById('stepInputsContainer');
+            if (container) {
+              container.innerHTML = `
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                  <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 1</label>
+                  <input type="number" class="pStep" value="1" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
+                </div>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                  <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 2</label>
+                  <input type="number" class="pStep" value="2" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
+                </div>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                  <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 3</label>
+                  <input type="number" class="pStep" value="5" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
+                </div>
+              `;
+              container.style.gridTemplateColumns = 'repeat(3, 1fr)';
+              document.getElementById('addStepBtn').style.display = 'block';
+            }
           }
         }
       }
@@ -2985,6 +2989,34 @@ function convertMilkToProduct() {
   closeModal('convertModal');
   el("convQty").value = "";
   showToast(`Converted ${qty}L to ${productName}`);
+}
+
+// Add step input field in Add Product modal
+let stepCount = 3;
+function addStepInput() {
+  if (stepCount >= 5) return;
+  
+  stepCount++;
+  const container = document.getElementById('stepInputsContainer');
+  const defaults = [10, 20];
+  const stepNum = stepCount;
+  const defaultValue = defaults[stepCount - 4] || 10;
+  
+  const newDiv = document.createElement('div');
+  newDiv.style.cssText = 'display:flex; flex-direction:column; gap:4px;';
+  newDiv.innerHTML = `
+    <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step ${stepNum}</label>
+    <input type="number" class="pStep" value="${defaultValue}" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
+  `;
+  container.appendChild(newDiv);
+  
+  // Update grid columns
+  container.style.gridTemplateColumns = `repeat(${stepCount}, 1fr)`;
+  
+  // Hide button if max reached
+  if (stepCount >= 5) {
+    document.getElementById('addStepBtn').style.display = 'none';
+  }
 }
 
 // Add new product card from modal - creates multiple cards for each step
