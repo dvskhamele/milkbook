@@ -254,36 +254,36 @@
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
       
-      /* Card sizing based on step RANK (not absolute value) */
+      /* Card sizing based on step RANK (not absolute value) - using !important for specificity */
       /* Rank 1 (smallest step) */
-      .p-card[data-rank="1"] { min-height: 75px; }
-      .p-card[data-rank="1"] .emoji { font-size: 28px; }
-      .p-card[data-rank="1"] div { font-size: 9px; }
-      .p-card[data-rank="1"] small { font-size: 8px; }
+      .p-card[data-rank="1"] { min-height: 75px !important; }
+      .p-card[data-rank="1"] .emoji { font-size: 28px !important; }
+      .p-card[data-rank="1"] div { font-size: 9px !important; }
+      .p-card[data-rank="1"] small { font-size: 8px !important; }
       
       /* Rank 2 */
-      .p-card[data-rank="2"] { min-height: 82px; }
-      .p-card[data-rank="2"] .emoji { font-size: 32px; }
-      .p-card[data-rank="2"] div { font-size: 10px; }
-      .p-card[data-rank="2"] small { font-size: 8px; }
+      .p-card[data-rank="2"] { min-height: 82px !important; }
+      .p-card[data-rank="2"] .emoji { font-size: 32px !important; }
+      .p-card[data-rank="2"] div { font-size: 10px !important; }
+      .p-card[data-rank="2"] small { font-size: 8px !important; }
       
       /* Rank 3 */
-      .p-card[data-rank="3"] { min-height: 90px; }
-      .p-card[data-rank="3"] .emoji { font-size: 36px; }
-      .p-card[data-rank="3"] div { font-size: 10px; }
-      .p-card[data-rank="3"] small { font-size: 9px; }
+      .p-card[data-rank="3"] { min-height: 90px !important; }
+      .p-card[data-rank="3"] .emoji { font-size: 36px !important; }
+      .p-card[data-rank="3"] div { font-size: 10px !important; }
+      .p-card[data-rank="3"] small { font-size: 9px !important; }
       
       /* Rank 4 */
-      .p-card[data-rank="4"] { min-height: 98px; }
-      .p-card[data-rank="4"] .emoji { font-size: 42px; }
-      .p-card[data-rank="4"] div { font-size: 11px; }
-      .p-card[data-rank="4"] small { font-size: 9px; }
+      .p-card[data-rank="4"] { min-height: 98px !important; }
+      .p-card[data-rank="4"] .emoji { font-size: 42px !important; }
+      .p-card[data-rank="4"] div { font-size: 11px !important; }
+      .p-card[data-rank="4"] small { font-size: 9px !important; }
       
       /* Rank 5 (largest step) */
-      .p-card[data-rank="5"] { min-height: 106px; }
-      .p-card[data-rank="5"] .emoji { font-size: 48px; }
-      .p-card[data-rank="5"] div { font-size: 11px; }
-      .p-card[data-rank="5"] small { font-size: 10px; }
+      .p-card[data-rank="5"] { min-height: 106px !important; }
+      .p-card[data-rank="5"] .emoji { font-size: 48px !important; }
+      .p-card[data-rank="5"] div { font-size: 11px !important; }
+      .p-card[data-rank="5"] small { font-size: 10px !important; }
 
       .qty-bar { display: flex; gap: 10px; padding: 12px 15px; background: #f8fafc; border-top: 1px solid var(--line); }
       .qty-btn { flex: 1; height: 45px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-weight: 1000; cursor: pointer; }
