@@ -3687,6 +3687,7 @@ function showAuditProof(entryId) {
           overlay.style.display = "none";
         }
       }
+      
       // Close overlay when clicking outside modal
       document.querySelectorAll('.overlay').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
@@ -3694,6 +3695,14 @@ function showAuditProof(entryId) {
             overlay.style.display = "none";
           }
         });
+      });
+      
+      // Close overlay when clicking close button (using event delegation for reliability)
+      document.addEventListener('click', (e) => {
+        if (e.target.hasAttribute('data-close')) {
+          const overlayId = e.target.getAttribute('data-close');
+          closeOverlay(overlayId);
+        }
       });
 
       /***********************
