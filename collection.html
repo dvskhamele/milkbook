@@ -899,15 +899,20 @@
         }
         
         // Set today's date
-        document.getElementById('dateInput').valueAsDate = new Date();
-        document.getElementById('paymentDateInput').valueAsDate = new Date();
-        
+        const dateInput = document.getElementById('dateInput');
+        const paymentDateInput = document.getElementById('paymentDateInput');
+        if (dateInput) dateInput.valueAsDate = new Date();
+        if (paymentDateInput) paymentDateInput.valueAsDate = new Date();
+
         // Auto-detect shift based on time of day
         const currentHour = new Date().getHours();
-        if (currentHour < 12) {
-            document.getElementById('shiftSelect').value = 'Morning';
-        } else {
-            document.getElementById('shiftSelect').value = 'Evening';
+        const shiftSelect = document.getElementById('shiftSelect');
+        if (shiftSelect) {
+            if (currentHour < 12) {
+                shiftSelect.value = 'Morning';
+            } else {
+                shiftSelect.value = 'Evening';
+            }
         }
         
         // Update calculated amount when inputs change
