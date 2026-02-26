@@ -1162,23 +1162,13 @@
         if (!Array.isArray(customers)) customers = [];
         if (!Array.isArray(exportHistory)) exportHistory = [];
         
-        // Get products safely
-        let products = [];
-        try {
-          products = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
-          if (!Array.isArray(products)) products = [];
-        } catch(e) {
-          products = [];
-        }
+        // Get products safely - USE loadData()
+        let products = loadData('mr_pos_custom_products', []);
+        if (!Array.isArray(products)) products = [];
         
-        // Get product order safely
-        let productOrder = [];
-        try {
-          productOrder = JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]');
-          if (!Array.isArray(productOrder)) productOrder = [];
-        } catch(e) {
-          productOrder = [];
-        }
+        // Get product order safely - USE loadData()
+        let productOrder = loadData('mr_pos_product_order', []);
+        if (!Array.isArray(productOrder)) productOrder = [];
         
         saveData('mr_pos_cart', cart, 'cart_update');
         saveData('mr_pos_customers', customers, 'customers_update');
@@ -3609,32 +3599,13 @@ function addNewProductFromModal() {
   const grid = el("productGrid");
   const addCardBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
   
-  // Calculate ranks for new steps
-  let customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  // Calculate ranks for new steps - USE loadData() to get unwrapped data
+  let customProducts = loadData('mr_pos_custom_products', []);
   
-  // Ensure customProducts is always an array - RECOVER DATA IF CORRUPTED
+  // Ensure customProducts is always an array
   if (!Array.isArray(customProducts)) {
-    console.error('⚠️ customProducts is not an array, attempting recovery...');
-    // Try to recover from backup
-    const backup = localStorage.getItem('mr_pos_custom_products_backup');
-    if (backup) {
-      try {
-        customProducts = JSON.parse(backup);
-        if (Array.isArray(customProducts)) {
-          console.log('✅ Recovered ' + customProducts.length + ' products from backup!');
-          localStorage.setItem('mr_pos_custom_products', JSON.stringify(customProducts));
-        } else {
-          customProducts = [];
-          console.error('❌ Backup also corrupted, starting fresh');
-        }
-      } catch(e) {
-        customProducts = [];
-        console.error('❌ Recovery failed, starting fresh');
-      }
-    } else {
-      customProducts = [];
-      console.error('❌ No backup available, starting fresh');
-    }
+    console.error('❌ customProducts is not an array, forcing empty array');
+    customProducts = [];
   }
   
   const allSteps = [...new Set([...customProducts.map(p => p.step), ...steps.filter(s => s !== 0)])].sort((a, b) => a - b);
@@ -3910,14 +3881,9 @@ function loadCustomProducts() {
   
   let products = Object.values(productGroups);
 
-  // Apply saved product order if exists
-  let productOrder = [];
-  try {
-    productOrder = JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]');
-    if (!Array.isArray(productOrder)) productOrder = [];
-  } catch(e) {
-    productOrder = [];
-  }
+  // Apply saved product order if exists - USE loadData()
+  let productOrder = loadData('mr_pos_product_order', []);
+  if (!Array.isArray(productOrder)) productOrder = [];
   
   if (productOrder.length > 0) {
     products.sort((a, b) => {
@@ -3996,16 +3962,17 @@ function createDefaultProducts() {
 // Edit Products Modal - shows custom products from localStorage
 function openEditInventory() {
   const list = el("editInventoryList");
+
+  // Get custom products from localStorage - USE loadData()
+  const customProducts = loadData('mr_pos_custom_products', []);
   
-  // Get custom products from localStorage
-  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
   // Ensure customProducts is always an array
   if (!Array.isArray(customProducts)) {
-    console.error('customProducts is not an array, resetting to empty array');
-    localStorage.setItem('mr_pos_custom_products', '[]');
+    console.error('❌ customProducts is not an array, using empty array');
+    localStorage.setItem('mr_pos_custom_products', JSON.stringify([]));
     return;
   }
-  
+
   // Group by product name (since each product can have multiple step cards)
   const productGroups = {};
   customProducts.forEach(p => {
@@ -4020,11 +3987,11 @@ function openEditInventory() {
     }
     productGroups[p.name].steps.push(p.step);
   });
-  
+
   let products = Object.values(productGroups);
-  
-  // Apply saved product order if exists
-  const productOrder = JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]');
+
+  // Apply saved product order if exists - USE loadData()
+  const productOrder = loadData('mr_pos_product_order', []);
   if (productOrder.length > 0) {
     products.sort((a, b) => {
       const indexA = productOrder.indexOf(a.name);
@@ -4104,26 +4071,13 @@ function updateProductWithSteps(index, oldName) {
 
   if (!newName || !newRate || newRate <= 0) return showToast('Invalid name or rate!');
 
-  // Update in localStorage (for custom products)
-  let customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
-  
+  // Update in localStorage (for custom products) - USE loadData()
+  let customProducts = loadData('mr_pos_custom_products', []);
+
   // Ensure customProducts is always an array
   if (!Array.isArray(customProducts)) {
-    console.error('⚠️ Products corrupted, attempting recovery...');
-    // Try backup
-    try {
-      const backup = localStorage.getItem('mr_pos_custom_products_backup');
-      if (backup) {
-        customProducts = JSON.parse(backup);
-        if (!Array.isArray(customProducts)) throw new Error();
-        console.log('✅ Recovered from backup');
-      } else {
-        customProducts = [];
-      }
-    } catch(e) {
-      customProducts = [];
-      console.error('❌ Recovery failed');
-    }
+    console.error('❌ customProducts is not an array, using empty array');
+    customProducts = [];
   }
 
   // Remove old product cards for this product
@@ -4162,39 +4116,13 @@ function updateProductWithSteps(index, oldName) {
 function removeProduct(productName) {
   if (!confirm(`Remove "${productName}" from product list?`)) return;
 
-  let customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  // USE loadData() to get unwrapped data
+  let customProducts = loadData('mr_pos_custom_products', []);
 
-  // Ensure customProducts is always an array - RECOVER IF CORRUPTED
+  // Ensure customProducts is always an array
   if (!Array.isArray(customProducts)) {
-    console.error('⚠️ Products corrupted, attempting recovery...');
-    // Try backup 1
-    try {
-      const backup1 = localStorage.getItem('mr_pos_custom_products_backup');
-      if (backup1) {
-        customProducts = JSON.parse(backup1);
-        if (Array.isArray(customProducts)) {
-          console.log('✅ Recovered from backup 1');
-        } else {
-          throw new Error();
-        }
-      } else {
-        throw new Error();
-      }
-    } catch(e) {
-      // Try backup 2
-      try {
-        const backup2 = localStorage.getItem('mr_pos_custom_products_backup2');
-        if (backup2) {
-          customProducts = JSON.parse(backup2);
-          if (Array.isArray(customProducts)) {
-            console.log('✅ Recovered from backup 2');
-          }
-        }
-      } catch(e2) {
-        customProducts = [];
-        console.error('❌ All backups failed');
-      }
-    }
+    console.error('❌ customProducts is not an array, using empty array');
+    customProducts = [];
   }
 
   const filteredProducts = customProducts.filter(p => p.name !== productName);
@@ -4249,16 +4177,16 @@ function handleProductOrderDrop(e) {
     this.style.background = '#f8fafc';
     return false;
   }
-  
-  // Get current product order from localStorage
-  let productOrder = JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]');
-  
-  // Get all products from localStorage
-  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+
+  // Get current product order from localStorage - USE loadData()
+  let productOrder = loadData('mr_pos_product_order', []);
+  if (!Array.isArray(productOrder)) productOrder = [];
+
+  // Get all products from localStorage - USE loadData()
+  const customProducts = loadData('mr_pos_custom_products', []);
   // Ensure customProducts is always an array
   if (!Array.isArray(customProducts)) {
-    console.error('customProducts is not an array, resetting to empty array');
-    localStorage.setItem('mr_pos_custom_products', '[]');
+    console.error('❌ customProducts is not an array, using empty array');
     return;
   }
   
@@ -4285,10 +4213,10 @@ function handleProductOrderDrop(e) {
   const draggedName = productOrder[draggedProductIndex];
   productOrder.splice(draggedProductIndex, 1);
   productOrder.splice(dropIndex, 0, draggedName);
-  
-  // Save new order
-  localStorage.setItem('mr_pos_product_order', JSON.stringify(productOrder));
-  
+
+  // Save new order - USE saveData() for consistency
+  saveData('mr_pos_product_order', productOrder, 'order_update');
+
   showToast('Product order updated ✅');
   
   // Reload modal to show new order

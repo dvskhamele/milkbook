@@ -1489,6 +1489,11 @@
           </div>
         </div>
         <div class="hdr-actions" style="flex: 1; justify-content: flex-end;">
+          <!-- Rate Pill -->
+          <div id="ratePill" onclick="openRateEditor()" style="background: #e3f2fd; color: #1565c0; padding: 4px 8px; border-radius: 999px; font-weight: 700; cursor: pointer; border: 1px solid #bbdefb; font-size: 9px; display: flex; align-items: center; gap: 4px; margin-right: 3px;">
+            <span id="rateDisplay">Rate: ₹64.00</span>
+            <span style="font-size: 7px; opacity: 0.6;">✏️</span>
+          </div>
           <!-- Switch to POS -->
           <button class="pillbtn primary" onclick="location.href='pos-demo.html'" style="background:#2563eb; border-color:#2563eb; font-size:7px; padding:0 3px;">
             🛒
@@ -2072,6 +2077,31 @@
           <button class="footBtn bad" id="btnFactoryReset">
             🧨 Factory Reset
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RATE EDITOR MODAL -->
+    <div class="overlay" id="overlayRateEditor">
+      <div class="modal" style="height: auto; max-height: 400px;">
+        <div class="modalHead">
+          <div class="left">
+            <button class="closeBtn" data-close="overlayRateEditor">✖</button>
+            <div>✏️ Edit Rate</div>
+          </div>
+          <div class="muted">Quick rate adjustment</div>
+        </div>
+
+        <div class="modalBody onecol" style="padding: 20px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <label style="font-size: 14px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 8px;">Cow Base Rate (₹/L)</label>
+            <input id="newRateInput" type="number" step="0.1" style="width: 100%; max-width: 200px; padding: 12px; border: 2px solid #3b82f6; border-radius: 8px; font-weight: 900; font-size: 24px; text-align: center;" placeholder="₹0.00" />
+          </div>
+        </div>
+
+        <div class="modalFoot">
+          <button class="footBtn good" onclick="updateActiveRate(); closeOverlay('overlayRateEditor');">✔️ Set Rate</button>
+          <button class="footBtn" onclick="closeOverlay('overlayRateEditor');">Cancel</button>
         </div>
       </div>
     </div>
@@ -3787,7 +3817,8 @@ function playSuccessSound() {
     const difference = after - calculatedAfter;
 
     // --- ✅ POINT 3.4: GET PAYMENT MODE FROM UI ---
-    const selectedPayMode = document.querySelector('input[name="payMode"]:checked').value;
+    const payModeElement = document.querySelector('input[name="payMode"]:checked');
+    const selectedPayMode = payModeElement ? payModeElement.value : 'Cash';
 
     const currentRate = getRatePerLiter(); // 👈 Usi second ka active rate uthao
     const currentAmount = getAmount();
@@ -3799,7 +3830,7 @@ function playSuccessSound() {
         qty: round2(qty),
         fat: round2(fat),
         snf: round2(snf),
-        paymentMode: document.querySelector('input[name="payMode"]:checked').value,
+        paymentMode: selectedPayMode,
 
         // 🎯 SNAPSHOT LOGIC: Rate ko value ki tarah chipka do
         rateSnapshot: round2(currentRate),
@@ -4833,17 +4864,28 @@ document.addEventListener('keydown', (e) => {
             }
         }
         else if (active.id === "qtyInput") {
-            el("fatInput").focus();
-            el("fatInput").select();
+            const fatInput = el("fatInput");
+            if (fatInput) { fatInput.focus(); fatInput.select(); }
         }
-        else if (active.id === "fatInput") el("densityInput").focus();
-        else if (active.id === "densityInput") el("snfInput").focus();
-        else if (active.id === "snfInput") el("btnRateModeAuto").focus();
-        else if (active.id === "btnRateModeAuto" || active.id === "btnRateModeManual") el("btnSave").focus();
+        else if (active.id === "fatInput") {
+            const densityInput = el("densityInput");
+            if (densityInput) densityInput.focus();
+        }
+        else if (active.id === "densityInput") {
+            const snfInput = el("snfInput");
+            if (snfInput) snfInput.focus();
+        }
+        else if (active.id === "snfInput") {
+            const btnSave = el("btnSave");
+            if (btnSave) btnSave.focus();
+        }
         else if (active.id === "btnSave") {
             saveEntry();
-            el("searchInput").focus();
-            el("searchInput").value = "";
+            const searchInput = el("searchInput");
+            if (searchInput) {
+                searchInput.focus();
+                searchInput.value = "";
+            }
         }
     }
 });
