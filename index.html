@@ -654,17 +654,20 @@
       }
       .animalCard button {
         transition: all 0.2s;
+        cursor: pointer;
       }
       .animalCard button:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       }
       .animalCard button:active {
         transform: translateY(0);
       }
       .animalCard button.selected {
         border-color: #2563eb !important;
-        background: #eff6ff !important;
+        background: #dbeafe !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
+        transform: scale(1.02);
       }
 
       .rateCard {
@@ -1637,10 +1640,10 @@
 
               <div class="row3" style="grid-column: 1/-1">
                 <div class="animalCard" style="display: flex; flex-direction: column; gap: 4px;">
-                  <label style="font-weight: 900; font-size: 14px;">5. Animal Type</label>
+                  <label style="font-weight: 900; font-size: 14px;">5. Animal Type <span style="font-size: 10px; color: var(--muted);">(Press Enter to toggle)</span></label>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-                    <button type="button" id="animalCow" onclick="selectAnimal('cow')" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;">🐄 Cow</button>
-                    <button type="button" id="animalBuffalo" onclick="selectAnimal('buffalo')" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;">🐃 Buffalo</button>
+                    <button type="button" id="animalCow" onclick="selectAnimal('cow')" onkeydown="if(event.key==='Enter'){event.preventDefault(); selectAnimal('buffalo');}" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐄 Cow</button>
+                    <button type="button" id="animalBuffalo" onclick="selectAnimal('buffalo')" onkeydown="if(event.key==='Enter'){event.preventDefault(); selectAnimal('cow');}" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐃 Buffalo</button>
                   </div>
                   <input type="hidden" id="animalSelect" value="cow" />
                 </div>
@@ -1698,16 +1701,11 @@
                 <div class="v" id="balAfter" style="font-size: 10px;">₹0.00</div>
               </div>
             </div>
-            <div style="padding: 6px; background: #f8fafc; border-radius: 8px; margin: 6px 0; border: 1px solid var(--line);">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <span style="font-size: 9px; color: var(--muted); font-weight: 700;">Round Balance</span>
-      <span id="farmerRoundupLabel" style="font-size: 9px; color: #3b82f6; font-weight: 700; display: none;">🔄 Round: ₹<span id="farmerRoundupValue">0</span></span>
-    </div>
-    <!-- Roundup Input for Farmer -->
-    <div style="display: flex; gap: 4px; margin-bottom: 4px;">
-      <input type="number" id="farmerRoundupInput" placeholder="Round to 10, 50, 100" step="10" style="flex:1; padding: 6px; border: 2px dashed #3b82f6; border-radius: 6px; font-weight: 700; font-size: 11px; text-align: center; background: #eff6ff;" oninput="applyFarmerRoundup()" title="Round balance to nearest 10, 50, 100" />
-    </div>
-</div>
+            <!-- Round Balance Input - Inline with balances -->
+            <div style="display: grid; grid-template-columns: 1fr 80px; gap: 4px; margin: 4px 0;">
+              <input type="number" id="farmerRoundupInput" placeholder="Round (10,50,100)" step="10" style="padding: 6px; border: 2px dashed #3b82f6; border-radius: 6px; font-weight: 700; font-size: 10px; text-align: center; background: #eff6ff;" oninput="applyFarmerRoundup()" title="Round balance to nearest 10, 50, 100" />
+              <span id="farmerRoundupLabel" style="font-size: 9px; color: #3b82f6; font-weight: 700; display: none; align-items: center; justify-content: center;">🔄 ₹<span id="farmerRoundupValue">0</span></span>
+            </div>
             <div id="dailySummaryWrapper" style="display: none; margin-top: 15px;">
         <button class="pillbtn" id="btnDailySummary" style="width: 100%; background: #25d366; color: white; border: none; font-weight: bold; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
              💬 Send Today's Summary
@@ -2280,11 +2278,11 @@
               <input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" pattern="[0-9]{10}" maxlength="10" placeholder="10 digit mobile" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
             </div>
             <div class="field" style="padding: 8px;">
-              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🥛 Milk Type</label>
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🥛 Milk Type <span style="font-size: 10px; color: var(--muted);">(Press Enter to toggle)</span></label>
               <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
-                <button type="button" id="fAnimalCow" onclick="selectFarmerAnimal('cow')" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;">🐄 Cow</button>
-                <button type="button" id="fAnimalBuffalo" onclick="selectFarmerAnimal('buffalo')" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;">🐃 Buffalo</button>
-                <button type="button" id="fAnimalBoth" onclick="selectFarmerAnimal('both')" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;">🔄 Both</button>
+                <button type="button" id="fAnimalCow" onclick="selectFarmerAnimal('cow')" onkeydown="if(event.key==='Enter'){event.preventDefault(); selectFarmerAnimal('buffalo');}" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;" tabindex="0">🐄 Cow</button>
+                <button type="button" id="fAnimalBuffalo" onclick="selectFarmerAnimal('buffalo')" onkeydown="if(event.key==='Enter'){event.preventDefault(); selectFarmerAnimal('both');}" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;" tabindex="0">🐃 Buffalo</button>
+                <button type="button" id="fAnimalBoth" onclick="selectFarmerAnimal('both')" onkeydown="if(event.key==='Enter'){event.preventDefault(); selectFarmerAnimal('cow');}" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;" tabindex="0">🔄 Both</button>
               </div>
               <input type="hidden" id="fAnimalType" value="cow" />
             </div>
@@ -3299,7 +3297,7 @@ function updateActiveRate() {
     showToast(`Naya Rate Set: ₹${val.toFixed(2)} ✅`);
 }
 
-// Animal Type Toggle Function - Keyboard optimized
+// Animal Type Toggle Function - Keyboard optimized with VISUAL SELECTION
 function selectAnimal(type) {
   // Reset both buttons
   ['animalCow', 'animalBuffalo'].forEach(id => {
@@ -3307,6 +3305,8 @@ function selectAnimal(type) {
     if (btn) {
       btn.style.borderColor = 'var(--line)';
       btn.style.background = 'white';
+      btn.style.boxShadow = 'none';
+      btn.style.transform = 'none';
       btn.classList.remove('selected');
     }
   });
@@ -3316,7 +3316,8 @@ function selectAnimal(type) {
   const selectedBtn = el("animal" + type.charAt(0).toUpperCase() + type.slice(1));
   if (selectedBtn) {
     selectedBtn.style.borderColor = '#2563eb';
-    selectedBtn.style.background = '#eff6ff';
+    selectedBtn.style.background = '#dbeafe';
+    selectedBtn.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.2)';
     selectedBtn.classList.add('selected');
   }
   
@@ -3324,7 +3325,7 @@ function selectAnimal(type) {
   renderTrust();
 }
 
-// Farmer Form Animal Type Toggle - Keyboard optimized
+// Farmer Form Animal Type Toggle - Keyboard optimized with VISUAL SELECTION
 function selectFarmerAnimal(type) {
   // Reset all buttons
   ['fAnimalCow', 'fAnimalBuffalo', 'fAnimalBoth'].forEach(id => {
@@ -3332,6 +3333,8 @@ function selectFarmerAnimal(type) {
     if (btn) {
       btn.style.borderColor = 'var(--line)';
       btn.style.background = 'white';
+      btn.style.boxShadow = 'none';
+      btn.style.transform = 'none';
     }
   });
 
@@ -3340,7 +3343,8 @@ function selectFarmerAnimal(type) {
   const selectedBtn = el("fAnimal" + type.charAt(0).toUpperCase() + type.slice(1));
   if (selectedBtn) {
     selectedBtn.style.borderColor = '#2563eb';
-    selectedBtn.style.background = '#eff6ff';
+    selectedBtn.style.background = '#dbeafe';
+    selectedBtn.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.2)';
   }
 }
 
