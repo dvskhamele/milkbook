@@ -42,8 +42,11 @@
       }
       html,
       body {
+        width: 100%;
         height: 100%;
         margin: 0;
+        padding: 0;
+        overflow: hidden;
         font-family:
           system-ui,
           -apple-system,
@@ -53,12 +56,6 @@
         -webkit-text-size-adjust: 100%;
         -ms-text-size-adjust: 100%;
       }
-      html, body {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        position: fixed;
-      }
       body {
         background: var(--bg);
         color: var(--text);
@@ -67,72 +64,75 @@
 
       /* APP FRAME */
       .app {
-        height: 100%;
+        height: 100vh;
         width: 100%;
         display: grid;
-        grid-template-rows: auto 1fr auto;
-        gap: 10px;
-        padding: 8px;
+        grid-template-rows: auto 1fr;
+        gap: 8px;
+        padding: 6px;
         box-sizing: border-box;
+        margin: 0;
       }
 
       /* HEADER */
       .topbar {
         background: #fff;
         border: 1px solid var(--line);
-        border-radius: 16px;
+        border-radius: 4px;
         box-shadow: var(--shadow);
-        padding: 8px 12px;
+        padding: 4px 8px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 48px;
+        min-height: 32px;
+        flex-shrink: 0;
       }
       .brand {
         display: flex;
         align-items: center;
-        gap: 10px;
-        min-width: 200px;
+        gap: 3px;
+        min-width: 80px;
       }
       .logo {
-        width: 32px;
-        height: 32px;
-        border-radius: 10px;
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(180deg, #e0f2fe, #dbeafe);
-        border: 1px solid #c7d2fe;
+        background: linear-gradient(180deg, #2563eb, #1d4ed8);
+        border: 1px solid #1e40af;
         font-weight: 1000;
       }
       .brand .title {
         font-weight: 1000;
-        font-size: 16px;
+        font-size: 8px;
         line-height: 1.1;
       }
       .brand .sub {
         font-weight: 800;
         color: var(--muted);
-        font-size: 12px;
-        margin-top: 2px;
+        font-size: 6px;
+        margin-top: 1px;
       }
       .hdr-actions {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 3px;
       }
       .pillbtn {
-        height: 44px;
-        padding: 0 16px;
-        border-radius: 14px;
+        height: 12px;
+        padding: 0 4px;
+        border-radius: 3px;
         border: 1px solid var(--line);
         background: #fff;
         font-weight: 900;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 10px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        gap: 2px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        font-size: 7px;
       }
       .pillbtn.primary {
         background: var(--blue);
@@ -190,14 +190,24 @@
       /* CORE - Desktop Default (Side by Side) */
       .core {
         height: 100%;
+        min-height: 0;
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
         gap: 14px;
         overflow: hidden;
-        min-height: 0;
         width: 100%;
       }
-
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        height: 100%;
+      }
       /* Tablet (768px - 1024px): Side by side with adjusted heights */
       @media (min-width: 768px) and (max-width: 1024px) {
         .core {
@@ -205,24 +215,23 @@
           gap: 10px;
         }
         .panel {
-          max-height: calc(100vh - 160px);
+          max-height: none;
           overflow-y: auto;
         }
         .actionBody {
-          max-height: calc(100vh - 120px);
+          max-height: none;
         }
         .trustBody {
-          max-height: calc(100vh - 160px);
+          max-height: none;
         }
       }
-
       /* Desktop (1024px+): Full side by side */
       @media (min-width: 1025px) {
         .core {
           grid-template-columns: 1fr 1fr !important;
         }
         .panel {
-          max-height: calc(100vh - 180px);
+          max-height: none;
           overflow-y: auto;
         }
       }
@@ -230,35 +239,34 @@
       /* Mobile: Stack panels vertically (portrait) */
       @media (max-width: 767px) {
         html, body {
-          position: relative;
-          overflow: auto;
-          height: auto;
-          min-height: 100%;
+          position: fixed;
+          overflow: hidden;
+          height: 100%;
           width: 100%;
         }
         .app {
           padding: 8px;
           gap: 10px;
-          height: auto;
-          min-height: 100vh;
+          height: 100vh;
+          height: 100%;
           display: flex;
           flex-direction: column;
         }
         .core {
           grid-template-columns: 1fr !important;
-          grid-template-rows: auto auto;
-          overflow-y: visible;
-          height: auto;
-          min-height: auto;
+          grid-template-rows: auto 1fr;
+          overflow-y: hidden;
+          height: 100%;
+          min-height: 0;
           gap: 10px;
-          flex: 0 0 auto;
+          flex: 1 1 auto;
           display: flex;
           flex-direction: column;
         }
         .panel {
           max-height: none !important;
-          height: auto;
-          min-height: auto;
+          height: 100%;
+          min-height: 0;
           border-radius: 16px;
           flex-shrink: 0;
         }
@@ -279,14 +287,16 @@
         }
         .actionBody {
           max-height: none !important;
-          overflow-y: visible !important;
+          overflow-y: auto !important;
           padding-right: 4px;
-          height: auto;
+          height: 100%;
+          flex: 1;
         }
         .trustBody {
-          overflow-y: visible !important;
+          overflow-y: auto !important;
           max-height: none !important;
-          height: auto;
+          height: 100%;
+          flex: 1;
         }
         /* Compact inputs on mobile */
         .control {
@@ -348,13 +358,14 @@
         height: 100%;
       }
       .panelHeader {
-        padding: 12px 16px;
+        padding: 8px 12px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         border-bottom: 1px solid var(--line);
         font-weight: 1000;
         background: #fff;
+        flex-shrink: 0;
       }
       .panelHeader small {
         color: var(--muted);
@@ -365,11 +376,11 @@
       .actionBody {
         display: flex;
         flex-direction: column;
-        gap: 16px;
-
-        max-height: calc(100vh - 140px); /* header ke baad fit */
-        overflow-y: auto; /* 👈 MAIN SCROLL */
+        gap: 12px;
+        flex: 1;
+        overflow-y: auto;
         padding-right: 6px;
+        min-height: 0;
       }
 
       /* FARMER PICK */
@@ -548,8 +559,8 @@
         padding: 12px;
         display: grid;
         grid-template-rows: auto 1fr auto;
-        gap: 10px;
-        min-height: 154px;
+        gap: 2px;
+        min-height: 20px;
       }
       .control.green {
         background: var(--soft-green);
@@ -565,16 +576,18 @@
         align-items: center;
         justify-content: space-between;
         font-weight: 1000;
+        font-size: 6px;
       }
       .ctrlTop .muted {
         color: var(--muted);
         font-weight: 900;
+        font-size: 5px;
       }
       .numBig {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 44px;
+        font-size: 12px;
         font-weight: 1100;
         letter-spacing: 0.3px;
         color: #334155;
@@ -583,7 +596,7 @@
       .numInput {
         width: 100%;
         text-align: center;
-        font-size: 44px;
+        font-size: 12px;
         font-weight: 1100;
         border: none;
         outline: none;
@@ -630,7 +643,7 @@
         padding: 12px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
         min-height: 96px;
       }
       .animalCard label {
@@ -639,15 +652,19 @@
         font-size: 12px;
         letter-spacing: 0.3px;
       }
-      .animalCard select {
-        height: 52px;
-        border-radius: 16px;
-        border: 1px solid var(--line);
-        background: #fff;
-        font-weight: 1000;
-        font-size: 16px;
-        padding: 0 12px;
-        outline: none;
+      .animalCard button {
+        transition: all 0.2s;
+      }
+      .animalCard button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+      .animalCard button:active {
+        transform: translateY(0);
+      }
+      .animalCard button.selected {
+        border-color: #2563eb !important;
+        background: #eff6ff !important;
       }
 
       .rateCard {
@@ -733,13 +750,13 @@
         flex-direction: column;
         gap: 8px;
         overflow-y: auto;
-        max-height: calc(100vh - 180px);
         flex: 1;
+        min-height: 0;
       }
       .amountBox {
         background: linear-gradient(180deg, var(--blue), var(--blue2));
-        border-radius: 26px;
-        padding: 22px;
+        border-radius: 6px;
+        padding: 4px;
         color: #fff;
         box-shadow: var(--shadow);
         position: relative;
@@ -749,47 +766,48 @@
         opacity: 0.8;
         font-weight: 1000;
         letter-spacing: 0.3px;
-        font-size: 12px;
+        font-size: 5px;
       }
       .amountBox .amt {
-        font-size: 66px;
+        font-size: 14px;
         font-weight: 1200;
         line-height: 1;
-        margin-top: 10px;
+        margin-top: 2px;
         letter-spacing: 0.5px;
       }
       .amountBox .sub {
-        margin-top: 12px;
+        margin-top: 2px;
         display: inline-flex;
-        gap: 10px;
+        gap: 3px;
         align-items: center;
-        padding: 10px 14px;
+        padding: 2px 4px;
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.15);
         font-weight: 1000;
+        font-size: 5px;
       }
 
       .balances {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        gap: 3px;
       }
-      
+
       .balCard {
-        border-radius: 18px;
-        padding: 16px;
+        border-radius: 4px;
+        padding: 3px;
         border: 1px solid var(--line);
         font-weight: 1100;
       }
       .balCard .t {
-        font-size: 12px;
+        font-size: 5px;
         font-weight: 1000;
         color: var(--muted);
       }
       .balCard .v {
-        font-size: 26px;
+        font-size: 8px;
         font-weight: 1200;
-        margin-top: 6px;
+        margin-top: 1px;
       }
       .balOld {
         background: var(--soft-pink);
@@ -958,15 +976,16 @@
         z-index: 60;
       }
       .modal {
-        width: min(980px, 98vw);
-        height: min(640px, 92vh);
+        width: min(1100px, 96vw);
+        height: min(750px, 94vh);
         border-radius: 22px;
         border: 1px solid var(--line);
         background: #fff;
         box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
         overflow: hidden;
         display: grid;
-        grid-template-rows: 62px 1fr 72px;
+        grid-template-rows: 70px 1fr 80px;
+        min-height: 0;
       }
       .modalHead {
         display: flex;
@@ -999,20 +1018,64 @@
         gap: 12px;
         min-height: 0;
         overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+        scrollbar-color: var(--blue) #f1f5f9;
+        -webkit-overflow-scrolling: touch;
       }
       .modalBody.onecol {
         grid-template-columns: 1fr;
-        overflow-y: auto;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--blue) #f1f5f9 !important;
+        -webkit-overflow-scrolling: touch !important;
+        max-height: calc(94vh - 150px) !important;
+        padding: 12px !important;
+      }
+      /* Webkit scrollbar styling */
+      .modalBody::-webkit-scrollbar {
+        width: 8px;
+      }
+      .modalBody::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+      }
+      .modalBody::-webkit-scrollbar-thumb {
+        background: var(--blue);
+        border-radius: 4px;
+      }
+      .modalBody::-webkit-scrollbar-thumb:hover {
+        background: var(--blue2);
+      }
+      /* Mobile optimization */
+      @media (max-width: 768px) {
+        .modalBody {
+          padding: 8px;
+        }
+        .modalBody .formGrid {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+        }
+        .modal {
+          width: min(100vw, 98vw) !important;
+          height: min(100vh, 95vh) !important;
+          grid-template-rows: 60px 1fr 70px !important;
+          border-radius: 16px;
+        }
+        .modalHead {
+          padding: 8px 10px !important;
+        }
+        .modalFoot {
+          padding: 10px !important;
+        }
       }
       .modalCol {
         border: 1px solid var(--line);
         border-radius: 18px;
         background: #f8fafc;
         padding: 12px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
+        display: block;
       }
       .modalCol h3 {
         margin: 0 0 10px 0;
@@ -1252,15 +1315,17 @@
       /* Small screens */
       @media (max-width: 980px) {
         body {
-          overflow: auto;
-        } /* allow in small */
+          overflow: hidden;
+        }
         .app {
-          overflow: auto;
-          height: auto;
-          min-height: 100%;
+          overflow: hidden;
+          height: 100vh;
+          height: 100%;
         }
         .core {
           grid-template-columns: 1fr;
+          height: 100%;
+          min-height: 0;
         }
         .bottom {
           grid-template-columns: 1fr 1fr 1fr;
@@ -1412,105 +1477,49 @@
       <!-- HEADER -->
       <div class="topbar">
         <div class="brand">
-          <div class="logo">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="18" fill="#3B82F6" opacity="0.1"/>
-              <path d="M20 8C20 8 12 18 12 24C12 28.4 15.6 32 20 32C24.4 32 28 28.4 28 24C28 18 20 8 20 8Z" fill="#3B82F6"/>
-              <circle cx="20" cy="24" r="6" fill="white" opacity="0.3"/>
-            </svg>
+          <div class="logo" style="background: linear-gradient(180deg, #2563eb, #1d4ed8); border-color: #1e40af;">
+            <span style="color: white; font-size: 7px;">M</span>
           </div>
           <div>
-            <div class="title" id="shopTitle">Gopal Dairy Shop</div>
+            <div class="title" style="font-size: 8px;">MilkRecord</div>
             <div class="sub" id="todayLabel">—</div>
           </div>
         </div>
         <div class="hdr-actions" style="flex: 1; justify-content: flex-end;">
           <!-- Switch to POS -->
-          <button class="pillbtn primary" onclick="location.href='pos-demo.html'" style="background:#2563eb; border-color:#2563eb;">
-            🛒 POS
+          <button class="pillbtn primary" onclick="location.href='pos-demo.html'" style="background:#2563eb; border-color:#2563eb; font-size:7px; padding:0 3px;">
+            🛒
           </button>
 
-          <!-- Booth/Collection Point Selector -->
-          <div style="display: flex; flex-direction: column; margin: 0 10px;">
-            <label style="font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 4px;">Booth:</label>
-            <select id="collectionPointSelect" onchange="updateCollectionPoint()" style="padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-weight: 700; font-size: 13px; min-width: 180px; background: white;">
-              <option value="DEFAULT">Default Booth</option>
-              <option value="VILLAGE_A">Village A Booth</option>
-              <option value="VILLAGE_B">Village B Booth</option>
-              <option value="VILLAGE_C">Village C Booth</option>
-              <option value="MAIN_MARKET">Main Market Booth</option>
-              <option value="GANDHI_CHOWK">Gandhi Chowk Booth</option>
-            </select>
-          </div>
-
-          <!-- Hardware Indicator -->
-          <div style="font-size: 12px; font-weight: 900; color: #64748b; display: flex; align-items: center; gap: 4px; margin: 0 10px; white-space: nowrap;">
-            <span style="color: #9ca3af;">●</span> Reading: Manual
-          </div>
-
-          <!-- Rate Pill Container -->
-          <div id="ratePillContainer" style="display: flex; align-items: center; gap: 8px; margin: 0 10px;">
-    <div id="ratePill" onclick="openRateEditor()" style="background: #e3f2fd; color: #1565c0; padding: 8px 16px; border-radius: 999px; font-weight: 1000; cursor: pointer; border: 1px solid #bbdefb; font-size: 14px; display: flex; align-items: center; gap: 6px;">
-        <span id="rateDisplay">Rate: ₹0.00</span>
-        <span style="font-size: 10px; opacity: 0.6;">✏️</span>
-    </div>
-
-    <div id="rateEditor" style="display: none; align-items: center; gap: 8px; background: #fff; padding: 4px; border-radius: 12px; border: 1px solid var(--blue); box-shadow: var(--shadow);">
-        <input id="newRateInput" type="number" step="0.1" style="width: 80px; border: none; outline: none; font-weight: bold; padding: 4px 8px; font-size: 16px;" placeholder="₹0.00">
-        <button onclick="updateActiveRate()" style="background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 6px 10px; cursor: pointer; font-weight: bold;">Set</button>
-        <button onclick="closeRateEditor()" style="background: #f1f5f9; border: none; border-radius: 8px; padding: 6px 10px; cursor: pointer;">✖</button>
-    </div>
-</div>
-<button onclick="openRateTable()" style="background: #f1f5f9; border: 1px solid var(--line); padding: 8px 12px; border-radius: 999px; font-weight: 1000; cursor: pointer; font-size: 12px; margin-left: 10px; color: var(--muted);">
-    📋 रेट लिस्ट (Chart)
-</button>
-
-<!-- Settings Button -->
-<button id="btnSettings" onclick="openOverlay('overlaySettings')" style="background: #fff; border: 1px solid var(--line); padding: 8px 12px; border-radius: 999px; font-weight: 1000; cursor: pointer; font-size: 12px; margin-left: 10px; color: var(--muted);">
-    ⚙️ Settings
-</button>
-
-<div id="rateTableOverlay" class="overlay" style="display:none; align-items: center; justify-content: center;">
-    <div class="modal" style="width: 400px; height: auto; max-height: 80vh; overflow: hidden;">
-        <div class="modalHead">
-            <div class="left">आज की रेट लिस्ट (₹<span id="chartBaseRate">0</span>)</div>
-            <button class="closeBtn" onclick="closeRateTable()">✖</button>
-        </div>
-        <div class="modalBody onecol" style="overflow-y: auto; padding: 15px;">
-            <table style="width: 100%; border-collapse: collapse; text-align: center;">
-                <thead style="position: sticky; top: 0; background: #fff;">
-                    <tr style="background: #f8fafc;">
-                        <th style="padding: 10px; border: 1px solid #e2e8f0;">FAT %</th>
-                        <th style="padding: 10px; border: 1px solid #e2e8f0;">RATE (₹/L)</th>
-                    </tr>
-                </thead>
-                <tbody id="rateTableBody">
-                    </tbody>
-            </table>
-        </div>
-        <div class="modalFoot">
-            <button class="pillbtn primary" onclick="sendRateChartWhatsApp()" style="width: 100%; justify-content: center;">
-                💬 WhatsApp पर भेजें
+          <!-- User Dropdown with Booth, Settings -->
+          <div style="position: relative; display: inline-block; margin-left: 3px;">
+            <button class="pillbtn" onclick="toggleHeaderDropdown()" style="background:#f8fafc; border-color:#e2e8f0; font-size:7px; padding:0 3px;">
+              👤 <span id="headerUserName">User</span>
             </button>
-        </div>
-    </div>
-</div>
-
-          <!-- Profile Dropdown (Top Right) -->
-          <div style="position: relative; display: inline-block; margin-left: 10px;">
-            <button class="pillbtn" onclick="toggleProfileDropdown()" style="background:#f8fafc; border-color:#e2e8f0;">
-              👤 <span id="profileName">User</span> ▼
-            </button>
-            <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 200px; z-index: 1000;">
-              <div style="padding: 12px; border-bottom: 1px solid var(--line);">
-                <div style="font-weight: 700; font-size: 13px;" id="dropdownEmail">user@email.com</div>
-                <div style="font-size: 11px; color: var(--muted);" id="dropdownShop">Shop Name</div>
+            <div id="headerDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 2px; background: white; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 160px; z-index: 1000;">
+              <div style="padding: 6px; border-bottom: 1px solid var(--line);">
+                <div style="font-weight: 700; font-size: 9px;" id="headerDropdownEmail">user@milkrecord.in</div>
+                <div style="font-size: 7px; color: var(--muted);" id="headerDropdownShop">milkrecord.in</div>
               </div>
-              <button onclick="openRateEditor(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">📋 Rate Chart</button>
-              <button onclick="openOverlay('overlayHistory'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🧾 History</button>
-              <button onclick="toggleLanguage(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🌐 HI/EN</button>
-              <div style="border-top: 1px solid var(--line); margin: 4px 0;"></div>
-              <button onclick="logout(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
+              <!-- Booth Selector -->
+              <div style="padding: 6px; border-bottom: 1px solid var(--line);">
+                <label style="font-size: 7px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 3px;">Booth:</label>
+                <select id="collectionPointSelect" onchange="updateCollectionPoint(); toggleHeaderDropdown()" style="width: 100%; padding: 3px; border: 1px solid var(--line); border-radius: 3px; font-weight: 700; font-size: 8px; background: white;">
+                  <option value="DEFAULT">Default</option>
+                  <option value="VILLAGE_A">Village A</option>
+                  <option value="VILLAGE_B">Village B</option>
+                  <option value="MAIN_MARKET">Main Market</option>
+                </select>
+              </div>
+              <!-- Reading Mode -->
+              <div style="padding: 6px; border-bottom: 1px solid var(--line); font-size: 7px; color: var(--muted);">
+                <span style="color: #9ca3af;">●</span> Reading: Manual
+              </div>
+              <!-- Settings -->
+              <button onclick="openOverlay('overlaySettings'); toggleHeaderDropdown()" style="width: 100%; padding: 6px 8px; background: none; border: none; text-align: left; cursor: pointer; font-size: 9px; font-weight: 600; color: var(--text);">⚙️ Settings</button>
+              <button onclick="toggleLanguage(); toggleHeaderDropdown()" style="width: 100%; padding: 6px 8px; background: none; border: none; text-align: left; cursor: pointer; font-size: 9px; font-weight: 600; color: var(--text);">🌐 HI/EN</button>
+              <div style="border-top: 1px solid var(--line); margin: 3px 0;"></div>
+              <button onclick="logout(); toggleHeaderDropdown()" style="width: 100%; padding: 6px 8px; background: none; border: none; text-align: left; cursor: pointer; font-size: 9px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
             </div>
           </div>
         </div>
@@ -1555,8 +1564,8 @@
             <div class="inputs">
               <div class="control green">
                 <div class="ctrlTop">
-                  <div id="qtyLabel">2. Liters (L)</div>
-                  <!-- <div class="muted" id="qtyStep">±0.5</div> -->
+                  <div id="qtyLabel" style="font-weight: 900; font-size: 14px;">2. Quantity (Liters)</div>
+                  <div class="muted" id="qtyStep">±0.5 L</div>
                 </div>
                 <div class="numBig">
                   <input
@@ -1564,13 +1573,10 @@
                     class="numInput"
                     type="number"
                     step="0.1"
-                    placeholder="0"
+                    placeholder="0.0 L"
+                    style="font-size: 28px; font-weight: 900;"
                   />
                 </div>
-                <!-- <div class="pmRow">
-                  <button class="pm" id="qtyMinus">−</button>
-                  <button class="pm" id="qtyPlus">+</button>
-                </div> -->
               </div>
               
               <!-- Quantity Threshold Nudge -->
@@ -1582,14 +1588,14 @@
 
               <div class="control yellow">
                 <div class="ctrlTop">
-  <div id="fatLabel">3. Fat %</div>
+  <div id="fatLabel" style="font-weight: 900; font-size: 8px;">3. Fat %</div>
 
-  <label for="fImageEntry" style="cursor:pointer; font-size: 1.2rem; margin-left: auto;" title="Capture Proof">
+  <label for="fImageEntry" style="cursor:pointer; font-size: 10px; margin-left: auto;" title="Capture Proof">
     📷
   </label>
   <input type="file" id="fImageEntry" accept="image/*" capture="camera" style="display:none;">
 
-  <div class="muted" id="fatStep" style="margin-left: 10px;">±0.1</div>
+  <div class="muted" id="fatStep" style="margin-left: 10px;">±0.1%</div>
 </div>
 <div class="numBig">
   <input
@@ -1597,30 +1603,25 @@
     class="numInput"
     type="number"
     step="0.1"
-    placeholder="0"
+    placeholder="0.0"
+    style="font-size: 14px; font-weight: 900;"
   />
 </div>
-<div style="text-align:center; margin-top: 4px;" title="Analyzer-linked readings are required for verifiable quality records.">
-  <span style="font-size: 16px; cursor: help;">⚠️</span>
-</div>
-                <!-- <div class="pmRow">
-                  <button class="pm" id="fatMinus">−</button>
-                  <button class="pm" id="fatPlus">+</button>
-                </div> -->
               </div>
-              <div class="control blue" style="background: #fdf2f8; border-color: #fbcfe8;">
+              <div class="control blue" style="background: #fef3c7; border-color: #fcd34d;">
   <div class="ctrlTop">
-    <div id="densityLabel">Density (CLR)</div>
+    <div id="densityLabel" style="font-weight: 900; font-size: 8px;">Density</div>
+    <div class="muted" style="font-size: 6px;">Auto SNF</div>
   </div>
   <div class="numBig">
-    <input id="densityInput" class="numInput" type="number" step="any" placeholder="0">
+    <input id="densityInput" class="numInput" type="number" step="any" placeholder="0" style="font-size: 12px; font-weight: 700;">
   </div>
 </div>
 
               <div class="control blue">
                 <div class="ctrlTop">
-                  <div id="snfLabel">4. SNF</div>
-                  <div class="muted" id="snfStep">±0.1</div>
+                  <div id="snfLabel" style="font-weight: 900; font-size: 8px;">4. SNF %</div>
+                  <div class="muted" id="snfStep">±0.1%</div>
                 </div>
                 <div class="numBig">
                   <input
@@ -1628,25 +1629,20 @@
                     class="numInput"
                     type="number"
                     step="0.1"
-                    placeholder="0"
+                    placeholder="0.0"
+                    style="font-size: 14px; font-weight: 900;"
                   />
                 </div>
-                <div style="text-align:center; margin-top: 4px;" title="Analyzer-linked readings are required for verifiable quality records.">
-  <span style="font-size: 16px; cursor: help;">⚠️</span>
-</div>
-                <!-- <div class="pmRow">
-                  <button class="pm" id="snfMinus">−</button>
-                  <button class="pm" id="snfPlus">+</button>
-                </div> -->
               </div>
 
               <div class="row3" style="grid-column: 1/-1">
-                <div class="animalCard">
-                  <label>5. Animal Type</label>
-                  <select id="animalSelect">
-                    <option value="cow">🐄 Cow</option>
-                    <option value="buffalo">🐃 Buffalo</option>
-                  </select>
+                <div class="animalCard" style="display: flex; flex-direction: column; gap: 4px;">
+                  <label style="font-weight: 900; font-size: 14px;">5. Animal Type</label>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                    <button type="button" id="animalCow" onclick="selectAnimal('cow')" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;">🐄 Cow</button>
+                    <button type="button" id="animalBuffalo" onclick="selectAnimal('buffalo')" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;">🐃 Buffalo</button>
+                  </div>
+                  <input type="hidden" id="animalSelect" value="cow" />
                 </div>
 
                 <!-- Manual Rate Override -->
@@ -1683,45 +1679,33 @@
             <div class="amountBox">
               <div class="label" id="amtLabel">TOTAL AMOUNT</div>
               <div class="amt" id="amountView">₹0.00</div>
-              <div class="sub" id="trailMini">0.0 L × ₹0.00/L</div>
-            </div>
-
-            <!-- Inline Cow/Buff Quantity Tracker -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
-              <div style="background: #dcfce7; border: 2px solid #16a34a; border-radius: 8px; padding: 6px; text-align: center;">
-                <div style="font-size: 9px; font-weight: 700; color: #166534; margin-bottom: 2px;">🐄 COW (L)</div>
-                <div style="font-size: 18px; font-weight: 900; color: #166534;" id="cowQtyInline">0.0</div>
-              </div>
-              <div style="background: #fee2e2; border: 2px solid #dc2626; border-radius: 8px; padding: 6px; text-align: center;">
-                <div style="font-size: 9px; font-weight: 700; color: #7f1d1d; margin-bottom: 2px;">🐃 BUFF (L)</div>
-                <div style="font-size: 18px; font-weight: 900; color: #7f1d1d;" id="buffQtyInline">0.0</div>
+              <div class="sub" id="trailMini" style="display: flex; align-items: center; gap: 8px;">
+                <span>0.0 L × ₹0.00/L</span>
+                <span style="display: flex; gap: 6px; margin-left: 4px;">
+                  <span style="color: #86efac; font-weight: 900;">🐄<span id="cowQtyInline">0.0</span></span>
+                  <span style="color: #fca5a5; font-weight: 900;">🐃<span id="buffQtyInline">0.0</span></span>
+                </span>
               </div>
             </div>
 
-            <div class="balances" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
-              <div class="balCard balOld" style="padding: 6px;">
-                <div class="t" id="oldBalLabel" style="font-size: 8px;">OLD BALANCE</div>
-                <div class="v" id="balBefore" style="font-size: 14px;">₹0.00</div>
+            <div class="balances" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px;">
+              <div class="balCard balOld" style="padding: 4px;">
+                <div class="t" id="oldBalLabel" style="font-size: 6px;">OLD BALANCE</div>
+                <div class="v" id="balBefore" style="font-size: 10px;">₹0.00</div>
               </div>
-              <div class="balCard balNew" style="padding: 6px;">
-                <div class="t" id="newBalLabel" style="font-size: 8px;">NEW BALANCE</div>
-                <div class="v" id="balAfter" style="font-size: 14px;">₹0.00</div>
+              <div class="balCard balNew" style="padding: 4px;">
+                <div class="t" id="newBalLabel" style="font-size: 6px;">NEW BALANCE</div>
+                <div class="v" id="balAfter" style="font-size: 10px;">₹0.00</div>
               </div>
             </div>
             <div style="padding: 6px; background: #f8fafc; border-radius: 8px; margin: 6px 0; border: 1px solid var(--line);">
-    <div style="font-weight: 1000; font-size: 9px; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.5px;">भुगतान (PAYMENT MODE)</div>
-    <div style="display: flex; gap: 4px;">
-        <label style="flex: 1; cursor: pointer;">
-            <input type="radio" name="payMode" value="Cash" checked style="display: none;" onchange="updatePayUI()">
-            <div id="optCash" style="text-align: center; padding: 6px; border-radius: 6px; border: 2px solid var(--green); background: var(--soft-green); font-weight: 1000; font-size: 11px; transition: 0.2s;">नकद</div>
-        </label>
-        <label style="flex: 1; cursor: pointer;">
-            <input type="radio" name="payMode" value="Credit" style="display: none;" onchange="updatePayUI()">
-            <div id="optCredit" style="text-align: center; padding: 6px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-weight: 1000; font-size: 11px; transition: 0.2s;">उधार</div>
-        </label>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-size: 9px; color: var(--muted); font-weight: 700;">Round Balance</span>
+      <span id="farmerRoundupLabel" style="font-size: 9px; color: #3b82f6; font-weight: 700; display: none;">🔄 Round: ₹<span id="farmerRoundupValue">0</span></span>
     </div>
-    <div style="text-align: center; margin-top: 4px;" title="Settlement traceability & deductions tracking available in collection center system.">
-      <span style="font-size: 12px; cursor: help;">⚠️</span>
+    <!-- Roundup Input for Farmer -->
+    <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+      <input type="number" id="farmerRoundupInput" placeholder="Round to 10, 50, 100" step="10" style="flex:1; padding: 6px; border: 2px dashed #3b82f6; border-radius: 6px; font-weight: 700; font-size: 11px; text-align: center; background: #eff6ff;" oninput="applyFarmerRoundup()" title="Round balance to nearest 10, 50, 100" />
     </div>
 </div>
             <div id="dailySummaryWrapper" style="display: none; margin-top: 15px;">
@@ -1784,8 +1768,8 @@
           🟡 HOLD <span class="subnote">pause</span>
         </button>
         <button class="panicBtn save" id="btnSave">🟢 SAVE ENTRY</button>
-        <button class="panicBtn undo" id="btnUndo">
-          🔴 UNDO <span class="subnote">last</span>
+        <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff;">
+          📒 LIKHLO (Credit)
         </button>
       </div>
     </div>
@@ -1796,14 +1780,16 @@
 
     <!-- Backend -->
     <script src="simple-backend.js"></script>
+    <!-- Debug script COMMENTED OUT - was causing page load issues -->
+    <!--
     <script>
       console.log('🚀 Collection Page Loading...');
-      
+
       // Debug: Check if backend loaded
       window.addEventListener('DOMContentLoaded', function() {
         console.log('✅ DOM Loaded');
         console.log('Backend available:', !!window.MilkBookDB);
-        
+
         // Test backend
         if (window.MilkBookDB) {
           window.MilkBookDB.farmers.getAll().then(result => {
@@ -1814,6 +1800,7 @@
         }
       });
     </script>
+    -->
 
     <!-- HISTORY MODAL -->
     <div class="overlay" id="overlayHistory">
@@ -1928,23 +1915,129 @@
 
         <div class="modalBody onecol">
           <div class="modalCol">
-            <h3>💰 Rate Formula (Simple, Visible)</h3>
+            <h3>💰 Rate Formula Builder</h3>
+            <p style="font-size: 12px; color: var(--muted); margin-bottom: 16px;">Select operators for each component to build your custom formula</p>
+
             <div class="formGrid">
+              <!-- Cow Rate Formula -->
+              <div class="field full" style="padding: 10px; background: #f0fdf4; border: 2px solid #16a34a; border-radius: 12px; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <label style="font-size: 13px; font-weight: 800; color: #166534;">🐄 COW RATE FORMULA</label>
+                  <div id="cowRatePreview" style="font-size: 18px; font-weight: 900; color: #16a34a; background: white; padding: 6px 12px; border-radius: 8px; border: 2px solid #16a34a;">₹0.00/L</div>
+                </div>
+                <div style="font-size: 11px; color: #166534; background: #dcfce7; padding: 6px 8px; border-radius: 6px; margin-bottom: 8px;">
+                  📊 Live Preview (Fat: <span id="cowFatDisplay">0</span>% | SNF: <span id="cowSnfDisplay">0</span>%)
+                </div>
+              </div>
+
               <div class="field">
-                <label>🐄 Cow Base (₹)</label>
-                <input id="setCowBase" inputmode="decimal" />
+                <label>🐄 Cow Base Rate (₹)</label>
+                <input id="setCowBase" inputmode="decimal" style="font-weight: 700;" oninput="updateLivePreview()" />
               </div>
               <div class="field">
-                <label>🐄 Cow Factor (₹ per Fat)</label>
-                <input id="setCowFactor" inputmode="decimal" />
+                <label>Cow Base Operator</label>
+                <select id="setCowBaseOp" style="font-weight: 600;" onchange="updateLivePreview()">
+                  <option value="fixed">Fixed (No Operator)</option>
+                  <option value="fat">Based on Fat</option>
+                  <option value="snf">Based on SNF</option>
+                  <option value="fat_snf">Based on Fat + SNF</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>🐄 Cow Fat Factor (₹/%Fat)</label>
+                <input id="setCowFactor" inputmode="decimal" style="font-weight: 700;" oninput="updateLivePreview()" />
               </div>
               <div class="field">
-                <label>🐃 Buffalo Base (₹)</label>
-                <input id="setBuffBase" inputmode="decimal" />
+                <label>Cow Fat Operator</label>
+                <select id="setCowFatOp" style="font-weight: 600;" onchange="updateLivePreview()">
+                  <option value="multiply">Multiply (Factor × Fat%)</option>
+                  <option value="add">Add (Factor + Fat%)</option>
+                  <option value="disabled">Disabled</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>🐄 Cow SNF Factor (₹/%SNF)</label>
+                <input id="setCowSnfFactor" inputmode="decimal" style="font-weight: 700;" oninput="updateLivePreview()" />
               </div>
               <div class="field">
-                <label>🐃 Buffalo Factor (₹ per Fat)</label>
-                <input id="setBuffFactor" inputmode="decimal" />
+                <label>Cow SNF Operator</label>
+                <select id="setCowSnfOp" style="font-weight: 600;" onchange="updateLivePreview()">
+                  <option value="multiply">Multiply (Factor × SNF%)</option>
+                  <option value="add">Add (Factor + SNF%)</option>
+                  <option value="disabled">Disabled</option>
+                </select>
+              </div>
+              
+              <!-- Cow Formula Preview -->
+              <div class="field full" style="padding: 10px; background: #f0fdf4; border: 2px solid #16a34a; border-radius: 8px; margin-top: 4px;">
+                <label style="font-size: 11px; font-weight: 700; color: #166534; display: block; margin-bottom: 6px;">📝 Cow Formula (Updates Live):</label>
+                <div id="cowFormulaPreview" style="font-size: 14px; font-weight: 800; color: #16a34a; background: white; padding: 8px; border-radius: 6px; border: 1px solid #16a34a; margin-bottom: 6px;">₹18 + (₹6 × Fat%) + (₹3 × SNF%)</div>
+                <div id="cowCalcBreakdown" style="font-size: 12px; color: #166534; padding: 8px; background: #dcfce7; border-radius: 4px; font-weight: 600;">Example: ₹18 + (₹6 × 4.0%) + (₹3 × 8.5%) = ₹67.50/L</div>
+              </div>
+
+              <!-- Buffalo Rate Formula -->
+              <div class="field full" style="padding: 10px; background: #fef3c7; border: 2px solid #d97706; border-radius: 12px; margin: 12px 0 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <label style="font-size: 13px; font-weight: 800; color: #92400e;">🐃 BUFFALO RATE FORMULA</label>
+                  <div id="buffRatePreview" style="font-size: 18px; font-weight: 900; color: #d97706; background: white; padding: 6px 12px; border-radius: 8px; border: 2px solid #d97706;">₹0.00/L</div>
+                </div>
+                <div style="font-size: 11px; color: #92400e; background: #fef3c7; padding: 6px 8px; border-radius: 6px; margin-bottom: 8px;">
+                  📊 Live Preview (Fat: <span id="buffFatDisplay">0</span>% | SNF: <span id="buffSnfDisplay">0</span>%)
+                </div>
+              </div>
+
+              <div class="field">
+                <label>🐃 Buffalo Base Rate (₹)</label>
+                <input id="setBuffBase" inputmode="decimal" style="font-weight: 700;" oninput="updateLivePreview()" />
+              </div>
+              <div class="field">
+                <label>Buffalo Base Operator</label>
+                <select id="setBuffBaseOp" style="font-weight: 600;" onchange="updateLivePreview()">
+                  <option value="fixed">Fixed (No Operator)</option>
+                  <option value="fat">Based on Fat</option>
+                  <option value="snf">Based on SNF</option>
+                  <option value="fat_snf">Based on Fat + SNF</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>🐃 Buffalo Fat Factor (₹/%Fat)</label>
+                <input id="setBuffFactor" inputmode="decimal" style="font-weight: 700;" oninput="updateLivePreview()" />
+              </div>
+              <div class="field">
+                <label>Buffalo Fat Operator</label>
+                <select id="setBuffFatOp" style="font-weight: 600;" onchange="updateLivePreview()">
+                  <option value="multiply">Multiply (Factor × Fat%)</option>
+                  <option value="add">Add (Factor + Fat%)</option>
+                  <option value="disabled">Disabled</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>🐃 Buffalo SNF Factor (₹/%SNF)</label>
+                <input id="setBuffSnfFactor" inputmode="decimal" style="font-weight: 700;" oninput="updateLivePreview()" />
+              </div>
+              <div class="field">
+                <label>Buffalo SNF Operator</label>
+                <select id="setBuffSnfOp" style="font-weight: 600;" onchange="updateLivePreview()">
+                  <option value="multiply">Multiply (Factor × SNF%)</option>
+                  <option value="add">Add (Factor + SNF%)</option>
+                  <option value="disabled">Disabled</option>
+                </select>
+              </div>
+              
+              <!-- Buffalo Formula Preview -->
+              <div class="field full" style="padding: 10px; background: #fef3c7; border: 2px solid #d97706; border-radius: 8px; margin-top: 4px;">
+                <label style="font-size: 11px; font-weight: 700; color: #92400e; display: block; margin-bottom: 6px;">📝 Buffalo Formula (Updates Live):</label>
+                <div id="buffFormulaPreview" style="font-size: 14px; font-weight: 800; color: #d97706; background: white; padding: 8px; border-radius: 6px; border: 1px solid #d97706; margin-bottom: 6px;">₹22 + (₹7 × Fat%) + (₹3.5 × SNF%)</div>
+                <div id="buffCalcBreakdown" style="font-size: 12px; color: #92400e; padding: 8px; background: #fef3c7; border-radius: 4px; font-weight: 600;">Example: ₹22 + (₹7 × 4.0%) + (₹3.5 × 8.5%) = ₹79.75/L</div>
+              </div>
+
+              <!-- Other Settings -->
+              <div class="field full" style="padding: 10px; background: #f3f4f6; border: 2px solid #6b7280; border-radius: 12px; margin: 12px 0 8px;">
+                <label style="font-size: 13px; font-weight: 800; color: #374151; display: block; margin-bottom: 8px;">⚙️ OTHER SETTINGS</label>
               </div>
 
               <div class="field">
@@ -1961,16 +2054,13 @@
                 <input id="setSnfStep" inputmode="decimal" />
               </div>
               <div class="field">
-                <label>UI Session Switch Hour</label>
+                <label>Session Switch Hour</label>
                 <input id="setSessionHour" inputmode="numeric" />
               </div>
 
               <div class="field full">
-                <label>Formula Preview (Auto)</label>
-                <div
-                  style="font-weight: 1100; font-size: 15px; padding: 6px 0"
-                  id="formulaPreview"
-                >
+                <label>Formula Preview</label>
+                <div style="font-weight: 700; font-size: 13px; padding: 10px; background: #fff; border: 2px solid #3b82f6; border-radius: 8px;" id="formulaPreview">
                   —
                 </div>
               </div>
@@ -2178,58 +2268,69 @@
           <div class="muted">Photo optional</div>
         </div>
 
-        <div class="modalBody onecol" style="overflow-y: auto; flex: 1; min-height: 0;">
-          <div class="modalCol">
-            <h3>👤 Farmer Form</h3>
-            <div class="formGrid">
-              <div class="field" style="padding: 6px;">
-                <label style="font-size: 11px;">👤 Name</label>
-                <input id="fName" autocomplete="off" style="font-size: 14px; padding: 8px;" />
+        <div class="modalBody" style="overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;">
+          <div class="formGrid" style="grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 12px;">
+            <!-- Essential Fields First -->
+            <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">👤 Name</label>
+              <input id="fName" type="text" autocomplete="name" autocapitalize="words" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
+            </div>
+            <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📱 Mobile Number</label>
+              <input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" pattern="[0-9]{10}" maxlength="10" placeholder="10 digit mobile" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
+            </div>
+            <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🥛 Milk Type</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
+                <button type="button" id="fAnimalCow" onclick="selectFarmerAnimal('cow')" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;">🐄 Cow</button>
+                <button type="button" id="fAnimalBuffalo" onclick="selectFarmerAnimal('buffalo')" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;">🐃 Buffalo</button>
+                <button type="button" id="fAnimalBoth" onclick="selectFarmerAnimal('both')" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;">🔄 Both</button>
               </div>
-              <div class="field" style="padding: 6px;">
-                <label style="font-size: 11px;">📱 Number</label>
-                <input id="fPhone" inputmode="tel" autocomplete="off" style="font-size: 14px; padding: 8px;" />
-              </div>
-              <div class="field full" style="padding: 6px;">
-                <label style="font-size: 11px;">📍 Address</label>
-                <textarea id="fAddress" style="font-size: 14px; padding: 8px; min-height: 60px;"></textarea>
-              </div>
-              <div class="field full" style="padding: 6px;">
-                <label style="font-size: 11px;">🏢 GST No. (B2B)</label>
-                <input id="fGst" autocomplete="off" placeholder="Optional for B2B customers" style="font-size: 14px; padding: 8px;" />
-              </div>
-              <div class="field full" style="padding: 6px;">
-                <label style="font-size: 11px;">🖼️ Image</label>
-                <input id="fImage" type="file" accept="image/*" style="font-size: 13px;" />
-                <div style="color: var(--muted); font-size: 11px; font-weight: 1000;">
-                  Stored offline (small compressed)
-                </div>
-              </div>
-              <div class="field" style="padding: 6px;">
-                <label style="font-size: 11px;">₹ Opening Balance</label>
-                <input id="fBalance" inputmode="decimal" value="0" style="font-size: 14px; padding: 8px;" />
-              </div>
-              <div class="field" style="padding: 6px;">
-  <label style="font-size: 11px;">🥛 Milk Type</label>
-  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;">
-    <button type="button" onclick="selectAnimalType('cow')" id="animalCow" style="padding:8px; border:2px solid var(--line); border-radius:6px; background:white; cursor:pointer; font-weight:700; font-size: 12px;">🐄 Cow</button>
-    <button type="button" onclick="selectAnimalType('buffalo')" id="animalBuffalo" style="padding:8px; border:2px solid var(--line); border-radius:6px; background:white; cursor:pointer; font-weight:700; font-size: 12px;">🐃 Buffalo</button>
-    <button type="button" onclick="selectAnimalType('both')" id="animalBoth" style="padding:8px; border:2px solid var(--line); border-radius:6px; background:white; cursor:pointer; font-weight:700; font-size: 12px;">🔄 Both</button>
-  </div>
-  <input type="hidden" id="fAnimalType" value="cow" />
-</div>
-              <div class="field" style="padding: 6px;">
-                <label style="font-size: 11px;">Status</label>
-                <select id="fActive" style="font-size: 14px; padding: 8px;">
-                  <option value="1">✅ Active</option>
-                  <option value="0">⛔ Inactive</option>
-                </select>
+              <input type="hidden" id="fAnimalType" value="cow" />
+            </div>
+            <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">₹ Opening Balance</label>
+              <input id="fBalance" type="number" inputmode="decimal" step="0.01" min="0" value="0" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
+            </div>
+            <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Status</label>
+              <select id="fActive" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; background: white; box-sizing: border-box;">
+                <option value="1">✅ Active</option>
+                <option value="0">⛔ Inactive</option>
+              </select>
+            </div>
+
+            <!-- Optional Details Below -->
+            <div style="grid-column: 1 / -1; padding: 16px 8px 8px; margin-top: 8px; border-top: 3px dashed var(--line);">
+              <label style="font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">📝 Optional Details (Skip if not needed)</label>
+            </div>
+            <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📍 Address</label>
+              <input id="fAddress" type="text" autocomplete="street-address" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
+            </div>
+            <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🏙️ City</label>
+              <input id="fCity" type="text" autocomplete="address-level2" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
+            </div>
+            <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📮 Pincode</label>
+              <input id="fPincode" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" maxlength="6" placeholder="6 digit" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
+            </div>
+            <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🏢 GST No. (B2B Only)</label>
+              <input id="fGst" type="text" autocomplete="off" inputmode="text" pattern="[0-9A-Z]{15}" maxlength="15" placeholder="15 character GSTN" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; text-transform: uppercase; box-sizing: border-box;" />
+            </div>
+            <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🖼️ Photo</label>
+              <input id="fImage" type="file" accept="image/*" capture="user" style="font-size: 14px; padding: 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; background: #f8fafc; box-sizing: border-box;" />
+              <div style="color: var(--muted); font-size: 11px; font-weight: 600; margin-top: 6px;">
+                Stored offline (compressed)
               </div>
             </div>
           </div>
         </div>
 
-        <div class="modalFoot">
+        <div class="modalFoot" style="flex-shrink: 0;">
           <button class="footBtn good" id="btnCreateFarmer">✅ Create</button>
           <button class="footBtn" id="btnDemoFarmers">🧪 Demo Farmers</button>
         </div>
@@ -2380,13 +2481,21 @@ function playSuccessSound() {
 
       const defaultSettings = {
         cowBase: 18.0,
-        cowFactor: 6.0, // rate/L = base + factor * fat
+        cowBaseOp: 'fixed',
+        cowFactor: 6.0,
+        cowFatOp: 'multiply',
+        cowSnfFactor: 3.0,
+        cowSnfOp: 'multiply',
         buffBase: 22.0,
+        buffBaseOp: 'fixed',
         buffFactor: 7.0,
+        buffFatOp: 'multiply',
+        buffSnfFactor: 3.5,
+        buffSnfOp: 'multiply',
         qtyStep: 0.5,
         fatStep: 0.1,
         snfStep: 0.1,
-        sessionSwitchHour: 14, // before this -> Morning, after -> Evening
+        sessionSwitchHour: 14,
       };
 
       function loadSettings() {
@@ -2588,10 +2697,20 @@ function playSuccessSound() {
     manualRateInput.value = currentRate;
   }
 }
+  // Calculate SNF from CLR (Density) - only if SNF field is empty
   function calculateSNFFromCLR() {
-  if (clr > 0) {
-    // Ye formula apne aap SNF calculate karke update kar dega
+  // Only auto-calculate if SNF input is empty or zero (user hasn't entered manually)
+  const snfValue = el("snfInput")?.value;
+  const userEnteredSNF = snfValue && Number(snfValue) > 0;
+  
+  // If user already entered SNF, don't overwrite it
+  if (userEnteredSNF) return;
+  
+  if (clr > 0 && fat > 0) {
+    // Standard SNF calculation formula
     snf = round2((clr / 4) + (fat * 0.21) + 0.36);
+    // Update SNF input field
+    if (el("snfInput")) el("snfInput").value = snf.toFixed(1);
   }
 }
       /***********************
@@ -2691,13 +2810,48 @@ function calcYield() {
         return round2(Number(mInput));
     }
 
-    // Auto calculate from fat
+    // Auto calculate from Fat AND SNF using configured operators
     const f = Number(el("fatInput").value) || 0;
+    const s = Number(el("snfInput").value) || 0;
     const a = el("animalSelect").value;
+
     if (a === "buffalo") {
-        return round2(settings.buffBase + (settings.buffFactor * f));
+        // Buffalo rate calculation with operators
+        let rate = settings.buffBase;
+        
+        // Apply base operator
+        if (settings.buffBaseOp === 'fat') rate = settings.buffBase * f;
+        else if (settings.buffBaseOp === 'snf') rate = settings.buffBase * s;
+        else if (settings.buffBaseOp === 'fat_snf') rate = settings.buffBase * (f + s);
+        
+        // Apply fat operator
+        if (settings.buffFatOp === 'multiply') rate += settings.buffFactor * f;
+        else if (settings.buffFatOp === 'add') rate += settings.buffFactor + f;
+        
+        // Apply SNF operator
+        if (settings.buffSnfOp === 'multiply') rate += settings.buffSnfFactor * s;
+        else if (settings.buffSnfOp === 'add') rate += settings.buffSnfFactor + s;
+        
+        return round2(rate);
     }
-    return round2(settings.cowBase + (settings.cowFactor * f));
+    
+    // Cow rate calculation with operators
+    let rate = settings.cowBase;
+    
+    // Apply base operator
+    if (settings.cowBaseOp === 'fat') rate = settings.cowBase * f;
+    else if (settings.cowBaseOp === 'snf') rate = settings.cowBase * s;
+    else if (settings.cowBaseOp === 'fat_snf') rate = settings.cowBase * (f + s);
+    
+    // Apply fat operator
+    if (settings.cowFatOp === 'multiply') rate += settings.cowFactor * f;
+    else if (settings.cowFatOp === 'add') rate += settings.cowFactor + f;
+    
+    // Apply SNF operator
+    if (settings.cowSnfOp === 'multiply') rate += settings.cowSnfFactor * s;
+    else if (settings.cowSnfOp === 'add') rate += settings.cowSnfFactor + s;
+    
+    return round2(rate);
 }
       function getAmount() {
         const r = getRatePerLiter();
@@ -2753,6 +2907,12 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
     const maxPage = Math.max(0, Math.ceil(list.length / FARMERS_PER_PAGE) - 1);
     if (farmerPage > maxPage) farmerPage = maxPage;
 
+    // Show/hide navigation buttons based on farmer count
+    const farmerNav = el("prevFarmers")?.parentElement;
+    if (farmerNav) {
+      farmerNav.style.display = list.length > FARMERS_PER_PAGE ? 'flex' : 'none';
+    }
+
     const start = farmerPage * FARMERS_PER_PAGE;
     const pageItems = list.slice(start, start + FARMERS_PER_PAGE);
 
@@ -2798,10 +2958,10 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
     const dummyCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (dummyCtx.state === 'suspended') dummyCtx.resume();
     // ----------------------------
-                
+
                 // Auto-fill from previous entry for this farmer
                 loadFarmerMemory(f.id);
-                
+
                 renderAll();
                 el("qtyInput").focus();
                 el("qtyInput").select();
@@ -2868,6 +3028,255 @@ function closeRateEditor() {
     el("rateEditor").style.display = "none";
 }
 
+// Update formula preview in settings
+function updateFormulaPreview() {
+    const cowBase = Number(el("setCowBase")?.value || 0);
+    const cowBaseOp = el("setCowBaseOp")?.value || 'fixed';
+    const cowFactor = Number(el("setCowFactor")?.value || 0);
+    const cowFatOp = el("setCowFatOp")?.value || 'multiply';
+    const cowSnfFactor = Number(el("setCowSnfFactor")?.value || 0);
+    const cowSnfOp = el("setCowSnfOp")?.value || 'multiply';
+    
+    const buffBase = Number(el("setBuffBase")?.value || 0);
+    const buffBaseOp = el("setBuffBaseOp")?.value || 'fixed';
+    const buffFactor = Number(el("setBuffFactor")?.value || 0);
+    const buffFatOp = el("setBuffFatOp")?.value || 'multiply';
+    const buffSnfFactor = Number(el("setBuffSnfFactor")?.value || 0);
+    const buffSnfOp = el("setBuffSnfOp")?.value || 'multiply';
+
+    const preview = el("formulaPreview");
+    if (preview) {
+      // Build Cow formula string
+      let cowFormula = `₹${cowBase}`;
+      if (cowBaseOp === 'fat') cowFormula = `₹${cowBase} × Fat%`;
+      else if (cowBaseOp === 'snf') cowFormula = `₹${cowBase} × SNF%`;
+      else if (cowBaseOp === 'fat_snf') cowFormula = `₹${cowBase} × (Fat% + SNF%)`;
+      
+      if (cowFatOp === 'multiply' && cowFatOp !== 'disabled') cowFormula += ` + (₹${cowFactor} × Fat%)`;
+      else if (cowFatOp === 'add' && cowFatOp !== 'disabled') cowFormula += ` + (₹${cowFactor} + Fat%)`;
+      
+      if (cowSnfOp === 'multiply' && cowSnfOp !== 'disabled') cowFormula += ` + (₹${cowSnfFactor} × SNF%)`;
+      else if (cowSnfOp === 'add' && cowSnfOp !== 'disabled') cowFormula += ` + (₹${cowSnfFactor} + SNF%)`;
+      
+      // Build Buffalo formula string
+      let buffFormula = `₹${buffBase}`;
+      if (buffBaseOp === 'fat') buffFormula = `₹${buffBase} × Fat%`;
+      else if (buffBaseOp === 'snf') buffFormula = `₹${buffBase} × SNF%`;
+      else if (buffBaseOp === 'fat_snf') buffFormula = `₹${buffBase} × (Fat% + SNF%)`;
+      
+      if (buffFatOp === 'multiply' && buffFatOp !== 'disabled') buffFormula += ` + (₹${buffFactor} × Fat%)`;
+      else if (buffFatOp === 'add' && buffFatOp !== 'disabled') buffFormula += ` + (₹${buffFactor} + Fat%)`;
+      
+      if (buffSnfOp === 'multiply' && buffSnfOp !== 'disabled') buffFormula += ` + (₹${buffSnfFactor} × SNF%)`;
+      else if (buffSnfOp === 'add' && buffSnfOp !== 'disabled') buffFormula += ` + (₹${buffSnfFactor} + SNF%)`;
+      
+      preview.innerHTML = `
+        <div style="color: #16a34a; margin-bottom: 6px;">🐄 Cow: ${cowFormula}</div>
+        <div style="color: #d97706;">🐃 Buffalo: ${buffFormula}</div>
+      `;
+    }
+}
+
+// Live rate preview for Cow and Buffalo
+function updateLivePreview() {
+    // Get current Fat and SNF from main form
+    const fat = Number(el("fatInput")?.value || 4.0);
+    const snf = Number(el("snfInput")?.value || 8.5);
+    
+    // Update Fat/SNF displays
+    if (el("cowFatDisplay")) el("cowFatDisplay").textContent = fat.toFixed(1);
+    if (el("cowSnfDisplay")) el("cowSnfDisplay").textContent = snf.toFixed(1);
+    if (el("buffFatDisplay")) el("buffFatDisplay").textContent = fat.toFixed(1);
+    if (el("buffSnfDisplay")) el("buffSnfDisplay").textContent = snf.toFixed(1);
+    
+    // Calculate Cow rate
+    const cowBase = Number(el("setCowBase")?.value || 0);
+    const cowBaseOp = el("setCowBaseOp")?.value || 'fixed';
+    const cowFactor = Number(el("setCowFactor")?.value || 0);
+    const cowFatOp = el("setCowFatOp")?.value || 'multiply';
+    const cowSnfFactor = Number(el("setCowSnfFactor")?.value || 0);
+    const cowSnfOp = el("setCowSnfOp")?.value || 'multiply';
+    
+    let cowRate = cowBase;
+    let cowFormula = `₹${cowBase}`;
+    let cowExample = `${cowBase}`;
+    
+    if (cowBaseOp === 'fat') { 
+        cowRate = cowBase * fat; 
+        cowFormula = `₹${cowBase}×Fat`; 
+        cowExample = `${cowBase}×${fat.toFixed(1)}`; 
+    } else if (cowBaseOp === 'snf') { 
+        cowRate = cowBase * snf; 
+        cowFormula = `₹${cowBase}×SNF`; 
+        cowExample = `${cowBase}×${snf.toFixed(1)}`; 
+    } else if (cowBaseOp === 'fat_snf') { 
+        cowRate = cowBase * (fat + snf); 
+        cowFormula = `₹${cowBase}×(Fat+SNF)`; 
+        cowExample = `${cowBase}×(${fat.toFixed(1)}+${snf.toFixed(1)})`; 
+    }
+    
+    if (cowFatOp === 'multiply') { 
+        cowRate += cowFactor * fat; 
+        cowFormula += ` + (₹${cowFactor}×Fat)`; 
+        cowExample += ` + (${cowFactor}×${fat.toFixed(1)})`; 
+    } else if (cowFatOp === 'add') { 
+        cowRate += cowFactor + fat; 
+        cowFormula += ` + (₹${cowFactor}+Fat)`; 
+        cowExample += ` + (${cowFactor}+${fat.toFixed(1)})`; 
+    } else if (cowFatOp === 'disabled') {
+        cowFormula += ` + (Fat: Disabled)`;
+    }
+    
+    if (cowSnfOp === 'multiply') { 
+        cowRate += cowSnfFactor * snf; 
+        cowFormula += ` + (₹${cowSnfFactor}×SNF)`; 
+        cowExample += ` + (${cowSnfFactor}×${snf.toFixed(1)})`; 
+    } else if (cowSnfOp === 'add') { 
+        cowRate += cowSnfFactor + snf; 
+        cowFormula += ` + (₹${cowSnfFactor}+SNF)`; 
+        cowExample += ` + (${cowSnfFactor}+${snf.toFixed(1)})`; 
+    } else if (cowSnfOp === 'disabled') {
+        cowFormula += ` + (SNF: Disabled)`;
+    }
+    
+    // Calculate Buffalo rate
+    const buffBase = Number(el("setBuffBase")?.value || 0);
+    const buffBaseOp = el("setBuffBaseOp")?.value || 'fixed';
+    const buffFactor = Number(el("setBuffFactor")?.value || 0);
+    const buffFatOp = el("setBuffFatOp")?.value || 'multiply';
+    const buffSnfFactor = Number(el("setBuffSnfFactor")?.value || 0);
+    const buffSnfOp = el("setBuffSnfOp")?.value || 'multiply';
+    
+    let buffRate = buffBase;
+    let buffFormula = `₹${buffBase}`;
+    let buffExample = `${buffBase}`;
+    
+    if (buffBaseOp === 'fat') { 
+        buffRate = buffBase * fat; 
+        buffFormula = `₹${buffBase}×Fat`; 
+        buffExample = `${buffBase}×${fat.toFixed(1)}`; 
+    } else if (buffBaseOp === 'snf') { 
+        buffRate = buffBase * snf; 
+        buffFormula = `₹${buffBase}×SNF`; 
+        buffExample = `${buffBase}×${snf.toFixed(1)}`; 
+    } else if (buffBaseOp === 'fat_snf') { 
+        buffRate = buffBase * (fat + snf); 
+        buffFormula = `₹${buffBase}×(Fat+SNF)`; 
+        buffExample = `${buffBase}×(${fat.toFixed(1)}+${snf.toFixed(1)})`; 
+    }
+    
+    if (buffFatOp === 'multiply') { 
+        buffRate += buffFactor * fat; 
+        buffFormula += ` + (₹${buffFactor}×Fat)`; 
+        buffExample += ` + (${buffFactor}×${fat.toFixed(1)})`; 
+    } else if (buffFatOp === 'add') { 
+        buffRate += buffFactor + fat; 
+        buffFormula += ` + (₹${buffFactor}+Fat)`; 
+        buffExample += ` + (${buffFactor}+${fat.toFixed(1)})`; 
+    } else if (buffFatOp === 'disabled') {
+        buffFormula += ` + (Fat: Disabled)`;
+    }
+    
+    if (buffSnfOp === 'multiply') { 
+        buffRate += buffSnfFactor * snf; 
+        buffFormula += ` + (₹${buffSnfFactor}×SNF)`; 
+        buffExample += ` + (${buffSnfFactor}×${snf.toFixed(1)})`; 
+    } else if (buffSnfOp === 'add') { 
+        buffRate += buffSnfFactor + snf; 
+        buffFormula += ` + (₹${buffSnfFactor}+SNF)`; 
+        buffExample += ` + (${buffSnfFactor}+${snf.toFixed(1)})`; 
+    } else if (buffSnfOp === 'disabled') {
+        buffFormula += ` + (SNF: Disabled)`;
+    }
+    
+    // Update rate previews
+    if (el("cowRatePreview")) el("cowRatePreview").textContent = `₹${cowRate.toFixed(2)}/L`;
+    if (el("buffRatePreview")) el("buffRatePreview").textContent = `₹${buffRate.toFixed(2)}/L`;
+    
+    // Update formula text previews
+    if (el("cowFormulaPreview")) el("cowFormulaPreview").textContent = cowFormula;
+    if (el("buffFormulaPreview")) el("buffFormulaPreview").textContent = buffFormula;
+    
+    // Update calculation breakdown with actual values and selected operators
+    if (el("cowCalcBreakdown")) el("cowCalcBreakdown").textContent = `Example: ${cowExample} = ₹${cowRate.toFixed(2)}/L`;
+    if (el("buffCalcBreakdown")) el("buffCalcBreakdown").textContent = `Example: ${buffExample} = ₹${buffRate.toFixed(2)}/L`;
+}
+
+function updateCowFormulaText() {
+    const cowBase = Number(el("setCowBase")?.value || 0);
+    const cowBaseOp = el("setCowBaseOp")?.value || 'fixed';
+    const cowFactor = Number(el("setCowFactor")?.value || 0);
+    const cowFatOp = el("setCowFatOp")?.value || 'multiply';
+    const cowSnfFactor = Number(el("setCowSnfFactor")?.value || 0);
+    const cowSnfOp = el("setCowSnfOp")?.value || 'multiply';
+    
+    let formula = `₹${cowBase}`;
+    if (cowBaseOp === 'fat') formula = `₹${cowBase}×Fat`;
+    else if (cowBaseOp === 'snf') formula = `₹${cowBase}×SNF`;
+    else if (cowBaseOp === 'fat_snf') formula = `₹${cowBase}×(Fat+SNF)`;
+    
+    if (cowFatOp === 'multiply' && cowFatOp !== 'disabled') formula += ` + (₹${cowFactor}×Fat)`;
+    else if (cowFatOp === 'add' && cowFatOp !== 'disabled') formula += ` + (₹${cowFactor}+Fat)`;
+    
+    if (cowSnfOp === 'multiply' && cowSnfOp !== 'disabled') formula += ` + (₹${cowSnfFactor}×SNF)`;
+    else if (cowSnfOp === 'add' && cowSnfOp !== 'disabled') formula += ` + (₹${cowSnfFactor}+SNF)`;
+    
+    if (el("cowFormulaPreview")) el("cowFormulaPreview").textContent = formula;
+}
+
+function updateBuffFormulaText() {
+    const buffBase = Number(el("setBuffBase")?.value || 0);
+    const buffBaseOp = el("setBuffBaseOp")?.value || 'fixed';
+    const buffFactor = Number(el("setBuffFactor")?.value || 0);
+    const buffFatOp = el("setBuffFatOp")?.value || 'multiply';
+    const buffSnfFactor = Number(el("setBuffSnfFactor")?.value || 0);
+    const buffSnfOp = el("setBuffSnfOp")?.value || 'multiply';
+    
+    let formula = `₹${buffBase}`;
+    if (buffBaseOp === 'fat') formula = `₹${buffBase}×Fat`;
+    else if (buffBaseOp === 'snf') formula = `₹${buffBase}×SNF`;
+    else if (buffBaseOp === 'fat_snf') formula = `₹${buffBase}×(Fat+SNF)`;
+    
+    if (buffFatOp === 'multiply' && buffFatOp !== 'disabled') formula += ` + (₹${buffFactor}×Fat)`;
+    else if (buffFatOp === 'add' && buffFatOp !== 'disabled') formula += ` + (₹${buffFactor}+Fat)`;
+    
+    if (buffSnfOp === 'multiply' && buffSnfOp !== 'disabled') formula += ` + (₹${buffSnfFactor}×SNF)`;
+    else if (buffSnfOp === 'add' && buffSnfOp !== 'disabled') formula += ` + (₹${buffSnfFactor}+SNF)`;
+    
+    if (el("buffFormulaPreview")) el("buffFormulaPreview").textContent = formula;
+}
+
+// City-wise rate presets (based on common dairy standards)
+const cityPresets = {
+  mumbai: { cowBase: 20, cowFactor: 7, cowSnfFactor: 3.5, buffBase: 25, buffFactor: 8, buffSnfFactor: 4 },
+  pune: { cowBase: 18, cowFactor: 6, cowSnfFactor: 3, buffBase: 22, buffFactor: 7, buffSnfFactor: 3.5 },
+  delhi: { cowBase: 22, cowFactor: 8, cowSnfFactor: 4, buffBase: 28, buffFactor: 9, buffSnfFactor: 4.5 },
+  bangalore: { cowBase: 19, cowFactor: 6.5, cowSnfFactor: 3.2, buffBase: 24, buffFactor: 7.5, buffSnfFactor: 3.8 },
+  chennai: { cowBase: 21, cowFactor: 7.5, cowSnfFactor: 3.8, buffBase: 26, buffFactor: 8.5, buffSnfFactor: 4.2 },
+  ahmedabad: { cowBase: 17, cowFactor: 5.5, cowSnfFactor: 2.8, buffBase: 21, buffFactor: 6.5, buffSnfFactor: 3.2 },
+  kolkata: { cowBase: 16, cowFactor: 5, cowSnfFactor: 2.5, buffBase: 20, buffFactor: 6, buffSnfFactor: 3 }
+};
+
+// Apply preset when user clicks city button
+function applyPreset(city) {
+  const preset = cityPresets[city];
+  if (!preset) return;
+  
+  // Fill in the values
+  if (el("setCowBase")) el("setCowBase").value = preset.cowBase;
+  if (el("setCowFactor")) el("setCowFactor").value = preset.cowFactor;
+  if (el("setCowSnfFactor")) el("setCowSnfFactor").value = preset.cowSnfFactor;
+  if (el("setBuffBase")) el("setBuffBase").value = preset.buffBase;
+  if (el("setBuffFactor")) el("setBuffFactor").value = preset.buffFactor;
+  if (el("setBuffSnfFactor")) el("setBuffSnfFactor").value = preset.buffSnfFactor;
+  
+  // Update preview
+  updateFormulaPreview();
+  
+  // Show confirmation
+  showToast(`✅ ${city.charAt(0).toUpperCase() + city.slice(1)} rates applied!`);
+}
+
 // 🎯 ACTIVE RATE UPDATE LOGIC
 function updateActiveRate() {
     const val = Number(el("newRateInput").value);
@@ -2888,6 +3297,51 @@ function updateActiveRate() {
     closeRateEditor();
     
     showToast(`Naya Rate Set: ₹${val.toFixed(2)} ✅`);
+}
+
+// Animal Type Toggle Function - Keyboard optimized
+function selectAnimal(type) {
+  // Reset both buttons
+  ['animalCow', 'animalBuffalo'].forEach(id => {
+    const btn = el(id);
+    if (btn) {
+      btn.style.borderColor = 'var(--line)';
+      btn.style.background = 'white';
+      btn.classList.remove('selected');
+    }
+  });
+
+  // Set selected
+  el("animalSelect").value = type;
+  const selectedBtn = el("animal" + type.charAt(0).toUpperCase() + type.slice(1));
+  if (selectedBtn) {
+    selectedBtn.style.borderColor = '#2563eb';
+    selectedBtn.style.background = '#eff6ff';
+    selectedBtn.classList.add('selected');
+  }
+  
+  // Re-render to update calculations
+  renderTrust();
+}
+
+// Farmer Form Animal Type Toggle - Keyboard optimized
+function selectFarmerAnimal(type) {
+  // Reset all buttons
+  ['fAnimalCow', 'fAnimalBuffalo', 'fAnimalBoth'].forEach(id => {
+    const btn = el(id);
+    if (btn) {
+      btn.style.borderColor = 'var(--line)';
+      btn.style.background = 'white';
+    }
+  });
+
+  // Set selected
+  el("fAnimalType").value = type;
+  const selectedBtn = el("fAnimal" + type.charAt(0).toUpperCase() + type.slice(1));
+  if (selectedBtn) {
+    selectedBtn.style.borderColor = '#2563eb';
+    selectedBtn.style.background = '#eff6ff';
+  }
 }
 
 // Pill par rate dikhane ke liye
@@ -3318,7 +3772,15 @@ function playSuccessSound() {
     const before = farmerBalanceBefore(farmer);
     const ratePerL = getRatePerLiter();
     const amount = getAmount();
-    const after = round2(before + amount);
+    
+    // Get the ROUNDED balance from UI (final accepted amount)
+    const balAfterEl = el("balAfter");
+    const afterDisplay = balAfterEl ? parseFloat(balAfterEl.textContent.replace('₹', '')) : round2(before + amount);
+    const after = round2(afterDisplay);
+    
+    // Calculate if there's a discount (rounded down) or extra (rounded up)
+    const calculatedAfter = round2(before + amount);
+    const difference = after - calculatedAfter;
 
     // --- ✅ POINT 3.4: GET PAYMENT MODE FROM UI ---
     const selectedPayMode = document.querySelector('input[name="payMode"]:checked').value;
@@ -3338,6 +3800,9 @@ function playSuccessSound() {
         // 🎯 SNAPSHOT LOGIC: Rate ko value ki tarah chipka do
         rateSnapshot: round2(currentRate),
         amount: round2(currentAmount),
+        
+        // Discount/Adjustment if rounded amount differs
+        adjustment: difference !== 0 ? round2(difference) : undefined,
 
         // Audit Metadata
         rateMode: rateMode, // auto ya manual
@@ -3348,6 +3813,7 @@ function playSuccessSound() {
         deviceId: navigator.userAgent.slice(0, 40)
     };
     // --- DATA SAVING ---
+    // Use the ROUNDED (final accepted) balance - NO carry forward of difference
     farmer.balance = after;
     saveFarmers(farmers);
 
@@ -3674,9 +4140,48 @@ function showAuditProof(entryId) {
         const overlay = document.getElementById(id);
         if (overlay) {
           overlay.style.display = "flex";
+          // Scroll modal body to top
+          const modalBody = overlay.querySelector('.modalBody');
+          if (modalBody) modalBody.scrollTop = 0;
+          
+          // Load settings values when opening settings modal
+          if (id === "overlaySettings") {
+            if (el("setCowBase")) el("setCowBase").value = settings.cowBase || 0;
+            if (el("setCowBaseOp")) el("setCowBaseOp").value = settings.cowBaseOp || 'fixed';
+            if (el("setCowFactor")) el("setCowFactor").value = settings.cowFactor || 0;
+            if (el("setCowFatOp")) el("setCowFatOp").value = settings.cowFatOp || 'multiply';
+            if (el("setCowSnfFactor")) el("setCowSnfFactor").value = settings.cowSnfFactor || 0;
+            if (el("setCowSnfOp")) el("setCowSnfOp").value = settings.cowSnfOp || 'multiply';
+            if (el("setBuffBase")) el("setBuffBase").value = settings.buffBase || 0;
+            if (el("setBuffBaseOp")) el("setBuffBaseOp").value = settings.buffBaseOp || 'fixed';
+            if (el("setBuffFactor")) el("setBuffFactor").value = settings.buffFactor || 0;
+            if (el("setBuffFatOp")) el("setBuffFatOp").value = settings.buffFatOp || 'multiply';
+            if (el("setBuffSnfFactor")) el("setBuffSnfFactor").value = settings.buffSnfFactor || 0;
+            if (el("setBuffSnfOp")) el("setBuffSnfOp").value = settings.buffSnfOp || 'multiply';
+            if (el("setQtyStep")) el("setQtyStep").value = settings.qtyStep || 0.1;
+            if (el("setFatStep")) el("setFatStep").value = settings.fatStep || 0.1;
+            if (el("setSnfStep")) el("setSnfStep").value = settings.snfStep || 0.1;
+            if (el("setSessionHour")) el("setSessionHour").value = settings.sessionSwitchHour || 4;
+            updateFormulaPreview();
+            updateLivePreview();
+          }
+          
           // Focus first input in the overlay
-          const firstInput = overlay.querySelector('input, select, textarea');
-          if (firstInput) setTimeout(() => firstInput.focus(), 100);
+          const firstInput = overlay.querySelector('input:not([type="hidden"]), select, textarea');
+          if (firstInput) {
+            // Use requestAnimationFrame for better timing with CSS transitions
+            requestAnimationFrame(() => {
+              setTimeout(() => {
+                firstInput.focus();
+                // Select text for text inputs for better UX
+                if (firstInput.tagName === 'INPUT' && firstInput.type !== 'file') {
+                  firstInput.select();
+                }
+                // Scroll input into view if needed
+                firstInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }, 50);
+            });
+          }
         }
         if (id === "overlayHistory") renderHistory();
         if (id === "overlayLeader") renderLeader();
@@ -3687,6 +4192,31 @@ function showAuditProof(entryId) {
           overlay.style.display = "none";
         }
       }
+
+      // Enter key navigation for forms - move to next field on Enter
+      // (Doesn't apply to farmer modal - has its own dedicated handler)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+          // Skip if farmer modal is open (has dedicated handler)
+          if (el("overlayFarmer")?.style.display === "flex") return;
+          
+          e.preventDefault();
+          const form = e.target.closest('form, .modalBody, .formGrid');
+          if (form) {
+            const inputs = Array.from(form.querySelectorAll('input:not([type="hidden"]):not([type="file"]), select, textarea'));
+            const currentIndex = inputs.indexOf(e.target);
+            if (currentIndex !== -1 && currentIndex < inputs.length - 1) {
+              inputs[currentIndex + 1].focus();
+              // Select text for text inputs
+              if (inputs[currentIndex + 1].tagName === 'INPUT' && inputs[currentIndex + 1].type !== 'file') {
+                inputs[currentIndex + 1].select();
+              }
+              // Scroll input into view
+              inputs[currentIndex + 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        }
+      });
       
       // Close overlay when clicking outside modal
       document.querySelectorAll('.overlay').forEach(overlay => {
@@ -3708,107 +4238,317 @@ function showAuditProof(entryId) {
       /***********************
        * EVENTS              *
        ***********************/
-      // Initialize manual rate input on page load
+      // Initialize everything when DOM is ready
       window.addEventListener('DOMContentLoaded', () => {
+        // Manual rate input initialization
         const manualRateInput = el("manualRateInput");
         if (manualRateInput && settings.cowBase) {
           manualRateInput.value = Number(settings.cowBase).toFixed(2);
           manualRateInput.placeholder = `Auto: ₹${manualRateInput.value}`;
         }
+
+        // Reset farmer page to 0 and render
+        farmerPage = 0;
+        renderFarmers();
+
+        // Paging
+        const prevFarmers = el("prevFarmers");
+        if (prevFarmers) prevFarmers.onclick = () => { farmerPage--; renderFarmers(); };
+        
+        const nextFarmers = el("nextFarmers");
+        if (nextFarmers) nextFarmers.onclick = () => { farmerPage++; renderFarmers(); };
+
+        // Manual rate override
+        const manualRateApply = el("manualRateApply");
+        if (manualRateApply) manualRateApply.onclick = () => { manualRate = Number(manualRateInput.value) || 0; renderTrust(); };
+
+        // Save / Hold / Likhlo (Credit)
+        const btnSave = el("btnSave");
+        if (btnSave) {
+          btnSave.onclick = saveEntry;
+          console.log('✅ Save button initialized');
+        } else {
+          console.error('❌ Save button not found!');
+        }
+
+        const btnHold = el("btnHold");
+        if (btnHold) {
+          btnHold.onclick = holdCurrent;
+          console.log('✅ Hold button initialized');
+        } else {
+          console.error('❌ Hold button not found!');
+        }
+
+        const btnLikhlo = el("btnLikhlo");
+        if (btnLikhlo) {
+          btnLikhlo.onclick = () => {
+            // Open farmer detail modal for advance/credit management
+            if (selectedFarmerId) {
+              openFarmerDetail(selectedFarmerId);
+            } else {
+              showToast("Select a farmer first!");
+            }
+          };
+          console.log('✅ Likh Lo button initialized');
+        } else {
+          console.error('❌ Likh Lo button not found!');
+        }
+
+        // History (if button exists)
+        const btnHistoryMain = el("btnHistoryMain");
+        if (btnHistoryMain) {
+          btnHistoryMain.onclick = () => openOverlay("overlayHistory");
+        }
+        
+        const todayPrev = el("todayPrev");
+        if (todayPrev) todayPrev.onclick = () => { todayPage--; renderHistory(); };
+        
+        const todayNext = el("todayNext");
+        if (todayNext) todayNext.onclick = () => { todayPage++; renderHistory(); };
+        
+        const weekPrev = el("weekPrev");
+        if (weekPrev) weekPrev.onclick = () => { weekPage--; renderHistory(); };
+        
+        const weekNext = el("weekNext");
+        if (weekNext) weekNext.onclick = () => { weekPage++; renderHistory(); };
+        
+        const btnExport = el("btnExport");
+        if (btnExport) btnExport.onclick = exportJSON;
+        
+        const btnClearToday = el("btnClearToday");
+        if (btnClearToday) btnClearToday.onclick = clearToday;
+
+        // Leader buttons
+        const btnLeader = el("btnLeader");
+        if (btnLeader) btnLeader.onclick = () => openOverlay("overlayLeader");
+        
+        const leaderPrev = el("leaderPrev");
+        if (leaderPrev) leaderPrev.onclick = () => { leaderPage--; renderLeader(); };
+        
+        const leaderNext = el("leaderNext");
+        if (leaderNext) leaderNext.onclick = () => { leaderPage++; renderLeader(); };
+        
+        const btnLeaderByAmt = el("btnLeaderByAmt");
+        if (btnLeaderByAmt) btnLeaderByAmt.onclick = () => { leaderMode = "amount"; leaderPage = 0; renderLeader(); };
+        
+        const btnLeaderByLit = el("btnLeaderByLit");
+        if (btnLeaderByLit) btnLeaderByLit.onclick = () => { leaderMode = "liters"; leaderPage = 0; renderLeader(); };
+        
+        const btnLeaderByCount = el("btnLeaderByCount");
+        if (btnLeaderByCount) btnLeaderByCount.onclick = () => { leaderMode = "count"; leaderPage = 0; renderLeader(); };
+
+        // Settings buttons
+        const btnSettings = el("btnSettings");
+        if (btnSettings) btnSettings.onclick = () => openOverlay("overlaySettings");
+        
+        const btnSaveSettings = el("btnSaveSettings");
+        if (btnSaveSettings) btnSaveSettings.onclick = () => {
+          settings.cowBase = Number(el("setCowBase").value) || settings.cowBase;
+          settings.cowBaseOp = el("setCowBaseOp").value || 'fixed';
+          settings.cowFactor = Number(el("setCowFactor").value) || settings.cowFactor;
+          settings.cowFatOp = el("setCowFatOp").value || 'multiply';
+          settings.cowSnfFactor = Number(el("setCowSnfFactor").value) || settings.cowSnfFactor;
+          settings.cowSnfOp = el("setCowSnfOp").value || 'multiply';
+          settings.buffBase = Number(el("setBuffBase").value) || settings.buffBase;
+          settings.buffBaseOp = el("setBuffBaseOp").value || 'fixed';
+          settings.buffFactor = Number(el("setBuffFactor").value) || settings.buffFactor;
+          settings.buffFatOp = el("setBuffFatOp").value || 'multiply';
+          settings.buffSnfFactor = Number(el("setBuffSnfFactor").value) || settings.buffSnfFactor;
+          settings.buffSnfOp = el("setBuffSnfOp").value || 'multiply';
+          settings.qtyStep = Number(el("setQtyStep").value) || settings.qtyStep;
+          settings.fatStep = Number(el("setFatStep").value) || settings.fatStep;
+          settings.snfStep = Number(el("setSnfStep").value) || settings.snfStep;
+          settings.sessionSwitchHour = Number(el("setSessionHour").value) || settings.sessionSwitchHour;
+          saveSettings(settings);
+          showToast("Settings saved");
+          renderAll();
+        };
+
+        // Add farmer modal
+        const addBtn = el("btnAddFarmerMain");
+        if (addBtn) {
+          addBtn.onclick = () => openOverlay("overlayFarmer");
+          console.log('✅ + Farmer button initialized');
+        } else {
+          console.error('❌ + Farmer button not found!');
+        }
+
+        // Create Farmer button
+        const createBtn = el("btnCreateFarmer");
+        if (createBtn) {
+          createBtn.onclick = async () => {
+            const f = {
+              name: el("fName").value.trim(),
+              phone: el("fPhone").value.trim(),
+              address: el("fAddress").value.trim(),
+              city: el("fCity").value.trim(),
+              pincode: el("fPincode").value.trim(),
+              gst: el("fGst").value.trim().toUpperCase(),
+              balance: Number(el("fBalance").value) || 0,
+              active: el("fActive").value === "1",
+              animalType: el("fAnimalType").value
+            };
+            if (!f.name) {
+              showToast("Name required");
+              console.error('❌ Farmer creation failed: Name is required');
+              return;
+            }
+
+            const btn = el("btnCreateFarmer");
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Creating...';
+
+            try {
+              // Try API first, fallback to local storage
+              const response = await fetch('/api/farmers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(f)
+              }).catch(() => null);
+
+              if (response && response.ok) {
+                const result = await response.json();
+                console.log('✅ Farmer created in Supabase:', result.farmer.id);
+
+                const localFarmer = {
+                  id: result.farmer.id,
+                  ...f
+                };
+                farmers.push(localFarmer);
+                saveFarmers(farmers);
+                selectedFarmerId = localFarmer.id;
+                showToast("Farmer created in Supabase! ✅");
+              } else {
+                // Fallback to local storage
+                const localFarmer = {
+                  id: "f" + Date.now(),
+                  ...f
+                };
+                farmers.push(localFarmer);
+                saveFarmers(farmers);
+                selectedFarmerId = localFarmer.id;
+                showToast("Farmer created (Local) ✅");
+              }
+
+              closeOverlay("overlayFarmer");
+              renderAll();
+
+            } catch (error) {
+              console.error('Error creating farmer:', error);
+              // Final fallback to local storage
+              const localFarmer = {
+                id: "f" + Date.now(),
+                ...f
+              };
+              farmers.push(localFarmer);
+              saveFarmers(farmers);
+              selectedFarmerId = localFarmer.id;
+              closeOverlay("overlayFarmer");
+              renderAll();
+              showToast("Farmer created (Local) ✅");
+            } finally {
+              btn.disabled = false;
+              btn.innerHTML = '✅ Create';
+            }
+          };
+          console.log('✅ Create Farmer button initialized');
+        }
+
+        // Demo Farmers button
+        const demoBtn = el("btnDemoFarmers");
+        if (demoBtn) {
+          demoBtn.onclick = () => {
+            const demoFarmers = [
+              { id: "f1", name: "Raj Kumar", phone: "9876543210", address: "Vadgaon", balance: 0, active: true, animalType: "cow" },
+              { id: "f2", name: "Suresh Patil", phone: "9876543211", address: "Shivaji Nagar", balance: 500, active: true, animalType: "buffalo" },
+              { id: "f3", name: "Anita Desai", phone: "9876543212", address: "Market Yard", balance: 0, active: true, animalType: "both" },
+              { id: "f4", name: "Vikram More", phone: "9876543213", address: "Gandhi Chowk", balance: 1000, active: true, animalType: "cow" },
+              { id: "f5", name: "Priya Jadhav", phone: "9876543214", address: "Station Road", balance: 0, active: true, animalType: "buffalo" }
+            ];
+
+            let added = 0;
+            demoFarmers.forEach(df => {
+              if (!farmers.find(f => f.phone === df.phone)) {
+                farmers.push(df);
+                added++;
+              }
+            });
+
+            if (added > 0) {
+              saveFarmers(farmers);
+              showToast(`Added ${added} demo farmers ✅`);
+              renderAll();
+            } else {
+              showToast("Demo farmers already exist");
+            }
+            closeOverlay("overlayFarmer");
+          };
+          console.log('✅ Demo Farmers button initialized');
+        }
       });
-      
-      // Farmer search
-      searchInput.addEventListener("input", (e) => {
+
+      // Farmer search (outside DOMContentLoaded as searchInput exists)
+      if (searchInput) searchInput.addEventListener("input", (e) => {
         farmerSearch = e.target.value;
         farmerPage = 0;
         renderFarmers();
       });
 
-      // Paging
-      el("prevFarmers").onclick = () => {
-        farmerPage--;
-        renderFarmers();
-      };
-      el("nextFarmers").onclick = () => {
-        farmerPage++;
-        renderFarmers();
-      };
+      // Input listeners (can be set immediately as elements exist)
+      if (el("qtyInput")) el("qtyInput").oninput = (e) => { qty = Number(e.target.value) || 0; renderTrust(); };
+      if (el("fatInput")) el("fatInput").oninput = (e) => { fat = Number(e.target.value) || 0; renderTrust(); };
+      if (el("snfInput")) el("snfInput").oninput = (e) => { snf = Number(e.target.value) || 0; renderTrust(); };
+      if (el("densityInput")) el("densityInput").oninput = (e) => { clr = Number(e.target.value) || 0; calculateSNFFromCLR(); renderTrust(); };
 
-      // Qty / Fat / SNF controls
-      // };// Manual Typing Listener: Jaise hi dabba mein likhoge, summary badal jayegi
-el("qtyInput").oninput = (e) => { qty = Number(e.target.value) || 0; renderTrust(); };
-el("fatInput").oninput = (e) => { fat = Number(e.target.value) || 0; renderTrust(); };
-el("snfInput").oninput = (e) => { snf = Number(e.target.value) || 0; renderTrust(); };
-// --- YAHAN PASTE KAREIN ---
-el("qtyInput").oninput = (e) => {
-  qty = Number(e.target.value) || 0;
-  renderTrust();
-};
+      // Enter key navigation for collection inputs - FULLY OPTIMIZED
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const collectionInputs = ['qtyInput', 'fatInput', 'densityInput', 'snfInput'];
+          const curId = e.target.id;
+          const curIdx = collectionInputs.indexOf(curId);
 
-// Density (CLR) Input Listener
-el("densityInput").oninput = (e) => {
-  clr = Number(e.target.value) || 0;
-  calculateSNFFromCLR(); // Ye SNF nikalega
-  renderTrust(); 
-};
+          // Move to next input on Enter
+          if (curIdx !== -1 && curIdx < collectionInputs.length - 1) {
+            e.preventDefault();
+            const nextInput = el(collectionInputs[curIdx + 1]);
+            if (nextInput) {
+              nextInput.focus();
+              nextInput.select();
+            }
+          }
 
-// Fat Input Listener
-el("fatInput").oninput = (e) => {
-  fat = Number(e.target.value) || 0;
-  calculateSNFFromCLR(); // Fat badla toh SNF bhi apne aap badlega
-  renderTrust();
-};
+          // From SNF, toggle Animal Type (Cow → Buffalo → Cow)
+          if (curId === 'snfInput') {
+            e.preventDefault();
+            const currentAnimal = el("animalSelect").value;
+            const nextAnimal = currentAnimal === 'cow' ? 'buffalo' : 'cow';
+            selectAnimal(nextAnimal);
+            // Move focus to next logical element (manual rate or summary)
+            if (manualRateInput) {
+              manualRateInput.focus();
+              manualRateInput.select();
+            }
+          }
+          
+          // Toggle animal type with Enter when animal buttons are focused
+          if (e.target.id === 'animalCow' || e.target.id === 'animalBuffalo') {
+            e.preventDefault();
+            const currentAnimal = el("animalSelect").value;
+            const nextAnimal = currentAnimal === 'cow' ? 'buffalo' : 'cow';
+            selectAnimal(nextAnimal);
+          }
+        }
+      });
 
-el("snfInput").oninput = (e) => {
-  snf = Number(e.target.value) || 0;
-  renderTrust();
-};
+      // Animal selector - keep hidden select synced
+      if (animalSelect) animalSelect.onchange = (e) => { animal = e.target.value; renderTrust(); };
 
-      // Animal
-      animalSelect.onchange = (e) => {
-        animal = e.target.value;
-        renderTrust();
-      };
-
-      // Manual rate override
-      el("manualRateApply").onclick = () => {
-        manualRate = Number(manualRateInput.value) || 0;
-        renderTrust();
-      };
-      
       // Clear manual rate on farmer change
       function clearManualRate() {
         manualRate = 0;
         if (manualRateInput) manualRateInput.value = '';
       }
-
-      // Save / Hold / Undo
-      el("btnSave").onclick = saveEntry;
-      el("btnHold").onclick = holdCurrent;
-      el("btnUndo").onclick = undoLast;
-
-      // History (if button exists)
-      if (el("btnHistoryMain")) {
-        el("btnHistoryMain").onclick = () => openOverlay("overlayHistory");
-      }
-      el("todayPrev").onclick = () => {
-        todayPage--;
-        renderHistory();
-      };
-      el("todayNext").onclick = () => {
-        todayPage++;
-        renderHistory();
-      };
-      el("weekPrev").onclick = () => {
-        weekPage--;
-        renderHistory();
-      };
-      el("weekNext").onclick = () => {
-        weekPage++;
-        renderHistory();
-      };
-      el("btnExport").onclick = exportJSON;
-      el("btnClearToday").onclick = clearToday;
       
       // Logout function
       function logout() {
@@ -3829,7 +4569,7 @@ el("snfInput").oninput = (e) => {
       function toggleProfileDropdown() {
           const dropdown = document.getElementById('profileDropdown');
           dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-          
+
           // Load user info
           const session = localStorage.getItem('milkbook_session');
           if (session) {
@@ -3839,181 +4579,32 @@ el("snfInput").oninput = (e) => {
               document.getElementById('dropdownShop').textContent = data.shop_name || 'Shop';
           }
       }
-      
+
+      // Toggle header dropdown
+      function toggleHeaderDropdown() {
+          const dropdown = document.getElementById('headerDropdown');
+          dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+      }
+
       // Close dropdown when clicking outside
       document.addEventListener('click', function(e) {
           const dropdown = document.getElementById('profileDropdown');
+          const headerDropdown = document.getElementById('headerDropdown');
           const button = e.target.closest('button');
           if (dropdown && (!button || !button.onclick?.toString().includes('toggleProfileDropdown'))) {
               dropdown.style.display = 'none';
           }
-      });
-
-      // Leader
-      el("btnLeader").onclick = () => openOverlay("overlayLeader");
-      el("leaderPrev").onclick = () => {
-        leaderPage--;
-        renderLeader();
-      };
-      el("leaderNext").onclick = () => {
-        leaderPage++;
-        renderLeader();
-      };
-
-      el("btnLeaderByAmt").onclick = () => {
-        leaderMode = "amount";
-        leaderPage = 0;
-        renderLeader();
-      };
-      el("btnLeaderByLit").onclick = () => {
-        leaderMode = "liters";
-        leaderPage = 0;
-        renderLeader();
-      };
-      el("btnLeaderByCount").onclick = () => {
-        leaderMode = "count";
-        leaderPage = 0;
-        renderLeader();
-      };
-
-      // Settings
-      el("btnSettings").onclick = () => openOverlay("overlaySettings");
-      el("btnSaveSettings").onclick = () => {
-        settings.cowBase = Number(el("setCowBase").value) || settings.cowBase;
-        settings.cowFactor =
-          Number(el("setCowFactor").value) || settings.cowFactor;
-        settings.buffBase =
-          Number(el("setBuffBase").value) || settings.buffBase;
-        settings.buffFactor =
-          Number(el("setBuffFactor").value) || settings.buffFactor;
-        settings.qtyStep = Number(el("setQtyStep").value) || settings.qtyStep;
-        settings.fatStep = Number(el("setFatStep").value) || settings.fatStep;
-        settings.snfStep = Number(el("setSnfStep").value) || settings.snfStep;
-        settings.sessionSwitchHour =
-          Number(el("setSessionHour").value) || settings.sessionSwitchHour;
-        saveSettings(settings);
-        showToast("Settings saved");
-        renderAll();
-      };
-
-      // Add farmer modal
-      window.addEventListener('DOMContentLoaded', function() {
-        const addBtn = el("btnAddFarmerMain");
-        if (addBtn) {
-          addBtn.onclick = () => openOverlay("overlayFarmer");
-          console.log('✅ + Farmer button initialized');
-        } else {
-          console.error('❌ + Farmer button not found!');
-        }
-      });
-      
-      el("btnCreateFarmer").onclick = async () => {
-        const f = {
-          name: el("fName").value.trim(),
-          phone: el("fPhone").value.trim(),
-          address: el("fAddress").value.trim(),
-          balance: Number(el("fBalance").value) || 0,
-          active: el("fActive").value === "1",
-          animalType: el("fAnimalType").value
-        };
-        if (!f.name) {
-          showToast("Name required");
-          console.error('❌ Farmer creation failed: Name is required');
-          return;
-        }
-
-        const btn = el("btnCreateFarmer");
-        const originalText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '⏳ Creating...';
-
-        try {
-          // Try API first, fallback to local storage
-          const response = await fetch('/api/farmers', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(f)
-          }).catch(() => null);
-
-          if (response && response.ok) {
-            const result = await response.json();
-            console.log('✅ Farmer created in Supabase:', result.farmer.id);
-            
-            const localFarmer = {
-              id: result.farmer.id,
-              ...f
-            };
-            farmers.push(localFarmer);
-            saveFarmers(farmers);
-            selectedFarmerId = localFarmer.id;
-            showToast("Farmer created in Supabase! ✅");
-          } else {
-            // Fallback to local storage
-            const localFarmer = {
-              id: "f" + Date.now(),
-              ...f
-            };
-            farmers.push(localFarmer);
-            saveFarmers(farmers);
-            selectedFarmerId = localFarmer.id;
-            showToast("Farmer created (Local) ✅");
+          if (headerDropdown && (!button || !button.onclick?.toString().includes('toggleHeaderDropdown'))) {
+              headerDropdown.style.display = 'none';
           }
-          
-          closeOverlay("overlayFarmer");
-          renderAll();
-
-        } catch (error) {
-          console.error('Error creating farmer:', error);
-          // Final fallback to local storage
-          const localFarmer = {
-            id: "f" + Date.now(),
-            ...f
-          };
-          farmers.push(localFarmer);
-          saveFarmers(farmers);
-          selectedFarmerId = localFarmer.id;
-          closeOverlay("overlayFarmer");
-          renderAll();
-          showToast("Farmer created (Local) ✅");
-        } finally {
-          btn.disabled = false;
-          btn.innerHTML = '✅ Create';
-        }
-      };
-
-      // Demo Farmers
-      el("btnDemoFarmers").onclick = () => {
-        const demoFarmers = [
-          { id: "f1", name: "Raj Kumar", phone: "9876543210", address: "Vadgaon", balance: 0, active: true, animalType: "cow" },
-          { id: "f2", name: "Suresh Patil", phone: "9876543211", address: "Shivaji Nagar", balance: 500, active: true, animalType: "buffalo" },
-          { id: "f3", name: "Anita Desai", phone: "9876543212", address: "Market Yard", balance: 0, active: true, animalType: "both" },
-          { id: "f4", name: "Vikram More", phone: "9876543213", address: "Gandhi Chowk", balance: 1000, active: true, animalType: "cow" },
-          { id: "f5", name: "Priya Jadhav", phone: "9876543214", address: "Station Road", balance: 0, active: true, animalType: "buffalo" }
-        ];
-        
-        let added = 0;
-        demoFarmers.forEach(df => {
-          if (!farmers.find(f => f.phone === df.phone)) {
-            farmers.push(df);
-            added++;
-          }
-        });
-        
-        if (added > 0) {
-          saveFarmers(farmers);
-          showToast(`Added ${added} demo farmers ✅`);
-          renderAll();
-        } else {
-          showToast("Demo farmers already exist");
-        }
-        closeOverlay("overlayFarmer");
-      };
+      });
 
       // Close overlays
       document.querySelectorAll("[data-close]").forEach((b) => {
         b.onclick = () => closeOverlay(b.dataset.close);
       });
-      //  A. AUTO FOCUS: Load hote hi search par cursor
+      
+      // Auto focus search on load
       window.addEventListener("load", () => {
         if (el("searchInput")) el("searchInput").focus();
       });
@@ -4055,34 +4646,36 @@ el("snfInput").oninput = (e) => {
       };
 
       // 2. Language Toggle Function
-      el("langSwitch").onclick = () => {
-        currentLang = currentLang === "en" ? "hi" : "en";
-        const t = translations[currentLang];
-        const isHi = currentLang === "hi";
-         el("btnIntakeText").textContent = t.intake;
-        // UI Elements Update (Ensure these IDs exist in your HTML)
-        if (el("stationTitle")) el("stationTitle").textContent = t.station;
-        if (el("btnHistoryMain"))
-          el("btnHistoryMain").innerHTML = "🧾 " + t.history;
+      const langSwitch = el("langSwitch");
+      if (langSwitch) {
+        langSwitch.onclick = () => {
+          currentLang = currentLang === "en" ? "hi" : "en";
+          const t = translations[currentLang];
+          const isHi = currentLang === "hi";
+           el("btnIntakeText").textContent = t.intake;
+          // UI Elements Update (Ensure these IDs exist in your HTML)
+          if (el("stationTitle")) el("stationTitle").textContent = t.station;
+          if (el("btnHistoryMain"))
+            el("btnHistoryMain").innerHTML = "🧾 " + t.history;
 
-        // Inputs Section
-        if (el("qtyLabel")) el("qtyLabel").textContent = t.liters; // HTML mein <div> ko id="qtyLabel" de dena
-        if (el("fatLabel")) el("fatLabel").textContent = t.fat;
-        if (el("snfLabel")) el("snfLabel").textContent = t.snf;
+          // Inputs Section
+          if (el("qtyLabel")) el("qtyLabel").textContent = t.liters; // HTML mein <div> ko id="qtyLabel" de dena
+          if (el("fatLabel")) el("fatLabel").textContent = t.fat;
+          if (el("snfLabel")) el("snfLabel").textContent = t.snf;
 
-        // Summary Section
-        if (el("summaryTitle")) el("summaryTitle").textContent = t.summary;
-        if (el("amtLabel")) el("amtLabel").textContent = t.totalAmt;
-        if (el("oldBalLabel")) el("oldBalLabel").textContent = t.oldBal;
-        if (el("newBalLabel")) el("newBalLabel").textContent = t.newBal;
-        if (el("recentTitle")) el("recentTitle").textContent = t.recent;
+          // Summary Section
+          if (el("summaryTitle")) el("summaryTitle").textContent = t.summary;
+          if (el("amtLabel")) el("amtLabel").textContent = t.totalAmt;
+          if (el("oldBalLabel")) el("oldBalLabel").textContent = t.oldBal;
+          if (el("newBalLabel")) el("newBalLabel").textContent = t.newBal;
+          if (el("recentTitle")) el("recentTitle").textContent = t.recent;
 
-        // Footer Buttons
-        if (el("btnSave"))
-          el("btnSave").innerHTML = (isHi ? "🟢 " : "") + t.save;
-        if (el("btnHold"))
-          el("btnHold").innerHTML =
-            (isHi ? "🟡 " : "") +
+          // Footer Buttons
+          if (el("btnSave"))
+            el("btnSave").innerHTML = (isHi ? "🟢 " : "") + t.save;
+          if (el("btnHold"))
+            el("btnHold").innerHTML =
+              (isHi ? "🟡 " : "") +
             t.hold +
             ' <span class="subnote">pause</span>';
         if (el("btnUndo"))
@@ -4091,240 +4684,72 @@ el("snfInput").oninput = (e) => {
 
         showToast(isHi ? "भाषा: हिंदी" : "Language: English");
       };
-      // 1. Language Toggle Logic (Add this fresh)
-      let currentLang = "en";
-
-      el("langSwitch").onclick = () => {
-        currentLang = currentLang === "en" ? "hi" : "en";
-        const isHi = currentLang === "hi";
-
-        // --- 1. Main Labels Update ---
-        // (In IDs ko apne HTML tags mein check kar lena, agar nahi hain toh add kar lena)
-        if (el("stationTitle"))
-          el("stationTitle").textContent = isHi
-            ? "दूध संकलन स्टेशन"
-            : "Milk Intake Station";
-        if (el("shopTitle"))
-          el("shopTitle").textContent = isHi
-            ? "गोपाल डेयरी शॉप"
-            : "Gopal Dairy Shop";
-
-        // Labels for Inputs
-        if (el("qtyLabel"))
-          el("qtyLabel").textContent = isHi ? "2. लीटर (L)" : "2. Liters (L)";
-        if (el("fatLabel"))
-          el("fatLabel").textContent = isHi ? "3. फैट %" : "3. Fat %";
-        if (el("snfLabel"))
-          el("snfLabel").textContent = isHi ? "4. SNF" : "4. SNF";
-        // --- 1. HISTORY MODAL ---
-        if (el("historyTitle"))
-          el("historyTitle").textContent = isHi
-            ? "इतिहास (आज + साप्ताहिक)"
-            : "History (Today + Weekly)";
-        document.querySelectorAll("#overlayHistory h3")[0].textContent = isHi
-          ? "📅 आज"
-          : "📅 Today";
-        document.querySelectorAll("#overlayHistory h3")[1].textContent = isHi
-          ? "🗓️ साप्ताहिक"
-          : "🗓️ Weekly";
-        if (el("btnReceipt"))
-          el("btnReceipt").innerHTML = isHi ? "📩 रसीद" : "📩 Receipt";
-        if (el("btnExport"))
-          el("btnExport").innerHTML = isHi ? "⬇️ एक्सपोर्ट" : "⬇️ Export";
-        if (el("btnClearToday"))
-          el("btnClearToday").innerHTML = isHi
-            ? "🗑️ आज का डेटा साफ करें"
-            : "🗑️ Clear Today";
-
-        // --- 2. LEADERBOARD MODAL ---
-        if (el("leaderTitle"))
-          el("leaderTitle").textContent = isHi
-            ? "🏆 साप्ताहिक लीडर"
-            : "🏆 Weekly Leader";
-        document.querySelector("#overlayLeader h3").textContent = isHi
-          ? "टॉप किसान (7 दिन)"
-          : "Top Farmers (7 days)";
-        if (el("btnLeaderByAmt"))
-          el("btnLeaderByAmt").innerHTML = isHi ? "💰 राशि" : "💰 Amount";
-        if (el("btnLeaderByLit"))
-          el("btnLeaderByLit").innerHTML = isHi ? "🥛 लीटर" : "🥛 Liters";
-        if (el("btnLeaderByCount"))
-          el("btnLeaderByCount").innerHTML = isHi
-            ? "🧾 एंट्री संख्या"
-            : "🧾 Entries";
-
-        // --- 3. SETTINGS MODAL ---
-        if (el("settingsTitle"))
-          el("settingsTitle").textContent = isHi
-            ? "⚙️ सेटिंग्स"
-            : "⚙️ Settings";
-        document.querySelector("#overlaySettings h3").textContent = isHi
-          ? "💰 रेट फार्मूला"
-          : "💰 Rate Formula";
-        /// --- Animal Selection Translation ---
-        const animalOptionCow = document.querySelector('option[value="cow"]');
-        const animalOptionBuff = document.querySelector(
-          'option[value="buffalo"]',
-        );
-
-        if (animalOptionCow) {
-          animalOptionCow.textContent = isHi ? "🐄 गाय (Cow)" : "🐄 Cow";
-        }
-        if (animalOptionBuff) {
-          animalOptionBuff.textContent = isHi
-            ? "🐃 भैंस (Buffalo)"
-            : "🐃 Buffalo";
-        }
-
-        // Agar aapne Radio buttons laga liye hain (jo maine pehle bataya tha), toh ye use karein:
-        if (el("labelCow"))
-          el("labelCow").textContent = isHi ? "🐄 गाय" : "🐄 Cow";
-        if (el("labelBuffalo"))
-          el("labelBuffalo").textContent = isHi ? "🐃 भैंस" : "🐃 Buffalo";
-
-        if (el("btnSaveSettings"))
-          el("btnSaveSettings").innerHTML = isHi ? "✅ सेव करें" : "✅ Save";
-        if (el("btnResetSettings"))
-          el("btnResetSettings").innerHTML = isHi ? "♻️ रिसेट" : "♻️ Reset";
-        if (el("btnFactoryReset"))
-          el("btnFactoryReset").innerHTML = isHi
-            ? "🧨 फैक्ट्री रिसेट"
-            : "🧨 Factory Reset";
-
-        // --- 4. ADD FARMER MODAL ---
-        if (el("addFarmerTitle"))
-          el("addFarmerTitle").textContent = isHi
-            ? "➕ किसान जोड़ें"
-            : "➕ Add Farmer";
-        document.querySelector("#overlayFarmer h3").textContent = isHi
-          ? "👤 किसान फॉर्म"
-          : "👤 Farmer Form";
-        const farmerLabels = document.querySelectorAll(
-          "#overlayFarmer .field label",
-        );
-        const farmerHindi = [
-          "👤 नाम",
-          "📱 नंबर",
-          "📍 पता",
-          "🖼️ फोटो",
-          "₹ ओपनिंग बैलेंस",
-          "स्टेटस",
-        ];
-        const farmerEng = [
-          "👤 Name",
-          "📱 Number",
-          "📍 Address",
-          "🖼️ Image",
-          "₹ Opening Balance",
-          "Status",
-        ];
-        farmerLabels.forEach(
-          (lbl, i) => (lbl.textContent = isHi ? farmerHindi[i] : farmerEng[i]),
-        );
-
-        if (el("btnCreateFarmer"))
-          el("btnCreateFarmer").innerHTML = isHi ? "✅ बनाएं" : "✅ Create";
-        if (el("btnDemoFarmers"))
-          el("btnDemoFarmers").innerHTML = isHi
-            ? "🧪 डेमो किसान"
-            : "🧪 Demo Farmers";
-
-        // --- 5. RECEIPT MODAL ---
-        if (el("receiptTitle"))
-          el("receiptTitle").textContent = isHi ? "📩 रसीद" : "📩 Receipt";
-        document.querySelector("#overlayReceipt h3").textContent = isHi
-          ? "🧾 संदेश"
-          : "🧾 Message";
-        if (el("btnCopyReceipt"))
-          el("btnCopyReceipt").innerHTML = isHi ? "📋 कॉपी" : "📋 Copy";
-        if (el("btnWhatsApp"))
-          el("btnWhatsApp").innerHTML = isHi ? "💬 व्हाट्सएप" : "💬 WhatsApp";
-        if (el("btnCloseReceipt"))
-          el("btnCloseReceipt").innerHTML = isHi ? "✅ पूर्ण" : "✅ Done";
-
-        // Summary Labels
-        if (el("amtLabel"))
-          el("amtLabel").textContent = isHi ? "कुल राशि" : "TOTAL AMOUNT";
-        if (el("oldBalLabel"))
-          el("oldBalLabel").textContent = isHi ? "पुराना बकाया" : "OLD BALANCE";
-        if (el("newBalLabel"))
-          el("newBalLabel").textContent = isHi ? "नया बकाया" : "NEW BALANCE";
-        if (el("recentTitle"))
-          el("recentTitle").textContent = isHi
-            ? "आज के रिकॉर्ड"
-            : "RECENT TODAY";
-
-        // --- 2. Buttons Update ---
-        if (el("btnSave"))
-          el("btnSave").innerHTML = isHi
-            ? "🟢 रिकॉर्ड सेव करें"
-            : "🟢 SAVE ENTRY";
-        if (el("btnHold"))
-          el("btnHold").innerHTML = isHi ? "🟡 होल्ड करें" : "🟡 HOLD";
-        if (el("btnUndo"))
-          el("btnUndo").innerHTML = isHi ? "🔴 वापस (Undo)" : "🔴 UNDO";
-
-        // --- 3. Table Headers Update (Jo tune pucha tha) ---
-        const ths = document.querySelectorAll("table thead th");
-        if (ths.length >= 8) {
-          const hindiHeaders = [
-            "तारीख",
-            "किसान",
-            "शिफ्ट",
-            "प्रकार",
-            "मात्रा",
-            "फैट",
-            "SNF",
-            "राशि",
-          ];
-          const engHeaders = [
-            "DATE",
-            "FARMER",
-            "SESSION",
-            "TYPE",
-            "QTY",
-            "FAT",
-            "SNF",
-            "AMT",
-          ];
-
-          ths.forEach((th, i) => {
-            th.textContent = isHi ? hindiHeaders[i] : engHeaders[i];
-          });
-        }
-
-        showToast(isHi ? "भाषा: हिंदी" : "Language: English");
-      };
-
+      }
 
   // --- MASTER NAVIGATION: Arrows & Enter (Main Screen + Form) ---
 document.addEventListener('keydown', (e) => {
     const active = document.activeElement;
-    const isFarmerModalOpen = el("overlayFarmer").style.display === "flex";
+    const isFarmerModalOpen = el("overlayFarmer")?.style.display === "flex";
+
+    // ESC to close farmer modal
+    if (isFarmerModalOpen && e.key === "Escape") {
+        e.preventDefault();
+        closeOverlay("overlayFarmer");
+        return;
+    }
 
     // 1. ADD FARMER FORM LOGIC (Sirf tab chalega jab Form khula ho)
     if (isFarmerModalOpen) {
-        const formOrder = ["fName", "fPhone", "fAddress", "fImage", "fBalance", "fAnimalType", "fActive", "btnCreateFarmer"];
+        const formOrder = ["fName", "fPhone", "fAnimalCow", "fAnimalBuffalo", "fAnimalBoth", "fBalance", "fActive", "fAddress", "fCity", "fPincode", "fGst", "fImage", "btnCreateFarmer"];
         const curIdx = formOrder.indexOf(active.id);
 
         if (e.key === "Enter") {
             e.preventDefault();
-            
-            // On fBalance → Move to Animal Type selection
+
+            // Toggle animal type with Enter (Cow → Buffalo → Both → Cow)
+            if (active.id === 'fAnimalCow' || active.id === 'fAnimalBuffalo' || active.id === 'fAnimalBoth') {
+                const currentAnimal = el("fAnimalType").value;
+                const nextAnimal = currentAnimal === 'cow' ? 'buffalo' : currentAnimal === 'buffalo' ? 'both' : 'cow';
+                selectFarmerAnimal(nextAnimal);
+                return;
+            }
+
+            // On fActive → Move to Address (optional section)
+            if (active.id === "fActive") {
+                el("fAddress").focus();
+                return;
+            }
+
+            // On fCity → Move to Pincode
+            if (active.id === "fCity") {
+                el("fPincode").focus();
+                return;
+            }
+
+            // On fPincode → Move to GST
+            if (active.id === "fPincode") {
+                el("fGst").focus();
+                return;
+            }
+
+            // On fGst → Move to Image
+            if (active.id === "fGst") {
+                el("fImage").focus();
+                return;
+            }
+
+            // On fBalance → Move to Status
             if (active.id === "fBalance") {
-                el("fAnimalType").focus();
+                el("fActive").focus();
                 return;
             }
-            
-            // On fAnimalType or fActive → Create farmer
-            if (active.id === "fAnimalType" || active.id === "fActive") {
-                el("btnCreateFarmer").click();
-                setTimeout(() => {
-                  el("searchInput").focus();
-                }, 150);
+
+            // On fImage → Move to Create button
+            if (active.id === "fImage") {
+                el("btnCreateFarmer").focus();
                 return;
             }
-            
+
             // On Create button → Create farmer
             if (active.id === "btnCreateFarmer") {
                 el("btnCreateFarmer").click();
@@ -4333,11 +4758,13 @@ document.addEventListener('keydown', (e) => {
                 }, 150);
                 return;
             }
-            
+
             // Move to next field
             if (curIdx !== -1 && curIdx < formOrder.length - 1) {
                 el(formOrder[curIdx + 1]).focus();
-                if (el(formOrder[curIdx + 1]).tagName === "INPUT") el(formOrder[curIdx + 1]).select();
+                if (el(formOrder[curIdx + 1]).tagName === "INPUT" && el(formOrder[curIdx + 1]).type !== "file") {
+                    el(formOrder[curIdx + 1]).select();
+                }
             }
         }
 
@@ -4662,6 +5089,39 @@ function sendDailySummary() {
         showToast("Farmer phone number missing!");
     }
 }
+
+// Apply roundup for farmer balance - this becomes the FINAL accepted amount
+function applyFarmerRoundup() {
+  const roundValue = parseInt(el("farmerRoundupInput").value) || 0;
+  const roundupLabel = el("farmerRoundupLabel");
+  const roundupValue = el("farmerRoundupValue");
+  const balAfter = el("balAfter");
+  
+  if (roundValue > 0 && balAfter) {
+    const currentBal = parseFloat(balAfter.textContent.replace('₹', '')) || 0;
+    const rounded = Math.round(currentBal / roundValue) * roundValue;
+    
+    if (roundupLabel) {
+      roundupLabel.style.display = 'block';
+      const diff = rounded - currentBal;
+      if (diff >= 0) {
+        roundupValue.textContent = `+₹${diff.toFixed(2)}`;
+        roundupValue.style.color = '#16a34a';
+      } else {
+        roundupValue.textContent = `₹${diff.toFixed(2)}`;
+        roundupValue.style.color = '#dc2626';
+      }
+    }
+    
+    // Update balance display to show rounded (final accepted) value
+    balAfter.textContent = '₹' + rounded.toFixed(2);
+  } else {
+    if (roundupLabel) roundupLabel.style.display = 'none';
+    // Re-render to restore original balance
+    renderTrust();
+  }
+}
+
 function updatePayUI() {
     // 1. Check karo kaunsa radio button select hua hai
     const isCash = document.querySelector('input[name="payMode"]:checked').value === 'Cash';
@@ -4695,26 +5155,6 @@ function updateDailySummaryButton() {
     }
 }
 // ... iske niche init(); function hona chahiye ...
-
-// Animal Type Toggle Function
-function selectAnimalType(type) {
-  // Reset all buttons
-  ['animalCow', 'animalBuffalo', 'animalBoth'].forEach(id => {
-    const btn = el(id);
-    if (btn) {
-      btn.style.borderColor = 'var(--line)';
-      btn.style.background = 'white';
-    }
-  });
-  
-  // Set selected
-  el("fAnimalType").value = type;
-  const selectedBtn = el("animal" + type.charAt(0).toUpperCase() + type.slice(1));
-  if (selectedBtn) {
-    selectedBtn.style.borderColor = 'var(--blue)';
-    selectedBtn.style.background = '#eff6ff';
-  }
-}
 
 // ESC Key Handler for ALL Modals
 document.addEventListener('keydown', function(e) {
@@ -4976,6 +5416,15 @@ window.renderTrust = function() {
         restoreHoldIfAny();
         renderAll();
         refreshRatePill();
+        
+        // Focus search input on page load
+        setTimeout(() => {
+          if (el("searchInput")) {
+            el("searchInput").focus();
+            el("searchInput").select();
+          }
+        }, 300);
+        
         // timerInt = setInterval(() => {
         //   const sec = Math.floor((Date.now() - timerStart) / 1000);
         //   el("timerBox").textContent =

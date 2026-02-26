@@ -41,14 +41,14 @@
       }
       
       /* --- HEADER - Fully Responsive --- */
-      .topbar { background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); padding: 4px 10px; display: flex; align-items: center; justify-content: space-between; height: 40px; gap: 8px; }
+      .topbar { background: transparent; border: none; border-radius: 8px; box-shadow: none; padding: 2px 8px; display: flex; align-items: center; justify-content: space-between; height: 16px; gap: 6px; flex-shrink: 0; z-index: 100; }
       .brand { display: flex; align-items: center; gap: 6px; min-width: 0; }
-      .logo-box { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #e0f2fe, #dbeafe); border: 1px solid #c7d2fe; font-size: 14px; flex-shrink: 0; }
+      .logo-box { width: 12px; height: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #e0f2fe, #dbeafe); border: 1px solid #c7d2fe; font-size: 6px; flex-shrink: 0; }
       .brand-text { min-width: 0; }
-      .brand-text .title { font-weight: 800; font-size: 12px; color: #0f172a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
-      .brand-text .sub-text { font-size: 9px; font-weight: 600; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .brand-text .title { font-weight: 700; font-size: 8px; color: #0f172a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
+      .brand-text .sub-text { font-size: 6px; font-weight: 500; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .hdr-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-      .pillbtn { height: 30px; padding: 0 8px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-weight: 700; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; white-space: nowrap; }
+      .pillbtn { height: 24px; padding: 0 8px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-weight: 700; font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; white-space: nowrap; }
       .pillbtn.primary { background: #3b82f6; color: white; border-color: #3b82f6; }
       
       /* Mobile Responsive */
@@ -67,24 +67,24 @@
           display: flex;
           flex-direction: column;
         }
-        .topbar { height: 36px; padding: 4px 6px; flex-shrink: 0; }
-        .logo-box { width: 24px; height: 24px; }
-        .brand-text .title { font-size: 11px; max-width: 80px; }
-        .brand-text .sub-text { font-size: 8px; }
-        .pillbtn { height: 28px; padding: 0 6px; font-size: 10px; }
+        .topbar { height: 14px; padding: 2px 6px; flex-shrink: 0; z-index: 100 !important; }
+        .logo-box { width: 12px; height: 12px; }
+        .brand-text .title { font-size: 8px; max-width: 60px; }
+        .brand-text .sub-text { display: none; }
+        .pillbtn { height: 22px; padding: 0 6px; font-size: 8px; }
         .pillbtn span { display: none; }
         .pillbtn.primary span { display: inline; }
         .hdr-actions > div:first-child { display: none; }
         .core { grid-template-columns: 1fr; height: auto; min-height: auto; }
         .panel { max-height: none !important; height: auto; }
       }
-      
+
       @media (max-width: 480px) {
-        .topbar { height: 32px; }
-        .logo-box { width: 20px; height: 20px; font-size: 12px; }
-        .brand-text .title { font-size: 10px; max-width: 60px; }
+        .topbar { height: 16px; }
+        .logo-box { width: 10px; height: 10px; font-size: 6px; }
+        .brand-text .title { font-size: 7px; max-width: 50px; }
         .brand-text .sub-text { display: none; }
-        .pillbtn { height: 26px; font-size: 9px; }
+        .pillbtn { height: 20px; font-size: 7px; }
       }
       
       /* Mobile: Fixed footer for save buttons */
@@ -99,17 +99,26 @@
       .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
       .left-panel { overflow: hidden; display: flex; flex-direction: column; }
       .right-panel { overflow-y: auto; display: flex; flex-direction: column; }
-      
-      /* Fixed Payment Section at Bottom */
+
+      /* Fixed Payment Section at Bottom - Always Visible */
       .payment-section {
-        position: sticky;
+        position: fixed;
         bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
         background: var(--panel);
-        border-top: 2px solid var(--line);
+        border-top: 3px solid var(--line);
         padding: 10px 15px;
-        z-index: 10;
-        box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+        z-index: 99;
+        box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
+        width: fit-content;
+        min-width: min(750px, 95vw);
+        max-width: min(900px, 98vw);
+        border-radius: 16px 16px 0 0;
       }
+      
+      /* Add padding to right panel to prevent content hiding behind fixed payment */
+      .right-panel { padding-bottom: 200px; }
 
       /* Tablet (768px - 1024px): Side by side with adjusted heights */
       @media (min-width: 768px) and (max-width: 1024px) {
@@ -149,27 +158,73 @@
           bottom: 0;
           left: 0;
           right: 0;
+          width: 100% !important;
+          transform: none !important;
           background: white;
           border-top: 2px solid #e2e8f0;
           padding: 10px;
-          z-index: 100;
+          z-index: 99;
           box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+          border-radius: 12px 12px 0 0;
+        }
+        /* Maintain left column layout on mobile */
+        .payment-section > div:first-child {
+          grid-template-columns: 280px 1fr !important;
+          gap: 10px !important;
+        }
+        .payment-section #totalPayableDisplay {
+          font-size: 48px !important;
+        }
+        .payment-section #paymentAmount {
+          font-size: 18px !important;
+          padding: 14px !important;
+        }
+        .payment-section #roundupInput {
+          font-size: 14px !important;
+          padding: 14px !important;
+        }
+        .payment-section #roundupLabel {
+          font-size: 11px !important;
+        }
+        .payment-section #creditDisplay {
+          font-size: 13px !important;
+        }
+        .payment-section .pay-btn {
+          padding: 12px !important;
+          font-size: 12px !important;
+        }
+        .payment-section #btnCredit {
+          padding: 14px !important;
+          font-size: 14px !important;
+        }
+        .payment-section #advanceToggleBtn {
+          padding: 14px 16px !important;
+          font-size: 13px !important;
+        }
+        /* Advance form on mobile */
+        .payment-section #monthMilk,
+        .payment-section #currentAdvance {
+          font-size: 22px !important;
+        }
+        .payment-section #advanceAmount {
+          font-size: 16px !important;
+          padding: 14px !important;
         }
         /* Add padding to right panel to prevent content hiding behind fixed payment */
-        .right-panel { padding-bottom: 180px; }
+        .right-panel { padding-bottom: 260px; }
       }
 
       @media (max-width: 480px) {
         .core { gap: 8px; }
         .product-grid { grid-template-columns: repeat(2, 1fr) !important; }
         .p-card .emoji { font-size: 32px; }
-        .topbar { height: 32px; }
-        .logo-box { width: 20px; height: 20px; font-size: 12px; }
-        .brand-text .title { font-size: 10px; max-width: 60px; }
-        .brand-text .sub-text { display: none; }
-        .pillbtn { height: 26px; font-size: 9px; }
+        .topbar { height: 12px !important; z-index: 100 !important; }
+        .logo-box { width: 10px !important; height: 10px !important; font-size: 6px !important; }
+        .brand-text .title { font-size: 7px !important; max-width: 50px !important; }
+        .brand-text .sub-text { display: none !important; }
+        .pillbtn { height: 20px !important; font-size: 7px !important; }
       }
-      .panelHeader { padding: 12px 16px; border-bottom: 1px solid var(--line); font-weight: 1000; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+      .panelHeader { padding: 6px 12px; border-bottom: 1px solid var(--line); font-weight: 1000; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; height: 28px; }
 
       /* --- SEARCH & PERSISTENCE AREA --- */
       .cust-control { padding: 10px 15px; background: #f8fafc; border-bottom: 1px solid var(--line); display: flex; gap: 10px; position: relative; }
@@ -179,20 +234,20 @@
       .search-box::before { content: '🔍'; position: absolute; left: 10px; top: 10px; font-size: 14px; z-index: 1; }
 
       /* Integrated Dropdown Style */
-      .search-dropdown { 
-        position: absolute; 
-        top: 100%; 
-        left: 0; 
-        width: 100%; 
-        background: #fff; 
-        border: 2px solid #3b82f6; 
+      .search-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        border: 2px solid #3b82f6;
         border-top: none;
-        border-radius: 0 0 12px 12px; 
-        z-index: 100; 
-        display: none; 
-        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2); 
-        max-height: 250px; 
-        overflow-y: auto; 
+        border-radius: 0 0 12px 12px;
+        z-index: 50; 
+        display: none;
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+        max-height: 250px;
+        overflow-y: auto;
         margin-top: -2px;
       }
       .drop-item { 
@@ -303,12 +358,12 @@
       .recent-table input[type="number"]::-webkit-inner-spin-button { opacity: 1; cursor: pointer; }
       .recent-table .remove-btn { background: #fecaca; color: #7f1d1d; border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-weight: 700; font-size: 12px; }
 
-      .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); display: none; align-items: center; justify-content: center; z-index: 100; }
+      .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); display: none; align-items: center; justify-content: center; z-index: 1003; }
       .modal { width: min(800px, 95vw); height: min(600px, 90vh); background: #fff; border-radius: 22px; display: grid; grid-template-rows: 60px 1fr 70px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.3); }
       .modalBody { padding: 20px; overflow-y: auto; background: #f8fafc; }
       .cardRow { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 
-      .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 16px; font-weight: 1100; opacity: 0; transition: 0.3s; z-index: 200; }
+      .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 16px; font-weight: 1100; opacity: 0; transition: 0.3s; z-index: 1004; }
       .toast.show { opacity: 1; }
       
       /* Demo Banner */
@@ -339,7 +394,7 @@
             </div>
             <div class="brand-text">
               <div class="title" id="shopTitle">MilkRecord POS</div>
-              <div class="sub-text" id="todayLabel">—</div>
+              <div class="sub-text" id="todayLabel" style="display:none;">—</div>
             </div>
           </a>
         </div>
@@ -354,7 +409,7 @@
             <button class="pillbtn" onclick="toggleProfileDropdown()" style="background:#f8fafc; border-color:#e2e8f0;">
               👤 <span id="profileName">User</span> ▼
             </button>
-            <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 220px; z-index: 1000;">
+            <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: #f8fafc; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 220px; z-index: 1005;">
               <div style="padding: 12px; border-bottom: 1px solid var(--line);">
                 <div style="font-weight: 700; font-size: 13px;" id="dropdownEmail">user@email.com</div>
                 <div style="font-size: 11px; color: var(--muted);" id="dropdownShop">Shop Name</div>
@@ -403,11 +458,6 @@
               <div id="searchDropdown" class="search-dropdown" onclick="event.stopPropagation()" style="top: 100%; border-radius: 0 0 8px 8px;"></div>
             </div>
           </div>
-          
-          <div class="summary-box">
-            <div style="font-size:12px; opacity:0.8;" id="lblPayable">TOTAL PAYABLE</div>
-            <div class="amt" id="totalAmt">₹0.00</div>
-          </div>
 
           <!-- Advance/Cut Ledger Section - Collapsed by default -->
           <div id="advanceSection" style="display:none; background:#fef3c7; border:2px solid #f59e0b; border-radius:16px; margin:15px; padding:15px;">
@@ -448,15 +498,6 @@
             <button onclick="sendMonthlySummary()" style="width:100%; margin-top:8px; padding:12px; background:white; color:#92400e; border:1px solid #f59e0b; border-radius:8px; font-weight:700; cursor:pointer;">💬 Send Summary</button>
           </div>
           
-          <!-- Advance Toggle Button (Always Visible) -->
-          <button onclick="toggleAdvance()" id="advanceToggleBtn" style="margin:0 15px; padding:10px; background:#fef3c7; border:2px solid #f59e0b; border-radius:12px; font-weight:700; color:#92400e; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-            📕 Advance / Udhar
-          </button>
-          <div id="udharThresholdNudge" style="display: none; margin: 0 15px 15px; padding: 10px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; font-size: 11px; color: #92400e; font-weight: 700;">
-            ⚠️ High outstanding credit<br>
-            <span style="font-weight: 500; color: #64748b;">Retail POS tracks balance, not settlement responsibility.</span>
-          </div>
-
           <!-- Cart Items (Top Priority - Visible Without Scroll) -->
           <div style="padding:15px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); max-height: none; min-height: 300px; flex: 1; overflow-y: auto;" ondragover="handleCartDragOverTbody(event)" ondrop="handleCartDropTbody(event)" ondragleave="handleCartDragOut(event)">
             <table class="recent-table"><tbody id="cartItems" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)"></tbody></table>
@@ -464,17 +505,98 @@
 
           <!-- Fixed Payment Section -->
           <div class="payment-section">
-            <div style="font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 8px;">💰 Customer Paid</div>
-            <input type="number" id="paymentAmount" placeholder="Enter amount (₹)" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-weight: 700; font-size: 16px; box-sizing:border-box;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
-            <div id="creditDisplay" style="font-size: 12px; color: #16a34a; font-weight: 700; margin-top: 8px; text-align: center;"></div>
+            <!-- Two Column Layout: Total (Left - Compact) + All Inputs (Right) -->
+            <div style="display: grid; grid-template-columns: 260px 1fr; gap: 10px; align-items: stretch; position: relative; min-height: 190px;">
 
-            <div class="pay-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-top: 10px;">
-              <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534;" onclick="saveEntry('Cash')">CASH</button>
-              <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af;" onclick="saveEntry('UPI')">UPI</button>
-              <button class="pay-btn" style="background:#fef3c7; color:#92400e;" onclick="holdCart()">🟡 HOLD</button>
-              <button class="pay-btn" style="background:#f1f5f9; color:#475569;" onclick="showHeldCarts()">📋 <span id="heldCount">0</span></button>
+              <!-- TOTAL PAYABLE (Left Column - Full Height) -->
+              <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 4px solid #16a34a; border-radius: 12px; padding: 15px 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%;">
+                <div style="font-size: 12px; color: #166534; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1.5px;">Net Payable</div>
+                <div id="totalPayableDisplay" style="font-size: 56px; font-weight: 900; color: #16a34a; line-height: 1.1; width: 100%;">₹0.00</div>
+              </div>
+
+              <!-- Right Column: Payment Form (Shows when advance is closed) -->
+              <div id="paymentForm" style="display: flex !important; flex-direction: column; gap: 6px; justify-content: center;">
+                <!-- Row 1: Payment Amount + Roundup (Side by Side) -->
+                <div style="display: grid; grid-template-columns: 1fr 100px; gap: 6px;">
+                  <input type="number" id="paymentAmount" placeholder="Enter amount (₹)" style="width: 100%; padding: 11px; border: 2px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 17px; box-sizing:border-box;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
+                  <input type="number" id="roundupInput" placeholder="Round" step="1" style="width: 100%; padding: 11px; border: 2px dashed #3b82f6; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; background: #eff6ff; box-sizing:border-box;" oninput="applyRoundup()" title="Round to nearest 10, 50, 100 etc." />
+                </div>
+
+                <!-- Row 2: Roundup Label + Status (Text Only, Minimal Height) -->
+                <div style="display: flex; justify-content: center; align-items: center; gap: 12px; min-height: 20px;">
+                  <div id="roundupLabel" style="font-size: 11px; color: #3b82f6; font-weight: 700; display: none;">🔄 ₹<span id="roundupValue">0</span></div>
+                  <div id="creditDisplay" style="font-size: 13px; font-weight: 700; color: #166534;">सही राशि!</div>
+                </div>
+
+                <!-- Row 3: Payment Buttons Grid -->
+                <div class="pay-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px;">
+                  <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534; padding: 9px;" onclick="saveEntry('Cash')">CASH</button>
+                  <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af; padding: 9px;" onclick="saveEntry('UPI')">UPI</button>
+                  <button class="pay-btn" style="background:#fef3c7; color:#92400e; padding: 9px;" onclick="holdCart()">🟡 HOLD</button>
+                  <button class="pay-btn" style="background:#f1f5f9; color:#475569; padding: 9px;" onclick="showHeldCarts()">📋 <span id="heldCount">0</span></button>
+                </div>
+
+                <!-- Row 4: Credit Button + Advance Toggle (Same Row) -->
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 6px;">
+                  <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="width: 100%; padding: 11px; font-size: 13px; font-weight: 700;">LIKH LO (Credit)</button>
+                  <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 11px 14px; background:#fef3c7; border:2px solid #f59e0b; border-radius:8px; font-weight:700; color:#92400e; cursor:pointer; font-size: 12px; white-space: nowrap;">📒 Advance / Udhar</button>
+                </div>
+              </div>
+              
+              <!-- Right Column: Advance Form (Shows when advance is open - MAX HEIGHT) -->
+              <div id="advanceForm" style="display: none; flex-direction: column; gap: 12px; max-height: calc(94vh - 150px); overflow-y: auto;">
+                <!-- Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 2px solid #f59e0b;">
+                  <h3 style="margin:0; color:#92400e; font-size: 18px; font-weight: 900;">📒 Customer Ledger</h3>
+                  <button onclick="toggleAdvance()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#92400e; padding:0; width:32px; height:32px;">✖</button>
+                </div>
+                
+                <!-- Summary Cards -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <div style="background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding:15px; border-radius:12px; border:2px solid #0284c7; text-align:center;">
+                    <div style="font-size:11px; color:#0369a1; font-weight:700; margin-bottom:6px;">📊 TOTAL MILK (MONTH)</div>
+                    <div style="font-size:28px; font-weight:900; color:#0c4a6e;" id="monthMilk">0.0 L</div>
+                  </div>
+                  <div style="background:linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding:15px; border-radius:12px; border:2px solid #16a34a; text-align:center;">
+                    <div style="font-size:11px; color:#166534; font-weight:700; margin-bottom:6px;">💰 CURRENT BALANCE</div>
+                    <div style="font-size:28px; font-weight:900; color:#166534;" id="currentAdvance">₹0.00</div>
+                  </div>
+                </div>
+
+                <!-- Amount Input + Transaction Type (Same Row) -->
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                  <!-- Amount Input (Auto-filled from Net Payable) -->
+                  <div style="background:#fffbeb; padding:15px; border-radius:10px; border:2px solid #f59e0b; text-align:center;">
+                    <div style="font-size:11px; color:#92400e; font-weight:700; margin-bottom:8px; text-transform:uppercase;">Amount (₹)</div>
+                    <input type="number" id="advanceAmount" placeholder="Auto-filled" style="width:100%; padding:18px; border:2px solid #f59e0b; border-radius:10px; font-weight:900; font-size:28px; text-align:center; background:white;" oninput="updateAdvance()" />
+                    <div style="font-size:10px; color:#92400e; font-weight:600; margin-top:6px;">⚠️ Auto-saves</div>
+                  </div>
+                  
+                  <!-- Credit/Debit Toggle -->
+                  <div style="background:#f8fafc; padding:12px; border-radius:10px; border:2px solid #e2e8f0; display:flex; flex-direction:column;">
+                    <div style="font-size:11px; color:#64748b; font-weight:700; margin-bottom:10px; text-transform:uppercase; text-align:center;">Transaction Type</div>
+                    <div style="display:flex; flex-direction:column; gap:8px; flex:1; justify-content:center;">
+                      <label style="cursor:pointer;">
+                        <input type="radio" name="ledgerType" value="credit" checked style="display:none;" onchange="updateLedgerPlaceholder()">
+                        <div id="creditToggle" style="padding:12px; background:#f0fdf4; border:2px solid #22c55e; border-radius:10px; text-align:center; font-weight:700; color:#166534; font-size:13px;">➕ Likhlo (Credit)</div>
+                      </label>
+                      <label style="cursor:pointer;">
+                        <input type="radio" name="ledgerType" value="debit" style="display:none;" onchange="updateLedgerPlaceholder()">
+                        <div id="debitToggle" style="padding:12px; background:#fef2f2; border:2px solid #ef4444; border-radius:10px; text-align:center; font-weight:700; color:#7f1d1d; font-size:13px;">➖ Payment</div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Send Summary Button -->
+                <button onclick="sendMonthlySummary()" style="width:100%; padding:16px; background:linear-gradient(135deg, #25d366 0%, #16a34a 100%); color:white; border:none; border-radius:10px; font-weight:700; font-size:16px; cursor:pointer; box-shadow:0 4px 12px rgba(37, 211, 102, 0.3);">💬 Send Summary on WhatsApp</button>
+                
+                <!-- Info Text -->
+                <div style="text-align:center; padding:12px; background:#f8fafc; border-radius:10px; font-size:11px; color:#64748b; font-weight:600;">
+                  ⚠️ This updates customer's credit/debit ledger for future settlement
+                </div>
+              </div>
             </div>
-            <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="width: 100%; margin-top: 6px;">LIKH LO (Credit)</button>
           </div>
         </div>
       </div>
@@ -561,13 +683,13 @@
     <div class="overlay" id="addProductModal">
         <div class="modal" style="width:90vw !important; max-width:450px !important; height:auto !important; max-height:90vh !important; overflow-y:auto !important; display:block !important; grid-template-rows:none !important;">
             <div class="panelHeader"><span>📦 Add New Product</span> <button onclick="closeModal('addProductModal')" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b; padding:0; width:32px; height:32px; display:flex; align-items:center; justify-content:center;">✖</button></div>
-            <div style="padding:20px; display:flex; flex-direction:column; gap:15px;">
-                <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
+            <form onsubmit="event.preventDefault(); addNewProductFromModal();" style="padding:20px; display:flex; flex-direction:column; gap:15px;">
+                <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" onkeydown="handleProductFieldEnter(event)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" required />
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                  <input type="number" id="pPrice" placeholder="Price (₹)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
-                  <input type="text" id="pUnit" placeholder="Unit (L/kg/g)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
+                  <input type="number" id="pPrice" placeholder="Price (₹)" step="0.01" min="0" onkeydown="handleProductFieldEnter(event)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" required />
+                  <input type="text" id="pUnit" placeholder="Unit (L/kg/g)" value="unit" onkeydown="handleProductFieldEnter(event)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" />
                 </div>
-                <input type="text" id="pEmoji" placeholder="Emoji (🥛, 🧀)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;">
+                <input type="text" id="pEmoji" placeholder="Emoji (🥛, 🧀)" value="📦" onkeydown="handleProductFieldEnter(event)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" />
 
                 <!-- Editable Steps Section -->
                 <div style="background:#f8fafc; padding:16px; border-radius:10px; border:1px solid var(--line);">
@@ -588,12 +710,12 @@
                       <input type="number" class="pStep" value="5" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
                   </div>
-                  <button onclick="addStepInput()" id="addStepBtn" style="margin-top:10px; padding:8px; background:#eff6ff; color:#3b82f6; border:1px dashed #3b82f6; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; width:100%;">➕ Add Step (max 5)</button>
+                  <button type="button" onclick="addStepInput()" id="addStepBtn" style="margin-top:10px; padding:8px; background:#eff6ff; color:#3b82f6; border:1px dashed #3b82f6; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; width:100%;">➕ Add Step (max 5)</button>
                   <div style="font-size:10px; color:var(--muted); margin-top:10px; text-align:center;">💡 Set to 0 to disable. Edit more in Edit Products.</div>
                 </div>
 
-                <button class="add-btn" style="width:100%; background:var(--green);" onclick="addNewProductFromModal()">Create Product</button>
-            </div>
+                <button type="submit" class="add-btn" style="width:100%; background:var(--green);">Create Product</button>
+            </form>
         </div>
     </div>
 
@@ -882,12 +1004,22 @@
         return btoa(unescape(encodeURIComponent(JSON.stringify(data)))).substr(0, 16);
       }
       
-      // Save data with audit trail
+      // Save data with audit trail AND VALIDATION
       function saveData(key, data, action = 'update') {
         try {
+          // CRITICAL: Validate array data before saving
+          if (key.includes('cart') || key.includes('customers') || 
+              key.includes('history') || key.includes('products') || 
+              key.includes('order')) {
+            if (!Array.isArray(data)) {
+              console.error('❌ BLOCKED: Attempted to save non-array to', key);
+              data = []; // Force to empty array
+            }
+          }
+          
           const timestamp = new Date().toISOString();
           const signature = createSignature(data);
-          
+
           // Save main data
           const wrappedData = {
             data: data,
@@ -896,13 +1028,21 @@
             sessionId: SESSION_ID
           };
           localStorage.setItem(key, JSON.stringify(wrappedData));
-          
+
           // Add to audit trail
           addToAuditTrail(key, action, signature);
-          
-          // Create backup
-          createBackup(key, wrappedData);
-          
+
+          // Create TRIPLE backup for critical data
+          if (key.includes('products') || key.includes('customers')) {
+            try {
+              const dataStr = JSON.stringify(wrappedData);
+              localStorage.setItem(key + '_backup', dataStr);
+              localStorage.setItem(key + '_backup2', dataStr);
+            } catch(e) {
+              console.error('❌ Backup failed:', e);
+            }
+          }
+
           console.log(`💾 [${timestamp}] Saved ${key} (${action})`);
           return true;
         } catch (error) {
@@ -911,12 +1051,12 @@
         }
       }
       
-      // Load data with signature verification
+      // Load data with signature verification AND RECOVERY
       function loadData(key, defaultValue = null) {
         try {
           const wrapped = JSON.parse(localStorage.getItem(key) || 'null');
           if (!wrapped || !wrapped.data) return defaultValue;
-          
+
           // Verify signature
           const expectedSig = createSignature(wrapped.data);
           if (wrapped.signature !== expectedSig) {
@@ -924,6 +1064,16 @@
             return recoverData(key, defaultValue);
           }
           
+          // FINAL VALIDATION: Ensure array data is actually an array
+          if (key.includes('cart') || key.includes('customers') || 
+              key.includes('history') || key.includes('products') || 
+              key.includes('order')) {
+            if (!Array.isArray(wrapped.data)) {
+              console.error('❌ Loaded non-array for', key, '- using default');
+              return Array.isArray(defaultValue) ? defaultValue : [];
+            }
+          }
+
           console.log(`✅ [${wrapped.timestamp}] Loaded ${key}`);
           return wrapped.data;
         } catch (error) {
@@ -932,19 +1082,48 @@
         }
       }
       
-      // Recovery from backup
+      // Recovery from backup WITH VALIDATION
       function recoverData(key, defaultValue) {
-        const backup = localStorage.getItem(key + '_backup');
-        if (backup) {
+        // Try backup 1
+        const backup1 = localStorage.getItem(key + '_backup');
+        if (backup1) {
           try {
-            const wrapped = JSON.parse(backup);
-            console.log('🔄 Recovered from backup:', key);
-            return wrapped.data;
+            const wrapped = JSON.parse(backup1);
+            // Validate array data
+            if ((key.includes('cart') || key.includes('customers') || 
+                key.includes('history') || key.includes('products') || 
+                key.includes('order')) && !Array.isArray(wrapped.data)) {
+              console.warn('⚠️ Backup 1 corrupted for', key);
+            } else {
+              console.log('🔄 Recovered from backup 1:', key);
+              return wrapped.data;
+            }
           } catch (e) {
-            console.error('❌ Backup recovery failed:', key);
+            console.error('❌ Backup 1 parse failed:', key);
           }
         }
-        return defaultValue;
+        
+        // Try backup 2
+        const backup2 = localStorage.getItem(key + '_backup2');
+        if (backup2) {
+          try {
+            const wrapped = JSON.parse(backup2);
+            // Validate array data
+            if ((key.includes('cart') || key.includes('customers') || 
+                key.includes('history') || key.includes('products') || 
+                key.includes('order')) && !Array.isArray(wrapped.data)) {
+              console.warn('⚠️ Backup 2 corrupted for', key);
+            } else {
+              console.log('🔄 Recovered from backup 2:', key);
+              return wrapped.data;
+            }
+          } catch (e) {
+            console.error('❌ Backup 2 parse failed:', key);
+          }
+        }
+        
+        console.error('❌ All recovery attempts failed for', key);
+        return Array.isArray(defaultValue) ? defaultValue : [];
       }
       
       // Create backup
@@ -975,14 +1154,37 @@
           saveAllData();
         }, 5000);
       }
-      
-      // Save all data
+
+      // Save all data WITH VALIDATION
       function saveAllData() {
+        // Validate before saving
+        if (!Array.isArray(cart)) cart = [];
+        if (!Array.isArray(customers)) customers = [];
+        if (!Array.isArray(exportHistory)) exportHistory = [];
+        
+        // Get products safely
+        let products = [];
+        try {
+          products = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+          if (!Array.isArray(products)) products = [];
+        } catch(e) {
+          products = [];
+        }
+        
+        // Get product order safely
+        let productOrder = [];
+        try {
+          productOrder = JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]');
+          if (!Array.isArray(productOrder)) productOrder = [];
+        } catch(e) {
+          productOrder = [];
+        }
+        
         saveData('mr_pos_cart', cart, 'cart_update');
         saveData('mr_pos_customers', customers, 'customers_update');
         saveData('mr_pos_history', exportHistory, 'history_update');
-        saveData('mr_pos_custom_products', JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]'), 'products_update');
-        saveData('mr_pos_product_order', JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]'), 'order_update');
+        saveData('mr_pos_custom_products', products, 'products_update');
+        saveData('mr_pos_product_order', productOrder, 'order_update');
         console.log('💾 Auto-saved all data');
       }
       
@@ -1024,8 +1226,9 @@
           const hrs = now.getHours();
           const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
           const shift = (hrs >= 4 && hrs < 16) ? (currentLang === 'en' ? 'Morning Shift' : 'सुबह की पाली') : (currentLang === 'en' ? 'Evening Shift' : 'शाम की पाली');
-          el("todayLabel").textContent = `${dateStr} | ${shift}`;
-          
+          // Date/shift display removed - hidden in header
+          // el("todayLabel").textContent = `${dateStr} | ${shift}`;
+
           // Load shop name and user info from session
           loadUserInfo();
       }
@@ -1142,22 +1345,76 @@
           }
       });
 
+      // Sync total payable display with cart total
+      function updateTotalPayableDisplay() {
+        const totalPayable = el("totalPayableDisplay");
+        if (totalPayable) {
+          // Format with commas for better readability
+          totalPayable.textContent = '₹' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          totalPayable.style.color = '#16a34a'; // Reset to green
+        }
+      }
+
+      // Apply roundup to payment amount - this becomes the FINAL accepted amount
+      function applyRoundup() {
+        const roundValue = parseInt(el("roundupInput").value) || 0;
+        const roundupLabel = el("roundupLabel");
+        const roundupValue = el("roundupValue");
+        const paymentAmount = el("paymentAmount");
+        const totalPayableDisplay = el("totalPayableDisplay");
+        
+        if (roundValue > 0 && total > 0) {
+          // Round to nearest value (10, 50, 100, etc.)
+          const rounded = Math.round(total / roundValue) * roundValue;
+          
+          // Auto-update payment amount to rounded total
+          paymentAmount.value = rounded;
+          
+          // Also update the big TOTAL PAYABLE display to show rounded amount
+          totalPayableDisplay.textContent = '₹' + rounded.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          totalPayableDisplay.style.color = '#1e40af'; // Darker blue to show it's modified
+          
+          if (roundupLabel) {
+            roundupLabel.style.display = 'flex';
+            const diff = rounded - total;
+            if (diff >= 0) {
+              roundupValue.textContent = '+' + diff.toFixed(2);
+              roundupValue.style.color = '#16a34a';
+            } else {
+              roundupValue.textContent = diff.toFixed(2);
+              roundupValue.style.color = '#dc2626';
+            }
+          }
+        } else {
+          // Reset to total if no roundup
+          if (roundupLabel) roundupLabel.style.display = 'none';
+          paymentAmount.value = total.toFixed(2);
+          
+          // Reset total payable display to original total
+          updateTotalPayableDisplay();
+        }
+        
+        calculateCredit();
+      }
+
       // Calculate credit based on payment amount
       function calculateCredit() {
         const paymentAmount = parseFloat(el("paymentAmount").value) || 0;
         const creditDisplay = el("creditDisplay");
-        
+
         if (paymentAmount > 0) {
           const remaining = total - paymentAmount;
           if (remaining > 0) {
-            creditDisplay.textContent = `बाद में देंगे: ₹${remaining.toFixed(2)}`;
+            // Customer paying LESS - this is discount/final settlement
+            creditDisplay.textContent = `₹${remaining.toFixed(2)} कम (Discount)`;
             creditDisplay.style.color = '#dc2626';
           } else if (remaining < 0) {
-            creditDisplay.textContent = `अतिरिक्त मिला: ₹${Math.abs(remaining).toFixed(2)}`;
-            creditDisplay.style.color = '#16a34a';
+            // Customer paying MORE - extra amount
+            creditDisplay.textContent = `₹${Math.abs(remaining).toFixed(2)} एक्स्ट्रा`;
+            creditDisplay.style.color = '#166534';
           } else {
             creditDisplay.textContent = 'सही राशि!';
-            creditDisplay.style.color = '#16a34a';
+            creditDisplay.style.color = '#166534';
           }
         } else {
           creditDisplay.textContent = '';
@@ -1167,42 +1424,53 @@
       // Save entry, download invoice, and open WhatsApp or print
       function saveAndInvoice() {
         if (total === 0) return showToast('Cart is empty!');
-        
+
         const customerName = el("activeCust").innerText;
         let paymentAmount = parseFloat(el("paymentAmount").value);
-        
-        // If payment amount not entered, ask user
+
+        // If payment amount not entered, use total
         if (!paymentAmount || paymentAmount <= 0) {
-          paymentAmount = total; // Default to full amount
+          paymentAmount = total;
         }
-        
+
         const customer = customers.find(c => c.name === customerName);
-        
+
         // Determine payment mode and calculate credit
+        // paymentAmount is the FINAL ACCEPTED AMOUNT (rounded/negotiated)
+        // If payment < total, the difference is DISCOUNT (not credit)
+        // If payment >= total, no credit (or extra as advance)
         let paymentMode = 'Cash';
         let creditAmount = 0;
-        
+
         if (paymentAmount < total) {
-          paymentMode = 'Credit';
-          creditAmount = total - paymentAmount;
+          // Customer paid less - this is a DISCOUNT, not credit
+          // No balance carried forward - both parties accepted this amount
+          paymentMode = 'Cash';
+          creditAmount = 0; // NO credit entry
+        } else if (paymentAmount > total) {
+          // Customer paid more - extra amount as advance
+          paymentMode = 'Cash';
+          creditAmount = paymentAmount - total;
         }
-        
-        // Update customer ledger with credit
+
+        // Update customer ledger ONLY if there's actual advance (extra payment)
         if (customer && creditAmount > 0) {
           if (!customer.balance) customer.balance = 0;
-          customer.balance += creditAmount;
           if (!customer.advance) customer.advance = 0;
           customer.advance += creditAmount;
           localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
-          showToast(`₹${creditAmount.toFixed(2)} added to ledger ✅`);
+          // Create backup
+          localStorage.setItem('mr_pos_customers_backup', JSON.stringify(customers));
+          showToast(`₹${creditAmount.toFixed(2)} added to advance ✅`);
         }
-        
-        // Save the entry with correct payment info
+
+        // Save the entry with the ACTUAL accepted amount (rounded/negotiated)
+        // This becomes the invoice amount
         saveEntryWithPayment(paymentMode, paymentAmount, creditAmount);
-        
-        // Generate and download invoice
+
+        // Generate and download invoice with accepted amount
         generateInvoice(customerName, paymentAmount, paymentMode, creditAmount);
-        
+
         // Open WhatsApp after a short delay if phone exists, otherwise print
         setTimeout(() => {
           if (customer && customer.phone && customer.phone.trim().length >= 10) {
@@ -1236,6 +1504,8 @@
               monthMilk: 0
             });
             localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+            // Create backup
+            localStorage.setItem('mr_pos_customers_backup', JSON.stringify(customers));
         }
 
         // Calculate total milk quantity for month tracking
@@ -1257,6 +1527,8 @@
         // Add to history
         exportHistory.push(newSale);
         localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
+        // Create backup
+        localStorage.setItem('mr_sales_history_backup', JSON.stringify(exportHistory));
 
         // Update customer
         let cIdx = customers.findIndex(c => c.name === custName);
@@ -1268,6 +1540,8 @@
             if (!customers[cIdx].monthMilk) customers[cIdx].monthMilk = 0;
             customers[cIdx].monthMilk += totalMilkQty;
             localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+            // Create backup
+            localStorage.setItem('mr_pos_customers_backup', JSON.stringify(customers));
         }
 
         // Update UI
@@ -1586,16 +1860,67 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           const stored = localStorage.getItem('mr_pos_customers');
           if (stored) {
             customers = JSON.parse(stored);
+            // Ensure it's an array
+            if (!Array.isArray(customers)) {
+              throw new Error('Not an array');
+            }
             console.log('✅ Loaded', customers.length, 'customers (Offline)');
           } else {
             // Initialize with empty array
             customers = [];
-            localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
-            console.log('✅ Initialized customer storage (Offline)');
           }
         } catch (error) {
-          console.error('Error loading customers:', error);
+          console.error('⚠️ Customer data corrupted, attempting recovery...');
           customers = [];
+          
+          // Try backup 1
+          try {
+            const backup1 = localStorage.getItem('mr_pos_customers_backup');
+            if (backup1) {
+              customers = JSON.parse(backup1);
+              if (Array.isArray(customers)) {
+                console.log('✅ Recovered', customers.length, 'customers from backup 1!');
+              } else {
+                throw new Error();
+              }
+            } else {
+              throw new Error();
+            }
+          } catch(e2) {
+            // Try backup 2
+            try {
+              const backup2 = localStorage.getItem('mr_pos_customers_backup2');
+              if (backup2) {
+                customers = JSON.parse(backup2);
+                if (Array.isArray(customers)) {
+                  console.log('✅ Recovered', customers.length, 'customers from backup 2!');
+                } else {
+                  throw new Error();
+                }
+              } else {
+                throw new Error();
+              }
+            } catch(e3) {
+              console.error('❌ All customer backups failed, starting fresh');
+              customers = [];
+            }
+          }
+        }
+
+        // FINAL SAFETY: Ensure customers is always an array
+        if (!Array.isArray(customers)) {
+          console.error('❌ Forcing customers to empty array');
+          customers = [];
+        }
+
+        // ALWAYS create triple backup
+        try {
+          const dataStr = JSON.stringify(customers);
+          localStorage.setItem('mr_pos_customers', dataStr);
+          localStorage.setItem('mr_pos_customers_backup', dataStr);
+          localStorage.setItem('mr_pos_customers_backup2', dataStr);
+        } catch(e) {
+          console.error('❌ Failed to create customer backup:', e);
         }
       }
 
@@ -1793,9 +2118,6 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
       function showAdvanceSection(customerName) {
         const customer = customers.find(c => c.name === customerName);
         if (!customer) {
-          el("advanceSection").style.display = "none";
-          el("advanceToggleBtn").style.display = "none";
-          el("udharThresholdNudge").style.display = "none";
           return;
         }
 
@@ -1806,45 +2128,47 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         el("monthMilk").textContent = customer.monthMilk.toFixed(1) + ' L';
         el("currentAdvance").textContent = '₹' + customer.advance.toFixed(2);
 
-        // Show advance toggle button ONLY if customer has unpaid/credit history
+        // Update advance button text if customer has unpaid/credit history
         const advanceBtn = el("advanceToggleBtn");
-        if (customer.advance > 0 || customer.balance < 0) {
-          // Customer has credit history - show button
-          advanceBtn.style.display = "flex";
+        if (advanceBtn) {
           if (customer.advance > 0) {
-            advanceBtn.innerHTML = `📕 Udhar: ₹${customer.advance.toFixed(2)}`;
+            advanceBtn.innerHTML = `📒 Udhar: ₹${customer.advance.toFixed(2)}`;
           } else {
-            advanceBtn.innerHTML = '📕 Advance / Udhar';
+            advanceBtn.innerHTML = '📒 Advance / Udhar';
           }
-        } else {
-          // No credit history - hide button
-          advanceBtn.style.display = "none";
-        }
-
-        // Show Udhar threshold nudge if high credit
-        const udharNudge = el("udharThresholdNudge");
-        if (udharNudge) {
-          udharNudge.style.display = (customer.advance || 0) > 3000 ? 'block' : 'none';
         }
       }
       
       // Toggle advance section visibility
       function toggleAdvance() {
-        const section = el("advanceSection");
-        if (section.style.display === 'none' || section.style.display === '') {
-          section.style.display = 'block';
+        const paymentForm = el("paymentForm");
+        const advanceForm = el("advanceForm");
+        const advanceAmount = el("advanceAmount");
+
+        if (advanceForm.style.display === 'none' || advanceForm.style.display === '') {
+          // Show advance form, hide payment form
+          paymentForm.style.setProperty('display', 'none', 'important');
+          advanceForm.style.setProperty('display', 'flex', 'important');
+
+          // Auto-fill amount from Net Payable
+          if (advanceAmount) {
+            advanceAmount.value = total.toFixed(2);
+          }
+
           const customerName = el("activeCust").innerText;
           if (customerName && customerName !== 'Walking Customer') {
             showAdvanceSection(customerName);
           }
         } else {
-          section.style.display = 'none';
+          // Show payment form, hide advance form
+          advanceForm.style.setProperty('display', 'none', 'important');
+          paymentForm.style.setProperty('display', 'flex', 'important');
         }
       }
 
       // Close advance section
       function closeAdvance() {
-        el("advanceSection").style.display = 'none';
+        toggleAdvance();
       }
       
       // Update ledger placeholder based on toggle
@@ -1852,8 +2176,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         const isCredit = document.querySelector('input[name="ledgerType"][value="credit"]').checked;
         const creditToggle = document.getElementById('creditToggle');
         const debitToggle = document.getElementById('debitToggle');
-        const amountInput = document.getElementById('advanceAmount');
-        
+
         if (isCredit) {
           creditToggle.style.background = '#f0fdf4';
           creditToggle.style.borderColor = '#22c55e';
@@ -1861,7 +2184,6 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           debitToggle.style.background = '#fff';
           debitToggle.style.borderColor = '#e2e8f0';
           debitToggle.style.color = '#64748b';
-          amountInput.placeholder = 'Kitna likhna hai? (₹)';
         } else {
           debitToggle.style.background = '#fef2f2';
           debitToggle.style.borderColor = '#ef4444';
@@ -1869,34 +2191,44 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           creditToggle.style.background = '#fff';
           creditToggle.style.borderColor = '#e2e8f0';
           creditToggle.style.color = '#64748b';
-          amountInput.placeholder = 'Kitna payment hua? (₹)';
         }
+        
+        // Auto-save when toggling (with toast)
+        updateAdvance(true);
       }
 
-      // Update advance (give/cut)
-      function updateAdvance() {
+      // Update advance (give/cut) - auto-saves on amount change or toggle
+      function updateAdvance(showToastMsg = false) {
         const customerName = el("activeCust").innerText;
         const amount = parseFloat(el("advanceAmount").value);
         const isCredit = document.querySelector('input[name="ledgerType"][value="credit"]').checked;
 
-        if (!amount || amount <= 0) return showToast("Enter valid amount");
+        if (!amount || amount <= 0) return;
 
         const customer = customers.find(c => c.name === customerName);
-        if (!customer) return showToast("Customer not found");
+        if (!customer) return;
 
         if (!customer.advance) customer.advance = 0;
+        
+        // Store previous advance to calculate change
+        const prevAdvance = customer.advance;
 
         if (isCredit) {
-          customer.advance += amount;
-          showToast(`₹${amount} likha ${customerName} ke naam`);
+          customer.advance = amount; // Set to amount (not add)
         } else {
-          customer.advance -= amount;
-          showToast(`₹${amount} payment se kam hua`);
+          customer.advance = -amount; // Set to negative (not subtract)
         }
 
         localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
-        el("advanceAmount").value = "";
         showAdvanceSection(customerName);
+        
+        if (showToastMsg) {
+          if (isCredit) {
+            showToast(`₹${amount.toFixed(2)} Udhar likha ✅`);
+          } else {
+            showToast(`₹${amount.toFixed(2)} Payment likha ✅`);
+          }
+        }
       }
       
       // Send monthly summary via WhatsApp
@@ -2009,49 +2341,59 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           const itemAmount = i.rate * i.qty;
           total += itemAmount;
 
-          // Calculate emoji size based on quantity (scale from 24px to 48px)
-          const emojiSize = Math.min(48, Math.max(24, 24 + (i.qty * 4)));
+          // Calculate emoji size based on quantity (scale from 48px to 72px)
+          const emojiSize = Math.min(72, Math.max(48, 48 + (i.qty * 4)));
 
           // Calculate background darkness based on purchase amount (0-0.3 opacity)
           const bgOpacity = (purchaseCount[i.name] / maxAmount) * 0.3;
           const bgColor = `rgba(59, 130, 246, ${bgOpacity})`;
 
           tbody.innerHTML += `<tr style="border-bottom:1px solid #f1f5f9; background:${bgColor};" draggable="true" ondragstart="handleCartDragStart(event)" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)" ondragend="handleCartDragEnd(event)" data-index="${index}">
-            <td style="padding:8px 0;">
-              <div style="display:flex; align-items:center; gap:8px;">
+            <td style="padding:12px 0;">
+              <div style="display:flex; align-items:center; gap:12px;">
                 <span style="font-size:${emojiSize}px;">${getEmojiForProduct(i.name)}</span>
                 <div>
-                  <div style="font-weight:700; font-size:13px;">${i.name}</div>
-                  <div style="font-size:10px; color:var(--muted); font-weight:700;">₹${i.rate}/unit</div>
+                  <div style="font-weight:900; font-size:20px;">${i.name}</div>
+                  <div style="font-size:14px; color:var(--muted); font-weight:700;">₹${i.rate}/unit</div>
                 </div>
               </div>
             </td>
-            <td style="padding:8px 4px;">
+            <td style="padding:12px 4px;">
               <div style="display:flex; align-items:center; gap:4px;">
-                <button onclick="decreaseQty(${index})" style="width:32px; height:32px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:6px; font-weight:900; font-size:18px; cursor:pointer; color:#64748b;">−</button>
+                <button onclick="decreaseQty(${index})" style="width:40px; height:40px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:8px; font-weight:900; font-size:24px; cursor:pointer; color:#64748b;">−</button>
                 <input type="number" value="${i.qty}" min="0.1" step="0.1"
                   onchange="updateItemQty(${index}, this.value)"
                   onblur="updateItemQty(${index}, this.value)"
-                  style="width:70px; padding:6px; border:2px solid #3b82f6; border-radius:6px; font-weight:700; text-align:center; font-size:14px;"
+                  style="width:90px; padding:10px; border:2px solid #3b82f6; border-radius:8px; font-weight:900; text-align:center; font-size:20px;"
                   title="Edit Quantity" />
-                <button onclick="increaseQty(${index})" style="width:32px; height:32px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:6px; font-weight:900; font-size:18px; cursor:pointer; color:#16a34a;">+</button>
+                <button onclick="increaseQty(${index})" style="width:40px; height:40px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:8px; font-weight:900; font-size:24px; cursor:pointer; color:#16a34a;">+</button>
               </div>
             </td>
-            <td style="padding:8px 4px;">
-              <input type="number" value="${itemAmount.toFixed(2)}"
-                onchange="updateItemAmount(${index}, this.value)"
-                onblur="updateItemAmount(${index}, this.value)"
-                style="width:80px; padding:6px; border:1px solid #e2e8f0; border-radius:6px; font-weight:700; text-align:right; font-size:13px;"
-                title="Edit Price (auto-calculates quantity)" />
+            <td style="padding:12px 4px;">
+              <div style="display:flex; align-items:center; gap:4px;">
+                <button onclick="decreaseAmount(${index})" style="width:40px; height:40px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:8px; font-weight:900; font-size:24px; cursor:pointer; color:#dc2626;" title="Decrease ₹10">−</button>
+                <input type="number" value="${itemAmount.toFixed(2)}"
+                  onchange="updateItemAmount(${index}, this.value)"
+                  onblur="updateItemAmount(${index}, this.value)"
+                  style="width:110px; padding:10px; border:2px solid #16a34a; border-radius:8px; font-weight:900; text-align:right; font-size:20px;"
+                  title="Edit Amount (auto-calculates rate)" />
+                <button onclick="increaseAmount(${index})" style="width:40px; height:40px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:8px; font-weight:900; font-size:24px; cursor:pointer; color:#16a34a;" title="Increase ₹10">+</button>
+              </div>
             </td>
-            <td style="padding:8px 0; text-align:right;">
-              <button onclick="removeItem(${index})" style="background:#fecaca; color:#dc2626; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-weight:700; font-size:11px;">✕ Remove</button>
+            <td style="padding:12px 0; text-align:right;">
+              <button onclick="removeItem(${index})" style="background:#fecaca; color:#dc2626; border:none; border-radius:8px; padding:10px 16px; cursor:pointer; font-weight:900; font-size:14px;">✕ Remove</button>
             </td>
           </tr>`;
         });
 
-        // Update total display
-        el("totalAmt").textContent = `₹${total.toFixed(2)}`;
+        // Update total display (if element exists)
+        const totalAmt = el("totalAmt");
+        if (totalAmt) {
+          totalAmt.textContent = `₹${total.toFixed(2)}`;
+        }
+
+        // Sync total payable display
+        updateTotalPayableDisplay();
 
         // Update payment amount field - auto-update but keep editable
         const paymentInput = el("paymentAmount");
@@ -2108,7 +2450,25 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         cart[index].qty = Math.round((cart[index].qty + step) * 10) / 10;
         updateUI();
       }
-      
+
+      // Decrease amount by ₹10
+      function decreaseAmount(index) {
+        const newAmount = Math.max(0, cart[index].qty * cart[index].rate - 10);
+        cart[index].qty = Math.round((newAmount / cart[index].rate) * 10) / 10;
+        if (cart[index].qty <= 0) {
+          removeItem(index);
+        } else {
+          updateUI();
+        }
+      }
+
+      // Increase amount by ₹10
+      function increaseAmount(index) {
+        const newAmount = cart[index].qty * cart[index].rate + 10;
+        cart[index].qty = Math.round((newAmount / cart[index].rate) * 10) / 10;
+        updateUI();
+      }
+
       // Update quantity badges on product cards
       function updateCardBadges() {
         try {
@@ -2697,7 +3057,7 @@ function clearTodayHistory() {
         }
         closeModal('memoryModal');
       }
-      function resetCart() { cart = []; updateUI(); el("activeCust").innerText = "Walking Customer"; el("custSearch").value = ""; el("advanceSection").style.display = "none"; el("advanceToggleBtn").style.display = "none"; }
+      function resetCart() { cart = []; updateUI(); el("activeCust").innerText = "Walking Customer"; el("custSearch").value = ""; el("advanceForm").style.display = 'none'; el("paymentForm").style.display = 'flex'; }
       
       // Hold cart functionality
       function holdCart() {
@@ -3164,27 +3524,72 @@ function convertMilkToProduct() {
 let stepCount = 3;
 function addStepInput() {
   if (stepCount >= 5) return;
-  
+
   stepCount++;
   const container = document.getElementById('stepInputsContainer');
   const defaults = [10, 20];
   const stepNum = stepCount;
   const defaultValue = defaults[stepCount - 4] || 10;
-  
+
   const newDiv = document.createElement('div');
   newDiv.style.cssText = 'display:flex; flex-direction:column; gap:4px;';
   newDiv.innerHTML = `
     <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step ${stepNum}</label>
-    <input type="number" class="pStep" value="${defaultValue}" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
+    <input type="number" class="pStep" value="${defaultValue}" step="0.1" onkeydown="handleStepEnter(event)" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
   `;
   container.appendChild(newDiv);
-  
+
   // Update grid columns
   container.style.gridTemplateColumns = `repeat(${stepCount}, 1fr)`;
-  
+
   // Hide button if max reached
   if (stepCount >= 5) {
     document.getElementById('addStepBtn').style.display = 'none';
+  }
+  
+  // Focus the new input
+  const newInput = newDiv.querySelector('input');
+  if (newInput) {
+    newInput.focus();
+    newInput.select();
+  }
+}
+
+// Handle Enter key in step inputs - move to next or submit
+function handleStepEnter(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const container = document.getElementById('stepInputsContainer');
+    const inputs = Array.from(container.querySelectorAll('input'));
+    const currentIndex = inputs.indexOf(e.target);
+    
+    if (currentIndex < inputs.length - 1) {
+      // Move to next input
+      inputs[currentIndex + 1].focus();
+      inputs[currentIndex + 1].select();
+    } else {
+      // Last input - submit form
+      const form = container.closest('form');
+      if (form) form.requestSubmit();
+    }
+  }
+}
+
+// Handle Enter key in product fields - move to next field
+function handleProductFieldEnter(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const form = e.target.closest('form');
+    const inputs = Array.from(form.querySelectorAll('input:not([type="hidden"])'));
+    const currentIndex = inputs.indexOf(e.target);
+    
+    if (currentIndex < inputs.length - 1) {
+      // Move to next input
+      inputs[currentIndex + 1].focus();
+      if (inputs[currentIndex + 1].type !== 'number') {
+        inputs[currentIndex + 1].select();
+      }
+    }
   }
 }
 
@@ -3205,7 +3610,33 @@ function addNewProductFromModal() {
   const addCardBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
   
   // Calculate ranks for new steps
-  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  let customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  
+  // Ensure customProducts is always an array - RECOVER DATA IF CORRUPTED
+  if (!Array.isArray(customProducts)) {
+    console.error('⚠️ customProducts is not an array, attempting recovery...');
+    // Try to recover from backup
+    const backup = localStorage.getItem('mr_pos_custom_products_backup');
+    if (backup) {
+      try {
+        customProducts = JSON.parse(backup);
+        if (Array.isArray(customProducts)) {
+          console.log('✅ Recovered ' + customProducts.length + ' products from backup!');
+          localStorage.setItem('mr_pos_custom_products', JSON.stringify(customProducts));
+        } else {
+          customProducts = [];
+          console.error('❌ Backup also corrupted, starting fresh');
+        }
+      } catch(e) {
+        customProducts = [];
+        console.error('❌ Recovery failed, starting fresh');
+      }
+    } else {
+      customProducts = [];
+      console.error('❌ No backup available, starting fresh');
+    }
+  }
+  
   const allSteps = [...new Set([...customProducts.map(p => p.step), ...steps.filter(s => s !== 0)])].sort((a, b) => a - b);
   const stepToRank = {};
   const rankStep = Math.ceil(allSteps.length / 5);
@@ -3248,7 +3679,16 @@ function addNewProductFromModal() {
       customProducts.push({name, price, unit, emoji, step});
     }
   });
-  localStorage.setItem('mr_pos_custom_products', JSON.stringify(customProducts));
+  
+  // Create TRIPLE backup
+  try {
+    const dataStr = JSON.stringify(customProducts);
+    localStorage.setItem('mr_pos_custom_products', dataStr);
+    localStorage.setItem('mr_pos_custom_products_backup', dataStr);
+    localStorage.setItem('mr_pos_custom_products_backup2', dataStr);
+  } catch(e) {
+    console.error('❌ Failed to save products:', e);
+  }
 
   // Close modal and clear
   closeModal('addProductModal');
@@ -3360,50 +3800,125 @@ function addNewProduct() {
 function loadCustomProducts() {
   // Check if localStorage has been initialized
   const hasInitialized = localStorage.getItem('mr_pos_initialized');
-  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  let customProducts = [];
   
+  try {
+    // Try to load main data
+    const mainData = localStorage.getItem('mr_pos_custom_products');
+    if (mainData) {
+      customProducts = JSON.parse(mainData);
+      // Validate it's an array
+      if (!Array.isArray(customProducts)) {
+        throw new Error('Not an array');
+      }
+      console.log('✅ Loaded', customProducts.length, 'products from main storage');
+    }
+  } catch(e) {
+    console.error('⚠️ Main data corrupted, trying backup...');
+    customProducts = [];
+    
+    // Try backup 1
+    try {
+      const backup1 = localStorage.getItem('mr_pos_custom_products_backup');
+      if (backup1) {
+        customProducts = JSON.parse(backup1);
+        if (Array.isArray(customProducts)) {
+          console.log('✅ Recovered', customProducts.length, 'products from backup 1!');
+        } else {
+          throw new Error('Backup 1 not array');
+        }
+      }
+    } catch(e2) {
+      console.error('⚠️ Backup 1 failed, trying backup 2...');
+      
+      // Try backup 2
+      try {
+        const backup2 = localStorage.getItem('mr_pos_custom_products_backup2');
+        if (backup2) {
+          customProducts = JSON.parse(backup2);
+          if (Array.isArray(customProducts)) {
+            console.log('✅ Recovered', customProducts.length, 'products from backup 2!');
+          }
+        }
+      } catch(e3) {
+        console.error('❌ All backups failed, starting fresh');
+        customProducts = [];
+      }
+    }
+  }
+  
+  // ALWAYS create BOTH backups immediately if we have valid data
+  if (Array.isArray(customProducts) && customProducts.length > 0) {
+    try {
+      const dataStr = JSON.stringify(customProducts);
+      localStorage.setItem('mr_pos_custom_products', dataStr);
+      localStorage.setItem('mr_pos_custom_products_backup', dataStr);
+      localStorage.setItem('mr_pos_custom_products_backup2', dataStr);
+      console.log('✅ Created triple backup of', customProducts.length, 'products');
+    } catch(e) {
+      console.error('❌ Failed to create backup:', e);
+    }
+  }
+
+  // FINAL SAFETY: Ensure customProducts is always an array
+  if (!Array.isArray(customProducts)) {
+    console.error('❌ customProducts is still not an array, forcing empty array');
+    customProducts = [];
+  }
+
   // If no custom products AND never initialized, create defaults (first-time setup)
   if (customProducts.length === 0 && !hasInitialized) {
     createDefaultProducts();
     localStorage.setItem('mr_pos_initialized', 'true');
     return;
   }
-  
+
   // If products exist but not initialized, mark as initialized
   if (customProducts.length > 0 && !hasInitialized) {
     localStorage.setItem('mr_pos_initialized', 'true');
   }
-  
+
   const grid = el("productGrid");
   if (!grid) return;
-  
+
   // Clear existing product cards (keep Add and Edit buttons)
   const existingCards = grid.querySelectorAll('.p-card:not([onclick*="addProductModal"]):not([onclick*="openEdit"])');
   existingCards.forEach(card => card.remove());
-  
+
   // Get the Add button to insert before it
   const addCardBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
   if (!addCardBtn) return;
 
-  // Group products by name
+  // Group products by name - FINAL SAFETY CHECK
   const productGroups = {};
-  customProducts.forEach(p => {
-    if (!productGroups[p.name]) {
-      productGroups[p.name] = {
-        name: p.name,
-        emoji: p.emoji || '📦',
-        price: p.price,
-        unit: p.unit || 'unit',
-        steps: []
-      };
-    }
-    productGroups[p.name].steps.push(p.step);
-  });
+  if (Array.isArray(customProducts)) {
+    customProducts.forEach(p => {
+      if (!productGroups[p.name]) {
+        productGroups[p.name] = {
+          name: p.name,
+          emoji: p.emoji || '📦',
+          price: p.price,
+          unit: p.unit || 'unit',
+          steps: []
+        };
+      }
+      productGroups[p.name].steps.push(p.step);
+    });
+  } else {
+    console.error('❌ customProducts is not an array, using empty array');
+  }
   
   let products = Object.values(productGroups);
-  
+
   // Apply saved product order if exists
-  const productOrder = JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]');
+  let productOrder = [];
+  try {
+    productOrder = JSON.parse(localStorage.getItem('mr_pos_product_order') || '[]');
+    if (!Array.isArray(productOrder)) productOrder = [];
+  } catch(e) {
+    productOrder = [];
+  }
+  
   if (productOrder.length > 0) {
     products.sort((a, b) => {
       const indexA = productOrder.indexOf(a.name);
@@ -3411,9 +3926,11 @@ function loadCustomProducts() {
       return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
     });
   }
-  
-  // Calculate step ranks (1-5 based on relative step sizes)
-  const allSteps = [...new Set(customProducts.map(p => p.step))].sort((a, b) => a - b);
+
+  // Calculate step ranks (1-5 based on relative step sizes) - SAFETY CHECK
+  const allSteps = Array.isArray(customProducts) 
+    ? [...new Set(customProducts.map(p => p.step))].sort((a, b) => a - b)
+    : [];
   const stepToRank = {};
   const rankStep = Math.ceil(allSteps.length / 5); // Divide into 5 ranks
   allSteps.forEach((step, idx) => {
@@ -3421,29 +3938,31 @@ function loadCustomProducts() {
   });
 
   products.forEach(p => {
-    p.steps.forEach(step => {
-      const rank = stepToRank[step] || 3; // Default to rank 3
-      const newCard = document.createElement('div');
-      newCard.className = 'p-card';
-      newCard.setAttribute('data-qty', '1');
-      newCard.setAttribute('data-step', step || 1);
-      newCard.setAttribute('data-rank', rank);
-      newCard.setAttribute('draggable', 'true');
-      newCard.ondragstart = handleDragStart;
-      newCard.onclick = function() { tapAdd(p.name, p.price, step || 1); };
+    if (Array.isArray(p.steps)) {
+      p.steps.forEach(step => {
+        const rank = stepToRank[step] || 3; // Default to rank 3
+        const newCard = document.createElement('div');
+        newCard.className = 'p-card';
+        newCard.setAttribute('data-qty', '1');
+        newCard.setAttribute('data-step', step || 1);
+        newCard.setAttribute('data-rank', rank);
+        newCard.setAttribute('draggable', 'true');
+        newCard.ondragstart = handleDragStart;
+        newCard.onclick = function() { tapAdd(p.name, p.price, step || 1); };
 
-      const stepDisplay = (step || 1) < 0 ? `(${step}x)` : `(${step}x)`;
-      const nameDisplay = (step || 1) < 0 ? `${p.name} ${stepDisplay}` : `${p.name} ${stepDisplay}`;
+        const stepDisplay = (step || 1) < 0 ? `(${step}x)` : `(${step}x)`;
+        const nameDisplay = (step || 1) < 0 ? `${p.name} ${stepDisplay}` : `${p.name} ${stepDisplay}`;
 
-      newCard.innerHTML = `
-        <span class="emoji">${p.emoji || '📦'}</span>
-        <div style="font-weight: 900; margin-top: 2px;">${nameDisplay}</div>
-        <small>₹${p.price}/${p.unit || 'unit'}</small>
-        <button class="edit-prod-btn" onclick="event.stopPropagation(); editProductCard(this)" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
-        <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
-      `;
-      grid.insertBefore(newCard, addCardBtn);
-    });
+        newCard.innerHTML = `
+          <span class="emoji">${p.emoji || '📦'}</span>
+          <div style="font-weight: 900; margin-top: 2px;">${nameDisplay}</div>
+          <small>₹${p.price}/${p.unit || 'unit'}</small>
+          <button class="edit-prod-btn" onclick="event.stopPropagation(); editProductCard(this)" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
+          <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
+        `;
+        grid.insertBefore(newCard, addCardBtn);
+      });
+    }
   });
 }
 
@@ -3459,9 +3978,17 @@ function createDefaultProducts() {
     { name: 'Ghee', emoji: '🍯', price: 180, unit: 'g', step: 0.25 },
     { name: 'Milk Cake', emoji: '🍰', price: 300, unit: 'kg', step: 1 }
   ];
-  
-  localStorage.setItem('mr_pos_custom_products', JSON.stringify(defaultProducts));
-  
+
+  try {
+    const dataStr = JSON.stringify(defaultProducts);
+    localStorage.setItem('mr_pos_custom_products', dataStr);
+    localStorage.setItem('mr_pos_custom_products_backup', dataStr);
+    localStorage.setItem('mr_pos_custom_products_backup2', dataStr);
+    console.log('✅ Created ' + defaultProducts.length + ' default products with triple backup');
+  } catch(e) {
+    console.error('❌ Failed to create default products:', e);
+  }
+
   // Load the newly created products
   loadCustomProducts();
 }
@@ -3472,6 +3999,12 @@ function openEditInventory() {
   
   // Get custom products from localStorage
   const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  // Ensure customProducts is always an array
+  if (!Array.isArray(customProducts)) {
+    console.error('customProducts is not an array, resetting to empty array');
+    localStorage.setItem('mr_pos_custom_products', '[]');
+    return;
+  }
   
   // Group by product name (since each product can have multiple step cards)
   const productGroups = {};
@@ -3572,7 +4105,26 @@ function updateProductWithSteps(index, oldName) {
   if (!newName || !newRate || newRate <= 0) return showToast('Invalid name or rate!');
 
   // Update in localStorage (for custom products)
-  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  let customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  
+  // Ensure customProducts is always an array
+  if (!Array.isArray(customProducts)) {
+    console.error('⚠️ Products corrupted, attempting recovery...');
+    // Try backup
+    try {
+      const backup = localStorage.getItem('mr_pos_custom_products_backup');
+      if (backup) {
+        customProducts = JSON.parse(backup);
+        if (!Array.isArray(customProducts)) throw new Error();
+        console.log('✅ Recovered from backup');
+      } else {
+        customProducts = [];
+      }
+    } catch(e) {
+      customProducts = [];
+      console.error('❌ Recovery failed');
+    }
+  }
 
   // Remove old product cards for this product
   const filteredProducts = customProducts.filter(p => p.name !== oldName);
@@ -3589,7 +4141,15 @@ function updateProductWithSteps(index, oldName) {
     }
   });
 
-  localStorage.setItem('mr_pos_custom_products', JSON.stringify(filteredProducts));
+  // Create TRIPLE backup
+  try {
+    const dataStr = JSON.stringify(filteredProducts);
+    localStorage.setItem('mr_pos_custom_products', dataStr);
+    localStorage.setItem('mr_pos_custom_products_backup', dataStr);
+    localStorage.setItem('mr_pos_custom_products_backup2', dataStr);
+  } catch(e) {
+    console.error('❌ Failed to save:', e);
+  }
 
   const activeSteps = newSteps.filter(s => s !== 0);
   showToast(`${newName} updated! ₹${newRate}/${newUnit} (${activeSteps.length} steps: ${activeSteps.join(', ')}) ✅`);
@@ -3602,10 +4162,52 @@ function updateProductWithSteps(index, oldName) {
 function removeProduct(productName) {
   if (!confirm(`Remove "${productName}" from product list?`)) return;
 
-  const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  let customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+
+  // Ensure customProducts is always an array - RECOVER IF CORRUPTED
+  if (!Array.isArray(customProducts)) {
+    console.error('⚠️ Products corrupted, attempting recovery...');
+    // Try backup 1
+    try {
+      const backup1 = localStorage.getItem('mr_pos_custom_products_backup');
+      if (backup1) {
+        customProducts = JSON.parse(backup1);
+        if (Array.isArray(customProducts)) {
+          console.log('✅ Recovered from backup 1');
+        } else {
+          throw new Error();
+        }
+      } else {
+        throw new Error();
+      }
+    } catch(e) {
+      // Try backup 2
+      try {
+        const backup2 = localStorage.getItem('mr_pos_custom_products_backup2');
+        if (backup2) {
+          customProducts = JSON.parse(backup2);
+          if (Array.isArray(customProducts)) {
+            console.log('✅ Recovered from backup 2');
+          }
+        }
+      } catch(e2) {
+        customProducts = [];
+        console.error('❌ All backups failed');
+      }
+    }
+  }
+
   const filteredProducts = customProducts.filter(p => p.name !== productName);
 
-  localStorage.setItem('mr_pos_custom_products', JSON.stringify(filteredProducts));
+  // Create TRIPLE backup
+  try {
+    const dataStr = JSON.stringify(filteredProducts);
+    localStorage.setItem('mr_pos_custom_products', dataStr);
+    localStorage.setItem('mr_pos_custom_products_backup', dataStr);
+    localStorage.setItem('mr_pos_custom_products_backup2', dataStr);
+  } catch(e) {
+    console.error('❌ Failed to save:', e);
+  }
 
   showToast(`${productName} removed ✅`);
   closeModal('editInventoryModal');
@@ -3653,6 +4255,12 @@ function handleProductOrderDrop(e) {
   
   // Get all products from localStorage
   const customProducts = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+  // Ensure customProducts is always an array
+  if (!Array.isArray(customProducts)) {
+    console.error('customProducts is not an array, resetting to empty array');
+    localStorage.setItem('mr_pos_custom_products', '[]');
+    return;
+  }
   
   // If productOrder is empty, initialize it with current order
   if (productOrder.length === 0) {
@@ -3877,8 +4485,14 @@ document.querySelectorAll('.p-card').forEach(card => {
   });
 });
 
-// Focus search on page load
-setTimeout(() => el("custSearch").focus(), 500);
+// Focus product search on page load (not customer search)
+setTimeout(() => {
+  const productSearch = el("productSearch");
+  if (productSearch) {
+    productSearch.focus();
+    productSearch.select();
+  }
+}, 300);
     </script>
   </body>
 </html>
