@@ -5467,79 +5467,106 @@ function openFarmerDetail(fId) {
     const f = getFarmerById(fId);
     if (!f) return;
     selectedFarmerId = fId;
-    
+
     // Show serial number if available
     const nameDisplay = f.serial ? `${f.name} (#${f.serial})` : f.name;
     el("detailFarmerName").textContent = nameDisplay;
-    
+
     el("detailAdvance").textContent = formatAmount(f.advance || 0);
 
     const now = new Date();
     const monthEntries = entries.filter(e => e.farmerId === fId && new Date(e.createdAt).getMonth() === now.getMonth());
     const totalL = monthEntries.reduce((sum, e) => sum + Number(e.qty || 0), 0);
     el("detailMonthlyMilk").textContent = `${totalL.toFixed(1)} L`;
-    openOverlay("overlayFarmerDetail");
+    
+    // Also open transaction history to show all entries
+    openFarmerTransactions(fId);
 }
 
-// Open farmer transaction history (double-click)
+// Open farmer transaction history (double-click) - COMPREHENSIVE LOG
 function openFarmerTransactions(fId) {
     const f = getFarmerById(fId);
     if (!f) return;
-    
+
     selectedFarmerId = fId;
-    el("transFarmerName").textContent = f.name;
+    el("transFarmerName").textContent = f.name + (f.serial ? ` (#${f.serial})` : '');
+
+    // Get ALL entries for this farmer (not just current month)
+    const allEntries = entries.filter(e => e.farmerId === fId);
     
-    // Calculate monthly milk
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const monthEntries = entries.filter(e => e.farmerId === fId && new Date(e.createdAt) >= monthStart);
-    const totalMilk = monthEntries.reduce((sum, e) => sum + Number(e.qty || 0), 0);
-    el("transTotalMilk").textContent = `${totalMilk.toFixed(1)} L`;
+    // Calculate total milk
+    const totalMilk = allEntries.reduce((sum, e) => sum + Number(e.qty || 0), 0);
+    el("transTotalMilk").textContent = `${totalMilk.toFixed(1)} L (All Time)`;
     el("transCurrentAdvance").textContent = formatAmount(f.advance || 0);
-    
-    // Generate transaction list
+
+    // Generate COMPREHENSIVE transaction list
     const transList = el("transList");
     const transactions = [];
-    
-    // Add milk entries as debit transactions
-    monthEntries.forEach(e => {
+
+    // Add ALL milk entries with full details
+    allEntries.forEach(e => {
         const rate = e.rateSnapshot || e.ratePerL || 0;
+        const paymentMode = e.paymentMode || 'Cash';
+        const isCredit = paymentMode === 'Credit';
+        
         transactions.push({
             date: new Date(e.createdAt),
-            type: 'milk',
-            description: `Milk: ${e.qty}L @ ${formatAmount(rate)}`,
+            type: isCredit ? 'credit' : 'cash',
+            description: `🥛 ${e.qty}L @ ${formatAmount(rate)}/L (Fat: ${e.fat}%, SNF: ${e.snf || 0}%)`,
+            paymentMode: isCredit ? '📒 Credit (Likh Lo)' : '💵 Cash/UPI',
             amount: Number(e.amount),
-            balance: 0
+            balance: 0,
+            entryId: e.id
         });
     });
-    
-    // Sort by date
+
+    // Sort by date (newest first)
     transactions.sort((a, b) => b.date - a.date);
-    
+
     // Calculate running balance
     let balance = f.balance || 0;
     transactions.forEach(t => {
         t.balance = balance;
         balance -= t.amount;
     });
-    
+
     if (transactions.length === 0) {
-        transList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--muted);">No transactions this month</div>';
+        transList.innerHTML = `
+          <div style="padding: 40px 20px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 10px;">📋</div>
+            <div style="font-size: 16px; font-weight: 700; color: #64748b; margin-bottom: 5px;">No transactions yet</div>
+            <div style="font-size: 13px; color: #94a3b8;">Double-click to add entries</div>
+          </div>`;
     } else {
-        transList.innerHTML = transactions.map(t => `
-          <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px;">
-            <div>
-              <div style="font-weight: 700;">${t.description}</div>
-              <div style="color: var(--muted); font-size: 11px;">${t.date.toLocaleDateString()}</div>
+        transList.innerHTML = `
+          <div style="background: #f0f9ff; padding: 12px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #0284c7;">
+            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+              <span style="font-weight: 700; color: #0369a1;">📊 Summary:</span>
+              <span style="color: #0369a1;">${transactions.length} entries | Total: ${formatAmount(transactions.reduce((sum, t) => sum + t.amount, 0))}</span>
             </div>
-            <div style="text-align: right;">
-              <div style="font-weight: 700; color: #dc2626;">-${formatAmount(t.amount)}</div>
-              <div style="color: var(--muted); font-size: 11px;">Bal: ${formatAmount(t.balance)}</div>
+          </div>
+        ` + transactions.map((t, index) => `
+          <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e2e8f0; ${index === 0 ? 'background: #fef3c7;' : ''}" onclick="showAuditProof('${t.entryId}')">
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="font-size: 16px;">${t.type === 'credit' ? '📒' : '💵'}</span>
+                <div style="font-weight: 700; font-size: 13px;">${t.description}</div>
+              </div>
+              <div style="display: flex; gap: 12px; font-size: 11px; color: #64748b;">
+                <span>📅 ${t.date.toLocaleDateString()} ${t.date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                <span>•</span>
+                <span style="color: ${t.type === 'credit' ? '#dc2626' : '#16a34a'}; font-weight: 600;">${t.paymentMode}</span>
+              </div>
+            </div>
+            <div style="text-align: right; min-width: 120px;">
+              <div style="font-weight: 700; color: #dc2626; font-size: 14px;">-${formatAmount(t.amount)}</div>
+              <div style="color: #64748b; font-size: 11px; margin-top: 4px;">Bal: ${formatAmount(t.balance)}</div>
+              ${index === 0 ? '<div style="color: #f59e0b; font-size: 10px; font-weight: 700; margin-top: 4px;">⬅️ LATEST</div>' : ''}
             </div>
           </div>
         `).join('');
     }
-    
+
     openOverlay("overlayFarmerTransactions");
 }
 
