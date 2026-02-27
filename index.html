@@ -2737,14 +2737,17 @@ function playSuccessSound() {
       /* Manual typing → state update */
       qtyInput.addEventListener("input", (e) => {
         qty = Number(e.target.value) || 0;
+        console.log('🔵 Qty changed:', qty, 'Calling renderTrust()');
         renderTrust();
       });
       fatInput.addEventListener("input", (e) => {
         fat = Number(e.target.value) || 0;
+        console.log('🔵 Fat changed:', fat, 'Calling renderTrust()');
         renderTrust();
       });
       snfInput.addEventListener("input", (e) => {
         snf = Number(e.target.value) || 0;
+        console.log('🔵 SNF changed:', snf, 'Calling renderTrust()');
         renderTrust();
       });
 
