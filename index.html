@@ -555,56 +555,68 @@
 
       .control {
         border-radius: 18px;
-        border: 1px solid var(--line);
+        border: 2px solid var(--line);
         padding: 12px;
         display: grid;
         grid-template-rows: auto 1fr auto;
-        gap: 2px;
-        min-height: 20px;
+        gap: 4px;
+        min-height: 110px;
+        background: #fff;
+        transition: all 0.2s;
+      }
+      .control:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       }
       .control.green {
         background: var(--soft-green);
+        border-color: #86efac;
       }
       .control.yellow {
         background: var(--soft-yellow);
+        border-color: #fcd34d;
       }
       .control.blue {
         background: var(--soft-blue);
+        border-color: #93c5fd;
       }
       .ctrlTop {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        font-weight: 1000;
-        font-size: 6px;
+        font-weight: 900;
+        font-size: 11px;
+        color: #1e293b;
       }
       .ctrlTop .muted {
-        color: var(--muted);
-        font-weight: 900;
-        font-size: 5px;
+        color: #64748b;
+        font-weight: 700;
+        font-size: 9px;
       }
       .numBig {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
-        font-weight: 1100;
+        font-size: 16px;
+        font-weight: 900;
         letter-spacing: 0.3px;
-        color: #334155;
+        color: #1e293b;
       }
 
       .numInput {
         width: 100%;
         text-align: center;
-        font-size: 12px;
-        font-weight: 1100;
+        font-size: 18px;
+        font-weight: 900;
         border: none;
         outline: none;
         background: transparent;
-        color: #334155;
+        color: #1e293b;
       }
       .numInput:focus {
-        text-align: left;
+        text-align: center;
+        background: rgba(255,255,255,0.5);
+        border-radius: 8px;
       }
       .numInput::-webkit-outer-spin-button,
       .numInput::-webkit-inner-spin-button {
@@ -1556,7 +1568,7 @@
       </div>
       
       <!-- Advance Management Tab -->
-      <div id="detailAdvance" style="padding: 16px; display: none;">
+      <div id="detailAdvanceTab" style="padding: 16px; display: none;">
         <div class="formGrid">
           <div class="field">
             <label style="font-size: 12px; font-weight: 700;">Amount (₹)</label>
@@ -5750,7 +5762,11 @@ function openFarmerDetail(fId) {
 function showDetailTab(tabName) {
     // Hide all tabs
     ['transactions', 'edit', 'advance'].forEach(name => {
-        const content = document.getElementById('detail' + name.charAt(0).toUpperCase() + name.slice(1));
+        let contentId = 'detail' + name.charAt(0).toUpperCase() + name.slice(1);
+        // Special case for advance tab (ID conflict fix)
+        if (name === 'advance') contentId = 'detailAdvanceTab';
+        
+        const content = document.getElementById(contentId);
         const tab = document.getElementById('tab' + name.charAt(0).toUpperCase() + name.slice(1));
         if (content) content.style.display = 'none';
         if (tab) {
@@ -5760,9 +5776,12 @@ function showDetailTab(tabName) {
             tab.style.fontWeight = '600';
         }
     });
-    
+
     // Show selected tab
-    const selectedContent = document.getElementById('detail' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+    let selectedContentId = 'detail' + tabName.charAt(0).toUpperCase() + tabName.slice(1);
+    if (tabName === 'advance') selectedContentId = 'detailAdvanceTab';
+    
+    const selectedContent = document.getElementById(selectedContentId);
     const selectedTab = document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
     if (selectedContent) selectedContent.style.display = 'block';
     if (selectedTab) {
