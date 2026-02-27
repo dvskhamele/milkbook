@@ -5025,9 +5025,10 @@ function showAuditProof(entryId) {
           }
       }
 
-      // Toggle header dropdown
-      function toggleHeaderDropdown() {
+      // Toggle header dropdown - Make explicitly global
+      window.toggleHeaderDropdown = function() {
           const dropdown = document.getElementById('headerDropdown');
+          console.log('🔵 toggleHeaderDropdown called, dropdown:', dropdown);
           if (dropdown) {
             const isVisible = dropdown.style.display === 'block';
             dropdown.style.display = isVisible ? 'none' : 'block';
