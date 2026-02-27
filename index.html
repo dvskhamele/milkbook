@@ -1507,35 +1507,53 @@
 
           <!-- User Dropdown with Booth, Settings -->
           <div style="position: relative; display: inline-block; margin-left: 6px;">
-            <button class="pillbtn" onclick="toggleHeaderDropdown()" style="background:#f8fafc; border-color:#e2e8f0; font-size:14px; padding:10px 14px; font-weight:700; cursor: pointer; border: 2px solid #cbd5e1;">
-              👤 <span id="headerUserName">User</span>
+            <button class="pillbtn" onclick="toggleHeaderDropdown()" style="background:#f8fafc; border-color:#e2e8f0; font-size:14px; padding:10px 14px; font-weight:700; cursor: pointer; border: 2px solid #cbd5e1; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
+              👤 <span id="headerUserName">User</span> <span style="font-size:10px; margin-left:4px; opacity:0.6;">▼</span>
             </button>
-            <div id="headerDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 6px; background: white; border: 2px solid var(--line); border-radius: 10px; box-shadow: 0 12px 36px rgba(0,0,0,0.2); min-width: 240px; z-index: 1001;">
-              <div style="padding: 14px 16px; border-bottom: 2px solid var(--line);">
-                <div style="font-weight: 700; font-size: 14px;" id="headerDropdownEmail">user@milkrecord.in</div>
-                <div style="font-size: 12px; color: var(--muted);" id="headerDropdownShop">milkrecord.in</div>
+            <div id="headerDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 6px; background: white; border: 2px solid #e2e8f0; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); min-width: 260px; z-index: 1001; overflow: hidden;">
+              <!-- User Info Section -->
+              <div style="padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-bottom: 2px solid #e2e8f0;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                  <div style="width:40px; height:40px; background:#3b82f6; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:20px; font-weight:900;">👤</div>
+                  <div>
+                    <div style="font-weight: 700; font-size: 15px; color:#1e293b;" id="headerDropdownEmail">user@milkrecord.in</div>
+                    <div style="font-size: 11px; color: #64748b;" id="headerDropdownShop">milkrecord.in</div>
+                  </div>
+                </div>
               </div>
+              
               <!-- Booth Selector -->
-              <div style="padding: 14px 16px; border-bottom: 2px solid var(--line);">
-                <label style="font-size: 12px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 8px;">Booth:</label>
-                <select id="collectionPointSelect" onchange="updateCollectionPoint(); toggleHeaderDropdown()" style="width: 100%; padding: 10px; border: 2px solid var(--line); border-radius: 8px; font-weight: 700; font-size: 13px; background: white; cursor: pointer;">
-                  <option value="DEFAULT">Default</option>
-                  <option value="VILLAGE_A">Village A</option>
-                  <option value="VILLAGE_B">Village B</option>
-                  <option value="MAIN_MARKET">Main Market</option>
+              <div style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9;">
+                <label style="font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 6px; text-transform:uppercase; letter-spacing:0.5px;">🏪 Collection Booth</label>
+                <select id="collectionPointSelect" onchange="updateCollectionPoint(); toggleHeaderDropdown()" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 13px; background: white; cursor: pointer; transition: border-color 0.2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e2e8f0'">
+                  <option value="DEFAULT">📍 Default Booth</option>
+                  <option value="VILLAGE_A">🏘️ Village A</option>
+                  <option value="VILLAGE_B">🏘️ Village B</option>
+                  <option value="MAIN_MARKET">🏪 Main Market</option>
                 </select>
               </div>
+              
               <!-- Reading Mode -->
-              <div style="padding: 14px 16px; border-bottom: 2px solid var(--line); font-size: 12px; color: var(--muted);">
-                <span style="color: #9ca3af;">●</span> Reading: Manual
+              <div style="padding: 12px 16px; border-bottom: 1px solid #f1f5f9; background:#f8fafc;">
+                <div style="font-size: 11px; font-weight: 700; color: #64748b; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">📊 Reading Mode</div>
+                <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:#475569; font-weight:700;">
+                  <span style="width:8px; height:8px; background:#22c55e; border-radius:50%; display:inline-block;"></span>
+                  Manual Entry
+                </div>
               </div>
-              <!-- History -->
-              <button onclick="openOverlay('overlayHistory'); toggleHeaderDropdown()" style="width: 100%; padding: 14px 16px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text);">🧾 History</button>
-              <!-- Settings -->
-              <button onclick="openOverlay('overlaySettings'); toggleHeaderDropdown()" style="width: 100%; padding: 14px 16px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text);">⚙️ Settings</button>
-              <button onclick="toggleLanguage(); toggleHeaderDropdown()" style="width: 100%; padding: 14px 16px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text);">🌐 HI/EN</button>
-              <div style="border-top: 2px solid var(--line); margin: 8px 0;"></div>
-              <button onclick="logout(); toggleHeaderDropdown()" style="width: 100%; padding: 14px 16px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
+              
+              <!-- Quick Actions -->
+              <div style="padding: 8px 16px; border-bottom: 1px solid #f1f5f9;">
+                <div style="font-size: 11px; font-weight: 700; color: #64748b; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">⚡ Quick Actions</div>
+                <button onclick="openOverlay('overlayHistory'); toggleHeaderDropdown()" style="width: 100%; padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: #475569; margin-bottom:6px; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9'; this.style.borderColor='#cbd5e1'" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#e2e8f0'">🧾 History</button>
+                <button onclick="openOverlay('overlaySettings'); toggleHeaderDropdown()" style="width: 100%; padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: #475569; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9'; this.style.borderColor='#cbd5e1'" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#e2e8f0'">⚙️ Settings</button>
+              </div>
+              
+              <!-- Language Toggle -->
+              <button onclick="toggleLanguage(); toggleHeaderDropdown()" style="width: 100%; padding: 12px 16px; background: none; border: none; border-bottom: 1px solid #f1f5f9; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: #475569; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'">🌐 Language: <span id="headerLangDisplay">English</span></button>
+              
+              <!-- Logout -->
+              <button onclick="logout(); toggleHeaderDropdown()" style="width: 100%; padding: 12px 16px; background: #fef2f2; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 700; color: #dc2626; transition: background 0.2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'">🚪 Logout</button>
             </div>
           </div>
         </div>
@@ -5111,6 +5129,12 @@ function showAuditProof(entryId) {
             (isHi ? "🔴 " : "") + t.undo + ' <span class="subnote">last</span>';
 
         showToast(isHi ? "भाषा: हिंदी" : "Language: English");
+        
+        // Update language display in dropdown
+        const langDisplay = document.getElementById('headerLangDisplay');
+        if (langDisplay) {
+          langDisplay.textContent = isHi ? 'हिंदी' : 'English';
+        }
       };
       }
 
