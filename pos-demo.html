@@ -954,26 +954,26 @@
                 <input type="text" id="pEmoji" placeholder="Emoji (🥛, 🧀)" value="📦" onkeydown="handleProductFieldEnter(event)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" />
                 <a id="emojiComboLink" href="https://emojicombos.com/" target="_blank" style="font-size:11px; color:#3b82f6; text-decoration:none; display:block; margin-top:4px;">🔗 Copy emojis from EmojiCombos</a>
 
-                <!-- Editable Steps Section -->
+                <!-- Quantity per Click Section -->
                 <div style="background:#f8fafc; padding:16px; border-radius:10px; border:1px solid var(--line);">
                   <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
-                    <span>⚡</span> Quick Steps (default: 1, 2, 5)
+                    <span>⚡</span> Quantity per Click (default: 1, 2, 5)
                   </div>
-                  <div id="stepInputsContainer" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+                  <div id="qtyInputsContainer" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
                     <div style="display:flex; flex-direction:column; gap:4px;">
-                      <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 1</label>
-                      <input type="number" class="pStep" value="1" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
+                      <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Qty 1</label>
+                      <input type="number" class="pQty" value="1" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
                     <div style="display:flex; flex-direction:column; gap:4px;">
-                      <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 2</label>
-                      <input type="number" class="pStep" value="2" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
+                      <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Qty 2</label>
+                      <input type="number" class="pQty" value="2" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
                     <div style="display:flex; flex-direction:column; gap:4px;">
-                      <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step 3</label>
-                      <input type="number" class="pStep" value="5" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
+                      <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Qty 3</label>
+                      <input type="number" class="pQty" value="5" step="0.1" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
                     </div>
                   </div>
-                  <button type="button" onclick="addStepInput()" id="addStepBtn" style="margin-top:10px; padding:8px; background:#eff6ff; color:#3b82f6; border:1px dashed #3b82f6; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; width:100%;">➕ Add Step (max 5)</button>
+                  <button type="button" onclick="addQtyInput()" id="addQtyBtn" style="margin-top:10px; padding:8px; background:#eff6ff; color:#3b82f6; border:1px dashed #3b82f6; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; width:100%;">➕ Add Quantity (max 5)</button>
                   <div style="font-size:10px; color:var(--muted); margin-top:10px; text-align:center;">💡 Set to 0 to disable. Edit more in Edit Products.</div>
                 </div>
 
@@ -5097,33 +5097,33 @@ function convertMilkToProduct() {
   showToast(`Converted ${qty}L to ${productName}`);
 }
 
-// Add step input field in Add Product modal
-let stepCount = 3;
-function addStepInput() {
-  if (stepCount >= 5) return;
+// Add quantity input field in Add Product modal
+let qtyCount = 3;
+function addQtyInput() {
+  if (qtyCount >= 5) return;
 
-  stepCount++;
-  const container = document.getElementById('stepInputsContainer');
+  qtyCount++;
+  const container = document.getElementById('qtyInputsContainer');
   const defaults = [10, 20];
-  const stepNum = stepCount;
-  const defaultValue = defaults[stepCount - 4] || 10;
+  const qtyNum = qtyCount;
+  const defaultValue = defaults[qtyCount - 4] || 10;
 
   const newDiv = document.createElement('div');
   newDiv.style.cssText = 'display:flex; flex-direction:column; gap:4px;';
   newDiv.innerHTML = `
-    <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Step ${stepNum}</label>
-    <input type="number" class="pStep" value="${defaultValue}" step="0.1" onkeydown="handleStepEnter(event)" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
+    <label style="font-size:10px; font-weight:700; color:var(--muted); text-align:center;">Qty ${qtyNum}</label>
+    <input type="number" class="pQty" value="${defaultValue}" step="0.1" onkeydown="handleQtyEnter(event)" style="padding:8px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-align:center; width:100%; box-sizing:border-box;" />
   `;
   container.appendChild(newDiv);
 
   // Update grid columns
-  container.style.gridTemplateColumns = `repeat(${stepCount}, 1fr)`;
+  container.style.gridTemplateColumns = `repeat(${qtyCount}, 1fr)`;
 
   // Hide button if max reached
-  if (stepCount >= 5) {
-    document.getElementById('addStepBtn').style.display = 'none';
+  if (qtyCount >= 5) {
+    document.getElementById('addQtyBtn').style.display = 'none';
   }
-  
+
   // Focus the new input
   const newInput = newDiv.querySelector('input');
   if (newInput) {
@@ -5132,14 +5132,14 @@ function addStepInput() {
   }
 }
 
-// Handle Enter key in step inputs - move to next or submit
-function handleStepEnter(e) {
+// Handle Enter key in quantity inputs - move to next or submit
+function handleQtyEnter(e) {
   if (e.key === 'Enter') {
     e.preventDefault();
-    const container = document.getElementById('stepInputsContainer');
+    const container = document.getElementById('qtyInputsContainer');
     const inputs = Array.from(container.querySelectorAll('input'));
     const currentIndex = inputs.indexOf(e.target);
-    
+
     if (currentIndex < inputs.length - 1) {
       // Move to next input
       inputs[currentIndex + 1].focus();
@@ -5170,55 +5170,55 @@ function handleProductFieldEnter(e) {
   }
 }
 
-// Add new product card from modal - creates multiple cards for each step
+// Add new product card from modal - creates multiple cards for each quantity
 function addNewProductFromModal() {
   const name = el("pName").value.trim();
   const price = parseFloat(el("pPrice").value);
   const unit = el("pUnit").value.trim() || 'unit';
   const emoji = el("pEmoji").value.trim() || '📦';
 
-  // Get all step values
-  const stepInputs = document.querySelectorAll('.pStep');
-  const steps = Array.from(stepInputs).map(input => parseFloat(input.value) || 0);
+  // Get all quantity values
+  const qtyInputs = document.querySelectorAll('.pQty');
+  const qtys = Array.from(qtyInputs).map(input => parseFloat(input.value) || 0);
 
   if (!name || !price) return showToast("Name and Price required!");
 
   const grid = el("productGrid");
   const addCardBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
-  
-  // Calculate ranks for new steps - USE loadData() to get unwrapped data
+
+  // Calculate ranks for new quantities - USE loadData() to get unwrapped data
   let customProducts = loadData('mr_pos_custom_products', []);
-  
+
   // Ensure customProducts is always an array
   if (!Array.isArray(customProducts)) {
     console.error('❌ customProducts is not an array, forcing empty array');
     customProducts = [];
   }
-  
-  const allSteps = [...new Set([...customProducts.map(p => p.step), ...steps.filter(s => s !== 0)])].sort((a, b) => a - b);
-  const stepToRank = {};
-  const rankStep = Math.ceil(allSteps.length / 5);
-  allSteps.forEach((step, idx) => {
-    stepToRank[step] = Math.min(5, Math.floor(idx / rankStep) + 1);
+
+  const allQtys = [...new Set([...customProducts.map(p => p.qty), ...qtys.filter(q => q !== 0)])].sort((a, b) => a - b);
+  const qtyToRank = {};
+  const rankQty = Math.ceil(allQtys.length / 5);
+  allQtys.forEach((qty, idx) => {
+    qtyToRank[qty] = Math.min(5, Math.floor(idx / rankQty) + 1);
   });
 
-  // Create a card for each non-zero step
-  steps.forEach(step => {
-    if (step === 0) return; // Skip zero steps
+  // Create a card for each non-zero quantity
+  qtys.forEach(qty => {
+    if (qty === 0) return; // Skip zero quantities
 
-    const rank = stepToRank[step] || 3;
+    const rank = qtyToRank[qty] || 3;
     const newCard = document.createElement('div');
     newCard.className = 'p-card';
     newCard.setAttribute('data-qty', '1');
-    newCard.setAttribute('data-step', step);
+    newCard.setAttribute('data-qty-val', qty);
     newCard.setAttribute('data-rank', rank);
     newCard.setAttribute('draggable', 'true');
     newCard.ondragstart = handleDragStart;
-    newCard.onclick = function() { tapAdd(name, price, step, emoji); };
+    newCard.onclick = function() { tapAdd(name, price, qty, emoji); };
 
-    // Format step display
-    const stepDisplay = step < 0 ? `(${step}x)` : `(${step}x)`;
-    const nameDisplay = step < 0 ? `${name} ${stepDisplay}` : `${name} ${stepDisplay}`;
+    // Format quantity display
+    const qtyDisplay = qty < 0 ? `(${qty}x)` : `(${qty}x)`;
+    const nameDisplay = qty < 0 ? `${name} ${qtyDisplay}` : `${name} ${qtyDisplay}`;
 
     newCard.innerHTML = `
       <span class="emoji">${emoji}</span>
@@ -5232,12 +5232,12 @@ function addNewProductFromModal() {
   });
 
   // Save to localStorage
-  steps.forEach(step => {
-    if (step !== 0) {
-      customProducts.push({name, price, unit, emoji, step});
+  qtys.forEach(qty => {
+    if (qty !== 0) {
+      customProducts.push({name, price, unit, emoji, qty});
     }
   });
-  
+
   // Create TRIPLE backup
   try {
     const dataStr = JSON.stringify(customProducts);
@@ -5431,21 +5431,21 @@ function loadCustomProducts() {
           emoji: p.emoji || '📦',
           price: p.price,
           unit: p.unit || 'unit',
-          steps: []
+          qtys: []
         };
       }
-      productGroups[p.name].steps.push(p.step);
+      productGroups[p.name].qtys.push(p.qty);
     });
   } else {
     console.error('❌ customProducts is not an array, using empty array');
   }
-  
+
   let products = Object.values(productGroups);
 
   // Apply saved product order if exists - USE loadData()
   let productOrder = loadData('mr_pos_product_order', []);
   if (!Array.isArray(productOrder)) productOrder = [];
-  
+
   if (productOrder.length > 0) {
     products.sort((a, b) => {
       const indexA = productOrder.indexOf(a.name);
@@ -5454,31 +5454,31 @@ function loadCustomProducts() {
     });
   }
 
-  // Calculate step ranks (1-5 based on relative step sizes) - SAFETY CHECK
-  const allSteps = Array.isArray(customProducts) 
-    ? [...new Set(customProducts.map(p => p.step))].sort((a, b) => a - b)
+  // Calculate quantity ranks (1-5 based on relative quantity sizes) - SAFETY CHECK
+  const allQtys = Array.isArray(customProducts)
+    ? [...new Set(customProducts.map(p => p.qty))].sort((a, b) => a - b)
     : [];
-  const stepToRank = {};
-  const rankStep = Math.ceil(allSteps.length / 5); // Divide into 5 ranks
-  allSteps.forEach((step, idx) => {
-    stepToRank[step] = Math.min(5, Math.floor(idx / rankStep) + 1);
+  const qtyToRank = {};
+  const rankQty = Math.ceil(allQtys.length / 5);
+  allQtys.forEach((qty, idx) => {
+    qtyToRank[qty] = Math.min(5, Math.floor(idx / rankQty) + 1);
   });
 
   products.forEach(p => {
-    if (Array.isArray(p.steps)) {
-      p.steps.forEach(step => {
-        const rank = stepToRank[step] || 3; // Default to rank 3
+    if (Array.isArray(p.qtys)) {
+      p.qtys.forEach(qty => {
+        const rank = qtyToRank[qty] || 3;
         const newCard = document.createElement('div');
         newCard.className = 'p-card';
         newCard.setAttribute('data-qty', '1');
-        newCard.setAttribute('data-step', step || 1);
+        newCard.setAttribute('data-qty-val', qty || 1);
         newCard.setAttribute('data-rank', rank);
         newCard.setAttribute('draggable', 'true');
         newCard.ondragstart = handleDragStart;
-        newCard.onclick = function() { tapAdd(p.name, p.price, step || 1); };
+        newCard.onclick = function() { tapAdd(p.name, p.price, qty || 1); };
 
-        const stepDisplay = (step || 1) < 0 ? `(${step}x)` : `(${step}x)`;
-        const nameDisplay = (step || 1) < 0 ? `${p.name} ${stepDisplay}` : `${p.name} ${stepDisplay}`;
+        const qtyDisplay = (qty || 1) < 0 ? `(${qty}x)` : `(${qty}x)`;
+        const nameDisplay = (qty || 1) < 0 ? `${p.name} ${qtyDisplay}` : `${p.name} ${qtyDisplay}`;
 
         newCard.innerHTML = `
           <span class="emoji">${p.emoji || '📦'}</span>
@@ -5496,14 +5496,14 @@ function loadCustomProducts() {
 // Create default products on first-time setup
 function createDefaultProducts() {
   const defaultProducts = [
-    { name: 'Cow 1L', emoji: '🐄', price: 64, unit: 'L', step: 1 },
-    { name: 'Cow 0.5L', emoji: '🐄', price: 32, unit: 'L', step: 0.5 },
-    { name: 'Buff 2L', emoji: '🐃', price: 200, unit: 'L', step: 2 },
-    { name: 'Buff 1L', emoji: '🐃', price: 100, unit: 'L', step: 1 },
-    { name: 'Buff 0.5L', emoji: '🐃', price: 50, unit: 'L', step: 0.5 },
-    { name: 'Paneer', emoji: '🧀', price: 320, unit: 'kg', step: 1 },
-    { name: 'Ghee', emoji: '🍯', price: 180, unit: 'g', step: 0.25 },
-    { name: 'Milk Cake', emoji: '🍰', price: 300, unit: 'kg', step: 1 }
+    { name: 'Cow 1L', emoji: '🐄', price: 64, unit: 'L', qty: 1 },
+    { name: 'Cow 0.5L', emoji: '🐄', price: 32, unit: 'L', qty: 0.5 },
+    { name: 'Buff 2L', emoji: '🐃', price: 200, unit: 'L', qty: 2 },
+    { name: 'Buff 1L', emoji: '🐃', price: 100, unit: 'L', qty: 1 },
+    { name: 'Buff 0.5L', emoji: '🐃', price: 50, unit: 'L', qty: 0.5 },
+    { name: 'Paneer', emoji: '🧀', price: 320, unit: 'kg', qty: 1 },
+    { name: 'Ghee', emoji: '🍯', price: 180, unit: 'g', qty: 0.25 },
+    { name: 'Milk Cake', emoji: '🍰', price: 300, unit: 'kg', qty: 1 }
   ];
 
   try {
