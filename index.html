@@ -2718,10 +2718,11 @@
         <select id="transAction" style="padding: 12px; border: 2px solid #f59e0b; border-radius: 8px; font-weight: 700; font-size: 14px;">
           <option value="give">➕ Give Advance</option>
           <option value="cut">➖ Cut Advance</option>
+          <option value="payment">💵 Record Payment</option>
         </select>
       </div>
       <div style="padding: 0 15px 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <button onclick="updateFarmerAdvance()" style="padding: 12px; background: #f59e0b; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">Update Advance</button>
+        <button onclick="updateFarmerAdvance()" style="padding: 12px; background: #f59e0b; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">Update</button>
         <button onclick="sendFarmerSummary()" style="padding: 12px; background: #25D366; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">💬 Send Summary</button>
       </div>
     </div>
@@ -4456,6 +4457,7 @@ function saveEntryAsCredit() {
         // 🎯 SNAPSHOT LOGIC: Rate ko value ki tarah chipka do
         rateSnapshot: round2(ratePerL),
         amount: round2(amount),
+        creditAmount: round2(amount), // Full amount is credit
 
         // Audit Metadata
         rateMode: rateMode,
@@ -4472,6 +4474,24 @@ function saveEntryAsCredit() {
 
     entries.push(entry);
     saveEntries(entries);
+
+    // ALSO save to sales history for Customer Ledger
+    const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+    const saleRecord = {
+        id: entry.id,
+        date: entry.day,
+        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+        customer: farmer.name,
+        products: `${entry.qty}L Milk (Fat: ${entry.fat}%)`,
+        amount: entry.amount.toString(),
+        paidAmount: '0.00',
+        creditAmount: entry.creditAmount.toString(),
+        method: 'Credit',
+        cartItems: [{name: 'Milk', qty: entry.qty, rate: entry.rateSnapshot}],
+        createdAt: entry.createdAt
+    };
+    history.push(saleRecord);
+    localStorage.setItem('mr_sales_history', JSON.stringify(history));
 
     playSuccessSound();
     saveUndoToken({
@@ -5876,6 +5896,11 @@ function saveFarmerDetails() {
 
 // Update farmer advance - WITH COMPLETE LEDGER TRACKING
 function updateFarmerAdvance(action) {
+    // Get action from parameter or from select dropdown
+    if (!action) {
+        action = el("transAction") ? el("transAction").value : 'give';
+    }
+    
     const amt = Number(el("advAmount").value);
     if (!amt || amt <= 0) {
         showToast("❌ Enter valid amount");
@@ -5894,7 +5919,7 @@ function updateFarmerAdvance(action) {
         // GIVE ADVANCE - Add to history
         f.advance = (f.advance || 0) + amt;
         f.balance = (f.balance || 0) - amt;
-        
+
         // Record in advance ledger
         f.advanceHistory.push({
             id: 'adv_' + Date.now(),
@@ -5904,18 +5929,58 @@ function updateFarmerAdvance(action) {
             note: 'Advance given',
             balance: f.advance
         });
-        
+
         showToast(`${formatAmount(amt)} advance given ✅`);
+    } else if (action === 'payment') {
+        // RECORD PAYMENT - Customer pays back credit/udhari
+        // This REDUCES their balance (they owe less now)
+        f.balance = (f.balance || 0) - amt;
+        
+        // If balance goes negative, it means they have advance credit
+        if (f.balance < 0) {
+            f.advance = Math.abs(f.balance);
+        }
+
+        // Record in advance ledger
+        f.advanceHistory.push({
+            id: 'pay_' + Date.now(),
+            type: 'payment',
+            amount: amt,
+            date: new Date().toISOString(),
+            note: 'Payment received (credit reduced)',
+            balance: f.balance
+        });
+
+        // ALSO save to sales history for Customer Ledger
+        const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+        const paymentRecord = {
+            id: 'payment_' + Date.now(),
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+            customer: f.name,
+            products: 'Payment received',
+            amount: amt,
+            paidAmount: amt.toString(),
+            creditAmount: '0.00',
+            method: 'Cash In', // Payment is like cash in from customer
+            cartItems: [],
+            createdAt: Date.now()
+        };
+        history.push(paymentRecord);
+        localStorage.setItem('mr_sales_history', JSON.stringify(history));
+
+        showToast(`${formatAmount(amt)} payment recorded! Credit reduced ✅`);
     } else {
+        // CUT ADVANCE
         if ((f.advance || 0) < amt) {
             showToast("❌ Insufficient advance");
             return;
         }
-        
+
         // CUT ADVANCE - Add to history
         f.advance = (f.advance || 0) - amt;
         f.balance = (f.balance || 0) + amt;
-        
+
         // Record in advance ledger
         f.advanceHistory.push({
             id: 'adv_' + Date.now(),
@@ -5925,7 +5990,7 @@ function updateFarmerAdvance(action) {
             note: 'Advance cut from balance',
             balance: f.advance
         });
-        
+
         showToast(`${formatAmount(amt)} advance cut ✅`);
     }
 
