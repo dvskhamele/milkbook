@@ -1978,22 +1978,7 @@
               <!-- Round Label -->
               <div id="farmerRoundupLabel" style="display: none; font-size: 9px; color: #3b82f6; font-weight: 700; background: #dbeafe; padding: 4px 8px; border-radius: 4px; margin-top: 4px; text-align: center;">🔄 <span id="farmerRoundupValue">0</span></div>
             </div>
-            
-            <!-- Payment Mode Selection -->
-            <div style="margin: 8px 0; padding: 8px; background: #f8fafc; border-radius: 6px;">
-              <div style="font-size: 10px; font-weight: 700; color: #64748b; margin-bottom: 6px;">PAYMENT MODE:</div>
-              <div style="display: flex; gap: 8px;">
-                <label style="flex: 1; padding: 8px; background: #dcfce7; border: 2px solid #16a34a; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 700; color: #166534;">
-                  <input type="radio" name="payMode" value="Cash" checked style="accent-color: #16a34a;" onchange="if(typeof updatePayUI === 'function') updatePayUI()" />
-                  💵 CASH/UPI
-                </label>
-                <label style="flex: 1; padding: 8px; background: #fee2e2; border: 2px solid #dc2626; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 700; color: #991b1b;">
-                  <input type="radio" name="payMode" value="Credit" style="accent-color: #dc2626;" onchange="if(typeof updatePayUI === 'function') updatePayUI()" />
-                  📒 UDHA RI
-                </label>
-              </div>
-            </div>
-            
+
             <div class="recent">
               <div class="recentHead">
                 <div class="t">Today's Records</div>
@@ -2033,10 +2018,15 @@
 
       <!-- FOOTER -->
       <div class="bottom">
+        <button class="panicBtn hold" id="btnHold">
+          🟡 HOLD <span class="subnote">pause</span>
+        </button>
+        <button class="panicBtn save" id="btnSave">
+          🟢 SAVE ENTRY
+        </button>
         <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff;">
           📒 LIKHLO (Credit)
         </button>
-        <button class="panicBtn save" id="btnSave">💵 CASH/UPI</button>
       </div>
     </div>
 
@@ -2906,6 +2896,7 @@ function playSuccessSound() {
       let animal = "cow"; // cow | buffalo
       let rateMode = "auto"; // auto | manual
       let manualRate = 0.0;
+      let paymentMode = "Cash"; // Cash | Credit (for SAVE vs LIKHLO buttons)
 
       // Farmer paging
       const FARMERS_PER_PAGE = 4; // 2x2 grid
@@ -4309,9 +4300,8 @@ function playSuccessSound() {
     const calculatedAfter = round2(before + amount);
     const difference = after - calculatedAfter;
 
-    // --- ✅ POINT 3.4: GET PAYMENT MODE FROM UI ---
-    const payModeElement = document.querySelector('input[name="payMode"]:checked');
-    const selectedPayMode = payModeElement ? payModeElement.value : 'Cash';
+    // --- ✅ POINT 3.4: GET PAYMENT MODE FROM VARIABLE ---
+    const selectedPayMode = paymentMode;
 
     const currentRate = getRatePerLiter(); // 👈 Usi second ka active rate uthao
     const currentAmount = getAmount();
@@ -5037,7 +5027,10 @@ function showAuditProof(entryId) {
         // Save / Hold / Likhlo (Credit)
         const btnSave = el("btnSave");
         if (btnSave) {
-          btnSave.onclick = saveEntry;
+          btnSave.onclick = () => {
+            paymentMode = "Cash"; // Set to Cash for normal save
+            saveEntry();
+          };
           console.log('✅ Save button initialized');
         } else {
           console.error('❌ Save button not found!');
@@ -5064,8 +5057,8 @@ function showAuditProof(entryId) {
               showToast("Select farmer");
               return;
             }
-            
-            // Call saveEntry with credit mode
+
+            paymentMode = "Credit"; // Set to Credit for Likhlo
             saveEntryAsCredit();
           };
           console.log('✅ Likh Lo button initialized');
