@@ -6574,177 +6574,119 @@ function renderRateListProducts() {
     return;
   }
   
-  // Group products by step/category
-  const productsByStep = {};
-  customProducts.forEach(p => {
-    const step = p.step || 0;
-    if (!productsByStep[step]) productsByStep[step] = [];
-    productsByStep[step].push(p);
-  });
-  
-  // Sort steps
-  const steps = Object.keys(productsByStep).sort((a, b) => parseInt(a) - parseInt(b));
-  
-  // Generate HTML
+  // Generate HTML - Simple grid without category headers
   let html = '';
-  steps.forEach(step => {
-    const stepName = step == 0 ? '🥛 Milk & Dairy' : (step == 1 ? '🧀 Paneer & Products' : '📦 Other Products');
-    const products = productsByStep[step];
-    
+  
+  html += `
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
+  `;
+
+  customProducts.forEach(p => {
+    const emoji = p.emoji || '📦';
+    const name = p.name || 'Product';
+    const price = parseFloat(p.price) || 0;
+    const unit = p.unit || 'unit';
+
     html += `
-      <div style="margin-bottom:24px;">
-        <div style="font-size:16px; font-weight:900; color:#1e293b; margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid #e2e8f0;">
-          ${stepName} (${products.length})
+      <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
+        <div style="font-size:32px;">${emoji}</div>
+        <div style="flex:1;">
+          <div style="font-weight:700; color:#1e293b; font-size:14px;">${name}</div>
+          <div style="font-size:12px; color:#64748b;">Per ${unit}</div>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
-    `;
-    
-    products.forEach(p => {
-      const emoji = p.emoji || '📦';
-      const name = p.name || 'Product';
-      const price = parseFloat(p.price) || 0;
-      const unit = p.unit || 'unit';
-      
-      html += `
-        <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
-          <div style="font-size:32px;">${emoji}</div>
-          <div style="flex:1;">
-            <div style="font-weight:700; color:#1e293b; font-size:14px;">${name}</div>
-            <div style="font-size:12px; color:#64748b;">Per ${unit}</div>
-          </div>
-          <div style="font-weight:900; color:#16a34a; font-size:16px;">${formatINR(price)}</div>
-        </div>
-      `;
-    });
-    
-    html += `
-        </div>
+        <div style="font-weight:900; color:#16a34a; font-size:16px;">${formatINR(price)}</div>
       </div>
     `;
   });
-  
+
+  html += `
+    </div>
+  `;
+
   container.innerHTML = html;
 }
 
 // Send rate list via WhatsApp
 function sendRateListWhatsApp() {
   const customProducts = loadData('mr_pos_custom_products', []);
-  
+
   if (!Array.isArray(customProducts) || customProducts.length === 0) {
     return showToast('📋 No products to send!');
   }
-  
+
   const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
-  
-  // Build WhatsApp message
+
+  // Build WhatsApp message - Simple list without categories
   let message = `*${shopName}*\n`;
   message += `📋 *Product Rate List*\n`;
   message += `📅 ${date}\n\n`;
   message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-  
-  // Group by step
-  const productsByStep = {};
+
   customProducts.forEach(p => {
-    const step = p.step || 0;
-    if (!productsByStep[step]) productsByStep[step] = [];
-    productsByStep[step].push(p);
+    const emoji = p.emoji || '📦';
+    const name = p.name || 'Product';
+    const price = parseFloat(p.price) || 0;
+    const unit = p.unit || 'unit';
+
+    message += `${emoji} ${name} - ${formatINR(price)}/${unit}\n`;
   });
-  
-  const steps = Object.keys(productsByStep).sort((a, b) => parseInt(a) - parseInt(b));
-  
-  steps.forEach(step => {
-    const stepName = step == 0 ? '*🥛 MILK & DAIRY*' : (step == 1 ? '*🧀 PANEER & PRODUCTS*' : '*📦 OTHER PRODUCTS*');
-    message += `${stepName}\n`;
-    message += `━━━━━━━━━━━━━━━━━━━━\n`;
-    
-    productsByStep[step].forEach(p => {
-      const emoji = p.emoji || '📦';
-      const name = p.name || 'Product';
-      const price = parseFloat(p.price) || 0;
-      const unit = p.unit || 'unit';
-      
-      message += `${emoji} ${name} - ${formatINR(price)}/${unit}\n`;
-    });
-    
-    message += `\n`;
-  });
-  
-  message += `━━━━━━━━━━━━━━━━━━━━\n`;
+
+  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
   message += `📞 Contact us for orders!\n`;
   message += `🙏 Thank you!`;
-  
+
   // Open WhatsApp
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
   window.open(whatsappUrl, '_blank');
-  
+
   showToast('📱 Opening WhatsApp...');
 }
 
 // Print rate list
 function printRateList() {
   const customProducts = loadData('mr_pos_custom_products', []);
-  
+
   if (!Array.isArray(customProducts) || customProducts.length === 0) {
     return showToast('📋 No products to print!');
   }
-  
+
   const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
-  
-  // Group by step
-  const productsByStep = {};
-  customProducts.forEach(p => {
-    const step = p.step || 0;
-    if (!productsByStep[step]) productsByStep[step] = [];
-    productsByStep[step].push(p);
-  });
-  
-  const steps = Object.keys(productsByStep).sort((a, b) => parseInt(a) - parseInt(b));
-  
-  // Generate print HTML
-  let productsHTML = '';
-  steps.forEach(step => {
-    const stepName = step == 0 ? '🥛 Milk & Dairy' : (step == 1 ? '🧀 Paneer & Products' : '📦 Other Products');
-    
-    productsHTML += `
-      <div style="margin-bottom:20px;">
-        <div style="font-size:16px; font-weight:bold; color:#1e293b; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid #e2e8f0;">
-          ${stepName}
-        </div>
-        <table style="width:100%; border-collapse:collapse;">
-          <thead>
-            <tr style="background:#f8fafc;">
-              <th style="padding:8px; text-align:left; border:1px solid #e2e8f0; font-size:12px;">Product</th>
-              <th style="padding:8px; text-align:left; border:1px solid #e2e8f0; font-size:12px;">Unit</th>
-              <th style="padding:8px; text-align:right; border:1px solid #e2e8f0; font-size:12px;">Price</th>
-            </tr>
-          </thead>
-          <tbody>
-    `;
-    
-    productsByStep[step].forEach(p => {
-      const emoji = p.emoji || '📦';
-      const name = p.name || 'Product';
-      const price = parseFloat(p.price) || 0;
-      const unit = p.unit || 'unit';
-      
-      productsHTML += `
-        <tr>
-          <td style="padding:8px; border:1px solid #e2e8f0; font-size:13px;">${emoji} ${name}</td>
-          <td style="padding:8px; border:1px solid #e2e8f0; font-size:13px;">Per ${unit}</td>
-          <td style="padding:8px; border:1px solid #e2e8f0; font-size:13px; text-align:right; font-weight:bold; color:#16a34a;">${formatINR(price)}</td>
+
+  // Generate print HTML - Simple table without categories
+  let productsHTML = `
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="background:#7c3aed; color:white;">
+          <th style="padding:12px; text-align:left; font-size:13px;">Product</th>
+          <th style="padding:12px; text-align:left; font-size:13px;">Unit</th>
+          <th style="padding:12px; text-align:right; font-size:13px;">Price</th>
         </tr>
-      `;
-    });
-    
+      </thead>
+      <tbody>
+  `;
+
+  customProducts.forEach((p, index) => {
+    const emoji = p.emoji || '📦';
+    const name = p.name || 'Product';
+    const price = parseFloat(p.price) || 0;
+    const unit = p.unit || 'unit';
+
     productsHTML += `
-          </tbody>
-        </table>
-      </div>
+      <tr style="${index % 2 === 0 ? 'background:#f8fafc' : 'background:white'}">
+        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px;">${emoji} ${name}</td>
+        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px;">Per ${unit}</td>
+        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px; text-align:right; font-weight:bold; color:#16a34a;">${formatINR(price)}</td>
+      </tr>
     `;
   });
-  
+
+  productsHTML += `
+      </tbody>
+    </table>
+  `;
+
   const printHTML = `
     <!DOCTYPE html>
     <html>
