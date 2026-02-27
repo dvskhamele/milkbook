@@ -2319,17 +2319,17 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         const email = el("newEmail").value || "";
         const address = el("newAddress").value || "";
         const custId = el("newCustId").value || getNextCustomerId();
-        
+
         if(!name) return showToast("Name required!");
 
-        customers.push({ 
+        customers.push({
           id: custId,
-          name, 
+          name,
           phone,
           email,
           address,
-          lastOrder: "No order yet", 
-          rate: 0, 
+          lastOrder: "No order yet",
+          rate: 0,
           qty: 0,
           balance: 0,
           advance: 0
@@ -2341,6 +2341,10 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
 
         selectCust(name);
         closeModal('addCustModal');
+        
+        // Reset modal to add mode
+        resetCustomerModalToAddMode();
+        
         // Clear form
         el("newName").value = "";
         el("newPhone").value = "";
@@ -2351,6 +2355,11 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
 
         // Return focus to search
         setTimeout(() => el("custSearch").focus(), 100);
+      }
+
+      // Wrapper function for add customer button
+      function addNewCustomer() {
+        addCust();
       }
       
       // Select customer from search
@@ -2489,14 +2498,102 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         const selectedName = select.value;
         const customer = customers.find(c => c.name === selectedName);
         
-        if (customer && customer.address) {
-          locationInput.value = customer.address;
+        if (customer) {
+          // Auto-fill location from customer address
+          if (customer.address) {
+            locationInput.value = customer.address;
+          }
+          
+          // Check if customer has phone number
+          if (!customer.phone || customer.phone.trim() === '') {
+            // Show edit customer popup
+            setTimeout(() => {
+              const addMobile = confirm(`⚠️ ${customer.name} doesn't have a phone number.\n\nAdd mobile number now?`);
+              if (addMobile) {
+                openEditCustomerForAdvanceOrder(customer);
+              }
+            }, 300);
+          }
         }
       }
 
-      // Open add customer modal from advance order
-      function openAddCustomerFromAdvanceOrder() {
+      // Open edit customer modal for advance order
+      function openEditCustomerForAdvanceOrder(customer) {
+        if (!customer) return;
+        
+        // Fill in the add customer modal with existing data
+        document.getElementById('newCustId').value = customer.id || '';
+        document.getElementById('newName').value = customer.name || '';
+        document.getElementById('newPhone').value = customer.phone || '';
+        document.getElementById('newEmail').value = customer.email || '';
+        document.getElementById('newAddress').value = customer.address || '';
+        document.getElementById('newUnit').value = customer.unit || 'L';
+        
+        // Change modal title
+        const modalTitle = document.querySelector('#addCustModal .panelHeader span');
+        if (modalTitle) modalTitle.textContent = '✏️ Edit Customer';
+        
+        // Change button text
+        const addBtn = document.querySelector('#addCustModal .add-btn');
+        if (addBtn) {
+          addBtn.textContent = '💾 Update Customer';
+          addBtn.onclick = () => updateCustomerFromAdvanceOrder(customer.id);
+        }
+        
         openModal('addCustModal');
+      }
+
+      // Update customer from advance order context
+      function updateCustomerFromAdvanceOrder(customerId) {
+        const name = document.getElementById('newName').value.trim();
+        const phone = document.getElementById('newPhone').value.trim();
+        const email = document.getElementById('newEmail').value.trim();
+        const address = document.getElementById('newAddress').value.trim();
+        const unit = document.getElementById('newUnit').value.trim();
+        
+        if (!name) return showToast('Name required!');
+        if (!phone) return showToast('Mobile number required for advance orders!');
+        
+        // Find and update customer
+        const customer = customers.find(c => c.id === customerId || c.name === name);
+        if (customer) {
+          customer.name = name;
+          customer.phone = phone;
+          customer.email = email || customer.email;
+          customer.address = address || customer.address;
+          customer.unit = unit || customer.unit;
+          
+          localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+          
+          closeModal('addCustModal');
+          
+          // Refresh customer dropdown
+          populateAdvanceOrderCustomers(true);
+          
+          // Reset modal back to add mode
+          resetCustomerModalToAddMode();
+          
+          showToast(`✅ ${name}'s details updated!`);
+        }
+      }
+
+      // Reset customer modal to add mode
+      function resetCustomerModalToAddMode() {
+        document.getElementById('newCustId').value = '';
+        document.getElementById('newName').value = '';
+        document.getElementById('newPhone').value = '';
+        document.getElementById('newEmail').value = '';
+        document.getElementById('newAddress').value = '';
+        document.getElementById('newUnit').value = 'L';
+        
+        const modalTitle = document.querySelector('#addCustModal .panelHeader span');
+        if (modalTitle) modalTitle.textContent = '👤 Add/Edit Customer';
+        
+        const addBtn = document.querySelector('#addCustModal .add-btn');
+        if (addBtn) {
+          addBtn.textContent = '➕ Add Customer';
+          addBtn.onclick = addNewCustomer;
+        }
       }
 
       // Toggle advance order section visibility
