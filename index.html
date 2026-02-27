@@ -4065,9 +4065,25 @@ function showAuditProof(entryId) {
     const e = entries.find(x => x.id === entryId);
     if(!e) return;
 
+    // Update summary panel to show this entry's data
+    selectedFarmerId = e.farmerId;
+    qty = Number(e.qty || 0);
+    fat = Number(e.fat || 0);
+    snf = Number(e.snf || 0);
+    animal = e.animal || 'cow';
+    
+    // Update input fields
+    if (el("qtyInput")) el("qtyInput").value = qty;
+    if (el("fatInput")) el("fatInput").value = fat;
+    if (el("snfInput")) el("snfInput").value = snf;
+    if (el("animalSelect")) el("animalSelect").value = animal;
+    
+    // Refresh the trust panel to show updated values
+    renderTrust();
+    
     const content = el("entryDetailContent");
     const isEdited = e.edited ? "Yes" : "No";
-    
+
     content.innerHTML = `
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:14px;">
             <div>Farmer: <br><span style="color:var(--blue)">${e.farmerName}</span></div>
@@ -4089,7 +4105,7 @@ function showAuditProof(entryId) {
     // WhatsApp Button Logic for this single entry
     el("btnSendSingleProof").onclick = () => {
         const f = getFarmerById(e.farmerId);
-        const msg = `*Milk Entry Proof* 🥛\nFarmer: ${e.farmerName}\nQty: ${e.qty}L | Fat: ${e.fat}%\nAmount: ₹${e.amount}\nTime: ${new Date(e.createdAt).toLocaleString()}\nSource: ${e.entrySource}\nGopal Dairy Shop`;
+        const msg = `*Milk Entry Proof* 🥛\nFarmer: ${e.farmerName}\nQty: ${e.qty}L | Fat: ${e.fat}%\nAmount: ${formatAmount(e.amount)}\nTime: ${new Date(e.createdAt).toLocaleString()}\nSource: ${e.entrySource}\nGopal Dairy Shop`;
         window.open(`https://wa.me/${f.phone}?text=${encodeURIComponent(msg)}`, '_blank');
     };
 
@@ -5141,10 +5157,11 @@ function openFarmerTransactions(fId) {
     
     // Add milk entries as debit transactions
     monthEntries.forEach(e => {
+        const rate = e.rateSnapshot || e.ratePerL || 0;
         transactions.push({
             date: new Date(e.createdAt),
             type: 'milk',
-            description: `Milk: ${e.qty}L @ ₹${e.ratePerL}`,
+            description: `Milk: ${e.qty}L @ ${formatAmount(rate)}`,
             amount: Number(e.amount),
             balance: 0
         });
