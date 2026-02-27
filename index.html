@@ -1490,31 +1490,31 @@
             <div class="sub" id="todayLabel">—</div>
           </div>
         </div>
-        <div class="hdr-actions" style="flex: 1; justify-content: flex-end;">
+        <div class="hdr-actions" style="flex: 1; justify-content: flex-end; display: flex; align-items: center; gap: 8px;">
           <!-- Rate Pill -->
-          <div id="ratePill" onclick="openRateTable()" style="background: #e3f2fd; color: #1565c0; padding: 4px 8px; border-radius: 999px; font-weight: 700; cursor: pointer; border: 1px solid #bbdefb; font-size: 9px; display: flex; align-items: center; gap: 4px; margin-right: 3px;">
+          <div id="ratePill" onclick="openRateTable()" style="background: #e3f2fd; color: #1565c0; padding: 8px 12px; border-radius: 999px; font-weight: 700; cursor: pointer; border: 2px solid #bbdefb; font-size: 12px; display: flex; align-items: center; gap: 6px; margin-right: 3px;">
             <span id="rateDisplay">Rate: ₹64.00</span>
-            <span style="font-size: 7px; opacity: 0.6;">📋</span>
+            <span style="font-size: 14px; opacity: 0.6;">📋</span>
           </div>
           <!-- Switch to POS -->
-          <button class="pillbtn primary" onclick="location.href='pos-demo.html'" style="background:#2563eb; border-color:#2563eb; font-size:11px; padding:6px 12px; font-weight:700;">
+          <button class="pillbtn primary" onclick="location.href='pos-demo.html'" style="background:#2563eb; border-color:#2563eb; font-size:14px; padding:10px 16px; font-weight:700; cursor: pointer; border: 2px solid #1e40af;">
             🛒 POS
           </button>
 
           <!-- User Dropdown with Booth, Settings -->
           <div style="position: relative; display: inline-block; margin-left: 6px;">
-            <button class="pillbtn" onclick="toggleHeaderDropdown()" style="background:#f8fafc; border-color:#e2e8f0; font-size:11px; padding:6px 10px; font-weight:700;">
+            <button class="pillbtn" onclick="toggleHeaderDropdown()" style="background:#f8fafc; border-color:#e2e8f0; font-size:14px; padding:10px 14px; font-weight:700; cursor: pointer; border: 2px solid #cbd5e1;">
               👤 <span id="headerUserName">User</span>
             </button>
-            <div id="headerDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 4px; background: white; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 200px; z-index: 1000;">
-              <div style="padding: 10px 12px; border-bottom: 1px solid var(--line);">
-                <div style="font-weight: 700; font-size: 12px;" id="headerDropdownEmail">user@milkrecord.in</div>
-                <div style="font-size: 10px; color: var(--muted);" id="headerDropdownShop">milkrecord.in</div>
+            <div id="headerDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 6px; background: white; border: 2px solid var(--line); border-radius: 10px; box-shadow: 0 12px 36px rgba(0,0,0,0.2); min-width: 240px; z-index: 1001;">
+              <div style="padding: 14px 16px; border-bottom: 2px solid var(--line);">
+                <div style="font-weight: 700; font-size: 14px;" id="headerDropdownEmail">user@milkrecord.in</div>
+                <div style="font-size: 12px; color: var(--muted);" id="headerDropdownShop">milkrecord.in</div>
               </div>
               <!-- Booth Selector -->
-              <div style="padding: 10px 12px; border-bottom: 1px solid var(--line);">
-                <label style="font-size: 10px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 6px;">Booth:</label>
-                <select id="collectionPointSelect" onchange="updateCollectionPoint(); toggleHeaderDropdown()" style="width: 100%; padding: 8px; border: 1px solid var(--line); border-radius: 6px; font-weight: 700; font-size: 11px; background: white;">
+              <div style="padding: 14px 16px; border-bottom: 2px solid var(--line);">
+                <label style="font-size: 12px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 8px;">Booth:</label>
+                <select id="collectionPointSelect" onchange="updateCollectionPoint(); toggleHeaderDropdown()" style="width: 100%; padding: 10px; border: 2px solid var(--line); border-radius: 8px; font-weight: 700; font-size: 13px; background: white; cursor: pointer;">
                   <option value="DEFAULT">Default</option>
                   <option value="VILLAGE_A">Village A</option>
                   <option value="VILLAGE_B">Village B</option>
@@ -1522,16 +1522,16 @@
                 </select>
               </div>
               <!-- Reading Mode -->
-              <div style="padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 10px; color: var(--muted);">
+              <div style="padding: 14px 16px; border-bottom: 2px solid var(--line); font-size: 12px; color: var(--muted);">
                 <span style="color: #9ca3af;">●</span> Reading: Manual
               </div>
               <!-- History -->
-              <button onclick="openOverlay('overlayHistory'); toggleHeaderDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text);">🧾 History</button>
+              <button onclick="openOverlay('overlayHistory'); toggleHeaderDropdown()" style="width: 100%; padding: 14px 16px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text);">🧾 History</button>
               <!-- Settings -->
-              <button onclick="openOverlay('overlaySettings'); toggleHeaderDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text);">⚙️ Settings</button>
-              <button onclick="toggleLanguage(); toggleHeaderDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text);">🌐 HI/EN</button>
-              <div style="border-top: 1px solid var(--line); margin: 6px 0;"></div>
-              <button onclick="logout(); toggleHeaderDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 12px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
+              <button onclick="openOverlay('overlaySettings'); toggleHeaderDropdown()" style="width: 100%; padding: 14px 16px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text);">⚙️ Settings</button>
+              <button onclick="toggleLanguage(); toggleHeaderDropdown()" style="width: 100%; padding: 14px 16px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text);">🌐 HI/EN</button>
+              <div style="border-top: 2px solid var(--line); margin: 8px 0;"></div>
+              <button onclick="logout(); toggleHeaderDropdown()" style="width: 100%; padding: 14px 16px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
             </div>
           </div>
         </div>
@@ -4933,18 +4933,19 @@ function showAuditProof(entryId) {
       // Toggle header dropdown
       function toggleHeaderDropdown() {
           const dropdown = document.getElementById('headerDropdown');
-          dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+          if (dropdown) {
+            const isVisible = dropdown.style.display === 'block';
+            dropdown.style.display = isVisible ? 'none' : 'block';
+            console.log('🔵 Header dropdown toggled:', isVisible ? 'closed' : 'opened');
+          }
       }
 
       // Close dropdown when clicking outside
       document.addEventListener('click', function(e) {
-          const dropdown = document.getElementById('profileDropdown');
           const headerDropdown = document.getElementById('headerDropdown');
-          const button = e.target.closest('button');
-          if (dropdown && (!button || !button.onclick?.toString().includes('toggleProfileDropdown'))) {
-              dropdown.style.display = 'none';
-          }
-          if (headerDropdown && (!button || !button.onclick?.toString().includes('toggleHeaderDropdown'))) {
+          const userButton = e.target.closest('button[onclick*="toggleHeaderDropdown"]');
+          
+          if (headerDropdown && !userButton && !headerDropdown.contains(e.target)) {
               headerDropdown.style.display = 'none';
           }
       });
