@@ -3672,73 +3672,69 @@ return `
       }
 
       function renderTrust() {
-    console.log('🔵 renderTrust() called, qty:', qty, 'fat:', fat, 'snf:', snf);
+    console.log('🔵 renderTrust() called, qty:', qty, 'fat:', fat, 'snf:', snf, 'selectedFarmerId:', selectedFarmerId);
     
     const farmer = getFarmerById(selectedFarmerId);
-    console.log('🔵 Farmer:', farmer ? farmer.name : 'none selected');
+    console.log('🔵 Farmer:', farmer ? farmer.name : 'none selected', 'Farmers in array:', farmers.length);
     
     // ✅ AUTO SELECT LOGIC:
-  if (farmer && farmer.animalType) {
-    if (farmer.animalType !== "both") {
-      animal = farmer.animalType; // Cow ya Buffalo fix ho jayega
+    if (farmer && farmer.animalType) {
+      if (farmer.animalType !== "both") {
+        animal = farmer.animalType; // Cow ya Buffalo fix ho jayega
+      }
+      // Note: Agar 'both' hai toh purana selection hi rahega
     }
-    // Note: Agar 'both' hai toh purana selection hi rahega
-  }
 
-    // --- YE WALA BLOCK UPDATE KIYA HAI ---
-    if (farmer) {
+    // --- Update farmer name display ---
+    const selectedNameEl = el("selectedName");
+    if (selectedNameEl) {
+      if (farmer) {
         const stdSNF = 8.5;
-        // 1. Kisan ka naam aur uska type (Cow/Buffalo) dikhao
         const typeIcon = farmer.animalType === 'cow' ? '🐄' : '🐃';
         const typeText = farmer.animalType === 'both' ? '🔄 Both' : (farmer.animalType === 'cow' ? 'Cow' : 'Buffalo');
-
         let nameHTML = `${farmer.name} <small style="color:var(--muted)">(${typeIcon} ${typeText})</small>`;
 
-        // 2. Agar Pani hai toh wo bhi dikhao
         if (snf > 0 && snf < stdSNF) {
-            const waterPercent = round2(((stdSNF - snf) / stdSNF) * 100);
-            nameHTML += `<br><span style="color:red; font-size:11px; font-weight:bold;">⚠️ Pani: ${waterPercent}%</span>`;
+          const waterPercent = round2(((stdSNF - snf) / stdSNF) * 100);
+          nameHTML += `<br><span style="color:red; font-size:11px; font-weight:bold;">⚠️ Pani: ${waterPercent}%</span>`;
         }
-
-        const selectedNameEl = el("selectedName");
-        if (selectedNameEl) {
-          selectedNameEl.innerHTML = nameHTML;
-          console.log('✅ selectedName updated');
-        } else {
-          console.error('❌ selectedName element not found!');
-        }
+        selectedNameEl.innerHTML = nameHTML;
+        console.log('✅ selectedName updated:', farmer.name);
+      } else {
+        selectedNameEl.textContent = "—";
+        console.log('✅ selectedName cleared (no farmer)');
+      }
     } else {
-        const selectedNameEl = el("selectedName");
-        if (selectedNameEl) {
-          selectedNameEl.textContent = "—";
-        }
+      console.error('❌ selectedName element not found!');
     }
-    // --------------------------------------
 
+    // Calculate rate and amount
     const r = getRatePerLiter();
     const a = getAmount();
     
-    console.log('🔵 Rate:', r, 'Amount:', a);
+    console.log('🔵 Rate:', r, 'Amount:', a, 'qty:', qty);
 
+    // Update rate view (hidden element)
     if (rateView) {
       rateView.textContent = formatAmount(r);
-      console.log('✅ rateView updated:', formatAmount(r));
-    } else {
-      console.error('❌ rateView element not found!');
     }
     
-    if (amountView) {
-      amountView.textContent = formatAmount(a);
-      console.log('✅ amountView updated:', formatAmount(a));
+    // Update TOTAL AMOUNT display - THIS IS THE KEY ONE!
+    const amountViewEl = document.getElementById("amountView");
+    if (amountViewEl) {
+      const formatted = formatAmount(a);
+      amountViewEl.textContent = formatted;
+      console.log('✅✅✅ amountView UPDATED to:', formatted);
     } else {
-      console.error('❌ amountView element not found!');
+      console.error('❌❌❌ amountView element NOT FOUND in DOM!');
     }
 
     // Update summary calculation text
     const summaryCalcText = el("summaryCalcText");
     if (summaryCalcText) {
-      summaryCalcText.textContent = `${round2(qty).toFixed(1)}L × ${formatAmount(r)}/L (F: ${fat.toFixed(1)}%)`;
-      console.log('✅ summaryCalcText updated');
+      const calcText = `${round2(qty).toFixed(1)}L × ${formatAmount(r)}/L (F: ${fat.toFixed(1)}%)`;
+      summaryCalcText.textContent = calcText;
+      console.log('✅ summaryCalcText updated:', calcText);
     } else {
       console.error('❌ summaryCalcText element not found!');
     }
@@ -3746,25 +3742,21 @@ return `
     // Update inline cow/buff quantities
     updateInlineQuantities();
 
+    // Update balances
     const before = farmer ? farmerBalanceBefore(farmer) : 0;
     const after = round2(before + a);
 
-    if (balBefore) {
-      balBefore.textContent = formatAmount(before);
-      console.log('✅ balBefore updated:', formatAmount(before));
-    } else {
-      console.error('❌ balBefore element not found!');
+    const balBeforeEl = document.getElementById("balBefore");
+    if (balBeforeEl) {
+      balBeforeEl.textContent = formatAmount(before);
     }
     
-    if (balAfter) {
-      balAfter.textContent = formatAmount(after);
-      console.log('✅ balAfter updated:', formatAmount(after));
-      // Add balance risk marker for large amounts
+    const balAfterEl = document.getElementById("balAfter");
+    if (balAfterEl) {
+      balAfterEl.textContent = formatAmount(after);
       if (after > 10000) {
-        balAfter.innerHTML = `${balAfter.textContent} <span style="color: #f59e0b;" title="Large outstanding balance">⚠️</span>`;
+        balAfterEl.innerHTML = `${balAfterEl.textContent} <span style="color: #f59e0b;" title="Large outstanding balance">⚠️</span>`;
       }
-    } else {
-      console.error('❌ balAfter element not found!');
     }
 
     // steps + values
