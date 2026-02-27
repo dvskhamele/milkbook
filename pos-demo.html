@@ -648,21 +648,6 @@
                   <div style="font-size:10px; color:#dc2626; font-weight:700; margin-top:4px;">⚠️ Customer with phone number is required</div>
                 </div>
 
-                <!-- Credit/Debit Toggle for Advance Order -->
-                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:2px solid #e2e8f0;">
-                  <div style="font-size:11px; color:#64748b; font-weight:700; margin-bottom:8px; text-transform:uppercase; text-align:center;">Advance Order Type</div>
-                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                    <label style="cursor:pointer;">
-                      <input type="radio" name="advanceOrderType" value="credit" checked style="display:none;" onchange="updateAdvanceOrderType()">
-                      <div id="advanceOrderCreditToggle" style="padding:10px; background:#f0fdf4; border:2px solid #22c55e; border-radius:8px; text-align:center; font-weight:700; color:#166534; font-size:12px;">📒 Credit (Udhar)</div>
-                    </label>
-                    <label style="cursor:pointer;">
-                      <input type="radio" name="advanceOrderType" value="debit" style="display:none;" onchange="updateAdvanceOrderType()">
-                      <div id="advanceOrderDebitToggle" style="padding:10px; background:#fef2f2; border:2px solid #ef4444; border-radius:8px; text-align:center; font-weight:700; color:#7f1d1d; font-size:12px;">💵 Debit (Payment)</div>
-                    </label>
-                  </div>
-                </div>
-
                 <!-- Delivery Details -->
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                   <div>
@@ -2468,29 +2453,6 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       // ========== ADVANCE ORDER FUNCTIONS (POS) ==========
       let posAdvanceOrders = JSON.parse(localStorage.getItem('posAdvanceOrders') || '[]');
 
-      // Update advance order type toggle UI
-      function updateAdvanceOrderType() {
-        const isCredit = document.querySelector('input[name="advanceOrderType"][value="credit"]').checked;
-        const creditToggle = document.getElementById('advanceOrderCreditToggle');
-        const debitToggle = document.getElementById('advanceOrderDebitToggle');
-
-        if (isCredit) {
-          creditToggle.style.background = '#f0fdf4';
-          creditToggle.style.borderColor = '#22c55e';
-          creditToggle.style.color = '#166534';
-          debitToggle.style.background = '#fff';
-          debitToggle.style.borderColor = '#e2e8f0';
-          debitToggle.style.color = '#64748b';
-        } else {
-          debitToggle.style.background = '#fef2f2';
-          debitToggle.style.borderColor = '#ef4444';
-          debitToggle.style.color = '#7f1d1d';
-          creditToggle.style.background = '#fff';
-          creditToggle.style.borderColor = '#e2e8f0';
-          creditToggle.style.color = '#64748b';
-        }
-      }
-
       // Populate customer dropdown in advance order form
       function populateAdvanceOrderCustomers(autoSelectFirst = false) {
         const select = document.getElementById('advanceOrderCustomer');
@@ -2623,7 +2585,6 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         const time = document.getElementById('advanceOrderTime').value;
         const notes = document.getElementById('advanceOrderNotes').value.trim();
         const advancePaidEl = document.getElementById('advanceOrderPaid');
-        const orderType = document.querySelector('input[name="advanceOrderType"]:checked');
 
         // Validate customer selection
         if (!customerSelect || !customerSelect.value) {
@@ -2646,7 +2607,6 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         }
 
         const advancePaid = advancePaidEl ? (parseFloat(advancePaidEl.value) || 0) : 0;
-        const orderTypeName = orderType ? orderType.value : 'credit';
 
         // Create advance order object
         const advanceOrder = {
@@ -2657,7 +2617,6 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
           date: date,
           time: time,
           notes: notes,
-          orderType: orderTypeName, // credit or debit
           cartItems: JSON.parse(JSON.stringify(cart)), // Copy current cart
           netPayable: total,
           advancePaid: advancePaid,
@@ -2715,7 +2674,6 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
 
         listContainer.innerHTML = sortedOrders.map((order, index) => {
           const isPending = order.status === 'pending';
-          const isCredit = order.orderType === 'credit';
           const daysUntil = Math.ceil((new Date(`${order.date} ${order.time}`) - new Date()) / (1000 * 60 * 60 * 24));
 
           let statusColor = isPending ? '#f59e0b' : (order.status === 'completed' ? '#22c55e' : '#ef4444');
@@ -2742,7 +2700,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
               </div>
 
               <!-- Order Details Grid -->
-              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:12px;">
+              <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-bottom:12px;">
                 <div style="background:#f8fafc; padding:10px; border-radius:8px;">
                   <div style="font-size:10px; color:#64748b; font-weight:700; margin-bottom:4px;">📍 DELIVERY LOCATION</div>
                   <div style="font-size:13px; font-weight:700; color:#1e293b;">${order.location}</div>
@@ -2751,14 +2709,10 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
                   <div style="font-size:10px; color:#64748b; font-weight:700; margin-bottom:4px;">📅 DELIVERY DATE & TIME</div>
                   <div style="font-size:13px; font-weight:700; color:#1e293b;">${new Date(order.date).toLocaleDateString('en-IN')} ⏰ ${order.time}</div>
                 </div>
-                <div style="background:#f8fafc; padding:10px; border-radius:8px;">
-                  <div style="font-size:10px; color:#64748b; font-weight:700; margin-bottom:4px;">${isCredit ? '📒' : '💵'} ORDER TYPE</div>
-                  <div style="font-size:13px; font-weight:700; color:#1e293b;">${isCredit ? 'Credit (Udhar)' : 'Debit (Payment)'}</div>
-                </div>
               </div>
 
               <!-- Financial Details -->
-              <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:12px; padding:12px; background:${isCredit ? '#fef2f2' : '#f0fdf4'}; border-radius:8px;">
+              <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:12px; padding:12px; background:#f0fdf4; border-radius:8px;">
                 <div style="text-align:center;">
                   <div style="font-size:10px; color:#64748b; font-weight:700;">Net Payable</div>
                   <div style="font-size:16px; font-weight:900; color:#1e293b;">${formatINR(order.netPayable)}</div>
