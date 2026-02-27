@@ -5493,7 +5493,7 @@ function openFarmerTransactions(fId) {
 
     // Get ALL entries for this farmer (not just current month)
     const allEntries = entries.filter(e => e.farmerId === fId);
-    
+
     // Calculate total milk
     const totalMilk = allEntries.reduce((sum, e) => sum + Number(e.qty || 0), 0);
     el("transTotalMilk").textContent = `${totalMilk.toFixed(1)} L (All Time)`;
@@ -5503,21 +5503,54 @@ function openFarmerTransactions(fId) {
     const transList = el("transList");
     const transactions = [];
 
-    // Add ALL milk entries with full details
+    // 1. Add ALL milk entries with full details
     allEntries.forEach(e => {
         const rate = e.rateSnapshot || e.ratePerL || 0;
         const paymentMode = e.paymentMode || 'Cash';
         const isCredit = paymentMode === 'Credit';
-        
+
         transactions.push({
             date: new Date(e.createdAt),
-            type: isCredit ? 'credit' : 'cash',
+            type: isCredit ? 'credit' : 'sale',
+            category: 'milk',
             description: `🥛 ${e.qty}L @ ${formatAmount(rate)}/L (Fat: ${e.fat}%, SNF: ${e.snf || 0}%)`,
-            paymentMode: isCredit ? '📒 Credit (Likh Lo)' : '💵 Cash/UPI',
+            paymentMode: isCredit ? '📒 Credit (Likh Lo)' : `💵 ${paymentMode}`,
             amount: Number(e.amount),
             balance: 0,
-            entryId: e.id
+            entryId: e.id,
+            edited: e.edited,
+            editedAt: e.editedAt
         });
+    });
+
+    // 2. Add Cash In / Cash Out from history
+    const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+    history.forEach(h => {
+        if (h.customer === f.name) {
+            if (h.method === 'Cash In') {
+                transactions.push({
+                    date: new Date(h.createdAt || Date.now()),
+                    type: 'cash_in',
+                    category: 'cash_flow',
+                    description: `💰 Cash In: ${h.products || 'Cash received'}`,
+                    paymentMode: '💰 Income',
+                    amount: -Number(h.amount), // Negative = farmer gave us money (reduces their balance)
+                    balance: 0,
+                    entryId: h.id
+                });
+            } else if (h.method === 'Cash Out') {
+                transactions.push({
+                    date: new Date(h.createdAt || Date.now()),
+                    type: 'cash_out',
+                    category: 'cash_flow',
+                    description: `💸 Cash Out: ${h.products || 'Cash paid'}`,
+                    paymentMode: '💸 Expense',
+                    amount: Number(h.amount), // Positive = we gave money (increases their balance)
+                    balance: 0,
+                    entryId: h.id
+                });
+            }
+        }
     });
 
     // Sort by date (newest first)
@@ -5527,7 +5560,11 @@ function openFarmerTransactions(fId) {
     let balance = f.balance || 0;
     transactions.forEach(t => {
         t.balance = balance;
-        balance -= t.amount;
+        if (t.category === 'milk') {
+            balance -= t.amount;
+        } else if (t.category === 'cash_flow') {
+            balance += t.amount; // Cash In (negative) reduces balance, Cash Out (positive) increases
+        }
     });
 
     if (transactions.length === 0) {
@@ -5535,36 +5572,51 @@ function openFarmerTransactions(fId) {
           <div style="padding: 40px 20px; text-align: center;">
             <div style="font-size: 48px; margin-bottom: 10px;">📋</div>
             <div style="font-size: 16px; font-weight: 700; color: #64748b; margin-bottom: 5px;">No transactions yet</div>
-            <div style="font-size: 13px; color: #94a3b8;">Double-click to add entries</div>
+            <div style="font-size: 13px; color: #94a3b8;">Double-click farmer to view entries</div>
           </div>`;
     } else {
+        // Group by month
+        let currentMonth = '';
+        
         transList.innerHTML = `
           <div style="background: #f0f9ff; padding: 12px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #0284c7;">
             <div style="display: flex; justify-content: space-between; font-size: 13px;">
               <span style="font-weight: 700; color: #0369a1;">📊 Summary:</span>
-              <span style="color: #0369a1;">${transactions.length} entries | Total: ${formatAmount(transactions.reduce((sum, t) => sum + t.amount, 0))}</span>
+              <span style="color: #0369a1;">${transactions.length} transactions | Total: ${formatAmount(transactions.reduce((sum, t) => sum + t.amount, 0))}</span>
             </div>
           </div>
-        ` + transactions.map((t, index) => `
-          <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e2e8f0; ${index === 0 ? 'background: #fef3c7;' : ''}" onclick="showAuditProof('${t.entryId}')">
-            <div style="flex: 1;">
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                <span style="font-size: 16px;">${t.type === 'credit' ? '📒' : '💵'}</span>
-                <div style="font-weight: 700; font-size: 13px;">${t.description}</div>
-              </div>
-              <div style="display: flex; gap: 12px; font-size: 11px; color: #64748b;">
-                <span>📅 ${t.date.toLocaleDateString()} ${t.date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                <span>•</span>
-                <span style="color: ${t.type === 'credit' ? '#dc2626' : '#16a34a'}; font-weight: 600;">${t.paymentMode}</span>
-              </div>
+        ` + transactions.map((t, index) => {
+            const month = t.date.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+            const showMonth = month !== currentMonth;
+            currentMonth = month;
+            
+            let icon = t.type === 'credit' ? '📒' : (t.type === 'cash_in' ? '💰' : (t.type === 'cash_out' ? '💸' : '💵'));
+            let amountColor = t.type === 'cash_in' ? '#16a34a' : (t.type === 'cash_out' ? '#f59e0b' : '#dc2626');
+            let amountPrefix = t.type === 'cash_in' ? '+' : '-';
+            
+            return `
+            ${showMonth ? `<div style="background:#f8fafc; padding:8px 12px; font-size:12px; font-weight:700; color:#64748b; border-bottom:1px solid #e2e8f0; position:sticky; top:0;">📅 ${month}</div>` : ''}
+            <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e2e8f0; ${index === 0 ? 'background: #fef3c7;' : ''} ${t.edited ? 'background:#fef3c7;' : ''}" onclick="${t.entryId ? `showAuditProof('${t.entryId}')` : ''}" style="cursor:${t.entryId ? 'pointer' : 'default'}">
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <span style="font-size: 16px;">${icon}</span>
+                        <div style="font-weight: 700; font-size: 13px;">${t.description}</div>
+                    </div>
+                    <div style="display: flex; gap: 12px; font-size: 11px; color: #64748b;">
+                        <span>📅 ${t.date.toLocaleDateString()} ${t.date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        <span>•</span>
+                        <span style="color: ${amountColor}; font-weight: 600;">${t.paymentMode}</span>
+                        ${t.edited ? `<span>• ✏️ Edited ${new Date(t.editedAt).toLocaleString()}</span>` : ''}
+                    </div>
+                </div>
+                <div style="text-align: right; min-width: 120px;">
+                    <div style="font-weight: 900; color: ${amountColor}; font-size: 14px;">${amountPrefix}${formatAmount(Math.abs(t.amount))}</div>
+                    <div style="color: #64748b; font-size: 11px; margin-top: 4px;">Bal: ${formatAmount(t.balance)}</div>
+                    ${index === 0 ? '<div style="color: #f59e0b; font-size: 10px; font-weight: 700; margin-top: 4px;">⬅️ LATEST</div>' : ''}
+                </div>
             </div>
-            <div style="text-align: right; min-width: 120px;">
-              <div style="font-weight: 700; color: #dc2626; font-size: 14px;">-${formatAmount(t.amount)}</div>
-              <div style="color: #64748b; font-size: 11px; margin-top: 4px;">Bal: ${formatAmount(t.balance)}</div>
-              ${index === 0 ? '<div style="color: #f59e0b; font-size: 10px; font-weight: 700; margin-top: 4px;">⬅️ LATEST</div>' : ''}
-            </div>
-          </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     openOverlay("overlayFarmerTransactions");
