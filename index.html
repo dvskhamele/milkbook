@@ -3676,47 +3676,57 @@ return `
     el("qtyInput").focus();
 }
 
-      // Load farmer memory (previous values)
+      // Load farmer memory (previous values) - ONLY if user hasn't entered new values
       function loadFarmerMemory(farmerId) {
         if (!farmerId) return;
-        
+
         const memory = JSON.parse(localStorage.getItem('mr_farmer_memory') || '{}');
         const farmerMemory = memory[farmerId];
-        
+
         if (farmerMemory) {
-          // Auto-fill previous values
-          if (farmerMemory.animal) animal = farmerMemory.animal;
-          if (farmerMemory.fat) {
+          // Only restore if inputs are empty/zero (user hasn't typed yet)
+          const qtyEmpty = !qtyInput.value || qtyInput.value === '0' || qtyInput.value === '';
+          const fatEmpty = !fatInput.value || fatInput.value === '0' || fatInput.value === '';
+          const snfEmpty = !snfInput.value || snfInput.value === '0' || snfInput.value === '';
+
+          // Auto-fill previous values ONLY if fields are empty
+          if (farmerMemory.animal && qtyEmpty) animal = farmerMemory.animal;
+          
+          if (farmerMemory.fat && fatEmpty) {
             fat = farmerMemory.fat;
             if (fatInput) fatInput.value = fat.toFixed(1);
           }
-          if (farmerMemory.snf) {
+          
+          if (farmerMemory.snf && snfEmpty) {
             snf = farmerMemory.snf;
             if (snfInput) snfInput.value = snf.toFixed(1);
           }
-          if (farmerMemory.rate) {
-            if (manualRateInput) manualRateInput.value = farmerMemory.rate;
-          }
           
-          console.log('✅ Loaded farmer memory:', farmerMemory);
+          if (farmerMemory.rate && manualRateInput && !manualRateInput.value) {
+            manualRateInput.value = farmerMemory.rate;
+          }
+
+          console.log('✅ Loaded farmer memory:', farmerMemory, '(only if fields were empty)');
         }
       }
       
-      // Save farmer memory
+      // Save farmer memory - ONLY save non-zero values that user explicitly entered
       function saveFarmerMemory(farmerId) {
         if (!farmerId) return;
-        
+
         const memory = JSON.parse(localStorage.getItem('mr_farmer_memory') || '{}');
-        
+
+        // Only save if user entered meaningful values (not zero/empty)
         memory[farmerId] = {
-          animal: animal,
-          fat: fat,
-          snf: snf,
+          animal: animal || 'cow',
+          fat: fat > 0 ? fat : 0,
+          snf: snf > 0 ? snf : 0,
           rate: manualRateInput && manualRateInput.value ? Number(manualRateInput.value) : 0,
           lastUpdated: Date.now()
         };
-        
+
         localStorage.setItem('mr_farmer_memory', JSON.stringify(memory));
+        console.log('💾 Saved farmer memory for', farmerId);
       }
 
       function renderTrust() {
