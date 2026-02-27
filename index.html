@@ -5194,7 +5194,29 @@ function showAuditProof(entryId) {
         // Add farmer modal
         const addBtn = el("btnAddFarmerMain");
         if (addBtn) {
-          addBtn.onclick = () => openOverlay("overlayFarmer");
+          addBtn.onclick = () => {
+            // Pre-fill name field with search text if exists
+            const searchInput = el("searchInput");
+            const nameField = el("fName");
+            if (searchInput && searchInput.value.trim() && nameField) {
+              nameField.value = searchInput.value.trim();
+              searchInput.value = ""; // Clear search
+            }
+            openOverlay("overlayFarmer");
+            // Focus on name field (or next empty field)
+            setTimeout(() => {
+              if (nameField && !nameField.value) {
+                nameField.focus();
+                nameField.select();
+              } else {
+                const phoneField = el("fPhone");
+                if (phoneField) {
+                  phoneField.focus();
+                  phoneField.select();
+                }
+              }
+            }, 300);
+          };
           console.log('✅ + Farmer button initialized');
         } else {
           console.error('❌ + Farmer button not found!');
