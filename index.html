@@ -2746,15 +2746,43 @@ function playSuccessSound() {
         console.log('🔵 Qty changed:', qty, 'Calling renderTrust()');
         renderTrust();
       });
+      // Enter key navigation: Qty → Fat
+      qtyInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          fatInput.focus();
+          fatInput.select();
+        }
+      });
+      
       fatInput.addEventListener("input", (e) => {
         fat = Number(e.target.value) || 0;
         console.log('🔵 Fat changed:', fat, 'Calling renderTrust()');
         renderTrust();
       });
+      // Enter key navigation: Fat → SNF
+      fatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          snfInput.focus();
+          snfInput.select();
+        }
+      });
+      
       snfInput.addEventListener("input", (e) => {
         snf = Number(e.target.value) || 0;
         console.log('🔵 SNF changed:', snf, 'Calling renderTrust()');
         renderTrust();
+      });
+      // Enter key navigation: SNF → Animal Type (Cow button)
+      snfInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const cowBtn = el("animalCow");
+          if (cowBtn) {
+            cowBtn.focus();
+          }
+        }
       });
 
       /* + / − ke baad input sync */
