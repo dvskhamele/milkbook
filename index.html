@@ -1930,9 +1930,9 @@
               <div class="row3" style="grid-column: 1/-1">
                 <div class="animalCard" style="display: flex; flex-direction: column; gap: 4px;">
                   <label style="font-weight: 900; font-size: 14px;">5. Animal Type <span style="font-size: 10px; color: var(--muted);">(Press Enter to toggle)</span></label>
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-                    <button type="button" id="animalCow" onclick="selectAnimal('cow')" onkeydown="if(event.key==='Enter'){event.preventDefault(); selectAnimal('buffalo');}" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐄 Cow</button>
-                    <button type="button" id="animalBuffalo" onclick="selectAnimal('buffalo')" onkeydown="if(event.key==='Enter'){event.preventDefault(); selectAnimal('cow');}" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐃 Buffalo</button>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;" onkeydown="if(event.key==='Enter'){event.preventDefault(); const current=document.getElementById('animalSelect').value; const next=current==='cow'?'buffalo':'cow'; selectAnimal(next);}">
+                    <button type="button" id="animalCow" onclick="selectAnimal('cow')" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐄 Cow</button>
+                    <button type="button" id="animalBuffalo" onclick="selectAnimal('buffalo')" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐃 Buffalo</button>
                   </div>
                   <input type="hidden" id="animalSelect" value="cow" />
                 </div>
@@ -2592,10 +2592,10 @@
             </div>
             <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🥛 Milk Type <span style="font-size: 10px; color: var(--muted);">(Press Enter to toggle)</span></label>
-              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
-                <button type="button" id="fAnimalCow" onclick="selectFarmerAnimal('cow')" onkeydown="if(event.key==='Enter'){event.preventDefault(); selectFarmerAnimal('buffalo');}" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;" tabindex="0">🐄 Cow</button>
-                <button type="button" id="fAnimalBuffalo" onclick="selectFarmerAnimal('buffalo')" onkeydown="if(event.key==='Enter'){event.preventDefault(); selectFarmerAnimal('both');}" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;" tabindex="0">🐃 Buffalo</button>
-                <button type="button" id="fAnimalBoth" onclick="selectFarmerAnimal('both')" onkeydown="if(event.key==='Enter'){event.preventDefault(); selectFarmerAnimal('cow');}" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;" tabindex="0">🔄 Both</button>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;" onkeydown="if(event.key==='Enter'){event.preventDefault(); const current=document.getElementById('fAnimalType').value; const next=current==='cow'?'buffalo':current==='buffalo'?'both':'cow'; selectFarmerAnimal(next);}">
+                <button type="button" id="fAnimalCow" onclick="selectFarmerAnimal('cow')" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;" tabindex="0">🐄 Cow</button>
+                <button type="button" id="fAnimalBuffalo" onclick="selectFarmerAnimal('buffalo')" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;" tabindex="0">🐃 Buffalo</button>
+                <button type="button" id="fAnimalBoth" onclick="selectFarmerAnimal('both')" style="padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 700; font-size: 13px;" tabindex="0">🔄 Both</button>
               </div>
               <input type="hidden" id="fAnimalType" value="cow" />
             </div>
