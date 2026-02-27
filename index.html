@@ -3972,6 +3972,13 @@ function playSuccessSound() {
 
     const currentRate = getRatePerLiter(); // 👈 Usi second ka active rate uthao
     const currentAmount = getAmount();
+    
+    console.log('💾 Saving entry:', {
+        qty, fat, snf,
+        rate: currentRate,
+        amount: currentAmount,
+        farmer: farmer.name
+    });
 
     const entry = {
         id: uid("e"),
@@ -4081,10 +4088,18 @@ function playSuccessSound() {
 function printCollectionBill(entry) {
     const farmer = getFarmerById(entry.farmerId);
     if (!farmer) return;
-    
+
     const printWindow = window.open('', '_blank');
     const date = new Date().toLocaleString('en-IN');
     
+    // Format amount with Indian numbering
+    const formatAmt = (num) => {
+        const rounded = Math.round((num + Number.EPSILON) * 100) / 100;
+        const parts = rounded.toFixed(2).split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{2})+(?!\d)(?=(\d{3})))/g, ',');
+        return '₹' + parts.join('.');
+    };
+
     const billHTML = `
 <!DOCTYPE html>
 <html>
@@ -4112,16 +4127,16 @@ function printCollectionBill(entry) {
             <p>Gopal Dairy Shop</p>
             <p>${date}</p>
         </div>
-        
+
         <div class="row">
             <span>Farmer:</span>
             <span class="bold">${farmer.name}</span>
         </div>
         ${farmer.serial ? `<div class="row"><span>Serial:</span><span class="bold">#${farmer.serial}</span></div>` : ''}
         ${farmer.phone ? `<div class="row"><span>Phone:</span><span class="bold">${farmer.phone}</span></div>` : ''}
-        
+
         <div style="border-top: 1px dashed #000; margin: 10px 0;"></div>
-        
+
         <div class="row">
             <span>Quantity:</span>
             <span class="bold">${entry.qty} L</span>
@@ -4137,35 +4152,35 @@ function printCollectionBill(entry) {
         </div>
         <div class="row">
             <span>Rate:</span>
-            <span class="bold">${formatAmount(entry.rateSnapshot)}/L</span>
+            <span class="bold">${formatAmt(entry.rateSnapshot || 0)}/L</span>
         </div>
-        
+
         <div class="row total bold">
             <span>TOTAL AMOUNT:</span>
-            <span>${formatAmount(entry.amount)}</span>
+            <span>${formatAmt(entry.amount || 0)}</span>
         </div>
-        
+
         <div class="row">
             <span>Payment:</span>
             <span class="bold">${entry.paymentMode === 'Cash' ? '💵 Cash' : '📒 Credit'}</span>
         </div>
         <div class="row">
             <span>Previous Balance:</span>
-            <span class="bold">${formatAmount(entry.amount - (farmer.balance - entry.amount))}</span>
+            <span class="bold">${formatAmt((farmer.balance || 0) - (entry.amount || 0))}</span>
         </div>
         <div class="row bold" style="background: #f0fdf4; padding: 8px; margin-top: 5px;">
             <span>NEW BALANCE:</span>
-            <span>${formatAmount(farmer.balance)}</span>
+            <span>${formatAmt(farmer.balance || 0)}</span>
         </div>
-        
+
         <div class="footer">
             <p>Thank you for your business!</p>
             <p>Gopal Dairy Shop</p>
         </div>
-        
+
         <button class="no-print" onclick="window.print(); window.close();" style="width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 15px;">🖨️ Print Bill</button>
     </div>
-    
+
     <script>
         // Auto-print on load
         setTimeout(() => {
@@ -4175,7 +4190,7 @@ function printCollectionBill(entry) {
     </script>
 </body>
 </html>`;
-    
+
     printWindow.document.write(billHTML);
     printWindow.document.close();
 }
