@@ -2572,7 +2572,7 @@
             <button class="closeBtn" onclick="closeOverlay('overlayFarmer')" title="Close (ESC)">✖</button>
             <div>➕ Add Farmer</div>
           </div>
-          <div class="muted">Photo optional</div>
+          <div class="muted">Quick & Simple</div>
         </div>
 
         <div class="modalBody" style="overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;">
@@ -2580,11 +2580,11 @@
             <!-- Essential Fields First -->
             <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🔢 Serial No. <span style="font-size: 10px; color: var(--muted); font-weight: normal;">(Auto-generated)</span></label>
-              <input id="fSerial" type="text" autocomplete="off" placeholder="Auto: F0001" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; background: #f8fafc;" readonly />
+              <input id="fSerial" type="text" autocomplete="off" placeholder="Auto: #1" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; background: #f8fafc;" readonly />
             </div>
             <div class="field" style="padding: 8px;">
-              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">👤 Name</label>
-              <input id="fName" type="text" autocomplete="name" autocapitalize="words" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">👤 Name <span style="font-size: 9px; color: var(--muted); font-weight: normal;">(First Last for easy search)</span></label>
+              <input id="fName" type="text" autocomplete="name" autocapitalize="words" placeholder="e.g., Ramesh Kumar" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
             </div>
             <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📱 Phone Number</label>
@@ -2611,32 +2611,21 @@
               </select>
             </div>
 
-            <!-- Optional Details Below -->
+            <!-- Shop Details Below -->
             <div style="grid-column: 1 / -1; padding: 16px 8px 8px; margin-top: 8px; border-top: 3px dashed var(--line);">
-              <label style="font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">📝 Optional Details (Skip if not needed)</label>
+              <label style="font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">🏪 Shop Details</label>
             </div>
             <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
-              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📍 Address</label>
-              <input id="fAddress" type="text" autocomplete="street-address" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📍 Shop Address</label>
+              <input id="fAddress" type="text" autocomplete="street-address" placeholder="Shop no., street, landmark" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
             </div>
             <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🏙️ City</label>
-              <input id="fCity" type="text" autocomplete="address-level2" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
+              <input id="fCity" type="text" autocomplete="address-level2" placeholder="City" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
             </div>
             <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📮 Pincode</label>
               <input id="fPincode" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" maxlength="6" placeholder="6 digit" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
-            </div>
-            <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
-              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🏢 GST No. (B2B Only)</label>
-              <input id="fGst" type="text" autocomplete="off" inputmode="text" pattern="[0-9A-Z]{15}" maxlength="15" placeholder="15 character GSTN" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; text-transform: uppercase; box-sizing: border-box;" />
-            </div>
-            <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
-              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🖼️ Photo</label>
-              <input id="fImage" type="file" accept="image/*" capture="user" style="font-size: 14px; padding: 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; background: #f8fafc; box-sizing: border-box;" />
-              <div style="color: var(--muted); font-size: 11px; font-weight: 600; margin-top: 6px;">
-                Stored offline (compressed)
-              </div>
             </div>
           </div>
         </div>
@@ -3117,10 +3106,13 @@ function playSuccessSound() {
 
         if (!farmerSearch.trim()) return list;
         const q = farmerSearch.trim().toLowerCase();
-        // Search by serial, name, phone, address, city, or pincode
+        // Enhanced search: serial, full name, first name, last name, short name, phone, address, city, pincode
         return list.filter((f) => {
           return (f.serial || "").toLowerCase().includes(q) ||
                  (f.name || "").toLowerCase().includes(q) ||
+                 (f.firstName || "").toLowerCase().includes(q) ||
+                 (f.lastName || "").toLowerCase().includes(q) ||
+                 (f.shortName || "").toLowerCase().includes(q) ||
                  (f.phone || "").toLowerCase().includes(q) ||
                  (f.address || "").toLowerCase().includes(q) ||
                  (f.city || "").toLowerCase().includes(q) ||
@@ -3132,10 +3124,15 @@ function playSuccessSound() {
       function editFarmerName(farmerId) {
         const farmer = getFarmerById(farmerId);
         if (!farmer) return;
-        
+
         const newName = prompt("Edit farmer name:", farmer.name);
         if (newName && newName.trim() !== "" && newName !== farmer.name) {
           farmer.name = newName.trim();
+          // Update split name fields for better search
+          const nameParts = farmer.name.split(/\s+/).filter(p => p.length > 0);
+          farmer.firstName = nameParts[0] || '';
+          farmer.lastName = nameParts.slice(1).join(' ') || '';
+          farmer.shortName = farmer.firstName ? farmer.firstName.charAt(0).toUpperCase() : '';
           saveFarmers(farmers);
           renderFarmers();
           renderAll();
@@ -4950,7 +4947,7 @@ function showAuditProof(entryId) {
             const fSerial = el("fSerial");
             if (fSerial) {
               const nextNum = farmers.length + 1;
-              fSerial.value = `F${String(nextNum).padStart(4, '0')}`;
+              fSerial.value = `#${nextNum}`;
               console.log('🔢 Serial auto-filled:', fSerial.value);
             }
           }
@@ -5250,18 +5247,28 @@ function showAuditProof(entryId) {
             if (!serialNum) {
               // Count existing farmers and generate next serial
               const nextNum = farmers.length + 1;
-              serialNum = `F${String(nextNum).padStart(4, '0')}`;
+              serialNum = `#${nextNum}`;
               console.log('🔢 Auto-generated serial:', serialNum);
             }
 
+            const fullName = fName.value ? fName.value.trim() : '';
+            
+            // Split name for better search (first name, last name, short name)
+            const nameParts = fullName.split(/\s+/).filter(p => p.length > 0);
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            const shortName = firstName ? firstName.charAt(0).toUpperCase() : '';
+
             const f = {
               serial: serialNum,
-              name: fName.value ? fName.value.trim() : '',
+              name: fullName,
+              firstName: firstName,
+              lastName: lastName,
+              shortName: shortName,
               phone: fPhone ? (fPhone.value ? fPhone.value.trim() : '') : '',
               address: fAddress ? (fAddress.value ? fAddress.value.trim() : '') : '',
               city: fCity ? (fCity.value ? fCity.value.trim() : '') : '',
               pincode: fPincode ? (fPincode.value ? fPincode.value.trim() : '') : '',
-              gst: fGst ? (fGst.value ? fGst.value.trim().toUpperCase() : '') : '',
               balance: fBalance ? (Number(fBalance.value) || 0) : 0,
               active: fActive ? fActive.value === "1" : true,
               animalType: fAnimalType ? fAnimalType.value : 'cow'
