@@ -1511,7 +1511,7 @@
           <!-- User Dropdown with Booth, Settings -->
           <div style="position: relative; display: inline-block; margin-left: 6px;">
             <button class="pillbtn" onclick="toggleHeaderDropdown()" style="background:#f8fafc; border-color:#e2e8f0; font-size:14px; padding:10px 14px; font-weight:700; cursor: pointer; border: 2px solid #cbd5e1; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
-              👤 <span id="headerUserName">User</span> <span style="font-size:10px; margin-left:4px; opacity:0.6;">▼</span>
+              🏪 <span id="headerUserName">Default Booth</span> <span style="font-size:10px; margin-left:4px; opacity:0.6;">▼</span>
             </button>
             <div id="headerDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 6px; background: white; border: 2px solid #e2e8f0; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); min-width: 260px; z-index: 1001; overflow: hidden;">
               <!-- User Info Section -->
@@ -6059,9 +6059,19 @@ function updateCollectionPoint() {
   const select = document.getElementById('collectionPointSelect');
   selectedCollectionPointId = select.value;
   localStorage.setItem('milkbook_collection_point', selectedCollectionPointId);
+  
+  // Update header button to show booth name
+  const headerUserName = document.getElementById('headerUserName');
+  if (headerUserName) {
+    const selectedText = select.options[select.selectedIndex].text;
+    // Remove emoji from display text
+    const cleanName = selectedText.replace(/^[^\s]+\s*/, '');
+    headerUserName.textContent = cleanName;
+  }
+  
   const selectedName = select.options[select.selectedIndex].text;
   showToast(`Booth: ${selectedName}`);
-  
+
   // Re-render farmers list to show booth-filtered results
   farmerPage = 0;
   renderFarmers();
@@ -6075,6 +6085,14 @@ function loadSavedCollectionPoint() {
     if (select) {
       select.value = saved;
       selectedCollectionPointId = saved;
+      
+      // Update header button to show saved booth name
+      const headerUserName = document.getElementById('headerUserName');
+      if (headerUserName) {
+        const selectedText = select.options[select.selectedIndex].text;
+        const cleanName = selectedText.replace(/^[^\s]+\s*/, '');
+        headerUserName.textContent = cleanName;
+      }
     }
   }
 }
