@@ -2990,10 +2990,45 @@ function calcYield() {
 
       function getAutoRatePerLiter(fatVal, animalType) {
         const f = Number(fatVal) || 0;
+        let rate;
+        
         if (animalType === "buffalo") {
-          return round2(settings.buffBase + settings.buffFactor * f);
+          // Buffalo rate calculation with operators
+          rate = settings.buffBase;
+          
+          // Apply base operator
+          if (settings.buffBaseOp === 'fat') rate = settings.buffBase * f;
+          else if (settings.buffBaseOp === 'snf') rate = settings.buffBase * f;
+          else if (settings.buffBaseOp === 'fat_snf') rate = settings.buffBase * (f + f);
+          
+          // Apply fat operator
+          if (settings.buffFatOp === 'multiply') rate += settings.buffFactor * f;
+          else if (settings.buffFatOp === 'add') rate += settings.buffFactor + f;
+          
+          // Apply SNF operator (using same fat value for buffalo)
+          if (settings.buffSnfOp === 'multiply') rate += settings.buffSnfFactor * f;
+          else if (settings.buffSnfOp === 'add') rate += settings.buffSnfFactor + f;
+        } else {
+          // Cow rate calculation with operators
+          rate = settings.cowBase;
+          
+          // Apply base operator
+          if (settings.cowBaseOp === 'fat') rate = settings.cowBase * f;
+          else if (settings.cowBaseOp === 'snf') rate = settings.cowBase * f;
+          else if (settings.cowBaseOp === 'fat_snf') rate = settings.cowBase * (f + f);
+          
+          // Apply fat operator
+          if (settings.cowFatOp === 'multiply') rate += settings.cowFactor * f;
+          else if (settings.cowFatOp === 'add') rate += settings.cowFactor + f;
+          
+          // Apply SNF operator
+          if (settings.cowSnfOp === 'multiply') rate += settings.cowSnfFactor * f;
+          else if (settings.cowSnfOp === 'add') rate += settings.cowSnfFactor + f;
         }
-        return round2(settings.cowBase + settings.cowFactor * f);
+        
+        const finalRate = round2(rate);
+        console.log('🔵 getAutoRatePerLiter:', animalType, 'Fat:', f, '→ Rate:', finalRate, '(Base:', settings.cowBase, 'Factor:', settings.cowFactor + ')');
+        return finalRate;
       }
 
       function getRatePerLiter() {
@@ -3946,22 +3981,30 @@ function editRateFromChart() {
     }
 }
 
-// Update rate function
+// Update rate function - REAL-TIME UPDATE EVERYWHERE
 function updateRate(val) {
     console.log('🔵 Updating rate to:', val);
-    
+
     settings.cowBase = val;
     settings.buffBase = val + 5;
-    
+
     console.log('🔵 Settings updated:', settings.cowBase, settings.buffBase);
     saveSettings(settings);
+
+    // REAL-TIME UPDATE EVERYWHERE
+    refreshRatePill();           // Update rate pill in header
+    renderTrust();               // Update right panel (amount, rate, balances)
+    renderAll();                 // Re-render all farmers and UI
     
-    refreshRatePill();
-    renderTrust();
-    closeOverlay('overlayRateEditor');
+    // Regenerate rate table with new rates
+    openRateTable();
     
-    showToast(`Rate updated: ${formatAmount(val)} ✅`);
-    console.log('✅ Rate updated successfully');
+    // Update formula previews
+    updateFormulaPreview();
+    updateLivePreview();
+
+    showToast(`✅ Rate updated: ${formatAmount(val)} - Applied everywhere!`);
+    console.log('✅ Rate updated successfully, all UI refreshed');
 }
 
 // 🎯 WHATSAPP PLAIN TEXT LOGIC
@@ -4911,9 +4954,26 @@ function showAuditProof(entryId) {
           settings.fatStep = Number(el("setFatStep").value) || settings.fatStep;
           settings.snfStep = Number(el("setSnfStep").value) || settings.snfStep;
           settings.sessionSwitchHour = Number(el("setSessionHour").value) || settings.sessionSwitchHour;
+          
           saveSettings(settings);
-          showToast("Settings saved");
-          renderAll();
+          
+          // REAL-TIME UPDATE EVERYWHERE
+          refreshRatePill();           // Update rate pill in header
+          renderTrust();               // Update right panel (amount, rate, balances)
+          renderAll();                 // Re-render all farmers and UI
+          
+          // If rate table is open, regenerate it with new rates
+          const rateTableOverlay = document.getElementById('overlayRateEditor');
+          if (rateTableOverlay && rateTableOverlay.style.display === 'flex') {
+            openRateTable();  // Regenerate rate table with new formula
+          }
+          
+          // Update formula previews
+          updateFormulaPreview();
+          updateLivePreview();
+          
+          showToast("✅ Settings saved & applied everywhere!");
+          console.log('✅ Settings saved, all UI updated in real-time');
         };
 
         // Add farmer modal
