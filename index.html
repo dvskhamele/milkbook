@@ -4732,13 +4732,14 @@ function showAuditProof(entryId) {
 
       function makeEntryCard(e) {
         const t = fmtTime(new Date(e.createdAt));
+        const d = fmtDate(new Date(e.createdAt));
         const icon = e.animal === "buffalo" ? "🐃" : "🐄";
         const rt = e.rateMode === "manual" ? "Manual" : "Auto";
         return `
     <div class="cardRow">
       <div style="min-width:0; flex: 1;">
         <div class="title">${escapeHtml(e.farmerName || "")}</div>
-        <div class="meta">${t} • ${icon} <strong style="color: #16a34a; font-size: 15px;">${e.qty} L</strong> • Fat ${e.fat}% • SNF ${e.snf} • ${rt}</div>
+        <div class="meta">${d} ${t} • ${icon} <strong style="color: #16a34a; font-size: 15px;">${e.qty} L</strong> • Fat ${e.fat}% • SNF ${e.snf} • ${rt}</div>
       </div>
       <div class="val">₹${Number(e.amount || 0).toFixed(2)}</div>
     </div>
