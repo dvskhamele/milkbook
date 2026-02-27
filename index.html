@@ -2601,14 +2601,7 @@
             </div>
             <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">₹ Opening Balance</label>
-              <input id="fBalance" type="number" inputmode="decimal" step="0.01" min="0" value="0" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
-            </div>
-            <div class="field" style="padding: 8px;">
-              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Status</label>
-              <select id="fActive" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; background: white; box-sizing: border-box;">
-                <option value="1">✅ Active</option>
-                <option value="0">⛔ Inactive</option>
-              </select>
+              <input id="fBalance" type="number" inputmode="decimal" step="0.01" min="0" value="0" onkeydown="if(event.key==='Enter'){event.preventDefault(); document.getElementById('btnCreateFarmer').click();}" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
             </div>
 
             <!-- Shop Details Below -->
@@ -2626,6 +2619,13 @@
             <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📮 Pincode</label>
               <input id="fPincode" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" maxlength="6" placeholder="6 digit" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
+            </div>
+            <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Status</label>
+              <select id="fActive" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; background: white; box-sizing: border-box;">
+                <option value="1">✅ Active</option>
+                <option value="0">⛔ Inactive</option>
+              </select>
             </div>
           </div>
         </div>
