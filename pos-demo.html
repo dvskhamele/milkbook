@@ -791,6 +791,33 @@
       </div>
     </div>
 
+    <!-- Advance/Udhari Ledger Modal -->
+    <div class="overlay" id="advanceLedgerModal">
+      <div class="modal" style="width:min(900px, 95vw); height:min(85vh, 90vh); display:flex; flex-direction:column;">
+        <div class="panelHeader" style="flex-shrink:0;">
+          <span>📒 Advance & Udhari Ledger - <span id="ledgerCustomerName"></span></span>
+          <button onclick="closeModal('advanceLedgerModal')" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b;">✖</button>
+        </div>
+
+        <!-- Tabs -->
+        <div style="display:flex; border-bottom:1px solid #e2e8f0; flex-shrink:0;">
+          <button onclick="switchLedgerTab('advance')" id="tabAdvance" style="flex:1; padding:12px; border:none; background:#ede9fe; border-bottom:3px solid #7c3aed; font-weight:700; cursor:pointer; color:#7c3aed;">📥 Advance Deposits</button>
+          <button onclick="switchLedgerTab('udhari')" id="tabUdhari" style="flex:1; padding:12px; border:none; background:#f8fafc; border-bottom:3px solid transparent; font-weight:700; cursor:pointer; color:#64748b;">📒 Udhari (Credit)</button>
+        </div>
+
+        <!-- Content -->
+        <div style="flex:1; overflow-y:auto; padding:16px;" id="ledgerContent">
+          <!-- Content will be populated by JavaScript -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="padding:16px; border-top:1px solid #e2e8f0; flex-shrink:0; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button onclick="addNewAdvance()" id="btnAddAdvance" style="padding:12px; background:#7c3aed; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">➕ New Advance</button>
+          <button onclick="sendLedgerWhatsApp()" style="padding:12px; background:#25d366; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">📱 Send via WhatsApp</button>
+        </div>
+      </div>
+    </div>
+
     <div class="overlay" id="addCustModal">
         <div class="modal" style="width:450px; height:auto;">
             <div class="panelHeader"><span>👤 Add/Edit Customer</span> <button onclick="closeModal('addCustModal')">✖</button></div>
@@ -5895,9 +5922,10 @@ function loadCustomerRelationData(customer) {
     </div>
     
     <!-- Quick Actions -->
-    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:16px;">
-      <button onclick="quickCashInFromRelation('${customer.name}')" style="padding:12px; background:#dcfce7; color:#166534; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">💰 Cash In</button>
-      <button onclick="quickCashOutFromRelation('${customer.name}')" style="padding:12px; background:#fef3c7; color:#92400e; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">💸 Cash Out</button>
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:16px;">
+      <button onclick="quickCashInFromRelation('${customer.name}')" style="padding:12px; background:#dcfce7; color:#166534; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">💰 Cash In</button>
+      <button onclick="quickCashOutFromRelation('${customer.name}')" style="padding:12px; background:#fef3c7; color:#92400e; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">💸 Cash Out</button>
+      <button onclick="openAdvanceLedger('${customer.id || customer.name}')" style="padding:12px; background:#ede9fe; color:#7c3aed; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">📒 Advance/Udhari</button>
     </div>
     
     <!-- Transactions Header -->
@@ -6045,11 +6073,387 @@ function quickCashOutFromRelation(customerName) {
   }
   
   showToast(`💸 ${formatINR(amount)} paid to ${customerName}!`);
-  
+
   // Refresh relation view
   setTimeout(() => {
     openCustomerRelation(customerName);
   }, 300);
+}
+
+// ========== ADVANCE/UDHARI LEDGER FUNCTIONS ==========
+
+let currentLedgerCustomer = null;
+let currentLedgerTab = 'advance';
+
+// Open advance ledger
+function openAdvanceLedger(customerId) {
+  const customer = customers.find(c => c.id === customerId || c.name === customerId);
+  if (!customer) return showToast('❌ Customer not found!');
+  
+  currentLedgerCustomer = customer;
+  currentLedgerTab = 'advance';
+  
+  // Set customer name
+  document.getElementById('ledgerCustomerName').textContent = customer.name;
+  
+  // Load ledger data
+  loadLedgerData();
+  
+  // Open modal
+  openModal('advanceLedgerModal');
+}
+
+// Switch ledger tab
+function switchLedgerTab(tab) {
+  currentLedgerTab = tab;
+  
+  // Update tab styles
+  const tabAdvance = document.getElementById('tabAdvance');
+  const tabUdhari = document.getElementById('tabUdhari');
+  const btnAddAdvance = document.getElementById('btnAddAdvance');
+  
+  if (tab === 'advance') {
+    tabAdvance.style.background = '#ede9fe';
+    tabAdvance.style.borderBottomColor = '#7c3aed';
+    tabAdvance.style.color = '#7c3aed';
+    tabUdhari.style.background = '#f8fafc';
+    tabUdhari.style.borderBottomColor = 'transparent';
+    tabUdhari.style.color = '#64748b';
+    btnAddAdvance.style.display = 'block';
+  } else {
+    tabUdhari.style.background = '#fef2f2';
+    tabUdhari.style.borderBottomColor = '#dc2626';
+    tabUdhari.style.color = '#dc2626';
+    tabAdvance.style.background = '#f8fafc';
+    tabAdvance.style.borderBottomColor = 'transparent';
+    tabAdvance.style.color = '#64748b';
+    btnAddAdvance.style.display = 'none';
+  }
+  
+  // Reload data
+  loadLedgerData();
+}
+
+// Load ledger data
+function loadLedgerData() {
+  const container = document.getElementById('ledgerContent');
+  if (!container || !currentLedgerCustomer) return;
+  
+  const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+  const customerEntries = history.filter(h => h.customer === currentLedgerCustomer.name);
+  
+  if (currentLedgerTab === 'advance') {
+    // Show advance deposits
+    const advances = customerEntries.filter(e => e.method === 'Cash In' || (e.advanceAmount && e.advanceAmount > 0));
+    
+    if (advances.length === 0) {
+      container.innerHTML = `
+        <div style="padding:60px; text-align:center; color:#64748b;">
+          <div style="font-size:64px; margin-bottom:16px;">📥</div>
+          <div style="font-size:18px; font-weight:700; margin-bottom:8px;">No Advance Deposits</div>
+          <div style="font-size:14px;">Click "New Advance" to add</div>
+        </div>
+      `;
+      return;
+    }
+    
+    // Group by delivery date
+    const advancesByDate = {};
+    advances.forEach(a => {
+      const date = new Date(a.createdAt || Date.now()).toLocaleDateString('en-IN');
+      if (!advancesByDate[date]) advancesByDate[date] = [];
+      advancesByDate[date].push(a);
+    });
+    
+    let html = `
+      <div style="background:#f0f9ff; padding:16px; border-radius:12px; margin-bottom:16px; border:2px solid #0284c7;">
+        <div style="font-size:14px; font-weight:900; color:#0369a1; margin-bottom:8px;">📊 Advance Summary</div>
+        <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px;">
+          <div style="background:white; padding:12px; border-radius:8px;">
+            <div style="font-size:11px; color:#64748b; font-weight:700;">TOTAL ADVANCE</div>
+            <div style="font-size:20px; font-weight:900; color:#16a34a;">${formatINR(advances.reduce((sum, a) => sum + parseFloat(a.amount || 0), 0))}</div>
+          </div>
+          <div style="background:white; padding:12px; border-radius:8px;">
+            <div style="font-size:11px; color:#64748b; font-weight:700;">ENTRIES</div>
+            <div style="font-size:20px; font-weight:900; color:#0284c7;">${advances.length}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    Object.keys(advancesByDate).sort((a, b) => new Date(b.split('/').reverse().join('-')) - new Date(a.split('/').reverse().join('-'))).forEach(date => {
+      html += `
+        <div style="background:#f8fafc; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:14px; font-weight:900; color:#1e293b; margin-bottom:8px;">📅 ${date}</div>
+      `;
+      
+      advancesByDate[date].forEach(a => {
+        html += `
+          <div style="display:flex; justify-content:space-between; padding:12px; background:white; border-radius:6px; margin-bottom:8px; border:1px solid #e2e8f0;">
+            <div style="flex:1;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span style="font-size:18px;">💰</span>
+                <div>
+                  <div style="font-weight:700; font-size:13px;">${a.products || 'Advance Deposit'}</div>
+                  <div style="font-size:11px; color:#64748b;">📅 ${new Date(a.createdAt || Date.now()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+                  ${a.deliveryAddress ? `<div style="font-size:11px; color:#0284c7; margin-top:2px;">📍 ${a.deliveryAddress}</div>` : ''}
+                  ${a.deliveryDate ? `<div style="font-size:11px; color:#0284c7;">📆 Delivery: ${new Date(a.deliveryDate).toLocaleDateString('en-IN')}</div>` : ''}
+                </div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:900; color:#16a34a; font-size:16px;">+${formatINR(parseFloat(a.amount || 0))}</div>
+              <button onclick="sendAdvanceReceipt('${a.id}')" style="font-size:9px; padding:2px 6px; background:#25d366; color:white; border:none; border-radius:4px; font-weight:700; cursor:pointer; margin-top:4px;">📱 Receipt</button>
+            </div>
+          </div>
+        `;
+      });
+      
+      html += `</div>`;
+    });
+    
+    container.innerHTML = html;
+    
+  } else {
+    // Show udhari (credit)
+    const udharis = customerEntries.filter(e => e.method === 'Credit' || e.method === 'Udhar' || (e.creditAmount && e.creditAmount > 0));
+    
+    if (udharis.length === 0) {
+      container.innerHTML = `
+        <div style="padding:60px; text-align:center; color:#64748b;">
+          <div style="font-size:64px; margin-bottom:16px;">✅</div>
+          <div style="font-size:18px; font-weight:700; margin-bottom:8px;">No Udhari (Credit)</div>
+          <div style="font-size:14px;">Customer has no pending credit</div>
+        </div>
+      `;
+      return;
+    }
+    
+    // Sort by date
+    udharis.sort((a, b) => new Date(b.createdAt || Date.now()) - new Date(a.createdAt || Date.now()));
+    
+    const totalUdhari = udharis.reduce((sum, u) => sum + parseFloat(u.creditAmount || u.amount || 0), 0);
+    
+    let html = `
+      <div style="background:#fef2f2; padding:16px; border-radius:12px; margin-bottom:16px; border:2px solid #dc2626;">
+        <div style="font-size:14px; font-weight:900; color:#991b1b; margin-bottom:8px;">📒 Udhari Summary</div>
+        <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px;">
+          <div style="background:white; padding:12px; border-radius:8px;">
+            <div style="font-size:11px; color:#64748b; font-weight:700;">TOTAL UDHARI</div>
+            <div style="font-size:20px; font-weight:900; color:#dc2626;">${formatINR(totalUdhari)}</div>
+          </div>
+          <div style="background:white; padding:12px; border-radius:8px;">
+            <div style="font-size:11px; color:#64748b; font-weight:700;">ENTRIES</div>
+            <div style="font-size:20px; font-weight:900; color:#991b1b;">${udharis.length}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    udharis.forEach(u => {
+      const date = new Date(u.createdAt || Date.now());
+      html += `
+        <div style="display:flex; justify-content:space-between; padding:12px; background:${u.creditAmount > 1000 ? '#fef2f2' : 'white'}; border-radius:8px; margin-bottom:8px; border:1px solid #fca5a5;">
+          <div style="flex:1;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <span style="font-size:18px;">📒</span>
+              <div>
+                <div style="font-weight:700; font-size:13px;">${u.products || 'Credit Sale'}</div>
+                <div style="font-size:11px; color:#64748b;">📅 ${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:900; color:#dc2626; font-size:16px;">-${formatINR(parseFloat(u.creditAmount || u.amount || 0))}</div>
+            <button onclick="sendUdhariReceipt('${u.id || Date.now()}')" style="font-size:9px; padding:2px 6px; background:#dc2626; color:white; border:none; border-radius:4px; font-weight:700; cursor:pointer; margin-top:4px;">📱 Receipt</button>
+          </div>
+        </div>
+      `;
+    });
+    
+    container.innerHTML = html;
+  }
+}
+
+// Add new advance
+function addNewAdvance() {
+  if (!currentLedgerCustomer) return;
+  
+  const amount = prompt(`💰 Enter Advance Amount for ${currentLedgerCustomer.name}:`, '');
+  if (!amount || isNaN(amount) || parseFloat(amount) <= 0) return showToast('Invalid amount!');
+  
+  const purpose = prompt('📝 Purpose/Note (optional):', 'Advance deposit') || 'Advance deposit';
+  
+  const deliveryDate = prompt('📅 Delivery Date (DD/MM/YYYY):', new Date().toLocaleDateString('en-GB'));
+  const deliveryAddress = prompt('📍 Delivery Address:', currentLedgerCustomer.address || '') || '';
+  
+  // Record advance
+  const newAdvance = {
+    id: 'advance_' + Date.now(),
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+    customer: currentLedgerCustomer.name,
+    products: purpose,
+    amount: parseFloat(amount),
+    method: 'Cash In',
+    advanceAmount: parseFloat(amount),
+    deliveryDate: deliveryDate,
+    deliveryAddress: deliveryAddress,
+    creditAmount: 0,
+    cartItems: [],
+    createdAt: Date.now()
+  };
+  
+  const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+  history.push(newAdvance);
+  localStorage.setItem('mr_sales_history', JSON.stringify(history));
+  
+  // Update customer balance (advance reduces balance)
+  currentLedgerCustomer.balance = (currentLedgerCustomer.balance || 0) - parseFloat(amount);
+  localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+  
+  showToast(`💰 ${formatINR(amount)} advance received!`);
+  
+  // Refresh ledger
+  setTimeout(() => {
+    loadLedgerData();
+  }, 300);
+}
+
+// Send advance receipt via WhatsApp
+function sendAdvanceReceipt(advanceId) {
+  const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+  const advance = history.find(h => h.id === advanceId);
+  
+  if (!advance || !currentLedgerCustomer) return showToast('Advance not found!');
+  
+  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const date = new Date(advance.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  
+  let message = `*${shopName}*\n`;
+  message += `🧾 *Advance Receipt*\n\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  message += `*Customer:* ${currentLedgerCustomer.name}\n`;
+  message += `*Date:* ${date}\n`;
+  message += `*Amount:* ${formatINR(parseFloat(advance.amount || 0))}\n`;
+  message += `*Purpose:* ${advance.products || 'Advance Deposit'}\n`;
+  
+  if (advance.deliveryDate) {
+    message += `*Delivery Date:* ${new Date(advance.deliveryDate).toLocaleDateString('en-IN')}\n`;
+  }
+  if (advance.deliveryAddress) {
+    message += `*Delivery Address:* ${advance.deliveryAddress}\n`;
+  }
+  
+  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `🙏 Thank you for your advance payment!`;
+  
+  if (currentLedgerCustomer.phone) {
+    const whatsappUrl = `https://wa.me/91${currentLedgerCustomer.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  } else {
+    // No phone - just show message to copy
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  }
+  
+  showToast('📱 Opening WhatsApp...');
+}
+
+// Send udhari receipt via WhatsApp
+function sendUdhariReceipt(entryId) {
+  const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+  const entry = history.find(h => h.id === entryId || (h.creditAmount > 0 && h.customer === currentLedgerCustomer.name));
+  
+  if (!entry || !currentLedgerCustomer) return showToast('Entry not found!');
+  
+  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const date = new Date(entry.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  
+  let message = `*${shopName}*\n`;
+  message += `📒 *Udhari (Credit) Receipt*\n\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  message += `*Customer:* ${currentLedgerCustomer.name}\n`;
+  message += `*Date:* ${date}\n`;
+  message += `*Credit Amount:* ${formatINR(parseFloat(entry.creditAmount || entry.amount || 0))}\n`;
+  message += `*Items:* ${entry.products || 'N/A'}\n`;
+  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `📞 Please clear your udhari soon!`;
+  
+  if (currentLedgerCustomer.phone) {
+    const whatsappUrl = `https://wa.me/91${currentLedgerCustomer.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  } else {
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  }
+  
+  showToast('📱 Opening WhatsApp...');
+}
+
+// Send ledger summary via WhatsApp
+function sendLedgerWhatsApp() {
+  if (!currentLedgerCustomer) return;
+  
+  const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+  const customerEntries = history.filter(h => h.customer === currentLedgerCustomer.name);
+  
+  const advances = customerEntries.filter(e => e.method === 'Cash In');
+  const udharis = customerEntries.filter(e => e.method === 'Credit' || e.method === 'Udhar' || (e.creditAmount && e.creditAmount > 0));
+  
+  const totalAdvance = advances.reduce((sum, a) => sum + parseFloat(a.amount || 0), 0);
+  const totalUdhari = udharis.reduce((sum, u) => sum + parseFloat(u.creditAmount || u.amount || 0), 0);
+  
+  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  
+  let message = `*${shopName}*\n`;
+  message += `📒 *Account Summary*\n\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  message += `*Customer:* ${currentLedgerCustomer.name}\n`;
+  message += `*Date:* ${new Date().toLocaleDateString('en-IN')}\n\n`;
+  
+  if (currentLedgerTab === 'advance') {
+    message += `*📥 ADVANCE DEPOSITS*\n`;
+    message += `━━━━━━━━━━━━━━━━━━━━\n`;
+    message += `*Total Advance:* ${formatINR(totalAdvance)}\n`;
+    message += `*Entries:* ${advances.length}\n\n`;
+    
+    advances.slice(0, 5).forEach(a => {
+      const date = new Date(a.createdAt || Date.now()).toLocaleDateString('en-IN');
+      message += `• ${date}: ${formatINR(parseFloat(a.amount || 0))}\n`;
+    });
+    
+    if (advances.length > 5) {
+      message += `• ... and ${advances.length - 5} more\n`;
+    }
+  } else {
+    message += `*📒 UDHARI (CREDIT)*\n`;
+    message += `━━━━━━━━━━━━━━━━━━━━\n`;
+    message += `*Total Udhari:* ${formatINR(totalUdhari)}\n`;
+    message += `*Entries:* ${udharis.length}\n\n`;
+    
+    udharis.slice(0, 5).forEach(u => {
+      const date = new Date(u.createdAt || Date.now()).toLocaleDateString('en-IN');
+      message += `• ${date}: ${formatINR(parseFloat(u.creditAmount || u.amount || 0))}\n`;
+    });
+    
+    if (udharis.length > 5) {
+      message += `• ... and ${udharis.length - 5} more\n`;
+    }
+  }
+  
+  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `🙏 Thank you!`;
+  
+  if (currentLedgerCustomer.phone) {
+    const whatsappUrl = `https://wa.me/91${currentLedgerCustomer.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  } else {
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  }
+  
+  showToast('📱 Opening WhatsApp...');
 }
 
 // Render products in rate list
@@ -6085,7 +6489,7 @@ function renderRateListProducts() {
   // Generate HTML
   let html = '';
   steps.forEach(step => {
-    const stepName = step == 0 ? '🥛 Milk & Dairy' : (step == 1 ? '🧀 Paneer & Products' : `Step ${step}`);
+    const stepName = step == 0 ? '🥛 Milk & Dairy' : (step == 1 ? '🧀 Paneer & Products' : '📦 Other Products');
     const products = productsByStep[step];
     
     html += `
@@ -6151,7 +6555,7 @@ function sendRateListWhatsApp() {
   const steps = Object.keys(productsByStep).sort((a, b) => parseInt(a) - parseInt(b));
   
   steps.forEach(step => {
-    const stepName = step == 0 ? '*🥛 MILK & DAIRY*' : (step == 1 ? '*🧀 PANEER & PRODUCTS*' : `*STEP ${step}*`);
+    const stepName = step == 0 ? '*🥛 MILK & DAIRY*' : (step == 1 ? '*🧀 PANEER & PRODUCTS*' : '*📦 OTHER PRODUCTS*');
     message += `${stepName}\n`;
     message += `━━━━━━━━━━━━━━━━━━━━\n`;
     
@@ -6202,7 +6606,7 @@ function printRateList() {
   // Generate print HTML
   let productsHTML = '';
   steps.forEach(step => {
-    const stepName = step == 0 ? '🥛 Milk & Dairy' : (step == 1 ? '🧀 Paneer & Products' : `Step ${step}`);
+    const stepName = step == 0 ? '🥛 Milk & Dairy' : (step == 1 ? '🧀 Paneer & Products' : '📦 Other Products');
     
     productsHTML += `
       <div style="margin-bottom:20px;">
