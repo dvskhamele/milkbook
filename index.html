@@ -3763,9 +3763,14 @@ function refreshRatePill() {
        ***********************/
       function renderRecentToday() {
         const today = fmtDate(new Date());
-        const todays = entries
+        let todays = entries
           .filter((e) => e.day === today)
           .sort((a, b) => b.createdAt - a.createdAt);
+
+        // Filter by selected farmer if one is selected
+        if (selectedFarmerId) {
+          todays = todays.filter(e => e.farmerId === selectedFarmerId);
+        }
 
         recentMeta.textContent = `${todays.length} records`;
 
@@ -3823,7 +3828,7 @@ return `
 
         // Update inline quantities
         updateInlineQuantities();
-        
+
         // Update today's collection summary (Kitna Collection)
         updateTodayCollection();
       }
@@ -3904,25 +3909,37 @@ return `
         const memory = JSON.parse(localStorage.getItem('mr_farmer_memory') || '{}');
         const farmerMemory = memory[farmerId];
 
+        // Get last entry for this farmer to auto-fill liters
+        const today = fmtDate(new Date());
+        const farmerEntries = entries.filter(e => e.farmerId === farmerId && e.day === today).sort((a, b) => b.createdAt - a.createdAt);
+        const lastEntry = farmerEntries.length > 0 ? farmerEntries[0] : null;
+
         if (farmerMemory) {
           // Only restore if inputs are empty/zero (user hasn't typed yet)
           const qtyEmpty = !qtyInput.value || qtyInput.value === '0' || qtyInput.value === '';
           const fatEmpty = !fatInput.value || fatInput.value === '0' || fatInput.value === '';
           const snfEmpty = !snfInput.value || snfInput.value === '0' || snfInput.value === '';
 
+          // Auto-fill last entry's liters if available and qty is empty
+          if (lastEntry && qtyEmpty) {
+            qty = Number(lastEntry.qty) || 0;
+            if (qtyInput) qtyInput.value = qty.toFixed(1);
+            console.log('✅ Auto-filled liters from last entry:', qty);
+          }
+
           // Auto-fill previous values ONLY if fields are empty
           if (farmerMemory.animal && qtyEmpty) animal = farmerMemory.animal;
-          
+
           if (farmerMemory.fat && fatEmpty) {
             fat = farmerMemory.fat;
             if (fatInput) fatInput.value = fat.toFixed(1);
           }
-          
+
           if (farmerMemory.snf && snfEmpty) {
             snf = farmerMemory.snf;
             if (snfInput) snfInput.value = snf.toFixed(1);
           }
-          
+
           if (farmerMemory.rate && manualRateInput && !manualRateInput.value) {
             manualRateInput.value = farmerMemory.rate;
           }
