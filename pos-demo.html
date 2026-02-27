@@ -6805,8 +6805,11 @@ function filterCustomerLedger() {
       const totalCred = custCredits.reduce((sum, c) => sum + parseFloat(c.creditAmount || c.credit || c.amount || 0), 0);
       const totalCashCust = custCash.reduce((sum, c) => sum + parseFloat(c.paidAmount || c.amount || 0), 0);
       
+      // Get latest sale for this customer
+      const latestSale = custHistory.filter(h => h.cartItems && h.cartItems.length > 0).pop();
+      
       html += `
-        <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0;">
+        <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0; ${latestSale ? 'cursor:pointer;' : ''}" ${latestSale ? `onclick="restoreCartFromLedger('${cust.name}', ${JSON.stringify(latestSale.cartItems || []).replace(/"/g, '&quot;')})" title="Click to restore last order"` : ''}>
           <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
             <div>
               <div style="font-size:16px; font-weight:900; color:#1e293b;">${cust.name}</div>
@@ -6831,6 +6834,7 @@ function filterCustomerLedger() {
               <div style="font-size:14px; font-weight:700; color:#16a34a;">${formatINR(totalCashCust)}</div>
             </div>
           </div>
+          ${latestSale ? `<div style="font-size:9px; color:#64748b; margin-top:8px; text-align:center;">🔁 Click to restore last order</div>` : ''}
         </div>
       `;
     });
@@ -6887,19 +6891,36 @@ function filterCustomerLedger() {
       credits.forEach(c => {
         const date = new Date(c.createdAt || Date.now());
         const creditAmt = parseFloat(c.creditAmount || c.credit || c.amount || 0);
+        const totalAmt = parseFloat(c.amount || 0);
+        
+        // Parse cart items for better display
+        let itemsHtml = '';
+        if (c.cartItems && Array.isArray(c.cartItems)) {
+          itemsHtml = c.cartItems.map(item => 
+            `<div style="font-size:11px; color:#991b1b;">• ${item.name || 'Item'} (${item.qty || 0}x ₹${item.rate || 0})</div>`
+          ).join('');
+        } else if (c.products) {
+          itemsHtml = `<div style="font-size:12px; color:#991b1b;">📝 ${c.products}</div>`;
+        }
+
         html += `
-          <div style="background:#fef2f2; padding:12px; border-radius:8px; border-left:4px solid #dc2626;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <div style="font-weight:700; color:#991b1b;">${c.customer}</div>
-                <div style="font-size:11px; color:#64748b;">📅 ${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
-                ${c.products ? `<div style="font-size:12px; color:#991b1b;">📝 ${c.products}</div>` : ''}
+          <div style="background:#fef2f2; padding:12px; border-radius:8px; border-left:4px solid #dc2626; cursor:pointer;" onclick="restoreCartFromLedger('${c.customer}', ${JSON.stringify(c.cartItems || []).replace(/"/g, '&quot;')})" title="Click to restore cart">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+              <div style="flex:1;">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                  <div style="font-weight:700; color:#991b1b; font-size:14px;">${c.customer}</div>
+                  <span style="font-size:9px; background:#dc2626; color:white; padding:2px 6px; border-radius:4px; font-weight:700;">📒 UDHA RI</span>
+                </div>
+                <div style="font-size:10px; color:#64748b;">📅 ${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
               </div>
               <div style="text-align:right;">
-                <div style="font-size:18px; font-weight:900; color:#dc2626;">-${formatINR(creditAmt)}</div>
-                <div style="font-size:11px; color:#64748b;">Credit</div>
+                <div style="font-size:20px; font-weight:900; color:#dc2626;">${formatINR(totalAmt)}</div>
+                <div style="font-size:9px; color:#dc2626; font-weight:700;">Due: ${formatINR(creditAmt)}</div>
+                <div style="font-size:9px; color:#64748b;">Credit Sale</div>
               </div>
             </div>
+            ${itemsHtml ? `<div style="border-top:1px solid #fecaca; padding-top:8px; margin-top:8px;">${itemsHtml}</div>` : ''}
+            <div style="font-size:9px; color:#64748b; margin-top:6px; text-align:center;">🔁 Click to restore cart</div>
           </div>
         `;
       });
@@ -6921,29 +6942,44 @@ function filterCustomerLedger() {
       todayData.forEach(s => {
         const date = new Date(s.createdAt || Date.now());
         const isCredit = s.method === 'Credit' || s.method === 'Udhar' || (s.creditAmount && parseFloat(s.creditAmount) > 0);
-        const paidAmount = parseFloat(s.paidAmount || s.amount || 0);
+        const totalAmount = parseFloat(s.amount || 0);
+        const paidAmount = parseFloat(s.paidAmount || 0);
         const creditAmount = parseFloat(s.creditAmount || 0);
-        
+
         // Determine card color and border based on payment status
         const bgColor = isCredit ? '#fef2f2' : '#dcfce7';
         const borderColor = isCredit ? '#dc2626' : '#16a34a';
         const textColor = isCredit ? '#991b1b' : '#166534';
         const statusLabel = isCredit ? 'Credit' : s.method;
-        const displayAmount = isCredit ? creditAmount : paidAmount;
-        
+
+        // Parse cart items for better display
+        let itemsHtml = '';
+        if (s.cartItems && Array.isArray(s.cartItems)) {
+          itemsHtml = s.cartItems.map(item => 
+            `<div style="font-size:11px; color:${textColor};">• ${item.name || 'Item'} (${item.qty || 0}x ₹${item.rate || 0})</div>`
+          ).join('');
+        } else if (s.products) {
+          itemsHtml = `<div style="font-size:12px; color:${textColor};">📝 ${s.products}</div>`;
+        }
+
         html += `
-          <div style="background:${bgColor}; padding:12px; border-radius:8px; border-left:4px solid ${borderColor};">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <div style="font-weight:700; color:${textColor};">${s.customer}</div>
-                <div style="font-size:11px; color:#64748b;">📅 ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
-                ${s.products ? `<div style="font-size:12px; color:${textColor};">📝 ${s.products}</div>` : ''}
+          <div style="background:${bgColor}; padding:12px; border-radius:8px; border-left:4px solid ${borderColor}; cursor:pointer;" onclick="restoreCartFromLedger('${s.customer}', ${JSON.stringify(s.cartItems || []).replace(/"/g, '&quot;')})" title="Click to restore cart">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+              <div style="flex:1;">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                  <div style="font-weight:700; color:${textColor}; font-size:14px;">${s.customer}</div>
+                  ${isCredit ? '<span style="font-size:9px; background:#dc2626; color:white; padding:2px 6px; border-radius:4px; font-weight:700;">📒 CREDIT</span>' : ''}
+                </div>
+                <div style="font-size:10px; color:#64748b;">📅 ${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
               </div>
               <div style="text-align:right;">
-                <div style="font-size:18px; font-weight:900; color:${isCredit ? '#dc2626' : '#16a34a'};">${formatINR(displayAmount)}</div>
-                <div style="font-size:11px; color:#64748b;">${statusLabel}${isCredit && creditAmount > 0 ? ` • Due: ${formatINR(creditAmount)}` : ''}</div>
+                <div style="font-size:20px; font-weight:900; color:${isCredit ? '#dc2626' : '#16a34a'};">${formatINR(totalAmount)}</div>
+                ${isCredit && creditAmount > 0 ? `<div style="font-size:9px; color:#dc2626; font-weight:700;">Due: ${formatINR(creditAmount)}</div>` : ''}
+                <div style="font-size:9px; color:#64748b;">${statusLabel}${!isCredit ? ` • Paid: ${formatINR(paidAmount)}` : ''}</div>
               </div>
             </div>
+            ${itemsHtml ? `<div style="border-top:1px solid ${isCredit ? '#fecaca' : '#bbf7d0'}; padding-top:8px; margin-top:8px;">${itemsHtml}</div>` : ''}
+            ${isCredit ? `<div style="font-size:9px; color:#64748b; margin-top:6px; text-align:center;">🔁 Click to restore cart</div>` : ''}
           </div>
         `;
       });
@@ -6965,6 +7001,31 @@ function exportCustomerLedgerExcel() {
 function printCustomerLedger() {
   showToast('🖨️ Printing report...');
   // Implementation for print
+}
+
+// Restore cart from ledger entry
+function restoreCartFromLedger(customerName, cartItems) {
+  if (!cartItems || cartItems.length === 0) {
+    showToast('❌ No items to restore');
+    return;
+  }
+
+  // Set customer
+  const activeCust = document.getElementById('activeCust');
+  if (activeCust) {
+    activeCust.innerText = customerName;
+  }
+
+  // Restore cart items
+  cart = JSON.parse(JSON.stringify(cartItems));
+  
+  // Update UI
+  updateUI();
+  
+  showToast(`🛒 Restored ${cartItems.length} items for ${customerName}!`);
+  
+  // Close modal
+  closeModal('customerLedgerModal');
 }
 
 // ========== RATE LIST FUNCTIONS ==========
