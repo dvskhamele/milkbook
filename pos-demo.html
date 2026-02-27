@@ -1621,22 +1621,30 @@
         // This becomes the invoice amount
         // IMPORTANT: Save cart items BEFORE resetCart() clears them!
         const cartItemsForInvoice = JSON.parse(JSON.stringify(cart));
-        
+
         saveEntryWithPayment(paymentMode, paymentAmount, creditAmount);
 
         // Generate and download invoice with accepted amount (use saved cart items)
         generateInvoice(customerName, paymentAmount, paymentMode, creditAmount, cartItemsForInvoice);
 
-        // Open WhatsApp after a short delay if phone exists, otherwise print
-        setTimeout(() => {
-          if (customer && customer.phone && customer.phone.trim().length >= 10) {
-            // Phone exists - open WhatsApp (use saved cart items)
+        // NON-BLOCKING: Open WhatsApp/Print in background without interrupting workflow
+        // Process immediately but don't wait for it to complete
+        const customerPhone = customer && customer.phone && customer.phone.trim().length >= 10 ? customer.phone : null;
+        
+        if (customerPhone) {
+          // Open WhatsApp in new tab (non-blocking)
+          setTimeout(() => {
             openWhatsAppInvoice(customer, paymentAmount, creditAmount, cartItemsForInvoice);
-          } else {
-            // No phone - open invoice in new tab and print (use saved cart items)
+          }, 100);
+        } else {
+          // Print invoice in new tab (non-blocking)
+          setTimeout(() => {
             printInvoice(customerName, paymentAmount, paymentMode, creditAmount, cartItemsForInvoice);
-          }
-        }, 500);
+          }, 100);
+        }
+        
+        // Continue with next customer immediately - don't wait for print/WhatsApp
+        showToast('✅ Saved! Next customer...');
       }
       
       // Save entry with payment details
@@ -1888,7 +1896,7 @@
         return message;
       }
       
-      // Print invoice in new tab
+      // Print invoice in new tab - NON-BLOCKING
       function printInvoice(customerName, paymentAmount, paymentMode, creditAmount, cartItems = null) {
         const date = new Date().toLocaleDateString('en-IN', {
           day: 'numeric', month: 'short', year: 'numeric',
@@ -1896,7 +1904,7 @@
         });
         const invoiceNo = 'INV-' + Date.now().toString().slice(-6);
         const customer = customers.find(c => c.name === customerName);
-        
+
         // Use provided cart items OR fall back to global cart
         const itemsToDisplay = cartItems || cart;
 
@@ -1928,7 +1936,7 @@
               .print-btn:hover { background: #2563eb; }
             </style>
           </head>
-          <body onload="window.print()">
+          <body>
             <div class="header">
               <h1>🧾 MilkRecord Invoice</h1>
               <p>${invoiceNo} | ${date}</p>
@@ -1969,19 +1977,29 @@
               <p>Thank you for your business! 🙏</p>
               <p>${shopName} | Generated: ${date}</p>
             </div>
+            <button class="print-btn no-print" onclick="window.print(); window.close();">🖨️ Print Now</button>
           </body>
           </html>
         `;
 
-        // Auto-print invoice immediately (no user interaction)
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(invoiceHTML);
-        printWindow.document.close();
-        printWindow.focus();
-        setTimeout(() => {
-          printWindow.print();
-          printWindow.close();
-        }, 250);
+        // Open in new tab and trigger print (non-blocking - main app continues)
+        try {
+          const printWindow = window.open('', '_blank');
+          if (printWindow) {
+            printWindow.document.write(invoiceHTML);
+            printWindow.document.close();
+            // Auto-print after short delay
+            setTimeout(() => {
+              printWindow.focus();
+              printWindow.print();
+              // Don't auto-close - let user close manually if needed
+            }, 500);
+          }
+        } catch (e) {
+          console.error('Print failed:', e);
+          // Fallback: Just show toast, user can manually print from history
+          showToast('📄 Invoice generated - Check history to print');
+        }
       }
       
       // Open WhatsApp with invoice message
