@@ -6945,10 +6945,10 @@ function printCustomerLedger() {
 function renderRateListProducts() {
   const container = document.getElementById('rateListProducts');
   if (!container) return;
-  
+
   // Load products from localStorage
   const customProducts = loadData('mr_pos_custom_products', []);
-  
+
   if (!Array.isArray(customProducts) || customProducts.length === 0) {
     container.innerHTML = `
       <div style="text-align:center; padding:60px 20px; color:#64748b;">
@@ -6959,28 +6959,36 @@ function renderRateListProducts() {
     `;
     return;
   }
-  
+
+  // Group products by name to show each product only ONCE
+  const uniqueProducts = {};
+  customProducts.forEach(p => {
+    if (!uniqueProducts[p.name]) {
+      uniqueProducts[p.name] = {
+        name: p.name,
+        emoji: p.emoji || '📦',
+        price: parseFloat(p.price) || 0,
+        unit: p.unit || 'unit'
+      };
+    }
+  });
+
   // Generate HTML - Simple grid without category headers
   let html = '';
-  
+
   html += `
     <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
   `;
 
-  customProducts.forEach(p => {
-    const emoji = p.emoji || '📦';
-    const name = p.name || 'Product';
-    const price = parseFloat(p.price) || 0;
-    const unit = p.unit || 'unit';
-
+  Object.values(uniqueProducts).forEach(p => {
     html += `
       <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
-        <div style="font-size:32px;">${emoji}</div>
+        <div style="font-size:32px;">${p.emoji}</div>
         <div style="flex:1;">
-          <div style="font-weight:700; color:#1e293b; font-size:14px;">${name}</div>
-          <div style="font-size:12px; color:#64748b;">Per ${unit}</div>
+          <div style="font-weight:700; color:#1e293b; font-size:14px;">${p.name}</div>
+          <div style="font-size:12px; color:#64748b;">Per ${p.unit}</div>
         </div>
-        <div style="font-weight:900; color:#16a34a; font-size:16px;">${formatINR(price)}</div>
+        <div style="font-weight:900; color:#16a34a; font-size:16px;">${formatINR(p.price)}</div>
       </div>
     `;
   });
@@ -7000,6 +7008,19 @@ function sendRateListWhatsApp() {
     return showToast('📋 No products to send!');
   }
 
+  // Get unique products only
+  const uniqueProducts = {};
+  customProducts.forEach(p => {
+    if (!uniqueProducts[p.name]) {
+      uniqueProducts[p.name] = {
+        name: p.name,
+        emoji: p.emoji || '📦',
+        price: parseFloat(p.price) || 0,
+        unit: p.unit || 'unit'
+      };
+    }
+  });
+
   const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -7009,13 +7030,8 @@ function sendRateListWhatsApp() {
   message += `📅 ${date}\n\n`;
   message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
 
-  customProducts.forEach(p => {
-    const emoji = p.emoji || '📦';
-    const name = p.name || 'Product';
-    const price = parseFloat(p.price) || 0;
-    const unit = p.unit || 'unit';
-
-    message += `${emoji} ${name} - ${formatINR(price)}/${unit}\n`;
+  Object.values(uniqueProducts).forEach(p => {
+    message += `${p.emoji} ${p.name} - ${formatINR(p.price)}/${p.unit}\n`;
   });
 
   message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
@@ -7037,6 +7053,19 @@ function printRateList() {
     return showToast('📋 No products to print!');
   }
 
+  // Get unique products only
+  const uniqueProducts = {};
+  customProducts.forEach(p => {
+    if (!uniqueProducts[p.name]) {
+      uniqueProducts[p.name] = {
+        name: p.name,
+        emoji: p.emoji || '📦',
+        price: parseFloat(p.price) || 0,
+        unit: p.unit || 'unit'
+      };
+    }
+  });
+
   const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -7053,17 +7082,13 @@ function printRateList() {
       <tbody>
   `;
 
-  customProducts.forEach((p, index) => {
-    const emoji = p.emoji || '📦';
-    const name = p.name || 'Product';
-    const price = parseFloat(p.price) || 0;
-    const unit = p.unit || 'unit';
-
+  const productList = Object.values(uniqueProducts);
+  productList.forEach((p, index) => {
     productsHTML += `
       <tr style="${index % 2 === 0 ? 'background:#f8fafc' : 'background:white'}">
-        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px;">${emoji} ${name}</td>
-        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px;">Per ${unit}</td>
-        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px; text-align:right; font-weight:bold; color:#16a34a;">${formatINR(price)}</td>
+        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px;">${p.emoji} ${p.name}</td>
+        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px;">Per ${p.unit}</td>
+        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px; text-align:right; font-weight:bold; color:#16a34a;">${formatINR(p.price)}</td>
       </tr>
     `;
   });
@@ -7109,7 +7134,7 @@ function printRateList() {
     </body>
     </html>
   `;
-  
+
   // Open print window
   const printWindow = window.open('', '_blank');
   if (printWindow) {
