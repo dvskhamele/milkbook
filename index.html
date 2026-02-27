@@ -6678,26 +6678,6 @@ function openFarmerTransactions(fId) {
     openOverlay("overlayFarmerTransactions");
 }
 
-function updateFarmerAdvance() {
-    const amt = Number(el("transAmount").value);
-    const action = el("transAction").value;
-    const f = getFarmerById(selectedFarmerId);
-    if (!f || amt <= 0) return showToast("Invalid amount");
-    
-    if (action === 'give') {
-        f.advance = (f.advance || 0) + amt;
-        showToast(`${formatAmount(amt)} advance given ✅`);
-    } else {
-        if ((f.advance || 0) < amt) return showToast("Insufficient advance");
-        f.advance = (f.advance || 0) - amt;
-        showToast(`${formatAmount(amt)} advance cut ✅`);
-    }
-    
-    saveFarmers(farmers);
-    el("transAmount").value = "";
-    openFarmerTransactions(selectedFarmerId); // Refresh
-}
-
 function sendFarmerSummary() {
     const f = getFarmerById(selectedFarmerId);
     if (!f) return;
@@ -6721,89 +6701,6 @@ Gopal Dairy Shop`;
     showToast("Summary sent 💬");
 }
 
-el("btnAddAdv").onclick = () => handleAdvanceChange(true);
-el("btnCutAdv").onclick = () => handleAdvanceChange(false);
-
-function handleAdvanceChange(isAdding) {
-    const amt = Number(el("advAmount").value);
-    if (amt <= 0) return showToast("Enter valid amount");
-    const f = getFarmerById(selectedFarmerId);
-    if (!f) return;
-
-    if (isAdding) {
-        f.advance = (f.advance || 0) + amt;
-        f.balance = (f.balance || 0) - amt;
-        showToast(`${formatAmount(amt)} Advance Added ✅`);
-    } else {
-        if ((f.advance || 0) < amt) return showToast("Not enough advance");
-        f.advance = (f.advance || 0) - amt;
-        f.balance = (f.balance || 0) + amt;
-        showToast(`${formatAmount(amt)} Advance Cut ✂️`);
-    }
-    saveFarmers(farmers);
-    el("advAmount").value = "";
-    closeOverlay("overlayFarmerDetail");
-    renderAll();
-}
-// ... upar openFarmerDetail wala function khatam hone ke baad ...
-
-// --- WHATSAPP MONTHLY SUMMARY LOGIC (Yahan Paste Karein) ---
-el("btnDetailWhatsApp").onclick = () => {
-    const f = getFarmerById(selectedFarmerId);
-    if (!f) return;
-
-    // 1. Mahine ka data taiyar karein
-    const now = new Date();
-    const monthName = now.toLocaleString('default', { month: 'long' });
-    const totalMilk = el("detailMonthlyMilk").textContent;
-    const currentAdv = el("detailAdvance").textContent;
-    const currentBal = formatAmount(f.balance || 0);
-
-    // 2. Message ka format (Plain Hindi + Numbers jaisa document mein likha hai)
-    const msg = `*Milk Summary - ${monthName}*
----------------------------
-*Kisan:* ${f.name}
-*Total Milk:* ${totalMilk}
-*Current Advance:* ${currentAdv}
-*Net Balance:* ${currentBal}
----------------------------
-Gopal Dairy Shop`;
-
-    // 3. WhatsApp link generate karein aur open karein
-    const wpUrl = `https://wa.me/${f.phone}?text=${encodeURIComponent(msg)}`;
-    window.open(wpUrl, '_blank');
-    
-    showToast("Monthly Summary Sent 💬");
-};
-// --- WHATSAPP DAILY SUMMARY LOGIC ---
-el("btnDailySummary").onclick = () => {
-    const today = fmtDate(new Date());
-    const todays = entries.filter(e => e.day === today);
-    
-    if (todays.length === 0) {
-        showToast("No entries for today!");
-        return;
-    }
-
-    // Aaj ka poora calculations
-    const totalMilk = todays.reduce((sum, e) => sum + Number(e.qty || 0), 0);
-    const totalAmt = todays.reduce((sum, e) => sum + Number(e.amount || 0), 0);
-    const session = autoSessionLabel(); // Morning ya Evening automatic lega
-
-    // Message ka format (Professional Dairy Look)
-    const msg = `*🥛 Daily Milk Summary*
-*Date:* ${today} (${session})
----------------------------
-✅ *Total Entries:* ${todays.length}
-✅ *Total Milk:* ${totalMilk.toFixed(1)} L
-✅ *Total Amount:* ${formatAmount(totalAmt)}
----------------------------
-*Gopal Dairy Shop*`;
-
-    // WhatsApp par share karne ka link
-    const wpUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-    window.open(wpUrl, '_blank');
-};
 function sendDailySummary() {
     const today = fmtDate(new Date());
     // Aaj ki saari entries filter karein
