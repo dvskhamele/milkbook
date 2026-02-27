@@ -4276,14 +4276,13 @@ function saveEntryAsCredit() {
     showToast(`Entry Saved: ${formatAmount(amount)} (उधार/Credit) 📒`);
 }
 
-// Print collection bill/receipt
+// Print collection bill/receipt - NON-BLOCKING for uninterrupted workflow
 function printCollectionBill(entry) {
     const farmer = getFarmerById(entry.farmerId);
     if (!farmer) return;
 
-    const printWindow = window.open('', '_blank');
     const date = new Date().toLocaleString('en-IN');
-    
+
     // Format amount with Indian numbering
     const formatAmt = (num) => {
         const rounded = Math.round((num + Number.EPSILON) * 100) / 100;
@@ -4370,21 +4369,26 @@ function printCollectionBill(entry) {
             <p>Gopal Dairy Shop</p>
         </div>
 
-        <button class="no-print" onclick="window.print(); window.close();" style="width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 15px;">🖨️ Print Bill</button>
+        <button class="no-print" onclick="window.print();" style="width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 15px;">🖨️ Print Bill (Ctrl+P)</button>
     </div>
 
     <scr` + `ipt>
-        // Auto-print on load
+        // Auto-print after short delay (NON-BLOCKING - user can continue working)
         setTimeout(() => {
             window.print();
-            window.close();
-        }, 500);
+            // Don't auto-close - user controls when to close
+        }, 100);
     </scr` + `ipt>
 </body>
 </html>`;
 
-    printWindow.document.write(billHTML);
-    printWindow.document.close();
+    // Open in background tab (NON-BLOCKING)
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+        printWindow.document.write(billHTML);
+        printWindow.document.close();
+        console.log('🖨️ Bill opened in background for:', farmer.name, '- Continue working!');
+    }
 }
 
 // Isse kisi bhi purani entry ka metadata check kar sakte hain
