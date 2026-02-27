@@ -1920,10 +1920,10 @@
 
               <div class="row3" style="grid-column: 1/-1">
                 <div class="animalCard" style="display: flex; flex-direction: column; gap: 4px;">
-                  <label style="font-weight: 900; font-size: 14px;">5. Animal Type <span style="font-size: 10px; color: var(--muted);">(Press Enter to toggle)</span></label>
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;" onkeydown="if(event.key==='Enter'){event.preventDefault(); const current=document.getElementById('animalSelect').value; const next=current==='cow'?'buffalo':'cow'; selectAnimal(next);}">
-                    <button type="button" id="animalCow" onclick="selectAnimal('cow')" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐄 Cow</button>
-                    <button type="button" id="animalBuffalo" onclick="selectAnimal('buffalo')" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐃 Buffalo</button>
+                  <label style="font-weight: 900; font-size: 14px;">5. Animal Type <span style="font-size: 10px; color: var(--muted);">(Click or Tab+Enter)</span></label>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                    <button type="button" id="animalCow" onclick="selectAnimal('cow'); setTimeout(() => { const manualRate = document.getElementById('manualRateInput'); if(manualRate) { manualRate.focus(); manualRate.select(); } }, 100);" onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault(); this.click();}" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐄 Cow</button>
+                    <button type="button" id="animalBuffalo" onclick="selectAnimal('buffalo'); setTimeout(() => { const manualRate = document.getElementById('manualRateInput'); if(manualRate) { manualRate.focus(); manualRate.select(); } }, 100);" onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault(); this.click();}" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐃 Buffalo</button>
                   </div>
                   <input type="hidden" id="animalSelect" value="cow" />
                 </div>
