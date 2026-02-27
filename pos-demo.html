@@ -323,21 +323,40 @@
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
       
       /* Card sizing based on step RANK (not absolute value) - using !important for specificity */
-      /* Rank 1 (smallest step) */
-      .p-card[data-rank="1"] { min-height: 75px !important; }
-      .p-card[data-rank="1"] .emoji { font-size: 28px !important; }
-      .p-card[data-rank="1"] div { font-size: 9px !important; }
-      .p-card[data-rank="1"] small { font-size: 8px !important; }
-      
-      /* Rank 2 */
-      .p-card[data-rank="2"] { min-height: 82px !important; }
-      .p-card[data-rank="2"] .emoji { font-size: 32px !important; }
-      .p-card[data-rank="2"] div { font-size: 10px !important; }
+      /* Rank 1 (smallest step) - EXTRA SMALL */
+      .p-card[data-rank="1"] { min-height: 65px !important; padding: 4px 2px !important; }
+      .p-card[data-rank="1"] .emoji { font-size: 24px !important; }
+      .p-card[data-rank="1"] div { font-size: 8px !important; }
+      .p-card[data-rank="1"] small { font-size: 7px !important; }
+      .p-card[data-rank="1"] .price-tag { font-size: 8px !important; padding: 2px 4px !important; }
+
+      /* Rank 2 - SMALL */
+      .p-card[data-rank="2"] { min-height: 75px !important; padding: 5px 3px !important; }
+      .p-card[data-rank="2"] .emoji { font-size: 28px !important; }
+      .p-card[data-rank="2"] div { font-size: 9px !important; }
       .p-card[data-rank="2"] small { font-size: 8px !important; }
-      
-      /* Rank 3 */
-      .p-card[data-rank="3"] { min-height: 90px !important; }
+      .p-card[data-rank="2"] .price-tag { font-size: 9px !important; padding: 3px 5px !important; }
+
+      /* Rank 3 - MEDIUM (Default) */
+      .p-card[data-rank="3"] { min-height: 90px !important; padding: 6px 4px !important; }
       .p-card[data-rank="3"] .emoji { font-size: 36px !important; }
+      .p-card[data-rank="3"] div { font-size: 11px !important; }
+      .p-card[data-rank="3"] small { font-size: 9px !important; }
+      .p-card[data-rank="3"] .price-tag { font-size: 10px !important; padding: 4px 6px !important; }
+
+      /* Rank 4 - LARGE */
+      .p-card[data-rank="4"] { min-height: 105px !important; padding: 8px 5px !important; }
+      .p-card[data-rank="4"] .emoji { font-size: 42px !important; }
+      .p-card[data-rank="4"] div { font-size: 12px !important; }
+      .p-card[data-rank="4"] small { font-size: 10px !important; }
+      .p-card[data-rank="4"] .price-tag { font-size: 11px !important; padding: 5px 7px !important; }
+
+      /* Rank 5 (largest step) - EXTRA LARGE */
+      .p-card[data-rank="5"] { min-height: 120px !important; padding: 10px 6px !important; }
+      .p-card[data-rank="5"] .emoji { font-size: 48px !important; }
+      .p-card[data-rank="5"] div { font-size: 13px !important; }
+      .p-card[data-rank="5"] small { font-size: 11px !important; }
+      .p-card[data-rank="5"] .price-tag { font-size: 12px !important; padding: 6px 8px !important; }
       .p-card[data-rank="3"] div { font-size: 10px !important; }
       .p-card[data-rank="3"] small { font-size: 9px !important; }
       
@@ -1003,20 +1022,66 @@
 
     <!-- Shop Settings Modal -->
     <div class="overlay" id="settingsModal">
-        <div class="modal" style="width:450px; height:auto;">
+        <div class="modal" style="width:500px; height:auto; max-height:90vh; overflow-y:auto;">
             <div class="panelHeader"><span>⚙️ Shop Settings</span> <button onclick="closeModal('settingsModal')">✖</button></div>
             <div style="padding:20px; display:flex; flex-direction:column; gap:15px;">
-                <div>
-                    <label style="font-size:12px; font-weight:700; color:var(--muted); display:block; margin-bottom:5px;">Shop Name</label>
-                    <input type="text" id="shopNameInput" placeholder="e.g., Gopal Dairy Shop" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--line); font-weight:700;" />
+                <!-- Basic Info Section -->
+                <div style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0;">
+                    <div style="font-size:13px; font-weight:700; color:#1e293b; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">🏪 Basic Information</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                        <div>
+                            <label style="font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:5px;">Proprietor Name</label>
+                            <input type="text" id="shopProprietorInput" placeholder="e.g., Ramesh Kumar" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px;" />
+                        </div>
+                        <div>
+                            <label style="font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:5px;">Shop Name *</label>
+                            <input type="text" id="shopNameInput" placeholder="e.g., Gopal Dairy Shop" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px;" />
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:5px;">Shop Phone (for invoice & WhatsApp) *</label>
+                        <input type="tel" id="shopPhoneInput" placeholder="e.g., 9876543210" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px;" inputmode="tel" />
+                    </div>
                 </div>
-                <div>
-                    <label style="font-size:12px; font-weight:700; color:var(--muted); display:block; margin-bottom:5px;">Shop Phone (for invoice)</label>
-                    <input type="tel" id="shopPhoneInput" placeholder="e.g., 9876543210" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--line); font-weight:700;" inputmode="tel" />
+
+                <!-- Address Section -->
+                <div style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0;">
+                    <div style="font-size:13px; font-weight:700; color:#1e293b; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">📍 Shop Address</div>
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:5px;">Shop Address</label>
+                        <textarea id="shopAddressInput" placeholder="e.g., Shop No. 5, Market Road, Village A" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; min-height:60px; resize:vertical;" /></textarea>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+                        <div>
+                            <label style="font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:5px;">City</label>
+                            <input type="text" id="shopCityInput" placeholder="e.g., Pune" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px;" />
+                        </div>
+                        <div>
+                            <label style="font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:5px;">Pincode</label>
+                            <input type="text" id="shopPincodeInput" placeholder="e.g., 411001" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px;" inputmode="numeric" />
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Tax Info Section -->
+                <div style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0;">
+                    <div style="font-size:13px; font-weight:700; color:#1e293b; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">📄 Tax Information (Optional)</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div>
+                            <label style="font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:5px;">GST Number</label>
+                            <input type="text" id="shopGstInput" placeholder="e.g., 27ABCDE1234F1Z5" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-transform:uppercase;" />
+                        </div>
+                        <div>
+                            <label style="font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:5px;">PAN Number</label>
+                            <input type="text" id="shopPanInput" placeholder="e.g., ABCDE1234F" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px; text-transform:uppercase;" />
+                        </div>
+                    </div>
+                </div>
+
                 <div style="background:#f0f9ff; padding:12px; border-radius:8px; border:1px solid #3b82f6;">
-                    <p style="font-size:12px; color:#1e40af; margin:0;">💡 Tip: Select booth or enter custom shop name. This appears on invoices and WhatsApp messages.</p>
+                    <p style="font-size:11px; color:#1e40af; margin:0; line-height:1.5;">💡 <strong>Tip:</strong> Shop name and phone appear on invoices and WhatsApp messages. GST/PAN will be shown on tax invoices.</p>
                 </div>
+
                 <button onclick="saveShopSettings()" style="padding:15px; background:var(--green); color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:14px;">💾 Save Settings</button>
             </div>
         </div>
@@ -2606,22 +2671,28 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         
         const selectedName = select.value;
         const customer = customers.find(c => c.name === selectedName);
-        
+
         if (customer) {
           // Auto-fill location from customer address
           if (customer.address) {
             locationInput.value = customer.address;
           }
-          
-          // Check if customer has phone number
+
+          // Check if customer has phone number - ONLY show warning if they have advance orders
           if (!customer.phone || customer.phone.trim() === '') {
-            // Show edit customer popup
-            setTimeout(() => {
-              const addMobile = confirm(`⚠️ ${customer.name} doesn't have a phone number.\n\nAdd mobile number now?`);
-              if (addMobile) {
-                openEditCustomerForAdvanceOrder(customer);
-              }
-            }, 300);
+            // Check if customer has any advance orders
+            const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+            const hasAdvances = history.some(h => h.customer === customer.name && h.method === 'Cash In');
+            
+            // Only show phone warning if customer has advance orders
+            if (hasAdvances) {
+              setTimeout(() => {
+                const addMobile = confirm(`⚠️ ${customer.name} doesn't have a phone number.\n\nAdd mobile number now?`);
+                if (addMobile) {
+                  openEditCustomerForAdvanceOrder(customer);
+                }
+              }, 300);
+            }
           }
         }
       }
@@ -5607,14 +5678,38 @@ function updateBooth() {
 function saveShopSettings() {
   const shopName = el("shopNameInput").value.trim();
   const shopPhone = el("shopPhoneInput").value.trim();
-  
+  const shopProprietor = el("shopProprietorInput").value.trim();
+  const shopAddress = el("shopAddressInput").value.trim();
+  const shopCity = el("shopCityInput").value.trim();
+  const shopPincode = el("shopPincodeInput").value.trim();
+  const shopGst = el("shopGstInput").value.trim().toUpperCase();
+  const shopPan = el("shopPanInput").value.trim().toUpperCase();
+
   if (shopName) {
     localStorage.setItem('milkbook_shop_name', shopName);
   }
   if (shopPhone) {
     localStorage.setItem('milkbook_shop_phone', shopPhone);
   }
-  
+  if (shopProprietor) {
+    localStorage.setItem('milkbook_shop_proprietor', shopProprietor);
+  }
+  if (shopAddress) {
+    localStorage.setItem('milkbook_shop_address', shopAddress);
+  }
+  if (shopCity) {
+    localStorage.setItem('milkbook_shop_city', shopCity);
+  }
+  if (shopPincode) {
+    localStorage.setItem('milkbook_shop_pincode', shopPincode);
+  }
+  if (shopGst) {
+    localStorage.setItem('milkbook_shop_gst', shopGst);
+  }
+  if (shopPan) {
+    localStorage.setItem('milkbook_shop_pan', shopPan);
+  }
+
   closeModal('settingsModal');
   showToast('Shop settings saved! ✅');
 }
@@ -5642,10 +5737,14 @@ window.addEventListener('DOMContentLoaded', function() {
     settingsModal.addEventListener('click', function(e) {
       if (e.target === settingsModal) {
         // Load current settings
-        const currentName = localStorage.getItem('milkbook_shop_name') || '';
-        const currentPhone = localStorage.getItem('milkbook_shop_phone') || '';
-        el('shopNameInput').value = currentName;
-        el('shopPhoneInput').value = currentPhone;
+        el('shopNameInput').value = localStorage.getItem('milkbook_shop_name') || '';
+        el('shopPhoneInput').value = localStorage.getItem('milkbook_shop_phone') || '';
+        el('shopProprietorInput').value = localStorage.getItem('milkbook_shop_proprietor') || '';
+        el('shopAddressInput').value = localStorage.getItem('milkbook_shop_address') || '';
+        el('shopCityInput').value = localStorage.getItem('milkbook_shop_city') || '';
+        el('shopPincodeInput').value = localStorage.getItem('milkbook_shop_pincode') || '';
+        el('shopGstInput').value = localStorage.getItem('milkbook_shop_gst') || '';
+        el('shopPanInput').value = localStorage.getItem('milkbook_shop_pan') || '';
       }
     });
   }
