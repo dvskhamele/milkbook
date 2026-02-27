@@ -2782,11 +2782,12 @@ function playSuccessSound() {
       qtyInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
+          e.stopPropagation();
           fatInput.focus();
           fatInput.select();
         }
       });
-      
+
       fatInput.addEventListener("input", (e) => {
         fat = Number(e.target.value) || 0;
         console.log('🔵 Fat changed:', fat, 'Calling renderTrust()');
@@ -2796,11 +2797,12 @@ function playSuccessSound() {
       fatInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
+          e.stopPropagation();
           snfInput.focus();
           snfInput.select();
         }
       });
-      
+
       snfInput.addEventListener("input", (e) => {
         snf = Number(e.target.value) || 0;
         console.log('🔵 SNF changed:', snf, 'Calling renderTrust()');
@@ -2810,6 +2812,7 @@ function playSuccessSound() {
       snfInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
+          e.stopPropagation();
           const cowBtn = el("animalCow");
           if (cowBtn) {
             cowBtn.focus();
