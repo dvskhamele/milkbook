@@ -2579,8 +2579,8 @@
           <div class="formGrid" style="grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 12px;">
             <!-- Essential Fields First -->
             <div class="field" style="padding: 8px;">
-              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🔢 Serial No. <span style="font-size: 10px; color: var(--muted); font-weight: normal;">(Auto-generated)</span></label>
-              <input id="fSerial" type="text" autocomplete="off" placeholder="Auto: #1" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; background: #f8fafc;" readonly />
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🔢 Serial No. <span style="font-size: 10px; color: var(--muted); font-weight: normal;">(Auto-generated, editable)</span></label>
+              <input id="fSerial" type="text" autocomplete="off" placeholder="Auto: #1" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; background: #f0f9ff;" />
             </div>
             <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">👤 Name <span style="font-size: 9px; color: var(--muted); font-weight: normal;">(First Last for easy search)</span></label>
@@ -4949,6 +4949,11 @@ function showAuditProof(entryId) {
               const nextNum = farmers.length + 1;
               fSerial.value = `#${nextNum}`;
               console.log('🔢 Serial auto-filled:', fSerial.value);
+              // Focus and select serial field so user can edit if needed
+              setTimeout(() => {
+                fSerial.focus();
+                fSerial.select();
+              }, 300);
             }
           }
           
@@ -5242,7 +5247,7 @@ function showAuditProof(entryId) {
               return;
             }
 
-            // Auto-generate serial number if not provided
+            // Auto-generate serial number if not provided or empty
             let serialNum = fSerial && fSerial.value.trim() ? fSerial.value.trim() : '';
             if (!serialNum) {
               // Count existing farmers and generate next serial
