@@ -456,7 +456,7 @@
               <button onclick="openModal('settingsModal'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">⚙️ Settings</button>
               <button onclick="exportDetailedExcel(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">📊 Export Data</button>
               <button onclick="openModal('historyModal'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🧾 History</button>
-              <button onclick="toggleLanguage(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🌐 HI/EN Language</button>
+              <button onclick="toggleLanguage(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🌐 HI/EN/BHO Language</button>
               <div style="border-top: 1px solid var(--line); margin: 4px 0;"></div>
               <button onclick="logout()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
             </div>
@@ -1581,28 +1581,44 @@
           hi: { shop:"मिल्क-रिकॉर्ड", mem:"🧠 यादें", hist:"🧾 इतिहास", exp:"📊 एक्सपोर्ट", term:"टर्मिनल", sum:"सारांश", payable:"कुल देय राशि", cash:"नकद", credit:"लिख लो (उधार)", hold:"🟡 होल्ड", done:"🟢 पूर्ण", clear:"🔴 साफ़ करें" }
       };
 
+      // Language toggle with English, Hindi, and Bhojpuri
+      let currentLang = 'en'; // 'en', 'hi', or 'bho'
+      const langData = {
+          en: { shop:"MilkRecord POS", mem:"🧠 Memory", hist:"🧾 History", exp:"📊 Export", term:"Terminal", sum:"Summary", payable:"TOTAL PAYABLE", cash:"CASH", credit:"LIKH LO (Credit)", hold:"🟡 HOLD", done:"🟢 DONE", clear:"🔴 CLEAR" },
+          hi: { shop:"मिल्क-रिकॉर्ड", mem:"🧠 यादें", hist:"🧾 इतिहास", exp:"📊 एक्सपोर्ट", term:"टर्मिनल", sum:"सारांश", payable:"कुल देय राशि", cash:"नकद", credit:"लिख लो (उधार)", hold:"🟡 होल्ड", done:"🟢 पूर्ण", clear:"🔴 साफ़ करें" },
+          bho: { shop:"मिल्क-रिकॉर्ड", mem:"🧠 याद", hist:"🧾 इतिहास", exp:"📊 एक्सपोर्ट", term:"टर्मिनल", sum:"सारांश", payable:"कुल देय", cash:"नगदी", credit:"लिख लउ (उधार)", hold:"🟡 होल्ड", done:"🟢 हो गइल", clear:"🔴 साफ करी" }
+      };
+
       function toggleLanguage() {
-          currentLang = currentLang === 'en' ? 'hi' : 'en';
-          const t = langData[currentLang];
+          // Cycle through: English → Hindi → Bhojpuri → English
+          if (currentLang === 'en') {
+              currentLang = 'hi';
+          } else if (currentLang === 'hi') {
+              currentLang = 'bho';
+          } else {
+              currentLang = 'en';
+          }
           
+          const t = langData[currentLang];
+
           // Safe element updates with null checks
           const shopTitle = el("shopTitle");
           if (shopTitle) shopTitle.textContent = t.shop;
-          
+
           const btnMem = el("btnMem");
           if (btnMem) btnMem.innerHTML = t.mem;
           const btnHist = el("btnHist");
           if (btnHist) btnHist.innerHTML = t.hist;
           const btnExp = el("btnExp");
           if (btnExp) btnExp.innerHTML = t.exp;
-          
+
           const lblTerm = el("lblTerm");
           if (lblTerm) lblTerm.textContent = t.term;
           const lblSum = el("lblSum");
           if (lblSum) lblSum.textContent = t.sum;
           const lblPayable = el("lblPayable");
           if (lblPayable) lblPayable.textContent = t.payable;
-          
+
           const btnCash = el("btnCash");
           if (btnCash) btnCash.textContent = t.cash;
           const btnCredit = el("btnCredit");
@@ -1616,9 +1632,25 @@
           if (txtClear) txtClear.textContent = t.clear;
 
           // Cards translation using data attributes
-          document.querySelectorAll("[data-en]").forEach(i => i.textContent = currentLang === 'en' ? i.dataset.en : i.dataset.hi);
+          document.querySelectorAll("[data-en]").forEach(i => {
+            if (currentLang === 'en') {
+              i.textContent = i.dataset.en;
+            } else if (currentLang === 'hi') {
+              i.textContent = i.dataset.hi;
+            } else if (currentLang === 'bho') {
+              i.textContent = i.dataset.bho || i.dataset.hi; // Fallback to Hindi if Bhojpuri not available
+            }
+          });
+          
           updateShift();
-          showToast(currentLang === 'en' ? "English Enabled" : "हिंदी सक्रिय");
+          
+          // Show language name in toast
+          let langName = '';
+          if (currentLang === 'en') langName = 'English Enabled';
+          else if (currentLang === 'hi') langName = 'हिंदी सक्रिय';
+          else langName = 'भोजपुरी सक्रिय';
+          
+          showToast(langName);
       }
 
       // Logout function
