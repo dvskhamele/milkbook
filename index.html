@@ -4062,9 +4062,116 @@ function playSuccessSound() {
 
     updateDailySummaryButton();
     updateTodayCollection(); // Update Kitna Collection
+    
+    // Print bill/receipt after save
+    printCollectionBill(entry);
+    
     showToast(`Entry Saved: ${formatAmount(a)} (${selectedPayMode === 'Cash' ? 'नकद' : 'उधार'}) ✅`);
 
     isSaving = false; // Unlock save
+}
+
+// Print collection bill/receipt
+function printCollectionBill(entry) {
+    const farmer = getFarmerById(entry.farmerId);
+    if (!farmer) return;
+    
+    const printWindow = window.open('', '_blank');
+    const date = new Date().toLocaleString('en-IN');
+    
+    const billHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Milk Collection Bill - ${farmer.name}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .bill { max-width: 400px; margin: 0 auto; border: 2px solid #000; padding: 20px; }
+        .header { text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 15px; }
+        .header h2 { margin: 5px 0; }
+        .row { display: flex; justify-content: space-between; padding: 5px 0; }
+        .row.bold { font-weight: bold; }
+        .total { border-top: 2px dashed #000; margin-top: 10px; padding-top: 10px; }
+        .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bill">
+        <div class="header">
+            <h2>🥛 Milk Collection Bill</h2>
+            <p>Gopal Dairy Shop</p>
+            <p>${date}</p>
+        </div>
+        
+        <div class="row">
+            <span>Farmer:</span>
+            <span class="bold">${farmer.name}</span>
+        </div>
+        ${farmer.serial ? `<div class="row"><span>Serial:</span><span class="bold">#${farmer.serial}</span></div>` : ''}
+        ${farmer.phone ? `<div class="row"><span>Phone:</span><span class="bold">${farmer.phone}</span></div>` : ''}
+        
+        <div style="border-top: 1px dashed #000; margin: 10px 0;"></div>
+        
+        <div class="row">
+            <span>Quantity:</span>
+            <span class="bold">${entry.qty} L</span>
+        </div>
+        <div class="row">
+            <span>Fat:</span>
+            <span class="bold">${entry.fat}%</span>
+        </div>
+        ${entry.snf ? `<div class="row"><span>SNF:</span><span class="bold">${entry.snf}%</span></div>` : ''}
+        <div class="row">
+            <span>Animal:</span>
+            <span class="bold">${entry.animal === 'cow' ? '🐄 Cow' : '🐃 Buffalo'}</span>
+        </div>
+        <div class="row">
+            <span>Rate:</span>
+            <span class="bold">${formatAmount(entry.rateSnapshot)}/L</span>
+        </div>
+        
+        <div class="row total bold">
+            <span>TOTAL AMOUNT:</span>
+            <span>${formatAmount(entry.amount)}</span>
+        </div>
+        
+        <div class="row">
+            <span>Payment:</span>
+            <span class="bold">${entry.paymentMode === 'Cash' ? '💵 Cash' : '📒 Credit'}</span>
+        </div>
+        <div class="row">
+            <span>Previous Balance:</span>
+            <span class="bold">${formatAmount(entry.amount - (farmer.balance - entry.amount))}</span>
+        </div>
+        <div class="row bold" style="background: #f0fdf4; padding: 8px; margin-top: 5px;">
+            <span>NEW BALANCE:</span>
+            <span>${formatAmount(farmer.balance)}</span>
+        </div>
+        
+        <div class="footer">
+            <p>Thank you for your business!</p>
+            <p>Gopal Dairy Shop</p>
+        </div>
+        
+        <button class="no-print" onclick="window.print(); window.close();" style="width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 15px;">🖨️ Print Bill</button>
+    </div>
+    
+    <script>
+        // Auto-print on load
+        setTimeout(() => {
+            window.print();
+            window.close();
+        }, 500);
+    </script>
+</body>
+</html>`;
+    
+    printWindow.document.write(billHTML);
+    printWindow.document.close();
 }
 // Isse kisi bhi purani entry ka metadata check kar sakte hain
 function showAuditProof(entryId) {
@@ -4505,6 +4612,16 @@ function showAuditProof(entryId) {
             // Open farmer detail modal for advance/credit management
             if (selectedFarmerId) {
               openFarmerDetail(selectedFarmerId);
+              // Also offer to print last bill
+              const lastEntry = entries.filter(e => e.farmerId === selectedFarmerId).pop();
+              if (lastEntry) {
+                setTimeout(() => {
+                  const printBill = confirm(`Print last bill for ${getFarmerById(selectedFarmerId).name}?`);
+                  if (printBill) {
+                    printCollectionBill(lastEntry);
+                  }
+                }, 500);
+              }
             } else {
               showToast("Select a farmer first!");
             }
