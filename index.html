@@ -1749,6 +1749,9 @@
                 <span id="farmerRoundupLabel" style="font-size: 10px; color: #3b82f6; font-weight: 700; display: none; background: #dbeafe; padding: 4px 8px; border-radius: 4px;">🔄 <span id="farmerRoundupValue">0</span></span>
               </div>
             </div>
+            
+            <!-- View Advance Orders Button -->
+            <button onclick="viewAdvanceOrders()" style="width: 100%; margin-top: 8px; padding: 8px; background: #f5f3ff; border: 2px solid #7c3aed; border-radius: 6px; color: #7c3aed; font-weight: 700; font-size: 12px; cursor: pointer;">📅 View Advance Orders (<span id="advanceOrderCount">0</span> pending)</button>
           </div>
         </div>
       </div>
@@ -1762,6 +1765,44 @@
         <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff;">
           📒 LIKHLO (Credit)
         </button>
+        <button class="panicBtn" id="btnAdvanceOrder" style="background:#7c3aed; color:#fff;" onclick="toggleAdvanceOrderSection()">
+          📅 Advance Order
+        </button>
+      </div>
+      
+      <!-- Advance Order Section (Hidden by default, expands below footer) -->
+      <div id="advanceOrderSection" style="display: none; background: #f5f3ff; border: 2px solid #7c3aed; border-radius: 12px; padding: 16px; margin-top: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h4 style="margin: 0; color: #7c3aed; font-size: 14px;">📅 Schedule Advance Order</h4>
+          <button onclick="toggleAdvanceOrderSection()" style="background: none; border: none; color: #7c3aed; cursor: pointer; font-size: 20px; font-weight: bold;">✖</button>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="font-size: 11px; font-weight: 700; color: #6b21a8; display: block; margin-bottom: 4px;">📍 Delivery Location</label>
+            <input type="text" id="advanceOrderLocation" placeholder="Where to deliver?" style="width: 100%; padding: 8px; border: 2px solid #c084fc; border-radius: 6px; font-size: 13px; font-weight: 600;" />
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 700; color: #6b21a8; display: block; margin-bottom: 4px;">📅 Delivery Date</label>
+            <input type="date" id="advanceOrderDate" style="width: 100%; padding: 8px; border: 2px solid #c084fc; border-radius: 6px; font-size: 13px; font-weight: 600;" />
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="font-size: 11px; font-weight: 700; color: #6b21a8; display: block; margin-bottom: 4px;">⏰ Delivery Time</label>
+            <input type="time" id="advanceOrderTime" style="width: 100%; padding: 8px; border: 2px solid #c084fc; border-radius: 6px; font-size: 13px; font-weight: 600;" />
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 700; color: #6b21a8; display: block; margin-bottom: 4px;">📎 Attach Invoice (Optional)</label>
+            <input type="file" id="advanceOrderInvoice" accept="image/*,.pdf" style="width: 100%; padding: 6px; border: 2px dashed #c084fc; border-radius: 6px; font-size: 12px; background: white;" />
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 8px;">
+          <button onclick="saveAdvanceOrder()" style="flex: 1; padding: 10px; background: #7c3aed; color: white; border: none; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer;">✅ Create Advance Order</button>
+          <button onclick="clearAdvanceOrder()" style="padding: 10px 16px; background: #e9d5ff; color: #7c3aed; border: none; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer;">🔄 Clear</button>
+        </div>
       </div>
     </div>
     
@@ -3618,7 +3659,13 @@ return `
     const after = round2(before + a);
 
     if (balBefore) balBefore.textContent = formatAmount(before);
-    if (balAfter) balAfter.textContent = formatAmount(after);
+    if (balAfter) {
+      balAfter.textContent = formatAmount(after);
+      // Add balance risk marker for large amounts
+      if (after > 10000) {
+        balAfter.innerHTML = `${balAfter.textContent} <span style="color: #f59e0b;" title="Large outstanding balance">⚠️</span>`;
+      }
+    }
 
     // steps + values
     if (el("qtyStep")) el("qtyStep").textContent = `±${settings.qtyStep}`;
@@ -5308,6 +5355,125 @@ function sendDailySummary() {
     }
 }
 
+// ========== ADVANCE ORDER FUNCTIONS ==========
+let advanceOrders = JSON.parse(localStorage.getItem('advanceOrders') || '[]');
+
+// Toggle advance order section visibility
+function toggleAdvanceOrderSection() {
+    const section = document.getElementById('advanceOrderSection');
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+        // Set default date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('advanceOrderDate').value = tomorrow.toISOString().split('T')[0];
+        // Set default time to 10:00 AM
+        document.getElementById('advanceOrderTime').value = '10:00';
+    } else {
+        section.style.display = 'none';
+    }
+}
+
+// Clear advance order form
+function clearAdvanceOrder() {
+    document.getElementById('advanceOrderLocation').value = '';
+    document.getElementById('advanceOrderInvoice').value = '';
+    showToast('Form cleared 🔄');
+}
+
+// Save advance order
+function saveAdvanceOrder() {
+    const location = document.getElementById('advanceOrderLocation').value.trim();
+    const date = document.getElementById('advanceOrderDate').value;
+    const time = document.getElementById('advanceOrderTime').value;
+    const invoiceFile = document.getElementById('advanceOrderInvoice').files[0];
+    
+    if (!location || !date || !time) {
+        showToast('❌ Please fill Location, Date and Time');
+        return;
+    }
+    
+    const farmer = getFarmerById(selectedFarmerId);
+    if (!farmer) {
+        showToast('❌ Please select a farmer');
+        return;
+    }
+    
+    // Create advance order object
+    const advanceOrder = {
+        id: 'ao_' + Date.now(),
+        farmerId: selectedFarmerId,
+        farmerName: farmer.name,
+        location: location,
+        date: date,
+        time: time,
+        invoiceAttached: !!invoiceFile,
+        invoiceName: invoiceFile ? invoiceFile.name : '',
+        createdAt: new Date().toISOString(),
+        status: 'pending' // pending, completed, cancelled
+    };
+    
+    // Save to localStorage
+    advanceOrders.push(advanceOrder);
+    localStorage.setItem('advanceOrders', JSON.stringify(advanceOrders));
+    
+    // Clear form and hide section
+    clearAdvanceOrder();
+    toggleAdvanceOrderSection();
+    
+    showToast(`✅ Advance Order Created for ${date} ${time}!`);
+    console.log('✅ Advance Order saved:', advanceOrder);
+}
+
+// View advance orders (can be called from a button later)
+function viewAdvanceOrders() {
+    const pendingOrders = advanceOrders.filter(o => o.status === 'pending');
+    
+    // Update count badge
+    const countBadge = document.getElementById('advanceOrderCount');
+    if (countBadge) countBadge.textContent = pendingOrders.length;
+    
+    if (pendingOrders.length === 0) {
+        showToast('📋 No pending advance orders');
+        return;
+    }
+    
+    // Show in console for now (can be enhanced with a modal later)
+    let msg = `*📅 Pending Advance Orders (${pendingOrders.length})*\n\n`;
+    pendingOrders.forEach((order, i) => {
+        msg += `${i + 1}. *${order.farmerName}*\n`;
+        msg += `   📍 ${order.location}\n`;
+        msg += `   📅 ${order.date} ⏰ ${order.time}\n`;
+        if (order.invoiceAttached) {
+            msg += `   📎 Invoice: ${order.invoiceName}\n`;
+        }
+        msg += '\n';
+    });
+    
+    console.log(msg);
+    showToast(`📋 ${pendingOrders.length} pending orders (check console)`);
+    
+    // Optional: Show alert with summary
+    const summary = pendingOrders.map((o, i) => 
+        `${i+1}. ${o.farmerName} - ${o.location} (${o.date} ${o.time})`
+    ).join('\n');
+    
+    alert(`📅 PENDING ADVANCE ORDERS (${pendingOrders.length})\n\n${summary}`);
+}
+
+// Update advance order count on page load
+function updateAdvanceOrderCount() {
+    const pendingOrders = advanceOrders.filter(o => o.status === 'pending');
+    const countBadge = document.getElementById('advanceOrderCount');
+    if (countBadge) countBadge.textContent = pendingOrders.length;
+}
+
+// Load advance orders from localStorage on page load
+function loadAdvanceOrders() {
+    advanceOrders = JSON.parse(localStorage.getItem('advanceOrders') || '[]');
+    updateAdvanceOrderCount();
+}
+
 // Apply roundup for farmer balance - this becomes the FINAL accepted amount
 function applyFarmerRoundup() {
   const roundValue = parseInt(el("farmerRoundupInput").value) || 0;
@@ -5642,22 +5808,6 @@ These are required for procurement-grade accountability.`;
   }
 })();
 
-// Balance risk marker logic - add to renderTrust
-const originalRenderTrust = window.renderTrust || function() {};
-window.renderTrust = function() {
-  originalRenderTrust();
-  
-  // Add balance risk marker
-  const farmer = getFarmerById(selectedFarmerId);
-  const balanceEl = el('balAfter');
-  if (farmer && balanceEl) {
-    const balance = farmer.balance || 0;
-    if (balance > 10000) {
-      balanceEl.innerHTML = `₹${balance.toFixed(2)} <span style="color: #f59e0b;" title="Large outstanding balance. Settlement traceability & deductions tracking available in collection center system.">⚠️</span>`;
-    }
-  }
-};
-
       /***********************
        * INIT                *
        ***********************/
@@ -5671,11 +5821,13 @@ window.renderTrust = function() {
     updateDailySummaryButton();
     loadSavedCollectionPoint(); // Load saved booth
     setupKeyboardNavigation(); // Enable keyboard-only workflow
+    loadAdvanceOrders(); // Load advance orders
+    updateAdvanceOrderCount(); // Update advance order count
     // --------------------------------------------------
         restoreHoldIfAny();
         renderAll();
         refreshRatePill();
-        
+
         // Focus search input on page load
         setTimeout(() => {
           if (el("searchInput")) {
@@ -5683,7 +5835,7 @@ window.renderTrust = function() {
             el("searchInput").select();
           }
         }, 300);
-        
+
         // timerInt = setInterval(() => {
         //   const sec = Math.floor((Date.now() - timerStart) / 1000);
         //   el("timerBox").textContent =
