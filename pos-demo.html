@@ -820,8 +820,8 @@
         <div style="padding:15px 20px; border-top:1px solid var(--line); flex-shrink:0;">
           <!-- Cash In/Out Buttons -->
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
-            <button onclick="promptCashIn()" style="padding:10px; background:#dcfce7; color:#166534; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">💰 Cash In</button>
-            <button onclick="promptCashOut()" style="padding:10px; background:#fef3c7; color:#92400e; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">💸 Cash Out</button>
+            <button onclick="quickCashIn()" style="padding:10px; background:#dcfce7; color:#166534; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">💰 Cash In</button>
+            <button onclick="quickCashOut()" style="padding:10px; background:#fef3c7; color:#92400e; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">💸 Cash Out</button>
           </div>
 
           <div style="display:flex; gap:10px; justify-content:space-between; align-items:center;">
@@ -1818,8 +1818,9 @@
               <div style="text-align: right;">
                 <div style="font-weight: bold; margin-bottom: 5px;">Payment Details:</div>
                 <div>${paymentMode} - ${formatINR(paymentAmount)}</div>
-                ${creditAmount > 0 ? `<div style="color: #c00; margin-top: 5px;"><strong>Credit (Udhar): ${formatINR(creditAmount)}</strong></div>` : ''}
-                ${creditAmount > 0 ? `<div style="color: #c00;"><strong>Balance Due: ${formatINR(creditAmount)}</strong></div>` : ''}
+                ${creditAmount > 0 ? `<div style="color: #c00; margin-top: 8px; padding: 8px; background: #fef2f2; border-radius: 4px;"><strong>📒 Credit (Udhar): ${formatINR(creditAmount)}</strong></div>` : ''}
+                ${creditAmount > 0 ? `<div style="color: #c00; font-weight: bold; font-size: 14px;">⚖️ Balance Due: ${formatINR(creditAmount)}</div>` : ''}
+                ${creditAmount === 0 ? `<div style="color: #16a34a; margin-top: 5px;"><strong>✅ Paid in Full</strong></div>` : ''}
               </div>
             </div>
             <table>
@@ -3828,42 +3829,60 @@ function renderAllHistory() {
     // Get payment mode icon
     let modeIcon = '💵';
     let modeText = sale.method;
+    let cardStyle = '';
+    
     if (sale.method === 'Credit' || sale.method === 'Udhar') {
       modeIcon = '📒';
       modeText = 'Credit';
+      cardStyle = 'border-left: 4px solid #dc2626;';
     } else if (sale.method === 'UPI') {
       modeIcon = '📱';
     } else if (sale.method === 'Cash In') {
       modeIcon = '💰';
+      modeText = 'Cash In';
+      cardStyle = 'border-left: 4px solid #16a34a; background: #f0fdf4;';
     } else if (sale.method === 'Cash Out') {
       modeIcon = '💸';
+      modeText = 'Cash Out';
+      cardStyle = 'border-left: 4px solid #f59e0b; background: #fffbeb;';
     }
 
     // Show items list
-    const itemsList = (sale.cartItems || []).map(item => 
-      `${getEmojiForProduct(item.name)} ${item.name} (${item.qty} × ₹${item.rate})`
-    ).join('<br>');
+    const itemsList = (sale.cartItems && sale.cartItems.length > 0) ? 
+      (sale.cartItems || []).map(item =>
+        `${getEmojiForProduct(item.name)} ${item.name} (${item.qty} × ₹${item.rate})`
+      ).join('<br>') : 
+      (sale.products || 'Cash Transaction');
+
+    const isCashFlow = sale.method === 'Cash In' || sale.method === 'Cash Out';
 
     return `
-    <div class="cardRow" style="cursor:pointer; padding:12px;" onclick="loadOrderFromHistory('${sale.customer.replace(/'/g, "\\'")}', ${JSON.stringify(sale.cartItems || []).replace(/"/g, '&quot;')})">
+    <div class="cardRow" style="cursor:pointer; padding:12px; ${cardStyle}" onclick="${isCashFlow ? '' : `loadOrderFromHistory('${sale.customer.replace(/'/g, "\\'")}', ${JSON.stringify(sale.cartItems || []).replace(/"/g, '&quot;')})`}">
       <div style="flex:1">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <b style="font-size:15px;">${sale.customer}</b>
           <b style="color:var(--blue); font-size:16px;">₹${sale.amount}</b>
         </div>
         <div style="margin:6px 0; font-size:13px; color:#64748b;">
-          ${itemsList || sale.products || 'Cash Transaction'}
+          ${itemsList}
         </div>
-        <div style="display:flex; gap:12px; font-size:12px; color:#94a3b8; font-weight:700;">
+        <div style="display:flex; gap:12px; font-size:12px; color:#94a3b8; font-weight:700; align-items:center;">
           <span>📅 ${sale.date} ${sale.time}</span>
           <span>${modeIcon} ${modeText}</span>
-          ${sale.creditAmount > 0 ? `<span style="color:#dc2626;">📒 Due: ${formatINR(sale.creditAmount)}</span>` : ''}
+          ${sale.creditAmount > 0 ? `<span style="color:#dc2626; font-weight:900;">📒 Due: ${formatINR(sale.creditAmount)}</span>` : ''}
+          ${sale.creditAmount === 0 && !isCashFlow ? `<span style="color:#16a34a; font-weight:700;">✅ Paid</span>` : ''}
         </div>
       </div>
     </div>
   `}).join('');
 
   // Update count
+  const todayCount = exportHistory.filter(s => s.date === new Date().toLocaleDateString()).length;
+  el("historyCount").textContent = `${todayCount} today • ${exportHistory.length} total`;
+}
+
+// Update history count (for Cash In/Out)
+function updateHistoryCount() {
   const todayCount = exportHistory.filter(s => s.date === new Date().toLocaleDateString()).length;
   el("historyCount").textContent = `${todayCount} today • ${exportHistory.length} total`;
 }
@@ -4054,70 +4073,74 @@ function downloadHistoryPDF() {
   }, 500);
 }
 
-// Record Cash In transaction
+// Record Cash In transaction - NO customer needed
 function recordCashIn(amount, note = "") {
   if (!amount || amount <= 0) return showToast("Enter valid amount!");
-  
+
   const newTransaction = {
-    id: Date.now(),
+    id: "cashin_" + Date.now(),
     date: new Date().toLocaleDateString(),
     time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
     customer: "💰 Cash In",
     products: note || "Cash received",
-    amount: amount,
+    amount: parseFloat(amount),
     method: "Cash In",
     creditAmount: 0,
-    cartItems: []
+    cartItems: [],
+    type: "cash_flow" // Mark as cash flow transaction
   };
-  
+
   exportHistory.push(newTransaction);
   localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
   localStorage.setItem('mr_sales_history_backup', JSON.stringify(exportHistory));
   localStorage.setItem('mr_sales_history_backup2', JSON.stringify(exportHistory));
-  
+
   renderAllHistory();
+  updateHistoryCount();
   showToast(`💰 Cash In: ${formatINR(amount)} recorded!`);
 }
 
-// Record Cash Out transaction
+// Record Cash Out transaction - NO customer needed
 function recordCashOut(amount, note = "") {
   if (!amount || amount <= 0) return showToast("Enter valid amount!");
-  
+
   const newTransaction = {
-    id: Date.now(),
+    id: "cashout_" + Date.now(),
     date: new Date().toLocaleDateString(),
     time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
     customer: "💸 Cash Out",
     products: note || "Cash paid",
-    amount: amount,
+    amount: parseFloat(amount),
     method: "Cash Out",
     creditAmount: 0,
-    cartItems: []
+    cartItems: [],
+    type: "cash_flow" // Mark as cash flow transaction
   };
-  
+
   exportHistory.push(newTransaction);
   localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
   localStorage.setItem('mr_sales_history_backup', JSON.stringify(exportHistory));
   localStorage.setItem('mr_sales_history_backup2', JSON.stringify(exportHistory));
-  
+
   renderAllHistory();
+  updateHistoryCount();
   showToast(`💸 Cash Out: ${formatINR(amount)} recorded!`);
 }
 
-// Prompt for Cash In
-function promptCashIn() {
-  const amount = parseFloat(prompt("💰 Enter Cash In Amount (₹):", "0"));
-  if (isNaN(amount) || amount <= 0) return showToast("Invalid amount!");
-  const note = prompt("📝 Note (optional):", "") || "";
-  recordCashIn(amount, note);
+// Quick Cash In - Direct entry without prompts
+function quickCashIn() {
+  const amount = prompt("💰 Enter Cash In Amount (₹):", "");
+  if (!amount || isNaN(amount) || parseFloat(amount) <= 0) return showToast("Invalid amount!");
+  const note = prompt("📝 Purpose (optional):", "Cash received") || "Cash received";
+  recordCashIn(parseFloat(amount), note);
 }
 
-// Prompt for Cash Out
-function promptCashOut() {
-  const amount = parseFloat(prompt("💸 Enter Cash Out Amount (₹):", "0"));
-  if (isNaN(amount) || amount <= 0) return showToast("Invalid amount!");
-  const note = prompt("📝 Note (optional):", "") || "";
-  recordCashOut(amount, note);
+// Quick Cash Out - Direct entry without prompts
+function quickCashOut() {
+  const amount = prompt("💸 Enter Cash Out Amount (₹):", "");
+  if (!amount || isNaN(amount) || parseFloat(amount) <= 0) return showToast("Invalid amount!");
+  const note = prompt("📝 Purpose (optional):", "Cash paid") || "Cash paid";
+  recordCashOut(parseFloat(amount), note);
 }
 
 // Clear today's history
