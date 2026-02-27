@@ -3774,11 +3774,12 @@ function refreshRatePill() {
 
         recentMeta.textContent = `${todays.length} records`;
 
-        if (todays.length === 0) {
+        if (todays.length === 0 && (!qty || qty === 0)) {
           recentTbody.innerHTML = `<tr><td colspan="9" style="color:var(--muted);font-weight:1100;">No records recorded today</td></tr>`;
           return;
         }
 
+        // Build rows from saved entries
         const rows = todays
           .slice(0, 25)
           .map((e) => {
@@ -3796,9 +3797,7 @@ function refreshRatePill() {
             const msg = `*Milk Receipt* 🥛\nDate: ${e.day} (${e.session})\nQty: ${e.qty}L | Fat: ${e.fat}\n*Amount: ${formatAmount(e.amount)}*\nGopal Dairy Shop`;
             const wpLink = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 
-            // --- Point 7: Audit Trail & Edit UI logic ---
-            // renderRecentToday function ke andar rows loop mein ye paste karein:
-return `
+            return `
   <tr onclick="showAuditProof('${e.id}')" style="cursor:pointer;">
     <td>${escapeHtml(e.day)}</td>
     <td style="font-weight:1100;">
@@ -3824,7 +3823,42 @@ return `
           })
           .join("");
 
-        recentTbody.innerHTML = rows;
+        // Add LIVE PREVIEW row for current entry being calculated
+        const farmer = getFarmerById(selectedFarmerId);
+        if (farmer && qty > 0) {
+          const r = getRatePerLiter();
+          const a = getAmount();
+          const session = autoSessionLabel();
+          const typeTag = animal === "buffalo" 
+            ? `<span class="tag buff">🐃 Buffalo</span>` 
+            : `<span class="tag cow">🐄 Cow</span>`;
+          
+          const previewRow = `
+  <tr style="background: #f0f9ff; border: 2px solid #3b82f6;">
+    <td>${today}</td>
+    <td style="font-weight:1100; color: #1d4ed8;">
+        ${escapeHtml(farmer.name || "")}
+        <br><small style="color: #3b82f6; font-weight: normal;">🔴 LIVE (not saved yet)</small>
+    </td>
+    <td><span class="rtag">${escapeHtml(session || "")}</span></td>
+    <td>${typeTag}</td>
+    <td style="font-weight:1100;">${round2(qty).toFixed(1)} L</td>
+    <td>${round2(fat).toFixed(1)}%</td>
+    <td>${round2(snf).toFixed(1)}</td>
+    <td style="color:var(--muted); font-size:11px;">
+        ${formatAmount(r)}
+    </td>
+    <td style="font-weight:1200; color:#1d4ed8; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+        ${formatAmount(a)}
+        <span style="font-size:16px;">⏳</span>
+    </td>
+    <td style="text-align: center; color: #3b82f6; font-weight: 700;">🔴 LIVE</td>
+  </tr>
+`;
+          recentTbody.innerHTML = previewRow + rows;
+        } else {
+          recentTbody.innerHTML = rows;
+        }
 
         // Update inline quantities
         updateInlineQuantities();
@@ -4094,7 +4128,7 @@ return `
     const hold = loadHold();
     holdBadge.textContent = hold ? "HOLD ✅" : "";
 
-    // recent today
+    // recent today - with LIVE PREVIEW
     renderRecentToday();
 
     syncInputs();
@@ -5386,7 +5420,7 @@ function showAuditProof(entryId) {
         renderFarmers();
       });
 
-      // Input listeners (can be set immediately as elements exist)
+      // Input listeners with real-time preview update
       if (el("qtyInput")) el("qtyInput").oninput = (e) => { qty = Number(e.target.value) || 0; renderTrust(); };
       if (el("fatInput")) el("fatInput").oninput = (e) => { fat = Number(e.target.value) || 0; renderTrust(); };
       if (el("snfInput")) el("snfInput").oninput = (e) => { snf = Number(e.target.value) || 0; renderTrust(); };
