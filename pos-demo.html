@@ -5576,7 +5576,7 @@ function openEditInventory() {
     return;
   }
 
-  // Group by product name (since each product can have multiple step cards)
+  // Group by product name (since each product can have multiple quantity cards)
   const productGroups = {};
   customProducts.forEach(p => {
     if (!productGroups[p.name]) {
@@ -5585,10 +5585,10 @@ function openEditInventory() {
         emoji: p.emoji || '📦',
         rate: p.price,
         unit: p.unit || 'unit',
-        steps: []
+        qtys: []
       };
     }
-    productGroups[p.name].steps.push(p.step);
+    productGroups[p.name].qtys.push(p.qty);
   });
 
   let products = Object.values(productGroups);
@@ -5618,7 +5618,7 @@ function openEditInventory() {
   }
 
   list.innerHTML = products.map((p, i) => `
-    <div style="padding:12px; background:#f8fafc; border-radius:10px; border:1px solid var(--line);" draggable="true" ondragstart="handleProductOrderDragStart(event)" ondragover="handleProductOrderDragOver(event)" ondrop="handleProductOrderDrop(event)" data-index="${i}">
+    <div style="padding:12px; background:#f8fafc; border-radius:10px; border:1px solid var(--line); cursor:grab;" draggable="true" ondragstart="handleProductOrderDragStart(event)" ondragover="handleProductOrderDragOver(event)" ondragleave="handleProductOrderDragLeave(event)" ondrop="handleProductOrderDrop(event)" ondragend="handleProductOrderDragEnd(event)" data-index="${i}">
       <div style="display:grid; grid-template-columns: 30px 36px 1fr 70px 55px; gap:8px; align-items:center; margin-bottom:10px;">
         <div style="font-size:18px; color:#94a3b8; cursor:grab;" title="Drag to reorder">⋮⋮</div>
         <div style="font-size:20px;">${p.emoji}</div>
@@ -5628,48 +5628,48 @@ function openEditInventory() {
       </div>
 
       <div style="font-size:10px; font-weight:700; color:var(--muted); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
-        <span>⚡</span> Quick Steps (edit or set 0 to disable):
+        <span>⚡</span> Quantities (edit or set 0 to disable):
       </div>
       <div style="display:grid; grid-template-columns: repeat(4, 1fr) 80px; gap:6px;">
         <div style="display:flex; flex-direction:column; gap:2px;">
           <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">1</label>
-          <input type="number" id="editStep_${i}_0" value="${p.steps[0] || ''}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
+          <input type="number" id="editQty_${i}_0" value="${p.qtys[0] || ''}" step="any" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
         <div style="display:flex; flex-direction:column; gap:2px;">
           <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">2</label>
-          <input type="number" id="editStep_${i}_1" value="${p.steps[1] || ''}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
+          <input type="number" id="editQty_${i}_1" value="${p.qtys[1] || ''}" step="any" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
         <div style="display:flex; flex-direction:column; gap:2px;">
           <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">3</label>
-          <input type="number" id="editStep_${i}_2" value="${p.steps[2] || ''}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
+          <input type="number" id="editQty_${i}_2" value="${p.qtys[2] || ''}" step="any" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
         <div style="display:flex; flex-direction:column; gap:2px;">
           <label style="font-size:8px; font-weight:700; color:var(--muted); text-align:center;">4</label>
-          <input type="number" id="editStep_${i}_3" value="${p.steps[3] || ''}" step="0.1" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
+          <input type="number" id="editQty_${i}_3" value="${p.qtys[3] || ''}" step="any" style="padding:6px; border:1px solid #e2e8f0; border-radius:4px; font-weight:700; text-align:center; font-size:11px; width:100%; box-sizing:border-box;" />
         </div>
         <div style="display:flex; flex-direction:column; gap:2px; justify-content:flex-end;">
           <button onclick="removeProduct('${p.name}')" style="padding:6px; background:#fecaca; color:#dc2626; border:1px solid #ef4444; border-radius:4px; font-weight:700; text-align:center; font-size:10px; cursor:pointer; width:100%; height:28px;" title="Remove this product">🗑️ Remove</button>
         </div>
       </div>
 
-      <button onclick="updateProductWithSteps(${i}, '${p.name}')" style="margin-top:10px; padding:8px 16px; background:#22c55e; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12px; width:100%;">💾 Update Product</button>
+      <button onclick="updateProductWithQty(${i}, '${p.name}')" style="margin-top:10px; padding:8px 16px; background:#22c55e; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12px; width:100%;">💾 Update Product</button>
     </div>
   `).join('');
 
   openModal('editInventoryModal');
 }
 
-function updateProductWithSteps(index, oldName) {
+function updateProductWithQty(index, oldName) {
   const newName = el(`editName_${index}`).value;
   const newRate = parseFloat(el(`editRate_${index}`).value);
   const newUnit = el(`editUnit_${index}`).value;
 
-  // Get 4 step values (5th is now Remove button)
-  const newSteps = [
-    parseFloat(el(`editStep_${index}_0`).value) || 0,
-    parseFloat(el(`editStep_${index}_1`).value) || 0,
-    parseFloat(el(`editStep_${index}_2`).value) || 0,
-    parseFloat(el(`editStep_${index}_3`).value) || 0
+  // Get 4 quantity values
+  const newQtys = [
+    parseFloat(el(`editQty_${index}_0`).value) || 0,
+    parseFloat(el(`editQty_${index}_1`).value) || 0,
+    parseFloat(el(`editQty_${index}_2`).value) || 0,
+    parseFloat(el(`editQty_${index}_3`).value) || 0
   ];
 
   if (!newName || !newRate || newRate <= 0) return showToast('Invalid name or rate!');
@@ -5686,14 +5686,14 @@ function updateProductWithSteps(index, oldName) {
   // Remove old product cards for this product
   const filteredProducts = customProducts.filter(p => p.name !== oldName);
 
-  // Add new product cards for each non-zero step
-  newSteps.forEach(step => {
-    if (step !== 0) {
+  // Add new product cards for each non-zero quantity
+  newQtys.forEach(qty => {
+    if (qty !== 0) {
       filteredProducts.push({
         name: newName,
         price: newRate,
         unit: newUnit,
-        step: step
+        qty: qty
       });
     }
   });
@@ -5708,8 +5708,8 @@ function updateProductWithSteps(index, oldName) {
     console.error('❌ Failed to save:', e);
   }
 
-  const activeSteps = newSteps.filter(s => s !== 0);
-  showToast(`${newName} updated! ₹${newRate}/${newUnit} (${activeSteps.length} steps: ${activeSteps.join(', ')}) ✅`);
+  const activeQtys = newQtys.filter(q => q !== 0);
+  showToast(`${newName} updated! ₹${newRate}/${newUnit} (${activeQtys.length} quantities: ${activeQtys.join(', ')}) ✅`);
   closeModal('editInventoryModal');
 
   // Reload page to apply changes
@@ -5754,32 +5754,47 @@ function handleProductOrderDragStart(e) {
   draggedProductIndex = parseInt(this.getAttribute('data-index'));
   this.style.opacity = '0.4';
   this.style.background = '#e0f2fe';
+  this.style.cursor = 'grabbing';
   e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', draggedProductIndex);
+  console.log('🔵 Drag started:', draggedProductIndex);
 }
 
 function handleProductOrderDragOver(e) {
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
-  this.style.borderTop = '2px solid #3b82f6';
+  this.style.borderTop = '3px solid #3b82f6';
+  this.style.background = '#f0f9ff';
+  console.log('🔵 Drag over:', parseInt(this.getAttribute('data-index')));
   return false;
+}
+
+function handleProductOrderDragLeave(e) {
+  this.style.borderTop = '';
+  this.style.background = '#f8fafc';
 }
 
 function handleProductOrderDrop(e) {
   e.preventDefault();
   e.stopPropagation();
-  
+
   const dropIndex = parseInt(this.getAttribute('data-index'));
-  
+
   // Remove border highlights
   document.querySelectorAll('#editInventoryList > div').forEach(div => {
     div.style.borderTop = '';
+    div.style.background = '#f8fafc';
+    div.style.cursor = 'grab';
   });
-  
+
   if (draggedProductIndex === null || draggedProductIndex === dropIndex) {
     this.style.opacity = '1';
     this.style.background = '#f8fafc';
+    draggedProductIndex = null;
     return false;
   }
+
+  console.log('🔵 Drop:', draggedProductIndex, '→', dropIndex);
 
   // Get current product order from localStorage - USE loadData()
   let productOrder = loadData('mr_pos_product_order', []);
@@ -5790,9 +5805,10 @@ function handleProductOrderDrop(e) {
   // Ensure customProducts is always an array
   if (!Array.isArray(customProducts)) {
     console.error('❌ customProducts is not an array, using empty array');
-    return;
+    draggedProductIndex = null;
+    return false;
   }
-  
+
   // If productOrder is empty, initialize it with current order
   if (productOrder.length === 0) {
     // Group products by name
@@ -5804,14 +5820,14 @@ function handleProductOrderDrop(e) {
           emoji: p.emoji || '📦',
           rate: p.price,
           unit: p.unit || 'unit',
-          steps: []
+          qtys: []
         };
       }
-      productGroups[p.name].steps.push(p.step);
+      productGroups[p.name].qtys.push(p.qty);
     });
     productOrder = Object.keys(productGroups);
   }
-  
+
   // Reorder
   const draggedName = productOrder[draggedProductIndex];
   productOrder.splice(draggedProductIndex, 1);
@@ -5821,13 +5837,26 @@ function handleProductOrderDrop(e) {
   saveData('mr_pos_product_order', productOrder, 'order_update');
 
   showToast('Product order updated ✅');
-  
+  draggedProductIndex = null;
+
   // Reload modal to show new order
   setTimeout(() => {
     openEditInventory();
   }, 300);
-  
+
   return false;
+}
+
+function handleProductOrderDragEnd(e) {
+  this.style.opacity = '1';
+  this.style.background = '#f8fafc';
+  this.style.cursor = 'grab';
+  draggedProductIndex = null;
+  // Remove any remaining border highlights
+  document.querySelectorAll('#editInventoryList > div').forEach(div => {
+    div.style.borderTop = '';
+    div.style.background = '#f8fafc';
+  });
 }
 
 function updateBooth() {
