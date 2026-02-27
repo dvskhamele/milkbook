@@ -548,10 +548,11 @@
                   <button class="pay-btn" style="background:#f1f5f9; color:#475569; padding: 9px;" onclick="showHeldCarts()">📋 <span id="heldCount">0</span></button>
                 </div>
 
-                <!-- Row 4: Credit Button + Advance Toggle (Same Row) -->
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 6px;">
+                <!-- Row 4: Credit Button + Advance Toggle + Advance Order (Same Row) -->
+                <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 6px;">
                   <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="width: 100%; padding: 11px; font-size: 13px; font-weight: 700;">LIKH LO (Credit)</button>
                   <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 11px 14px; background:#fef3c7; border:2px solid #f59e0b; border-radius:8px; font-weight:700; color:#92400e; cursor:pointer; font-size: 12px; white-space: nowrap;">📒 Advance / Udhar</button>
+                  <button onclick="toggleAdvanceOrder()" id="advanceOrderBtn" style="padding: 11px 14px; background:#f5f3ff; border:2px solid #7c3aed; border-radius:8px; font-weight:700; color:#7c3aed; cursor:pointer; font-size: 12px; white-space: nowrap;">📅 Advance Order</button>
                 </div>
               </div>
               
@@ -607,6 +608,92 @@
                 <div style="text-align:center; padding:12px; background:#f8fafc; border-radius:10px; font-size:11px; color:#64748b; font-weight:600;">
                   ⚠️ This updates customer's credit/debit ledger for future settlement
                 </div>
+              </div>
+              
+              <!-- Advance Order Section (Separate from Advance Form) -->
+              <div id="advanceOrderSection" style="display: none; flex-direction: column; gap: 12px; max-height: calc(94vh - 150px); overflow-y: auto; background: #f5f3ff; padding: 16px; border-radius: 12px; border: 2px solid #7c3aed;">
+                <!-- Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 2px solid #7c3aed;">
+                  <h3 style="margin:0; color:#7c3aed; font-size: 18px; font-weight: 900;">📅 Schedule Advance Order</h3>
+                  <button onclick="toggleAdvanceOrder()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#7c3aed; padding:0; width:32px; height:32px;">✖</button>
+                </div>
+
+                <!-- Order Summary -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <div style="background:#fff; padding:12px; border-radius:10px; border:2px solid #c084fc; text-align:center;">
+                    <div style="font-size:10px; color:#6b21a8; font-weight:700; margin-bottom:4px; text-transform:uppercase;">Net Payable</div>
+                    <div style="font-size:24px; font-weight:900; color:#7c3aed;" id="advanceOrderNetPayable">₹0.00</div>
+                  </div>
+                  <div style="background:#fff; padding:12px; border-radius:10px; border:2px solid #22c55e; text-align:center;">
+                    <div style="font-size:10px; color:#166534; font-weight:700; margin-bottom:4px; text-transform:uppercase;">Advance Paid</div>
+                    <input type="number" id="advanceOrderPaid" placeholder="₹0.00" style="width:100%; padding:8px; border:2px solid #22c55e; border-radius:8px; font-weight:900; font-size:20px; text-align:center; background:#f0fdf4;" oninput="calculateAdvanceOrderBalance()" />
+                  </div>
+                </div>
+
+                <!-- Balance Display -->
+                <div style="background:#fef3c7; padding:10px; border-radius:8px; border:2px solid #f59e0b; text-align:center;">
+                  <div style="font-size:10px; color:#92400e; font-weight:700; margin-bottom:4px;">Balance to Collect</div>
+                  <div id="advanceOrderBalance" style="font-size:18px; font-weight:900; color:#92400e;">₹0.00</div>
+                </div>
+
+                <!-- Customer Selection (MANDATORY) -->
+                <div style="background:#fff; padding:12px; border-radius:10px; border:2px solid #3b82f6;">
+                  <label style="font-size:11px; color:#1e40af; font-weight:700; display:block; margin-bottom:6px;">👤 Select Customer <span style="color:#dc2626;">*</span></label>
+                  <div style="display:grid; grid-template-columns:1fr auto; gap:8px;">
+                    <select id="advanceOrderCustomer" onchange="onAdvanceOrderCustomerChange()" style="padding:10px; border:2px solid #3b82f6; border-radius:8px; font-weight:700; font-size:13px; background:white;">
+                      <option value="">-- Select Customer --</option>
+                    </select>
+                    <button onclick="openAddCustomerFromAdvanceOrder()" style="padding:10px 16px; background:#3b82f6; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">➕ New</button>
+                  </div>
+                  <div style="font-size:10px; color:#dc2626; font-weight:700; margin-top:4px;">⚠️ Customer with phone number is required</div>
+                </div>
+
+                <!-- Credit/Debit Toggle for Advance Order -->
+                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:2px solid #e2e8f0;">
+                  <div style="font-size:11px; color:#64748b; font-weight:700; margin-bottom:8px; text-transform:uppercase; text-align:center;">Advance Order Type</div>
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                    <label style="cursor:pointer;">
+                      <input type="radio" name="advanceOrderType" value="credit" checked style="display:none;" onchange="updateAdvanceOrderType()">
+                      <div id="advanceOrderCreditToggle" style="padding:10px; background:#f0fdf4; border:2px solid #22c55e; border-radius:8px; text-align:center; font-weight:700; color:#166534; font-size:12px;">📒 Credit (Udhar)</div>
+                    </label>
+                    <label style="cursor:pointer;">
+                      <input type="radio" name="advanceOrderType" value="debit" style="display:none;" onchange="updateAdvanceOrderType()">
+                      <div id="advanceOrderDebitToggle" style="padding:10px; background:#fef2f2; border:2px solid #ef4444; border-radius:8px; text-align:center; font-weight:700; color:#7f1d1d; font-size:12px;">💵 Debit (Payment)</div>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Delivery Details -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <div>
+                    <label style="font-size:11px; color:#6b21a8; font-weight:700; display:block; margin-bottom:6px;">📍 Delivery Location</label>
+                    <input type="text" id="advanceOrderLocation" placeholder="Where to deliver?" style="width:100%; padding:10px; border:2px solid #c084fc; border-radius:8px; font-weight:700; font-size:13px;" />
+                  </div>
+                  <div>
+                    <label style="font-size:11px; color:#6b21a8; font-weight:700; display:block; margin-bottom:6px;">📅 Delivery Date</label>
+                    <input type="date" id="advanceOrderDate" style="width:100%; padding:10px; border:2px solid #c084fc; border-radius:8px; font-weight:700; font-size:13px;" />
+                  </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <div>
+                    <label style="font-size:11px; color:#6b21a8; font-weight:700; display:block; margin-bottom:6px;">⏰ Delivery Time</label>
+                    <input type="time" id="advanceOrderTime" style="width:100%; padding:10px; border:2px solid #c084fc; border-radius:8px; font-weight:700; font-size:13px;" />
+                  </div>
+                  <div>
+                    <label style="font-size:11px; color:#6b21a8; font-weight:700; display:block; margin-bottom:6px;">📝 Notes (Optional)</label>
+                    <input type="text" id="advanceOrderNotes" placeholder="Any special instructions" style="width:100%; padding:10px; border:2px solid #c084fc; border-radius:8px; font-weight:700; font-size:13px;" />
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                  <button onclick="saveAdvanceOrder()" style="padding:12px; background:#7c3aed; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">✅ Create Advance Order</button>
+                  <button onclick="clearAdvanceOrderForm()" style="padding:12px; background:#e9d5ff; color:#7c3aed; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">🔄 Clear</button>
+                </div>
+
+                <!-- View Orders Button -->
+                <button onclick="viewAdvanceOrders()" style="width:100%; padding:12px; background:#f5f3ff; border:2px solid #7c3aed; border-radius:8px; color:#7c3aed; font-weight:700; cursor:pointer; font-size:13px;">📅 View My Advance Orders (<span id="advanceOrderCount">0</span>)</button>
               </div>
             </div>
           </div>
@@ -1960,6 +2047,11 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       // Load customers on page load
       loadCustomers();
 
+      // Populate advance order customer dropdown after customers are loaded
+      setTimeout(() => {
+        populateAdvanceOrderCustomers(true); // Auto-select first customer
+      }, 500);
+
       // Frequent buys tracking - stores customer's recent orders
       let frequentBuys = {};
       
@@ -2146,6 +2238,9 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         customers.push(newCustomer);
         localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
 
+        // Refresh advance order customer dropdown
+        populateAdvanceOrderCustomers();
+
         selectCust(name);
         el("custSearch").value = name;
         el("searchDropdown").style.display = 'none';
@@ -2310,6 +2405,264 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       // Close advance section
       function closeAdvance() {
         toggleAdvance();
+      }
+
+      // ========== ADVANCE ORDER FUNCTIONS (POS) ==========
+      let posAdvanceOrders = JSON.parse(localStorage.getItem('posAdvanceOrders') || '[]');
+
+      // Update advance order type toggle UI
+      function updateAdvanceOrderType() {
+        const isCredit = document.querySelector('input[name="advanceOrderType"][value="credit"]').checked;
+        const creditToggle = document.getElementById('advanceOrderCreditToggle');
+        const debitToggle = document.getElementById('advanceOrderDebitToggle');
+
+        if (isCredit) {
+          creditToggle.style.background = '#f0fdf4';
+          creditToggle.style.borderColor = '#22c55e';
+          creditToggle.style.color = '#166534';
+          debitToggle.style.background = '#fff';
+          debitToggle.style.borderColor = '#e2e8f0';
+          debitToggle.style.color = '#64748b';
+        } else {
+          debitToggle.style.background = '#fef2f2';
+          debitToggle.style.borderColor = '#ef4444';
+          debitToggle.style.color = '#7f1d1d';
+          creditToggle.style.background = '#fff';
+          creditToggle.style.borderColor = '#e2e8f0';
+          creditToggle.style.color = '#64748b';
+        }
+      }
+
+      // Populate customer dropdown in advance order form
+      function populateAdvanceOrderCustomers(autoSelectFirst = false) {
+        const select = document.getElementById('advanceOrderCustomer');
+        if (!select) return;
+        
+        console.log('🔵 Populating advance order customers, count:', customers.length);
+        
+        // Clear existing options
+        select.innerHTML = '<option value="">-- Select Customer --</option>';
+        
+        // Add all customers
+        customers.forEach(c => {
+          const option = document.createElement('option');
+          option.value = c.name;
+          option.textContent = c.name + (c.phone ? ` (${c.phone})` : '');
+          select.appendChild(option);
+        });
+        
+        // Auto-select first customer if requested and customers exist
+        if (autoSelectFirst && customers.length > 0) {
+          select.value = customers[0].name;
+          // Trigger location auto-fill
+          onAdvanceOrderCustomerChange();
+          console.log('✅ Auto-selected first customer:', customers[0].name);
+        }
+      }
+
+      // Handle customer selection change
+      function onAdvanceOrderCustomerChange() {
+        const select = document.getElementById('advanceOrderCustomer');
+        const locationInput = document.getElementById('advanceOrderLocation');
+        if (!select || !locationInput) return;
+        
+        const selectedName = select.value;
+        const customer = customers.find(c => c.name === selectedName);
+        
+        if (customer && customer.address) {
+          locationInput.value = customer.address;
+        }
+      }
+
+      // Open add customer modal from advance order
+      function openAddCustomerFromAdvanceOrder() {
+        openModal('addCustModal');
+      }
+
+      // Toggle advance order section visibility
+      function toggleAdvanceOrder() {
+        const advanceOrderSection = document.getElementById('advanceOrderSection');
+        const paymentForm = el("paymentForm");
+        const advanceForm = el("advanceForm");
+
+        if (advanceOrderSection.style.display === 'none' || !advanceOrderSection.style.display) {
+          // Hide payment and advance forms, show advance order
+          if (paymentForm) paymentForm.style.setProperty('display', 'none', 'important');
+          if (advanceForm) advanceForm.style.setProperty('display', 'none', 'important');
+          advanceOrderSection.style.setProperty('display', 'flex', 'important');
+
+          // Populate customer dropdown and auto-select first
+          populateAdvanceOrderCustomers(true);
+
+          // Sync net payable from total
+          const netPayableEl = document.getElementById('advanceOrderNetPayable');
+          const advancePaidEl = document.getElementById('advanceOrderPaid');
+          if (netPayableEl) netPayableEl.textContent = formatINR(total);
+          if (advancePaidEl) {
+            advancePaidEl.value = total.toFixed(2); // Auto-fill with total
+            calculateAdvanceOrderBalance(); // Calculate balance
+          }
+
+          // Set default date to tomorrow
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          document.getElementById('advanceOrderDate').value = tomorrow.toISOString().split('T')[0];
+          // Set default time to 10:00 AM
+          document.getElementById('advanceOrderTime').value = '10:00';
+
+          // Update count
+          updateAdvanceOrderCount();
+        } else {
+          // Hide advance order, show payment form
+          advanceOrderSection.style.setProperty('display', 'none', 'important');
+          paymentForm.style.setProperty('display', 'flex', 'important');
+        }
+      }
+
+      // Calculate advance order balance
+      function calculateAdvanceOrderBalance() {
+        const netPayableEl = document.getElementById('advanceOrderNetPayable');
+        const advancePaidEl = document.getElementById('advanceOrderPaid');
+        const balanceEl = document.getElementById('advanceOrderBalance');
+
+        if (!netPayableEl || !advancePaidEl || !balanceEl) return;
+
+        const netPayable = total;
+        const advancePaid = parseFloat(advancePaidEl.value) || 0;
+        const balance = netPayable - advancePaid;
+
+        balanceEl.textContent = formatINR(balance);
+        
+        // Change color based on balance
+        if (balance > 0) {
+          balanceEl.style.color = '#92400e'; // Orange - to collect
+        } else if (balance < 0) {
+          balanceEl.style.color = '#166534'; // Green - extra paid
+        } else {
+          balanceEl.style.color = '#166534'; // Green - exact
+        }
+      }
+
+      // Clear advance order form
+      function clearAdvanceOrderForm() {
+        document.getElementById('advanceOrderLocation').value = '';
+        document.getElementById('advanceOrderNotes').value = '';
+        const customerSelect = document.getElementById('advanceOrderCustomer');
+        if (customerSelect) customerSelect.value = '';
+        const advancePaidEl = document.getElementById('advanceOrderPaid');
+        if (advancePaidEl) {
+          advancePaidEl.value = total.toFixed(2);
+          calculateAdvanceOrderBalance();
+        }
+        showToast('Form cleared 🔄');
+      }
+
+      // Save advance order
+      function saveAdvanceOrder() {
+        const customerSelect = document.getElementById('advanceOrderCustomer');
+        const location = document.getElementById('advanceOrderLocation').value.trim();
+        const date = document.getElementById('advanceOrderDate').value;
+        const time = document.getElementById('advanceOrderTime').value;
+        const notes = document.getElementById('advanceOrderNotes').value.trim();
+        const advancePaidEl = document.getElementById('advanceOrderPaid');
+        const orderType = document.querySelector('input[name="advanceOrderType"]:checked');
+
+        // Validate customer selection
+        if (!customerSelect || !customerSelect.value) {
+          showToast('❌ Please select a customer');
+          return;
+        }
+
+        // Validate customer has phone number
+        const customerName = customerSelect.value;
+        const customer = customers.find(c => c.name === customerName);
+        if (!customer || !customer.phone || customer.phone.trim() === '') {
+          showToast('❌ Customer must have a phone number');
+          openAddCustomerFromAdvanceOrder();
+          return;
+        }
+
+        if (!location || !date || !time) {
+          showToast('❌ Please fill Location, Date and Time');
+          return;
+        }
+
+        const advancePaid = advancePaidEl ? (parseFloat(advancePaidEl.value) || 0) : 0;
+        const orderTypeName = orderType ? orderType.value : 'credit';
+
+        // Create advance order object
+        const advanceOrder = {
+          id: 'ao_' + Date.now(),
+          customerName: customerName,
+          customerPhone: customer.phone,
+          location: location,
+          date: date,
+          time: time,
+          notes: notes,
+          orderType: orderTypeName, // credit or debit
+          cartItems: JSON.parse(JSON.stringify(cart)), // Copy current cart
+          netPayable: total,
+          advancePaid: advancePaid,
+          balanceToCollect: total - advancePaid,
+          createdAt: new Date().toISOString(),
+          status: 'pending' // pending, completed, cancelled
+        };
+
+        // Save to localStorage
+        posAdvanceOrders.push(advanceOrder);
+        localStorage.setItem('posAdvanceOrders', JSON.stringify(posAdvanceOrders));
+
+        // Clear form and hide section
+        clearAdvanceOrderForm();
+        toggleAdvanceOrder();
+
+        showToast(`✅ Advance Order Created for ${date} ${time}!`);
+        console.log('✅ Advance Order saved:', advanceOrder);
+
+        // Update count
+        updateAdvanceOrderCount();
+      }
+
+      // View advance orders
+      function viewAdvanceOrders() {
+        const pendingOrders = posAdvanceOrders.filter(o => o.status === 'pending');
+
+        // Update count badge
+        updateAdvanceOrderCount();
+
+        if (pendingOrders.length === 0) {
+          showToast('📋 No pending advance orders');
+          return;
+        }
+
+        // Show alert with summary
+        const summary = pendingOrders.map((o, i) => {
+          let text = `${i+1}. ${o.customerName} (${o.customerPhone})\n`;
+          text += `   📍 ${o.location}\n`;
+          text += `   📅 ${o.date} ⏰ ${o.time}\n`;
+          text += `   💰 Net: ${formatINR(o.netPayable)} | Paid: ${formatINR(o.advancePaid)}\n`;
+          text += `   📒 Balance: ${formatINR(o.balanceToCollect)}\n`;
+          text += `   ${o.orderType === 'credit' ? '📒' : '💵'} Type: ${o.orderType === 'credit' ? 'Credit (Udhar)' : 'Debit (Payment)'}\n`;
+          if (o.notes) {
+            text += `   📝 Notes: ${o.notes}\n`;
+          }
+          return text;
+        }).join('\n\n');
+
+        alert(`📅 PENDING ADVANCE ORDERS (${pendingOrders.length})\n\n${summary}`);
+      }
+
+      // Update advance order count
+      function updateAdvanceOrderCount() {
+        const pendingOrders = posAdvanceOrders.filter(o => o.status === 'pending');
+        const countBadge = document.getElementById('advanceOrderCount');
+        if (countBadge) countBadge.textContent = pendingOrders.length;
+      }
+
+      // Load advance orders from localStorage on page load
+      function loadPosAdvanceOrders() {
+        posAdvanceOrders = JSON.parse(localStorage.getItem('posAdvanceOrders') || '[]');
+        updateAdvanceOrderCount();
       }
       
       // Update ledger placeholder based on toggle
@@ -4769,6 +5122,9 @@ window.addEventListener('DOMContentLoaded', function() {
   // Check on load and resize
   checkMobileFooter();
   window.addEventListener('resize', checkMobileFooter);
+
+  // Load advance orders
+  loadPosAdvanceOrders();
 });
 
 // Keyboard Navigation - Full End-to-End Invoice Creation
