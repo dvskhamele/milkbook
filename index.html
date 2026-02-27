@@ -1570,6 +1570,14 @@
           <div style="font-size: 13px; font-weight: 700; color: #92400e;">💡 Tip:</div>
           <div style="font-size: 12px; color: #78350f; margin-top: 4px;">Give advance when farmer needs money. Cut advance when settling milk payments.</div>
         </div>
+        
+        <!-- Advance History Ledger -->
+        <div style="margin-top: 24px;">
+          <h3 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            📒 Advance Ledger (किसान द्वारा लिया गया advance और कटौती)
+          </h3>
+          <div id="advanceHistoryList"></div>
+        </div>
       </div>
     </div>
     
@@ -5656,6 +5664,9 @@ function openFarmerDetail(fId) {
     // Load transactions
     loadFarmerTransactions(fId);
     
+    // Load advance history ledger
+    loadAdvanceHistory(fId);
+    
     // Show modal
     openOverlay("overlayFarmerDetail");
     showDetailTab('transactions'); // Default to transactions tab
@@ -5770,36 +5781,135 @@ function saveFarmerDetails() {
     openFarmerDetail(selectedFarmerId);
 }
 
-// Update farmer advance
+// Update farmer advance - WITH COMPLETE LEDGER TRACKING
 function updateFarmerAdvance(action) {
     const amt = Number(el("advAmount").value);
     if (!amt || amt <= 0) {
         showToast("❌ Enter valid amount");
         return;
     }
-    
+
     const f = getFarmerById(selectedFarmerId);
     if (!f) return;
-    
+
+    // Initialize advance history if not exists
+    if (!f.advanceHistory) {
+        f.advanceHistory = [];
+    }
+
     if (action === 'give') {
+        // GIVE ADVANCE - Add to history
         f.advance = (f.advance || 0) + amt;
         f.balance = (f.balance || 0) - amt;
+        
+        // Record in advance ledger
+        f.advanceHistory.push({
+            id: 'adv_' + Date.now(),
+            type: 'give',
+            amount: amt,
+            date: new Date().toISOString(),
+            note: 'Advance given',
+            balance: f.advance
+        });
+        
         showToast(`${formatAmount(amt)} advance given ✅`);
     } else {
         if ((f.advance || 0) < amt) {
             showToast("❌ Insufficient advance");
             return;
         }
+        
+        // CUT ADVANCE - Add to history
         f.advance = (f.advance || 0) - amt;
         f.balance = (f.balance || 0) + amt;
+        
+        // Record in advance ledger
+        f.advanceHistory.push({
+            id: 'adv_' + Date.now(),
+            type: 'cut',
+            amount: amt,
+            date: new Date().toISOString(),
+            note: 'Advance cut from balance',
+            balance: f.advance
+        });
+        
         showToast(`${formatAmount(amt)} advance cut ✅`);
     }
-    
+
     saveFarmers(farmers);
     el("advAmount").value = '';
-    
-    // Refresh modal
+
+    // Refresh modal with advance history
     openFarmerDetail(selectedFarmerId);
+    loadAdvanceHistory(selectedFarmerId);
+}
+
+// Load and display advance history ledger
+function loadAdvanceHistory(fId) {
+    const f = getFarmerById(fId);
+    if (!f) return;
+    
+    const historyList = document.getElementById('advanceHistoryList');
+    if (!historyList) return;
+    
+    const history = f.advanceHistory || [];
+    
+    if (history.length === 0) {
+        historyList.innerHTML = `
+          <div style="padding: 40px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 10px;">📒</div>
+            <div style="font-size: 16px; font-weight: 700; color: #64748b; margin-bottom: 5px;">No advance records yet</div>
+            <div style="font-size: 13px; color: #94a3b8;">Use Give/Cut buttons to manage advance</div>
+          </div>`;
+        return;
+    }
+    
+    // Sort by date (newest first)
+    const sorted = [...history].sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    let html = `
+      <div style="background: #f0f9ff; padding: 12px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #0284c7;">
+        <div style="display: flex; justify-content: space-between; font-size: 13px;">
+          <span style="font-weight: 700; color: #0369a1;">📒 Advance Ledger:</span>
+          <span style="color: #0369a1;">${history.length} transactions</span>
+        </div>
+      </div>
+    `;
+    
+    sorted.forEach((h, i) => {
+        const date = new Date(h.date);
+        const isGive = h.type === 'give';
+        
+        html += `
+          <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e2e8f0; ${i === 0 ? 'background: #fef3c7;' : ''}">
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="font-size: 18px;">${isGive ? '➕' : '➖'}</span>
+                <div>
+                  <div style="font-weight: 700; font-size: 13px; color: ${isGive ? '#16a34a' : '#dc2626'};">
+                    ${isGive ? '💵 Advance GIVEN' : '✂️ Advance CUT'}
+                  </div>
+                  <div style="font-size: 11px; color: #64748b;">${h.note}</div>
+                </div>
+              </div>
+              <div style="font-size: 11px; color: #64748b;">
+                📅 ${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: 700; font-size: 16px; color: ${isGive ? '#16a34a' : '#dc2626'};">
+                ${isGive ? '+' : '-'}${formatAmount(h.amount)}
+              </div>
+              <div style="color: #64748b; font-size: 11px; margin-top: 4px;">
+                Balance: ${formatAmount(h.balance)}
+              </div>
+              ${i === 0 ? '<div style="color: #f59e0b; font-size: 10px; font-weight: 700; margin-top: 4px;">⬅️ LATEST</div>' : ''}
+            </div>
+          </div>
+        `;
+    });
+    
+    historyList.innerHTML = html;
 }
 
 // Send WhatsApp summary
