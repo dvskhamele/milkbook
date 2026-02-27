@@ -4158,8 +4158,11 @@ function playSuccessSound() {
     if (el("finalAmountInput")) el("finalAmountInput").value = "";
 
     // Toggle ko wapas 'Cash' (आज नकद) par le aao
-    document.querySelector('input[name="payMode"][value="Cash"]').checked = true;
-    if (typeof updatePayUI === "function") updatePayUI();
+    const cashRadio = document.querySelector('input[name="payMode"][value="Cash"]');
+    if (cashRadio) {
+      cashRadio.checked = true;
+      if (typeof updatePayUI === "function") updatePayUI();
+    }
 
     currentEntryImage = null; 
     const imgInput = document.getElementById("fImageEntry");
@@ -4188,6 +4191,79 @@ function playSuccessSound() {
     showToast(`Entry Saved: ${formatAmount(a)} (${selectedPayMode === 'Cash' ? 'नकद' : 'उधार'}) ✅`);
 
     isSaving = false; // Unlock save
+}
+
+// Save entry as CREDIT (उधार) - for Likh Lo button
+function saveEntryAsCredit() {
+    const farmer = getFarmerById(selectedFarmerId);
+    if (!farmer) {
+        showToast("Select farmer");
+        return;
+    }
+
+    const before = farmerBalanceBefore(farmer);
+    const ratePerL = getRatePerLiter();
+    const amount = getAmount();
+
+    const entry = {
+        id: uid("e"),
+        farmerId: farmer.id,
+        farmerName: farmer.name || "",
+        qty: round2(qty),
+        fat: round2(fat),
+        snf: round2(snf),
+        paymentMode: 'Credit', // Always credit for Likh Lo
+
+        // 🎯 SNAPSHOT LOGIC: Rate ko value ki tarah chipka do
+        rateSnapshot: round2(ratePerL),
+        amount: round2(amount),
+
+        // Audit Metadata
+        rateMode: rateMode,
+        animal: animal,
+        session: autoSessionLabel(),
+        createdAt: Date.now(),
+        day: fmtDate(new Date()),
+        deviceId: navigator.userAgent.slice(0, 40)
+    };
+
+    // Update farmer balance
+    farmer.balance = round2(before + amount);
+    saveFarmers(farmers);
+
+    entries.push(entry);
+    saveEntries(entries);
+
+    playSuccessSound();
+    saveUndoToken({
+        entryId: entry.id,
+        farmerId: farmer.id,
+        prevBalance: before,
+    });
+
+    // Reset for next entry
+    saveFarmerMemory(farmer.id);
+    qty = 0;
+    fat = 0;
+    snf = 0;
+    manualRate = 0;
+    if (el("manualRateInput")) el("manualRateInput").value = "";
+
+    autoNextFarmer();
+    renderAll();
+
+    document.body.classList.add("flash-success");
+    setTimeout(() => {
+        document.body.classList.remove("flash-success");
+    }, 600);
+
+    updateDailySummaryButton();
+    updateTodayCollection();
+
+    // Print bill/receipt after save
+    printCollectionBill(entry);
+
+    showToast(`Entry Saved: ${formatAmount(amount)} (उधार/Credit) 📒`);
 }
 
 // Print collection bill/receipt
@@ -4737,22 +4813,19 @@ function showAuditProof(entryId) {
         const btnLikhlo = el("btnLikhlo");
         if (btnLikhlo) {
           btnLikhlo.onclick = () => {
-            // Open farmer detail modal for advance/credit management
-            if (selectedFarmerId) {
-              openFarmerDetail(selectedFarmerId);
-              // Also offer to print last bill
-              const lastEntry = entries.filter(e => e.farmerId === selectedFarmerId).pop();
-              if (lastEntry) {
-                setTimeout(() => {
-                  const printBill = confirm(`Print last bill for ${getFarmerById(selectedFarmerId).name}?`);
-                  if (printBill) {
-                    printCollectionBill(lastEntry);
-                  }
-                }, 500);
-              }
-            } else {
-              showToast("Select a farmer first!");
+            // Save as CREDIT (उधार) and generate invoice
+            if (!canSave()) {
+              showToast("Need: Farmer + Qty + Fat");
+              return;
             }
+            const farmer = getFarmerById(selectedFarmerId);
+            if (!farmer) {
+              showToast("Select farmer");
+              return;
+            }
+            
+            // Call saveEntry with credit mode
+            saveEntryAsCredit();
           };
           console.log('✅ Likh Lo button initialized');
         } else {
