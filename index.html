@@ -1557,6 +1557,10 @@
             </div>
             <small id="holdBadge"></small>
             <div class="miniTag" id="farmerCount" style="margin-left: 8px;">0 👤</div>
+            <!-- Kitna Collection - Today's Summary -->
+            <div style="margin-left: 8px; background: #dcfce7; border: 2px solid #16a34a; border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 700; color: #166534; white-space: nowrap;">
+              📊 Today: <span id="todayMilk">0</span>L | <span id="todayAmount">₹0</span> | <span id="todayEntries">0</span>
+            </div>
           </div>
 
           <div class="actionBody">
@@ -3507,9 +3511,25 @@ return `
           .join("");
 
         recentTbody.innerHTML = rows;
-        
+
         // Update inline quantities
         updateInlineQuantities();
+        
+        // Update today's collection summary (Kitna Collection)
+        updateTodayCollection();
+      }
+
+      // Update today's collection summary
+      function updateTodayCollection() {
+        const today = fmtDate(new Date());
+        const todays = entries.filter(e => e.day === today);
+        
+        const totalMilk = todays.reduce((sum, e) => sum + Number(e.qty || 0), 0);
+        const totalAmount = todays.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+        
+        if (el("todayMilk")) el("todayMilk").textContent = totalMilk.toFixed(1);
+        if (el("todayAmount")) el("todayAmount").textContent = formatAmount(totalAmount);
+        if (el("todayEntries")) el("todayEntries").textContent = todays.length;
       }
       
       // Update inline cow/buff quantities for today
@@ -4035,6 +4055,7 @@ function playSuccessSound() {
     if (typeof updateSnapshotData === "function") updateSnapshotData();
 
     updateDailySummaryButton();
+    updateTodayCollection(); // Update Kitna Collection
     showToast(`Entry Saved: ${formatAmount(a)} (${selectedPayMode === 'Cash' ? 'नकद' : 'उधार'}) ✅`);
 
     isSaving = false; // Unlock save
@@ -4555,7 +4576,7 @@ function showAuditProof(entryId) {
         if (createBtn) {
           createBtn.onclick = async () => {
             console.log('🔵 Create button clicked!');
-            
+
             // Get all form values with null checks
             const fSerial = el("fSerial");
             const fName = el("fName");
@@ -4567,7 +4588,7 @@ function showAuditProof(entryId) {
             const fBalance = el("fBalance");
             const fActive = el("fActive");
             const fAnimalType = el("fAnimalType");
-            
+
             if (!fName) {
               showToast("Form error: Name field not found");
               return;
@@ -4595,62 +4616,28 @@ function showAuditProof(entryId) {
               animalType: fAnimalType ? fAnimalType.value : 'cow'
             };
             console.log('🔵 Farmer data:', f);
-            
+
             if (!f.name) {
               showToast("Name required");
               console.error('❌ Farmer creation failed: Name is required');
               return;
             }
 
+            // Check for duplicate phone number
+            if (f.phone) {
+              const existing = farmers.find(farmer => farmer.phone === f.phone);
+              if (existing) {
+                showToast(`⚠️ Farmer with phone ${f.phone} already exists!`);
+                return;
+              }
+            }
+
             const btn = el("btnCreateFarmer");
-            const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '⏳ Creating...';
 
             try {
-              // Try API first (Supabase backend)
-              const response = await fetch('/api/farmers', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(f)
-              }).catch(() => null);
-
-              if (response && response.ok) {
-                const result = await response.json();
-                console.log('✅ Farmer created in Supabase:', result.farmer.id);
-
-                const localFarmer = {
-                  id: result.farmer.id,
-                  ...f
-                };
-                farmers.push(localFarmer);
-                saveFarmers(farmers);
-                selectedFarmerId = localFarmer.id;
-                
-                closeOverlay("overlayFarmer");
-                renderAll();
-                showToast("Farmer created in Supabase! ✅");
-                console.log('✅ Farmer created:', localFarmer);
-              } else {
-                // Fallback to local storage
-                console.log('⚠️ API not available, using local storage');
-                const localFarmer = {
-                  id: "f" + Date.now(),
-                  ...f
-                };
-                farmers.push(localFarmer);
-                saveFarmers(farmers);
-                selectedFarmerId = localFarmer.id;
-                
-                closeOverlay("overlayFarmer");
-                renderAll();
-                showToast("Farmer created (Local) ✅");
-                console.log('✅ Farmer created (local):', localFarmer);
-              }
-
-            } catch (error) {
-              console.error('❌ Error creating farmer:', error);
-              // Final fallback to local storage
+              // Create farmer in local storage only (API removed for simplicity)
               const localFarmer = {
                 id: "f" + Date.now(),
                 ...f
@@ -4658,9 +4645,15 @@ function showAuditProof(entryId) {
               farmers.push(localFarmer);
               saveFarmers(farmers);
               selectedFarmerId = localFarmer.id;
+
               closeOverlay("overlayFarmer");
               renderAll();
-              showToast("Farmer created (Local) ✅");
+              showToast("Farmer created ✅");
+              console.log('✅ Farmer created:', localFarmer);
+
+            } catch (error) {
+              console.error('❌ Error creating farmer:', error);
+              showToast("Error creating farmer");
             } finally {
               btn.disabled = false;
               btn.innerHTML = '✅ Create';
@@ -5821,6 +5814,7 @@ These are required for procurement-grade accountability.`;
     // --- YE 3 LINE BHI JODO ---
     renderRecentToday();
     updateDailySummaryButton();
+    updateTodayCollection(); // Kitna Collection - Today's summary
     loadSavedCollectionPoint(); // Load saved booth
     setupKeyboardNavigation(); // Enable keyboard-only workflow
     loadAdvanceOrders(); // Load advance orders
