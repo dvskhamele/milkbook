@@ -854,7 +854,7 @@
         font-size: 12px;
       }
       .tableWrap {
-        padding: 10px 14px 14px;
+        padding: 6px 8px 8px;
         min-height: 0;
         overflow: auto;
         flex: 1;
@@ -863,12 +863,12 @@
       table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 13px;
+        font-size: 11px;
       }
       th,
       td {
         border-bottom: 1px solid var(--line);
-        padding: 10px 6px;
+        padding: 6px 4px;
         text-align: left;
         vertical-align: middle;
         white-space: nowrap;
@@ -876,7 +876,11 @@
       th {
         color: var(--muted);
         font-weight: 1100;
-        font-size: 12px;
+        font-size: 10px;
+        position: sticky;
+        top: 0;
+        background: #f8fafc;
+        z-index: 10;
       }
       tr:last-child td {
         border-bottom: none;
@@ -1959,17 +1963,21 @@
 
           <div class="trustBody">
             <div class="amountBox">
-              <div class="label" id="amtLabel">TOTAL AMOUNT</div>
-              <div class="amt" id="amountView"></div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div style="flex: 1;">
+                  <div class="label" id="amtLabel">TOTAL AMOUNT</div>
+                  <div class="amt" id="amountView"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <!-- Round Input -->
+                  <input type="number" id="farmerRoundupInput" placeholder="Round" step="10" style="width: 80px; padding: 6px; border: 2px dashed #3b82f6; border-radius: 4px; font-weight: 700; font-size: 10px; text-align: center; background: #eff6ff;" oninput="applyFarmerRoundup()" title="Round to 10, 50, 100" />
+                  <!-- WhatsApp Summary Button -->
+                  <button onclick="sendDailySummary()" style="padding: 6px 10px; background: #25d366; color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; white-space: nowrap;" title="Send today's summary via WhatsApp">💬 Summary</button>
+                </div>
+              </div>
+              <!-- Round Label -->
+              <div id="farmerRoundupLabel" style="display: none; font-size: 9px; color: #3b82f6; font-weight: 700; background: #dbeafe; padding: 4px 8px; border-radius: 4px; margin-top: 4px; text-align: center;">🔄 <span id="farmerRoundupValue">0</span></div>
             </div>
-            <div id="dailySummaryWrapper" style="display: none; margin-top: 15px;">
-        <button class="pillbtn" id="btnDailySummary" style="width: 100%; background: #25d366; color: white; border: none; font-weight: bold; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-             💬 Send Today's Summary
-        </button>
-        <div style="text-align: center; margin-top: 8px;" title="This summary is suitable for farmer communication. Not valid for institutional audit or dispute resolution.">
-          <span style="font-size: 16px; cursor: help;">⚠️</span>
-        </div>
-    </div>
             <div class="recent">
               <div class="recentHead">
                 <div class="t">Today's Records</div>
@@ -2003,17 +2011,6 @@
                 </table>
               </div>
             </div>
-
-            <!-- Round Input - Below recent records -->
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; margin-top: 8px;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <input type="number" id="farmerRoundupInput" placeholder="Round (10,50,100)" step="10" style="flex: 1; padding: 6px; border: 2px dashed #3b82f6; border-radius: 4px; font-weight: 700; font-size: 11px; text-align: center; background: #eff6ff;" oninput="applyFarmerRoundup()" title="Round to 10, 50, 100" />
-                <span id="farmerRoundupLabel" style="font-size: 10px; color: #3b82f6; font-weight: 700; display: none; background: #dbeafe; padding: 4px 8px; border-radius: 4px;">🔄 <span id="farmerRoundupValue">0</span></span>
-              </div>
-            </div>
-            
-            <!-- View Advance Orders Button -->
-            <button onclick="viewAdvanceOrders()" style="width: 100%; margin-top: 8px; padding: 8px; background: #f5f3ff; border: 2px solid #7c3aed; border-radius: 6px; color: #7c3aed; font-weight: 700; font-size: 12px; cursor: pointer;">📅 View Collection Requests (<span id="advanceOrderCount">0</span> pending)</button>
           </div>
         </div>
       </div>
@@ -2067,6 +2064,13 @@
         <div style="display: flex; gap: 8px;">
           <button onclick="saveAdvanceOrder()" style="flex: 1; padding: 10px; background: #7c3aed; color: white; border: none; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer;">✅ Create Collection Request</button>
           <button onclick="clearAdvanceOrder()" style="padding: 10px 16px; background: #e9d5ff; color: #7c3aed; border: none; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer;">🔄 Clear</button>
+        </div>
+        
+        <!-- View Collection Requests -->
+        <div style="margin-top: 12px; padding-top: 12px; border-top: 2px dashed #c084fc;">
+          <button onclick="viewAdvanceOrders()" style="width: 100%; padding: 10px; background: white; border: 2px solid #7c3aed; border-radius: 6px; color: #7c3aed; font-weight: 700; font-size: 12px; cursor: pointer;">
+            📅 View Collection Requests (<span id="advanceOrderCount">0</span> pending)
+          </button>
         </div>
       </div>
     </div>
