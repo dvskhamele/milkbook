@@ -1620,60 +1620,60 @@
       </div>
       <div class="muted">All Farmers • Advances • Credits • Receipts</div>
     </div>
-    
-    <!-- Filters -->
-    <div style="padding: 16px; background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px;">
-        <div>
-          <label style="font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">🔍 Search Farmer</label>
-          <input id="ledgerSearch" type="text" placeholder="Name, Phone, Serial..." style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px;" oninput="filterLedger()" />
-        </div>
-        <div>
-          <label style="font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">📊 View Type</label>
-          <select id="ledgerView" onchange="switchLedgerView()" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px; font-weight: 700;">
-            <option value="all">📋 All Farmers</option>
-            <option value="advances">💰 Advances Given</option>
-            <option value="credits">📒 Credit (Udhari)</option>
-            <option value="today">📅 Today's Collection</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">📅 From Date</label>
-          <input id="ledgerFromDate" type="date" onchange="filterLedger()" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px;" />
-        </div>
-        <div>
-          <label style="font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">📅 To Date</label>
-          <input id="ledgerToDate" type="date" onchange="filterLedger()" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px;" />
-        </div>
-      </div>
-      
-      <!-- Summary Cards -->
-      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
-        <div style="background: white; padding: 12px; border-radius: 8px; border: 2px solid #e2e8f0;">
-          <div style="font-size: 11px; color: #64748b; font-weight: 700;">👥 TOTAL FARMERS</div>
-          <div style="font-size: 20px; font-weight: 900; color: #1e293b;" id="sumTotalFarmers">0</div>
-        </div>
-        <div style="background: #eff6ff; padding: 12px; border-radius: 8px; border: 2px solid #3b82f6;">
-          <div style="font-size: 11px; color: #1e40af; font-weight: 700;">💰 TOTAL ADVANCE</div>
-          <div style="font-size: 20px; font-weight: 900; color: #1e40af;" id="sumTotalAdvance">₹0</div>
-        </div>
-        <div style="background: #fef3c7; padding: 12px; border-radius: 8px; border: 2px solid #f59e0b;">
-          <div style="font-size: 11px; color: #92400e; font-weight: 700;">📒 TOTAL CREDIT</div>
-          <div style="font-size: 20px; font-weight: 900; color: #92400e;" id="sumTotalCredit">₹0</div>
-        </div>
-        <div style="background: #dcfce7; padding: 12px; border-radius: 8px; border: 2px solid #16a34a;">
-          <div style="font-size: 11px; color: #166534; font-weight: 700;">💵 CASH COLLECTED</div>
-          <div style="font-size: 20px; font-weight: 900; color: #166534;" id="sumCashCollected">₹0</div>
-        </div>
-        <div style="background: #f0f9ff; padding: 12px; border-radius: 8px; border: 2px solid #0284c7;">
-          <div style="font-size: 11px; color: #0369a1; font-weight: 700;">📊 TODAY'S MILK</div>
-          <div style="font-size: 20px; font-weight: 900; color: #0369a1;" id="sumTodayMilk">0 L</div>
-        </div>
-      </div>
-    </div>
-    
+
     <!-- Main Content Area -->
     <div class="modalBody onecol" style="padding: 0; overflow-y: auto;">
+      <!-- Filters & Summary -->
+      <div style="padding: 16px; background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">🔍 Search Farmer</label>
+            <input id="ledgerSearch" type="text" placeholder="Name, Phone, Serial..." style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px;" oninput="filterLedger()" />
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">📊 View Type</label>
+            <select id="ledgerView" onchange="switchLedgerView()" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px; font-weight: 700;">
+              <option value="all">📋 All Farmers</option>
+              <option value="advances">💰 Advances Given</option>
+              <option value="credits">📒 Credit (Udhari)</option>
+              <option value="today">📅 Today's Collection</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">📅 From Date</label>
+            <input id="ledgerFromDate" type="date" onchange="filterLedger()" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px;" />
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">📅 To Date</label>
+            <input id="ledgerToDate" type="date" onchange="filterLedger()" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px;" />
+          </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
+          <div style="background: white; padding: 12px; border-radius: 8px; border: 2px solid #e2e8f0;">
+            <div style="font-size: 11px; color: #64748b; font-weight: 700;">👥 TOTAL FARMERS</div>
+            <div style="font-size: 20px; font-weight: 900; color: #1e293b;" id="sumTotalFarmers">0</div>
+          </div>
+          <div style="background: #eff6ff; padding: 12px; border-radius: 8px; border: 2px solid #3b82f6;">
+            <div style="font-size: 11px; color: #1e40af; font-weight: 700;">💰 TOTAL ADVANCE</div>
+            <div style="font-size: 20px; font-weight: 900; color: #1e40af;" id="sumTotalAdvance">₹0</div>
+          </div>
+          <div style="background: #fef3c7; padding: 12px; border-radius: 8px; border: 2px solid #f59e0b;">
+            <div style="font-size: 11px; color: #92400e; font-weight: 700;">📒 TOTAL CREDIT</div>
+            <div style="font-size: 20px; font-weight: 900; color: #92400e;" id="sumTotalCredit">₹0</div>
+          </div>
+          <div style="background: #dcfce7; padding: 12px; border-radius: 8px; border: 2px solid #16a34a;">
+            <div style="font-size: 11px; color: #166534; font-weight: 700;">💵 CASH COLLECTED</div>
+            <div style="font-size: 20px; font-weight: 900; color: #166534;" id="sumCashCollected">₹0</div>
+          </div>
+          <div style="background: #f0f9ff; padding: 12px; border-radius: 8px; border: 2px solid #0284c7;">
+            <div style="font-size: 11px; color: #0369a1; font-weight: 700;">📊 TODAY'S MILK</div>
+            <div style="font-size: 20px; font-weight: 900; color: #0369a1;" id="sumTodayMilk">0 L</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Advances List -->
       <div id="advancesList" style="display: none; padding: 16px;">
         <h3 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
@@ -1681,7 +1681,7 @@
         </h3>
         <div id="advancesTable"></div>
       </div>
-      
+
       <!-- Credits List -->
       <div id="creditsList" style="display: none; padding: 16px;">
         <h3 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
@@ -1689,7 +1689,7 @@
         </h3>
         <div id="creditsTable"></div>
       </div>
-      
+
       <!-- All Farmers List -->
       <div id="allFarmersList" style="display: block; padding: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -1701,14 +1701,14 @@
         </div>
         <div id="farmersTable"></div>
       </div>
-      
+
       <!-- Today's Collection -->
       <div id="todayList" style="display: none; padding: 16px;">
         <h3 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">📅 Today's Collection</h3>
         <div id="todayTable"></div>
       </div>
     </div>
-    
+
     <div class="modalFoot" style="display: flex; gap: 8px;">
       <button onclick="sendBulkWhatsApp()" style="flex: 1; padding: 12px; background: #25d366; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer;">💬 Bulk WhatsApp</button>
       <button onclick="closeOverlay('overlayLedgerManagement')" style="padding: 12px 24px; background: #f1f5f9; color: #64748b; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer;">Close</button>
