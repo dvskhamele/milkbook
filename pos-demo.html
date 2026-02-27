@@ -946,7 +946,7 @@
                 <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" onkeydown="handleProductFieldEnter(event)" oninput="updateEmojiLink(this.value)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" required />
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                   <input type="number" id="pPrice" placeholder="Price (₹)" step="0.01" min="0" onkeydown="handleProductFieldEnter(event)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" required />
-                  <input type="text" id="pUnit" placeholder="Unit (L/kg/g)" list="dairyUnitSuggestions" value="unit" onkeydown="handleProductFieldEnter(event)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" />
+                  <input type="text" id="pUnit" placeholder="Unit (L/kg/g)" list="dairyUnitSuggestions" value="unit" onchange="suggestQuantitiesForUnit()" onkeydown="handleProductFieldEnter(event)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" />
                 <datalist id="dairyUnitSuggestions">
                   <option value="L"><option value="ml"><option value="kg"><option value="g"><option value="pcs"><option value="box"><option value="packet"><option value="bottle">
                 </datalist>
@@ -958,6 +958,9 @@
                 <div style="background:#f8fafc; padding:16px; border-radius:10px; border:1px solid var(--line);">
                   <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
                     <span>⚡</span> Quantity per Click (default: 1, 2, 5)
+                  </div>
+                  <div style="font-size:9px; color:#64748b; margin-bottom:8px; padding:6px; background:#eff6ff; border-radius:6px; border-left:3px solid #3b82f6;">
+                    💡 <strong>Tip:</strong> For g/ml use 100, 250, 500 | For L/kg use 0.5, 1, 2 | Decimals like 0.25, 0.5 are also fine!
                   </div>
                   <div id="qtyInputsContainer" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
                     <div style="display:flex; flex-direction:column; gap:4px;">
@@ -5095,6 +5098,45 @@ function convertMilkToProduct() {
   closeModal('convertModal');
   el("convQty").value = "";
   showToast(`Converted ${qty}L to ${productName}`);
+}
+
+// Suggest appropriate quantities based on unit selected
+function suggestQuantitiesForUnit() {
+  const unit = document.getElementById('pUnit').value.toLowerCase();
+  const qtyInputs = document.querySelectorAll('.pQty');
+  
+  // Suggested quantities for different units
+  const suggestions = {
+    'g': [100, 250, 500],      // Grams: 100g, 250g, 500g
+    'ml': [100, 250, 500],     // Milliliters: 100ml, 250ml, 500ml
+    'kg': [0.5, 1, 2],         // Kilograms: 0.5kg, 1kg, 2kg
+    'l': [0.5, 1, 2],          // Liters: 0.5L, 1L, 2L
+    'pcs': [1, 5, 10],         // Pieces: 1, 5, 10
+    'box': [1, 5, 10],         // Boxes: 1, 5, 10
+    'packet': [1, 5, 10],      // Packets: 1, 5, 10
+    'bottle': [1, 5, 10]       // Bottles: 1, 5, 10
+  };
+  
+  // Get suggested values or use defaults
+  const values = suggestions[unit] || [1, 2, 5];
+  
+  // Update quantity inputs with suggestions
+  qtyInputs.forEach((input, index) => {
+    if (values[index]) {
+      input.value = values[index];
+    }
+  });
+  
+  // Show visual feedback
+  const tipDiv = document.querySelector('#qtyInputsContainer').previousElementSibling;
+  if (tipDiv) {
+    tipDiv.style.background = '#dcfce7';
+    tipDiv.style.borderColor = '#16a34a';
+    setTimeout(() => {
+      tipDiv.style.background = '#eff6ff';
+      tipDiv.style.borderColor = '#3b82f6';
+    }, 1000);
+  }
 }
 
 // Add quantity input field in Add Product modal
