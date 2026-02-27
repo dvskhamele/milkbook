@@ -1978,6 +1978,22 @@
               <!-- Round Label -->
               <div id="farmerRoundupLabel" style="display: none; font-size: 9px; color: #3b82f6; font-weight: 700; background: #dbeafe; padding: 4px 8px; border-radius: 4px; margin-top: 4px; text-align: center;">🔄 <span id="farmerRoundupValue">0</span></div>
             </div>
+            
+            <!-- Payment Mode Selection -->
+            <div style="margin: 8px 0; padding: 8px; background: #f8fafc; border-radius: 6px;">
+              <div style="font-size: 10px; font-weight: 700; color: #64748b; margin-bottom: 6px;">PAYMENT MODE:</div>
+              <div style="display: flex; gap: 8px;">
+                <label style="flex: 1; padding: 8px; background: #dcfce7; border: 2px solid #16a34a; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 700; color: #166534;">
+                  <input type="radio" name="payMode" value="Cash" checked style="accent-color: #16a34a;" onchange="if(typeof updatePayUI === 'function') updatePayUI()" />
+                  💵 CASH/UPI
+                </label>
+                <label style="flex: 1; padding: 8px; background: #fee2e2; border: 2px solid #dc2626; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 700; color: #991b1b;">
+                  <input type="radio" name="payMode" value="Credit" style="accent-color: #dc2626;" onchange="if(typeof updatePayUI === 'function') updatePayUI()" />
+                  📒 UDHA RI
+                </label>
+              </div>
+            </div>
+            
             <div class="recent">
               <div class="recentHead">
                 <div class="t">Today's Records</div>
@@ -6239,14 +6255,18 @@ function loadCreditsList() {
     const table = document.getElementById('creditsTable');
     const credits = entries.filter(e => e.paymentMode === 'Credit');
     
+    console.log('🔵 Loading Credits List:', credits.length, 'entries');
+    console.log('🔵 All entries:', entries.length);
+    console.log('🔵 Credit entries:', credits.map(c => ({name: c.farmerName, amount: c.amount, mode: c.paymentMode})));
+
     if (credits.length === 0) {
         table.innerHTML = '<div style="padding: 40px; text-align: center; color: #94a3b8;">No credit (udhari) records</div>';
         return;
     }
-    
+
     // Sort by date (newest first)
     credits.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    
+
     let html = '<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: 13px;">';
     html += '<thead><tr style="background: #fef2f2;">';
     html += '<th style="padding: 12px; text-align: left; border: 1px solid #e2e8f0;">📅 Date</th>';
@@ -6255,7 +6275,7 @@ function loadCreditsList() {
     html += '<th style="padding: 12px; text-align: right; border: 1px solid #e2e8f0;">📒 Amount</th>';
     html += '<th style="padding: 12px; text-align: center; border: 1px solid #e2e8f0;">Actions</th>';
     html += '</tr></thead><tbody>';
-    
+
     credits.forEach(c => {
         const date = new Date(c.createdAt);
         html += `<tr style="border-bottom: 1px solid #e2e8f0;">`;
@@ -6267,9 +6287,10 @@ function loadCreditsList() {
         html += `<button onclick="sendCreditReminder('${c.farmerId}', '${c.amount}')" style="padding: 4px 8px; background: #dc2626; color: white; border: none; border-radius: 4px; font-size: 11px; cursor: pointer;">💬 Reminder</button>`;
         html += `</td></tr>`;
     });
-    
+
     html += '</tbody></table></div>';
     table.innerHTML = html;
+    console.log('✅ Credits table rendered');
 }
 
 // Load today's collection
