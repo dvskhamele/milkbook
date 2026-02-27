@@ -1490,9 +1490,9 @@
         </div>
         <div class="hdr-actions" style="flex: 1; justify-content: flex-end;">
           <!-- Rate Pill -->
-          <div id="ratePill" onclick="openRateEditor()" style="background: #e3f2fd; color: #1565c0; padding: 4px 8px; border-radius: 999px; font-weight: 700; cursor: pointer; border: 1px solid #bbdefb; font-size: 9px; display: flex; align-items: center; gap: 4px; margin-right: 3px;">
+          <div id="ratePill" onclick="openRateTable()" style="background: #e3f2fd; color: #1565c0; padding: 4px 8px; border-radius: 999px; font-weight: 700; cursor: pointer; border: 1px solid #bbdefb; font-size: 9px; display: flex; align-items: center; gap: 4px; margin-right: 3px;">
             <span id="rateDisplay">Rate: ₹64.00</span>
-            <span style="font-size: 7px; opacity: 0.6;">✏️</span>
+            <span style="font-size: 7px; opacity: 0.6;">📋</span>
           </div>
           <!-- Switch to POS -->
           <button class="pillbtn primary" onclick="location.href='pos-demo.html'" style="background:#2563eb; border-color:#2563eb; font-size:7px; padding:0 3px;">
@@ -1679,37 +1679,26 @@
         <!-- RIGHT -->
         <div class="panel">
           <div class="panelHeader">
-            <div>Summary</div>
-            <small id="selectedName">—</small>
+            <!-- Summary Info Row - ALL in ONE row: Calc | Cow/Buff | OLD | NEW -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 8px; background: #f8fafc; padding: 4px 6px; border-radius: 4px; white-space: nowrap;">
+              <div id="summaryCalcText" style="color: #64748b; font-weight: 700;">0.0L×₹0.00/L(F:0.0%)</div>
+              <div style="display: flex; gap: 4px; color: #64748b; font-weight: 700;">
+                <span style="color: #16a34a;">🐄<span id="cowQtyInline">0.0</span></span>
+                <span style="color: #dc2626;">🐃<span id="buffQtyInline">0.0</span></span>
+              </div>
+              <div style="display: flex; gap: 4px;">
+                <span style="color: #64748b; font-weight: 700;">OLD:</span>
+                <span id="balBefore" style="font-weight: 900; color: #0f172a;"></span>
+                <span style="color: #64748b; font-weight: 700; margin-left: 4px;">NEW:</span>
+                <span id="balAfter" style="font-weight: 900; color: #16a34a;"></span>
+              </div>
+            </div>
           </div>
 
           <div class="trustBody">
             <div class="amountBox">
               <div class="label" id="amtLabel">TOTAL AMOUNT</div>
-              <div class="amt" id="amountView">₹0.00</div>
-              <div class="sub" id="trailMini" style="display: flex; align-items: center; gap: 8px;">
-                <span>0.0 L × ₹0.00/L</span>
-                <span style="display: flex; gap: 6px; margin-left: 4px;">
-                  <span style="color: #86efac; font-weight: 900;">🐄<span id="cowQtyInline">0.0</span></span>
-                  <span style="color: #fca5a5; font-weight: 900;">🐃<span id="buffQtyInline">0.0</span></span>
-                </span>
-              </div>
-            </div>
-
-            <div class="balances" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px;">
-              <div class="balCard balOld" style="padding: 4px;">
-                <div class="t" id="oldBalLabel" style="font-size: 6px;">OLD BALANCE</div>
-                <div class="v" id="balBefore" style="font-size: 10px;">₹0.00</div>
-              </div>
-              <div class="balCard balNew" style="padding: 4px;">
-                <div class="t" id="newBalLabel" style="font-size: 6px;">NEW BALANCE</div>
-                <div class="v" id="balAfter" style="font-size: 10px;">₹0.00</div>
-              </div>
-            </div>
-            <!-- Round Balance Input - Inline with balances -->
-            <div style="display: grid; grid-template-columns: 1fr 80px; gap: 4px; margin: 4px 0;">
-              <input type="number" id="farmerRoundupInput" placeholder="Round (10,50,100)" step="10" style="padding: 6px; border: 2px dashed #3b82f6; border-radius: 6px; font-weight: 700; font-size: 10px; text-align: center; background: #eff6ff;" oninput="applyFarmerRoundup()" title="Round balance to nearest 10, 50, 100" />
-              <span id="farmerRoundupLabel" style="font-size: 9px; color: #3b82f6; font-weight: 700; display: none; align-items: center; justify-content: center;">🔄 ₹<span id="farmerRoundupValue">0</span></span>
+              <div class="amt" id="amountView"></div>
             </div>
             <div id="dailySummaryWrapper" style="display: none; margin-top: 15px;">
         <button class="pillbtn" id="btnDailySummary" style="width: 100%; background: #25d366; color: white; border: none; font-weight: bold; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
@@ -1721,7 +1710,7 @@
     </div>
             <div class="recent">
               <div class="recentHead">
-                <div class="t" id="newBalLabel">NEW BALANCE</div>
+                <div class="t">Today's Records</div>
                 <div class="muted" id="recentMeta">0 records</div>
               </div>
               <div class="tableWrap">
@@ -1753,13 +1742,12 @@
               </div>
             </div>
 
-            <!-- hidden trail values (logic keeps) -->
-            <div style="display: block">
-              <span id="rateView"></span>
-              <span id="trailQF"></span>
-              <span id="trailRateType"></span>
-              <span id="trailFormula"></span>
-              <span id="trailTime"></span>
+            <!-- Round Input - Below recent records -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; margin-top: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <input type="number" id="farmerRoundupInput" placeholder="Round (10,50,100)" step="10" style="flex: 1; padding: 6px; border: 2px dashed #3b82f6; border-radius: 4px; font-weight: 700; font-size: 11px; text-align: center; background: #eff6ff;" oninput="applyFarmerRoundup()" title="Round to 10, 50, 100" />
+                <span id="farmerRoundupLabel" style="font-size: 10px; color: #3b82f6; font-weight: 700; display: none; background: #dbeafe; padding: 4px 8px; border-radius: 4px;">🔄 <span id="farmerRoundupValue">0</span></span>
+              </div>
             </div>
           </div>
         </div>
@@ -2083,25 +2071,33 @@
 
     <!-- RATE EDITOR MODAL -->
     <div class="overlay" id="overlayRateEditor">
-      <div class="modal" style="height: auto; max-height: 400px;">
-        <div class="modalHead">
+      <div class="modal" style="height: auto; max-height: 80vh; display: flex; flex-direction: column;">
+        <div class="modalHead" style="flex-shrink: 0;">
           <div class="left">
             <button class="closeBtn" data-close="overlayRateEditor">✖</button>
-            <div>✏️ Edit Rate</div>
+            <div>📋 Rate List (Chart)</div>
           </div>
-          <div class="muted">Quick rate adjustment</div>
+          <div class="muted">Base: ₹<span id="chartBaseRate">0.00</span></div>
         </div>
 
-        <div class="modalBody onecol" style="padding: 20px;">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <label style="font-size: 14px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 8px;">Cow Base Rate (₹/L)</label>
-            <input id="newRateInput" type="number" step="0.1" style="width: 100%; max-width: 200px; padding: 12px; border: 2px solid #3b82f6; border-radius: 8px; font-weight: 900; font-size: 24px; text-align: center;" placeholder="₹0.00" />
-          </div>
+        <div class="modalBody onecol" style="overflow-y: auto; flex: 1; min-height: 0;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead style="position: sticky; top: 0; background: #fff; z-index: 10;">
+              <tr style="background: #f8fafc;">
+                <th style="padding: 12px; border: 1px solid #e2e8f0; font-size: 13px;">FAT %</th>
+                <th style="padding: 12px; border: 1px solid #e2e8f0; font-size: 13px;">RATE (₹/L)</th>
+              </tr>
+            </thead>
+            <tbody id="rateTableBody" style="background: #fff;">
+              <!-- Rates populated by JavaScript -->
+            </tbody>
+          </table>
         </div>
 
-        <div class="modalFoot">
-          <button class="footBtn good" onclick="updateActiveRate(); closeOverlay('overlayRateEditor');">✔️ Set Rate</button>
-          <button class="footBtn" onclick="closeOverlay('overlayRateEditor');">Cancel</button>
+        <div class="modalFoot" style="flex-shrink: 0; display: flex; gap: 8px;">
+          <button class="footBtn good" onclick="editRateFromChart();">✏️ Edit Rate</button>
+          <button class="footBtn" onclick="sendRateChartWhatsApp();">💬 WhatsApp</button>
+          <button class="footBtn" data-close="overlayRateEditor">Close</button>
         </div>
       </div>
     </div>
@@ -2290,7 +2286,7 @@
       <div class="modal" style="height: auto; max-height: 90vh; display: flex; flex-direction: column;">
         <div class="modalHead" style="flex-shrink: 0;">
           <div class="left">
-            <button class="closeBtn" data-close="overlayFarmer">✖</button>
+            <button class="closeBtn" onclick="showToast('❌ Press ESC to close farmer form')" title="Press ESC to close">✖</button>
             <div>➕ Add Farmer</div>
           </div>
           <div class="muted">Photo optional</div>
@@ -2300,11 +2296,15 @@
           <div class="formGrid" style="grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 12px;">
             <!-- Essential Fields First -->
             <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🔢 Serial No. <span style="font-size: 10px; color: var(--muted); font-weight: normal;">(Auto-generated)</span></label>
+              <input id="fSerial" type="text" autocomplete="off" placeholder="Auto: F0001" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; background: #f8fafc;" readonly />
+            </div>
+            <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">👤 Name</label>
               <input id="fName" type="text" autocomplete="name" autocapitalize="words" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
             </div>
             <div class="field" style="padding: 8px;">
-              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📱 Mobile Number</label>
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📱 Phone Number</label>
               <input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" pattern="[0-9]{10}" maxlength="10" placeholder="10 digit mobile" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid var(--line); border-radius: 10px; box-sizing: border-box;" />
             </div>
             <div class="field" style="padding: 8px;">
@@ -2528,14 +2528,24 @@ function playSuccessSound() {
 
       function loadSettings() {
         try {
-          const s = JSON.parse(localStorage.getItem(LS.settings) || "null");
-          return { ...defaultSettings, ...(s || {}) };
+          const saved = localStorage.getItem(LS.settings);
+          console.log('🔵 Raw settings from localStorage:', saved);
+          
+          const s = saved ? JSON.parse(saved) : null;
+          const settings = { ...defaultSettings, ...(s || {}) };
+          console.log('🔵 Settings loaded - cowBase:', settings.cowBase, 'buffBase:', settings.buffBase);
+          return settings;
         } catch (e) {
+          console.log('⚠️ Settings load error:', e);
           return { ...defaultSettings };
         }
       }
       function saveSettings(s) {
+        console.log('💾 Saving settings:', s.cowBase, s.buffBase);
         localStorage.setItem(LS.settings, JSON.stringify(s));
+        console.log('✅ Settings saved, verifying...');
+        const verify = localStorage.getItem(LS.settings);
+        console.log('🔍 Saved value:', verify);
       }
 
       function loadFarmers() {
@@ -2778,7 +2788,15 @@ function playSuccessSound() {
 
         if (!farmerSearch.trim()) return list;
         const q = farmerSearch.trim().toLowerCase();
-        return list.filter((f) => (f.name || "").toLowerCase().includes(q));
+        // Search by serial, name, phone, address, city, or pincode
+        return list.filter((f) => {
+          return (f.serial || "").toLowerCase().includes(q) ||
+                 (f.name || "").toLowerCase().includes(q) ||
+                 (f.phone || "").toLowerCase().includes(q) ||
+                 (f.address || "").toLowerCase().includes(q) ||
+                 (f.city || "").toLowerCase().includes(q) ||
+                 (f.pincode || "").toLowerCase().includes(q);
+        });
       }
 
       // Edit farmer name
@@ -2821,6 +2839,18 @@ function calcYield() {
        ***********************/
       function round2(n) {
         return Math.round((n + Number.EPSILON) * 100) / 100;
+      }
+
+      // Indian number formatting (lakhs/crores system): 1,11,11,111
+      function formatIndianNumber(num) {
+        const parts = num.toString().split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{2})+(?!\d)(?=(\d{3})))/g, ',');
+        return parts.join('.');
+      }
+
+      // Format amount with Indian numbering: ₹1,11,11,111.00
+      function formatAmount(num) {
+        return '₹' + formatIndianNumber(round2(num).toFixed(2));
       }
 
       function getAutoRatePerLiter(fatVal, animalType) {
@@ -2968,12 +2998,19 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
             if (isSel) card.classList.add("fsel");
 
             const imgHTML = f.imageData ? `<img alt="" src="${f.imageData}">` : `👤`;
+            
+            // Show animal type icon if farmer has preference
+            const animalIcon = f.animalType === 'cow' ? '🐄' : f.animalType === 'buffalo' ? '🐃' : f.animalType === 'both' ? '🔄' : '';
 
             card.innerHTML = `
                 <div class="fimg">${imgHTML}</div>
                 <div style="min-width:0; flex: 1;">
-                    <div class="fname" title="${escapeHtml(f.name || "")}">${escapeHtml(f.name || "")}</div>
-                    <div class="fsub">${f.phone || ""} • ₹${round2(Number(f.balance || 0)).toFixed(2)}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
+                        <div class="fname" title="${escapeHtml(f.name || "")}" style="flex: 1;">${escapeHtml(f.name || "")}</div>
+                        ${animalIcon ? `<span style="font-size: 14px;">${animalIcon}</span>` : ''}
+                        ${f.serial ? `<span style="font-size: 9px; font-weight: 700; color: #3b82f6; background: #dbeafe; padding: 2px 6px; border-radius: 4px;">#${escapeHtml(f.serial)}</span>` : ''}
+                    </div>
+                    <div class="fsub">${f.phone || ""} • ${formatAmount(f.balance || 0)}</div>
                 </div>
                 <button class="editFarmerBtn" onclick="event.stopPropagation(); editFarmerName('${f.id}')" title="Edit Name" style="background:none; border:none; cursor:pointer; font-size:16px; padding:4px 8px; opacity:0.6;">✏️</button>
                 ${isSel ? `<div class="badge">Selected</div>` : ``}
@@ -3041,19 +3078,9 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
     el("nextFarmers").disabled = farmerPage >= maxPage;
 }
 
-      // Rate Editor kholne ke liye
+      // Rate List kholne ke liye - show the rate chart
 function openRateEditor() {
-    el("ratePill").style.display = "none";
-    el("rateEditor").style.display = "flex";
-    el("newRateInput").value = settings.cowBase; // Default current rate dikhao
-    el("newRateInput").focus();
-    el("newRateInput").select();
-}
-
-// Editor band karne ke liye
-function closeRateEditor() {
-    el("ratePill").style.display = "flex";
-    el("rateEditor").style.display = "none";
+    openRateTable();  // Show rate list chart
 }
 
 // Update formula preview in settings
@@ -3218,16 +3245,16 @@ function updateLivePreview() {
     }
     
     // Update rate previews
-    if (el("cowRatePreview")) el("cowRatePreview").textContent = `₹${cowRate.toFixed(2)}/L`;
-    if (el("buffRatePreview")) el("buffRatePreview").textContent = `₹${buffRate.toFixed(2)}/L`;
+    if (el("cowRatePreview")) el("cowRatePreview").textContent = `${formatAmount(cowRate)}/L`;
+    if (el("buffRatePreview")) el("buffRatePreview").textContent = `${formatAmount(buffRate)}/L`;
     
     // Update formula text previews
     if (el("cowFormulaPreview")) el("cowFormulaPreview").textContent = cowFormula;
     if (el("buffFormulaPreview")) el("buffFormulaPreview").textContent = buffFormula;
     
     // Update calculation breakdown with actual values and selected operators
-    if (el("cowCalcBreakdown")) el("cowCalcBreakdown").textContent = `Example: ${cowExample} = ₹${cowRate.toFixed(2)}/L`;
-    if (el("buffCalcBreakdown")) el("buffCalcBreakdown").textContent = `Example: ${buffExample} = ₹${buffRate.toFixed(2)}/L`;
+    if (el("cowCalcBreakdown")) el("cowCalcBreakdown").textContent = `Example: ${cowExample} = ${formatAmount(cowRate)}/L`;
+    if (el("buffCalcBreakdown")) el("buffCalcBreakdown").textContent = `Example: ${buffExample} = ${formatAmount(buffRate)}/L`;
 }
 
 function updateCowFormulaText() {
@@ -3305,26 +3332,14 @@ function applyPreset(city) {
   showToast(`✅ ${city.charAt(0).toUpperCase() + city.slice(1)} rates applied!`);
 }
 
-// 🎯 ACTIVE RATE UPDATE LOGIC
+// 🎯 ACTIVE RATE UPDATE LOGIC - Simplified
 function updateActiveRate() {
     const val = Number(el("newRateInput").value);
     if (val <= 0) {
         showToast("Invalid Rate!");
         return;
     }
-
-    // Settings mein update (Sirf Base Rate badlega, deduction rules same rahenge)
-    settings.cowBase = val;
-    settings.buffBase = val + 5; // Buffalo rate hamesha Cow se thoda zyada (Dairy logic)
-    
-    saveSettings(settings);
-    
-    // UI Update
-    refreshRatePill();
-    renderTrust(); // Right panel turant refresh hoga
-    closeRateEditor();
-    
-    showToast(`Naya Rate Set: ₹${val.toFixed(2)} ✅`);
+    updateRate(val);
 }
 
 // Animal Type Toggle Function - Keyboard optimized with VISUAL SELECTION
@@ -3381,7 +3396,9 @@ function selectFarmerAnimal(type) {
 // Pill par rate dikhane ke liye
 function refreshRatePill() {
     if (el("rateDisplay")) {
-        el("rateDisplay").textContent = `Rate: ₹${Number(settings.cowBase).toFixed(2)}`;
+        const currentRate = formatAmount(Number(settings.cowBase));
+        el("rateDisplay").textContent = `Rate: ${currentRate}`;
+        console.log('✅ Rate pill updated to:', currentRate);
     }
 }
 
@@ -3415,7 +3432,7 @@ function refreshRatePill() {
             const f = getFarmerById(e.farmerId);
             const phone = (f && f.phone) ? f.phone : "";
 
-            const msg = `*Milk Receipt* 🥛\nDate: ${e.day} (${e.session})\nQty: ${e.qty}L | Fat: ${e.fat}\n*Amount: ₹${Number(e.amount).toFixed(2)}*\nGopal Dairy Shop`;
+            const msg = `*Milk Receipt* 🥛\nDate: ${e.day} (${e.session})\nQty: ${e.qty}L | Fat: ${e.fat}\n*Amount: ${formatAmount(e.amount)}*\nGopal Dairy Shop`;
             const wpLink = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 
             // --- Point 7: Audit Trail & Edit UI logic ---
@@ -3425,7 +3442,7 @@ return `
     <td>${escapeHtml(e.day)}</td>
     <td style="font-weight:1100;">
         ${escapeHtml(e.farmerName || "")}
-        ${photoIcon} ${e.edited ? `<br><small class="edit-note" style="color:var(--muted); font-weight:normal; font-size:10px;">✏️ Sudhara gaya: ${fmtTime(new Date(e.editedAt))}</small>` : ''}
+        ${photoIcon} ${e.edited ? `<br><small class="edit-note" style="color:var(--muted); font-weight:normal; font-size:10px;">✏️ Sudhara gaya: ${fmtTime(new Date(e.edited))}</small>` : ''}
     </td>
     <td><span class="rtag">${escapeHtml(e.session || "")}</span></td>
     <td>${typeTag}</td>
@@ -3433,10 +3450,10 @@ return `
     <td>${Number(e.fat || 0).toFixed(1)}%</td>
     <td>${Number(e.snf || 0).toFixed(1)}</td>
     <td style="color:var(--muted); font-size:11px;">
-        ₹${Number(e.rateSnapshot || e.ratePerL || 0).toFixed(2)}
+        ${formatAmount(e.rateSnapshot || e.ratePerL || 0)}
     </td>
     <td style="font-weight:1200; color:#1d4ed8; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
-        ₹${Number(e.amount || 0).toFixed(2)}
+        ${formatAmount(e.amount || 0)}
         <button onclick="event.stopPropagation(); editEntry('${e.id}')" title="Edit" style="border:none; background:transparent; cursor:pointer; font-size:14px;">✏️</button>
         ${phone ? `<a href="${wpLink}" target="_blank" onclick="event.stopPropagation();" title="Send WhatsApp" style="text-decoration:none; font-size:16px;">🟢</a>` : ''}
     </td>
@@ -3585,9 +3602,14 @@ return `
     const r = getRatePerLiter();
     const a = getAmount();
 
-    rateView.textContent = `₹${r.toFixed(2)}`;
-    amountView.textContent = `₹${a.toFixed(2)}`;
-    trailMini.textContent = `${round2(qty).toFixed(1)} L × ₹${r.toFixed(2)}/L (Fat: ${fat.toFixed(1)}%)`;
+    if (rateView) rateView.textContent = formatAmount(r);
+    if (amountView) amountView.textContent = formatAmount(a);
+
+    // Update summary calculation text
+    const summaryCalcText = el("summaryCalcText");
+    if (summaryCalcText) {
+      summaryCalcText.textContent = `${round2(qty).toFixed(1)}L × ${formatAmount(r)}/L (F: ${fat.toFixed(1)}%)`;
+    }
 
     // Update inline cow/buff quantities
     updateInlineQuantities();
@@ -3595,8 +3617,8 @@ return `
     const before = farmer ? farmerBalanceBefore(farmer) : 0;
     const after = round2(before + a);
 
-    balBefore.textContent = `₹${before.toFixed(2)}`;
-    balAfter.textContent = `₹${after.toFixed(2)}`;
+    if (balBefore) balBefore.textContent = formatAmount(before);
+    if (balAfter) balAfter.textContent = formatAmount(after);
 
     // steps + values
     if (el("qtyStep")) el("qtyStep").textContent = `±${settings.qtyStep}`;
@@ -3629,6 +3651,9 @@ return `
             manualRateInput.placeholder = `Manual: ₹${manualVal}`;
         }
     }
+
+    // Load saved final amount for this farmer
+    loadFinalAmount();
 
     // HOLD badge
     const hold = loadHold();
@@ -3681,8 +3706,10 @@ return `
       function clearUndoToken() {
         localStorage.removeItem(LS.lastUndo);
       }
-      // Rate Chart kholne ka logic
+      // Rate Chart kholne ka logic - REGENERATE every time
 function openRateTable() {
+    console.log('🔵 Opening rate table, base rate:', settings.cowBase);
+    
     const base = Number(settings.cowBase);
     el("chartBaseRate").textContent = base.toFixed(2);
     const tbody = el("rateTableBody");
@@ -3693,16 +3720,51 @@ function openRateTable() {
         const r = getAutoRatePerLiter(f, "cow"); // Default Cow rate dikhate hain chart mein
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td style="padding: 8px; border: 1px solid #f1f5f9; font-weight: bold;">${f.toFixed(1)}</td>
-            <td style="padding: 8px; border: 1px solid #f1f5f9; color: var(--blue2); font-weight: 1000;">₹${r.toFixed(2)}</td>
+            <td style="padding: 8px; border: 1px solid #f1f5f9; font-weight: bold;">${f.toFixed(1)}%</td>
+            <td style="padding: 8px; border: 1px solid #f1f5f9; color: var(--blue2); font-weight: 1000;">${formatAmount(r)}</td>
         `;
         tbody.appendChild(tr);
     }
-    el("rateTableOverlay").style.display = "flex";
+    
+    console.log('✅ Rate table populated with', tbody.children.length, 'rows');
+    openOverlay('overlayRateEditor');
 }
 
 function closeRateTable() {
-    el("rateTableOverlay").style.display = "none";
+    closeOverlay('overlayRateEditor');
+}
+
+// Edit rate from chart modal
+function editRateFromChart() {
+    const currentRate = Number(settings.cowBase);
+    const newRate = prompt(`Enter new base rate (₹/L):\nCurrent: ₹${currentRate.toFixed(2)}`, currentRate.toFixed(2));
+    
+    if (newRate !== null && newRate !== '') {
+        const val = Number(newRate);
+        if (val > 0) {
+            updateRate(val);
+        } else {
+            showToast("Invalid rate!");
+        }
+    }
+}
+
+// Update rate function
+function updateRate(val) {
+    console.log('🔵 Updating rate to:', val);
+    
+    settings.cowBase = val;
+    settings.buffBase = val + 5;
+    
+    console.log('🔵 Settings updated:', settings.cowBase, settings.buffBase);
+    saveSettings(settings);
+    
+    refreshRatePill();
+    renderTrust();
+    closeOverlay('overlayRateEditor');
+    
+    showToast(`Rate updated: ${formatAmount(val)} ✅`);
+    console.log('✅ Rate updated successfully');
 }
 
 // 🎯 WHATSAPP PLAIN TEXT LOGIC
@@ -3717,7 +3779,7 @@ function sendRateChartWhatsApp() {
     // Sirf main points bhejte hain taaki message zyada lamba na ho
     for (let f = 4.0; f <= 8.5; f = round2(f + 0.5)) {
         const r = getAutoRatePerLiter(f, "cow");
-        msg += `${f.toFixed(1)} fat   ->   ₹${r.toFixed(2)}\n`;
+        msg += `${f.toFixed(1)} fat   ->   ${formatAmount(r)}\n`;
     }
 
     msg += `---------------------------\n`;
@@ -3806,12 +3868,19 @@ function playSuccessSound() {
     const before = farmerBalanceBefore(farmer);
     const ratePerL = getRatePerLiter();
     const amount = getAmount();
-    
+
+    // Check if final amount is set by user
+    const finalAmountInput = el("finalAmountInput");
+    let finalAmount = null;
+    if (finalAmountInput && finalAmountInput.value) {
+      finalAmount = parseFloat(finalAmountInput.value);
+    }
+
     // Get the ROUNDED balance from UI (final accepted amount)
     const balAfterEl = el("balAfter");
-    const afterDisplay = balAfterEl ? parseFloat(balAfterEl.textContent.replace('₹', '')) : round2(before + amount);
+    const afterDisplay = finalAmount !== null ? finalAmount : (balAfterEl ? parseFloat(balAfterEl.textContent.replace('₹', '')) : round2(before + amount));
     const after = round2(afterDisplay);
-    
+
     // Calculate if there's a discount (rounded down) or extra (rounded up)
     const calculatedAfter = round2(before + amount);
     const difference = after - calculatedAfter;
@@ -3884,16 +3953,19 @@ function playSuccessSound() {
     // --- ✅ RESET LOGIC FOR NEXT FARMER ---
     // Save farmer memory BEFORE reset
     saveFarmerMemory(farmer.id);
-    
+
     qty = 0;
     fat = 0;
     snf = 0;
     manualRate = 0;
-    if (el("manualRateInput")) el("manualRateInput").value = ""; 
+    if (el("manualRateInput")) el("manualRateInput").value = "";
     
+    // Clear final amount input
+    if (el("finalAmountInput")) el("finalAmountInput").value = "";
+
     // Toggle ko wapas 'Cash' (आज नकद) par le aao
     document.querySelector('input[name="payMode"][value="Cash"]').checked = true;
-    if (typeof updatePayUI === "function") updatePayUI(); 
+    if (typeof updatePayUI === "function") updatePayUI();
 
     currentEntryImage = null; 
     const imgInput = document.getElementById("fImageEntry");
@@ -3914,8 +3986,8 @@ function playSuccessSound() {
     if (typeof updateSnapshotData === "function") updateSnapshotData();
 
     updateDailySummaryButton();
-    showToast(`Entry Saved (${selectedPayMode === 'Cash' ? 'नकद' : 'उधार'}) ✅`);
-    
+    showToast(`Entry Saved: ${formatAmount(a)} (${selectedPayMode === 'Cash' ? 'नकद' : 'उधार'}) ✅`);
+
     isSaving = false; // Unlock save
 }
 // Isse kisi bhi purani entry ka metadata check kar sakte hain
@@ -3929,7 +4001,7 @@ function showAuditProof(entryId) {
     content.innerHTML = `
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:14px;">
             <div>Farmer: <br><span style="color:var(--blue)">${e.farmerName}</span></div>
-            <div>Amount: <br><span style="color:var(--green)">₹${e.amount}</span></div>
+            <div>Amount: <br><span style="color:var(--green)">${formatAmount(e.amount)}</span></div>
             <hr style="grid-column: 1/-1; width:100%; opacity:0.2;">
             <div>Qty: ${e.qty} L</div>
             <div>Fat: ${e.fat}%</div>
@@ -4149,13 +4221,13 @@ function showAuditProof(entryId) {
         <div style="min-width:0;">
           <div class="title">${escapeHtml(l.name || "")}</div>
           <div class="meta">
-            ₹${l.amount.toFixed(2)} • ${l.liters.toFixed(1)} L • ${l.count} entries
+            ${formatAmount(l.amount)} • ${l.liters.toFixed(1)} L • ${l.count} entries
           </div>
         </div>
         <div class="val">
           ${
             leaderMode === "amount"
-              ? "₹" + l.amount.toFixed(2)
+              ? formatAmount(l.amount)
               : leaderMode === "liters"
                 ? l.liters.toFixed(1) + " L"
                 : l.count
@@ -4199,6 +4271,16 @@ function showAuditProof(entryId) {
             if (el("setSessionHour")) el("setSessionHour").value = settings.sessionSwitchHour || 4;
             updateFormulaPreview();
             updateLivePreview();
+          }
+          
+          // Auto-generate serial number when opening farmer modal
+          if (id === "overlayFarmer") {
+            const fSerial = el("fSerial");
+            if (fSerial) {
+              const nextNum = farmers.length + 1;
+              fSerial.value = `F${String(nextNum).padStart(4, '0')}`;
+              console.log('🔢 Serial auto-filled:', fSerial.value);
+            }
           }
           
           // Focus first input in the overlay
@@ -4253,19 +4335,30 @@ function showAuditProof(entryId) {
         }
       });
       
-      // Close overlay when clicking outside modal
+      // Close overlay when clicking outside modal (EXCEPT farmer form - prevent accidental close)
       document.querySelectorAll('.overlay').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
           if (e.target === overlay) {
+            // Prevent closing farmer form by clicking outside - must use X button or ESC
+            if (overlay.id === 'overlayFarmer') {
+              showToast('❌ Use X button or ESC to close farmer form');
+              return;
+            }
             overlay.style.display = "none";
           }
         });
       });
-      
+
       // Close overlay when clicking close button (using event delegation for reliability)
+      // EXCEPT farmer form - prevent accidental close
       document.addEventListener('click', (e) => {
         if (e.target.hasAttribute('data-close')) {
           const overlayId = e.target.getAttribute('data-close');
+          // Prevent closing farmer form via X button - must use ESC or submit
+          if (overlayId === 'overlayFarmer') {
+            showToast('❌ Use ESC to close farmer form');
+            return;
+          }
           closeOverlay(overlayId);
         }
       });
@@ -4412,17 +4505,48 @@ function showAuditProof(entryId) {
         const createBtn = el("btnCreateFarmer");
         if (createBtn) {
           createBtn.onclick = async () => {
+            console.log('🔵 Create button clicked!');
+            
+            // Get all form values with null checks
+            const fSerial = el("fSerial");
+            const fName = el("fName");
+            const fPhone = el("fPhone");
+            const fAddress = el("fAddress");
+            const fCity = el("fCity");
+            const fPincode = el("fPincode");
+            const fGst = el("fGst");
+            const fBalance = el("fBalance");
+            const fActive = el("fActive");
+            const fAnimalType = el("fAnimalType");
+            
+            if (!fName) {
+              showToast("Form error: Name field not found");
+              return;
+            }
+
+            // Auto-generate serial number if not provided
+            let serialNum = fSerial && fSerial.value.trim() ? fSerial.value.trim() : '';
+            if (!serialNum) {
+              // Count existing farmers and generate next serial
+              const nextNum = farmers.length + 1;
+              serialNum = `F${String(nextNum).padStart(4, '0')}`;
+              console.log('🔢 Auto-generated serial:', serialNum);
+            }
+
             const f = {
-              name: el("fName").value.trim(),
-              phone: el("fPhone").value.trim(),
-              address: el("fAddress").value.trim(),
-              city: el("fCity").value.trim(),
-              pincode: el("fPincode").value.trim(),
-              gst: el("fGst").value.trim().toUpperCase(),
-              balance: Number(el("fBalance").value) || 0,
-              active: el("fActive").value === "1",
-              animalType: el("fAnimalType").value
+              serial: serialNum,
+              name: fName.value ? fName.value.trim() : '',
+              phone: fPhone ? (fPhone.value ? fPhone.value.trim() : '') : '',
+              address: fAddress ? (fAddress.value ? fAddress.value.trim() : '') : '',
+              city: fCity ? (fCity.value ? fCity.value.trim() : '') : '',
+              pincode: fPincode ? (fPincode.value ? fPincode.value.trim() : '') : '',
+              gst: fGst ? (fGst.value ? fGst.value.trim().toUpperCase() : '') : '',
+              balance: fBalance ? (Number(fBalance.value) || 0) : 0,
+              active: fActive ? fActive.value === "1" : true,
+              animalType: fAnimalType ? fAnimalType.value : 'cow'
             };
+            console.log('🔵 Farmer data:', f);
+            
             if (!f.name) {
               showToast("Name required");
               console.error('❌ Farmer creation failed: Name is required');
@@ -4435,7 +4559,7 @@ function showAuditProof(entryId) {
             btn.innerHTML = '⏳ Creating...';
 
             try {
-              // Try API first, fallback to local storage
+              // Try API first (Supabase backend)
               const response = await fetch('/api/farmers', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -4453,9 +4577,14 @@ function showAuditProof(entryId) {
                 farmers.push(localFarmer);
                 saveFarmers(farmers);
                 selectedFarmerId = localFarmer.id;
+                
+                closeOverlay("overlayFarmer");
+                renderAll();
                 showToast("Farmer created in Supabase! ✅");
+                console.log('✅ Farmer created:', localFarmer);
               } else {
                 // Fallback to local storage
+                console.log('⚠️ API not available, using local storage');
                 const localFarmer = {
                   id: "f" + Date.now(),
                   ...f
@@ -4463,14 +4592,15 @@ function showAuditProof(entryId) {
                 farmers.push(localFarmer);
                 saveFarmers(farmers);
                 selectedFarmerId = localFarmer.id;
+                
+                closeOverlay("overlayFarmer");
+                renderAll();
                 showToast("Farmer created (Local) ✅");
+                console.log('✅ Farmer created (local):', localFarmer);
               }
 
-              closeOverlay("overlayFarmer");
-              renderAll();
-
             } catch (error) {
-              console.error('Error creating farmer:', error);
+              console.error('❌ Error creating farmer:', error);
               // Final fallback to local storage
               const localFarmer = {
                 id: "f" + Date.now(),
@@ -4488,6 +4618,8 @@ function showAuditProof(entryId) {
             }
           };
           console.log('✅ Create Farmer button initialized');
+        } else {
+          console.error('❌ Create Farmer button NOT found!');
         }
 
         // Demo Farmers button
@@ -4741,64 +4873,100 @@ document.addEventListener('keydown', (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
 
+            // Skip readonly serial field - auto-generated
+            if (active.id === "fSerial") {
+                el("fName").focus();
+                return;
+            }
+
             // Toggle animal type with Enter (Cow → Buffalo → Both → Cow)
             if (active.id === 'fAnimalCow' || active.id === 'fAnimalBuffalo' || active.id === 'fAnimalBoth') {
-                const currentAnimal = el("fAnimalType").value;
-                const nextAnimal = currentAnimal === 'cow' ? 'buffalo' : currentAnimal === 'buffalo' ? 'both' : 'cow';
-                selectFarmerAnimal(nextAnimal);
+                const animalTypeField = el("fAnimalType");
+                if (animalTypeField) {
+                  const currentAnimal = animalTypeField.value;
+                  const nextAnimal = currentAnimal === 'cow' ? 'buffalo' : currentAnimal === 'buffalo' ? 'both' : 'cow';
+                  selectFarmerAnimal(nextAnimal);
+                }
+                return;
+            }
+
+            // On fName → Move to Phone
+            if (active.id === "fName") {
+                const phoneField = el("fPhone");
+                if (phoneField) phoneField.focus();
+                return;
+            }
+
+            // On fPhone → Move to Milk Type (Cow button)
+            if (active.id === "fPhone") {
+                const cowBtn = el("fAnimalCow");
+                if (cowBtn) cowBtn.focus();
                 return;
             }
 
             // On fActive → Move to Address (optional section)
             if (active.id === "fActive") {
-                el("fAddress").focus();
+                const addressField = el("fAddress");
+                if (addressField) addressField.focus();
                 return;
             }
 
             // On fCity → Move to Pincode
             if (active.id === "fCity") {
-                el("fPincode").focus();
+                const pincodeField = el("fPincode");
+                if (pincodeField) pincodeField.focus();
                 return;
             }
 
             // On fPincode → Move to GST
             if (active.id === "fPincode") {
-                el("fGst").focus();
+                const gstField = el("fGst");
+                if (gstField) gstField.focus();
                 return;
             }
 
             // On fGst → Move to Image
             if (active.id === "fGst") {
-                el("fImage").focus();
+                const imageField = el("fImage");
+                if (imageField) imageField.focus();
                 return;
             }
 
             // On fBalance → Move to Status
             if (active.id === "fBalance") {
-                el("fActive").focus();
+                const statusField = el("fActive");
+                if (statusField) statusField.focus();
                 return;
             }
 
             // On fImage → Move to Create button
             if (active.id === "fImage") {
-                el("btnCreateFarmer").focus();
+                const createBtn = el("btnCreateFarmer");
+                if (createBtn) createBtn.focus();
                 return;
             }
 
             // On Create button → Create farmer
             if (active.id === "btnCreateFarmer") {
-                el("btnCreateFarmer").click();
-                setTimeout(() => {
-                  el("searchInput").focus();
-                }, 150);
+                const createBtn = el("btnCreateFarmer");
+                if (createBtn) {
+                  createBtn.click();
+                  setTimeout(() => {
+                    const searchInput = el("searchInput");
+                    if (searchInput) searchInput.focus();
+                  }, 150);
+                }
                 return;
             }
 
-            // Move to next field
+            // Move to next field in form order
             if (curIdx !== -1 && curIdx < formOrder.length - 1) {
-                el(formOrder[curIdx + 1]).focus();
-                if (el(formOrder[curIdx + 1]).tagName === "INPUT" && el(formOrder[curIdx + 1]).type !== "file") {
-                    el(formOrder[curIdx + 1]).select();
+                const nextField = el(formOrder[curIdx + 1]);
+                if (nextField) {
+                    nextField.focus();
+                    if (nextField.tagName === "INPUT" && nextField.type !== "file") {
+                        nextField.select();
+                    }
                 }
             }
         }
@@ -4895,8 +5063,12 @@ function openFarmerDetail(fId) {
     const f = getFarmerById(fId);
     if (!f) return;
     selectedFarmerId = fId;
-    el("detailFarmerName").textContent = f.name;
-    el("detailAdvance").textContent = `₹${round2(f.advance || 0).toFixed(2)}`;
+    
+    // Show serial number if available
+    const nameDisplay = f.serial ? `${f.name} (#${f.serial})` : f.name;
+    el("detailFarmerName").textContent = nameDisplay;
+    
+    el("detailAdvance").textContent = formatAmount(f.advance || 0);
 
     const now = new Date();
     const monthEntries = entries.filter(e => e.farmerId === fId && new Date(e.createdAt).getMonth() === now.getMonth());
@@ -4919,7 +5091,7 @@ function openFarmerTransactions(fId) {
     const monthEntries = entries.filter(e => e.farmerId === fId && new Date(e.createdAt) >= monthStart);
     const totalMilk = monthEntries.reduce((sum, e) => sum + Number(e.qty || 0), 0);
     el("transTotalMilk").textContent = `${totalMilk.toFixed(1)} L`;
-    el("transCurrentAdvance").textContent = `₹${round2(f.advance || 0).toFixed(2)}`;
+    el("transCurrentAdvance").textContent = formatAmount(f.advance || 0);
     
     // Generate transaction list
     const transList = el("transList");
@@ -4956,8 +5128,8 @@ function openFarmerTransactions(fId) {
               <div style="color: var(--muted); font-size: 11px;">${t.date.toLocaleDateString()}</div>
             </div>
             <div style="text-align: right;">
-              <div style="font-weight: 700; color: #dc2626;">-₹${t.amount.toFixed(2)}</div>
-              <div style="color: var(--muted); font-size: 11px;">Bal: ₹${t.balance.toFixed(2)}</div>
+              <div style="font-weight: 700; color: #dc2626;">-${formatAmount(t.amount)}</div>
+              <div style="color: var(--muted); font-size: 11px;">Bal: ${formatAmount(t.balance)}</div>
             </div>
           </div>
         `).join('');
@@ -4974,11 +5146,11 @@ function updateFarmerAdvance() {
     
     if (action === 'give') {
         f.advance = (f.advance || 0) + amt;
-        showToast(`₹${amt} advance given ✅`);
+        showToast(`${formatAmount(amt)} advance given ✅`);
     } else {
         if ((f.advance || 0) < amt) return showToast("Insufficient advance");
         f.advance = (f.advance || 0) - amt;
-        showToast(`₹${amt} advance cut ✅`);
+        showToast(`${formatAmount(amt)} advance cut ✅`);
     }
     
     saveFarmers(farmers);
@@ -4989,10 +5161,10 @@ function updateFarmerAdvance() {
 function sendFarmerSummary() {
     const f = getFarmerById(selectedFarmerId);
     if (!f) return;
-    
+
     const totalMilk = el("transTotalMilk").textContent;
     const currentAdv = el("transCurrentAdvance").textContent;
-    const currentBal = `₹${round2(f.balance || 0).toFixed(2)}`;
+    const currentBal = formatAmount(f.balance || 0);
     const monthName = new Date().toLocaleString('default', { month: 'long' });
     
     const msg = `*Milk Summary - ${monthName}*
@@ -5021,12 +5193,12 @@ function handleAdvanceChange(isAdding) {
     if (isAdding) {
         f.advance = (f.advance || 0) + amt;
         f.balance = (f.balance || 0) - amt;
-        showToast(`₹${amt} Advance Added ✅`);
+        showToast(`${formatAmount(amt)} Advance Added ✅`);
     } else {
         if ((f.advance || 0) < amt) return showToast("Not enough advance");
         f.advance = (f.advance || 0) - amt;
         f.balance = (f.balance || 0) + amt;
-        showToast(`₹${amt} Advance Cut ✂️`);
+        showToast(`${formatAmount(amt)} Advance Cut ✂️`);
     }
     saveFarmers(farmers);
     el("advAmount").value = "";
@@ -5045,7 +5217,7 @@ el("btnDetailWhatsApp").onclick = () => {
     const monthName = now.toLocaleString('default', { month: 'long' });
     const totalMilk = el("detailMonthlyMilk").textContent;
     const currentAdv = el("detailAdvance").textContent;
-    const currentBal = `₹${round2(f.balance || 0).toFixed(2)}`;
+    const currentBal = formatAmount(f.balance || 0);
 
     // 2. Message ka format (Plain Hindi + Numbers jaisa document mein likha hai)
     const msg = `*Milk Summary - ${monthName}*
@@ -5084,7 +5256,7 @@ el("btnDailySummary").onclick = () => {
 ---------------------------
 ✅ *Total Entries:* ${todays.length}
 ✅ *Total Milk:* ${totalMilk.toFixed(1)} L
-✅ *Total Amount:* ₹${totalAmt.toFixed(2)}
+✅ *Total Amount:* ${formatAmount(totalAmt)}
 ---------------------------
 *Gopal Dairy Shop*`;
 
@@ -5110,7 +5282,7 @@ function sendDailySummary() {
     todays.forEach((e, index) => {
         totalQty += Number(e.qty);
         totalAmt += Number(e.amount);
-        detailMsg += `\n${index + 1}. ${e.session}: ${e.qty}L | ₹${e.amount}`;
+        detailMsg += `\n${index + 1}. ${e.session}: ${e.qty}L | ${formatAmount(e.amount)}`;
     });
 
     const farmer = getFarmerById(selectedFarmerId);
@@ -5124,7 +5296,7 @@ function sendDailySummary() {
                        `${detailMsg}\n` +
                        `--------------------------\n` +
                        `*Total Milk: ${totalQty.toFixed(1)} L*\n` +
-                       `*Total Amount: ₹${totalAmt.toFixed(2)}*\n\n` +
+                       `*Total Amount: ${formatAmount(totalAmt)}*\n\n` +
                        `Gopal Dairy Shop 🙏`;
 
     if (phone) {
@@ -5142,29 +5314,65 @@ function applyFarmerRoundup() {
   const roundupLabel = el("farmerRoundupLabel");
   const roundupValue = el("farmerRoundupValue");
   const balAfter = el("balAfter");
-  
+  const finalAmountInput = el("finalAmountInput");
+
   if (roundValue > 0 && balAfter) {
     const currentBal = parseFloat(balAfter.textContent.replace('₹', '')) || 0;
     const rounded = Math.round(currentBal / roundValue) * roundValue;
-    
+
     if (roundupLabel) {
-      roundupLabel.style.display = 'block';
+      roundupLabel.style.display = 'flex';
       const diff = rounded - currentBal;
       if (diff >= 0) {
-        roundupValue.textContent = `+₹${diff.toFixed(2)}`;
+        roundupValue.textContent = `+${diff.toFixed(0)}`;
         roundupValue.style.color = '#16a34a';
       } else {
-        roundupValue.textContent = `₹${diff.toFixed(2)}`;
+        roundupValue.textContent = diff.toFixed(0);
         roundupValue.style.color = '#dc2626';
       }
     }
-    
+
     // Update balance display to show rounded (final accepted) value
-    balAfter.textContent = '₹' + rounded.toFixed(2);
+    balAfter.textContent = formatAmount(rounded);
+    
+    // Auto-fill final amount input
+    if (finalAmountInput) {
+      finalAmountInput.value = round2(rounded).toFixed(2);
+    }
   } else {
     if (roundupLabel) roundupLabel.style.display = 'none';
     // Re-render to restore original balance
     renderTrust();
+  }
+}
+
+// Save final accepted amount for current farmer
+function saveFinalAmount() {
+  const finalAmountInput = el("finalAmountInput");
+  if (!finalAmountInput || !selectedFarmerId) return;
+  
+  const finalAmount = parseFloat(finalAmountInput.value) || 0;
+  
+  // Save to localStorage per farmer
+  const key = `farmer_final_amount_${selectedFarmerId}`;
+  localStorage.setItem(key, finalAmount.toString());
+  
+  console.log(`💾 Saved final amount ₹${finalAmount.toFixed(2)} for farmer ${selectedFarmerId}`);
+}
+
+// Load saved final amount for current farmer
+function loadFinalAmount() {
+  const finalAmountInput = el("finalAmountInput");
+  if (!finalAmountInput || !selectedFarmerId) return;
+  
+  const key = `farmer_final_amount_${selectedFarmerId}`;
+  const savedAmount = localStorage.getItem(key);
+  
+  if (savedAmount) {
+    finalAmountInput.value = savedAmount;
+    console.log(`🔄 Loaded saved final amount ₹${savedAmount} for farmer ${selectedFarmerId}`);
+  } else {
+    finalAmountInput.value = '';
   }
 }
 
@@ -5202,15 +5410,20 @@ function updateDailySummaryButton() {
 }
 // ... iske niche init(); function hona chahiye ...
 
-// ESC Key Handler for ALL Modals
+// ESC Key Handler for ALL Modals (EXCEPT farmer form - has its own handler)
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
+    // Skip farmer form - it has dedicated ESC handler that requires confirmation
+    const farmerModal = document.getElementById('overlayFarmer');
+    if (farmerModal && farmerModal.style.display === 'flex') {
+      return; // Let the dedicated farmer modal ESC handler manage it
+    }
+    
     // Method 1: Close using closeOverlay function
     const overlays = [
-      'overlayFarmer', 
-      'overlayFarmerDetail', 
-      'overlayReceipt', 
-      'overlayEntryDetail', 
+      'overlayFarmerDetail',
+      'overlayReceipt',
+      'overlayEntryDetail',
       'overlayPayment',
       'overlayHold',
       'overlayRateEditor',
@@ -5222,7 +5435,7 @@ document.addEventListener('keydown', function(e) {
       'overlayBMCReconcile',
       'overlayPaymentObligation'
     ];
-    
+
     overlays.forEach(id => {
       const overlay = document.getElementById(id);
       if (overlay && overlay.style.display === 'flex') {
@@ -5231,7 +5444,7 @@ document.addEventListener('keydown', function(e) {
         }
       }
     });
-    
+
     // Method 2: Click any visible close button with data-close attribute
     document.querySelectorAll('[data-close]').forEach(btn => {
       const overlayId = btn.getAttribute('data-close');
@@ -5240,7 +5453,7 @@ document.addEventListener('keydown', function(e) {
         btn.click();
       }
     });
-    
+
     // Method 3: Fallback - hide any visible overlay
     document.querySelectorAll('.overlay[style*="display: flex"]').forEach(overlay => {
       overlay.style.display = 'none';

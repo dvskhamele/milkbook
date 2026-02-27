@@ -107,18 +107,28 @@
         left: 50%;
         transform: translateX(-50%);
         background: var(--panel);
-        border-top: 3px solid var(--line);
-        padding: 10px 15px;
+        border-top: 3px solid #16a34a;
+        padding: 12px 15px;
         z-index: 99;
         box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
         width: fit-content;
-        min-width: min(750px, 95vw);
-        max-width: min(900px, 98vw);
+        min-width: min(900px, 95vw);
+        max-width: min(1100px, 98vw);
         border-radius: 16px 16px 0 0;
       }
       
+      /* Ensure emojis render properly on all systems */
+      .payment-section, .p-card, .cardRow, .modal, body, .p-card .emoji, #cartItems td span {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif !important;
+      }
+      .p-card .emoji, #cartItems td span {
+        font-size: inherit !important;
+        display: inline-block !important;
+        line-height: 1 !important;
+      }
+
       /* Add padding to right panel to prevent content hiding behind fixed payment */
-      .right-panel { padding-bottom: 200px; }
+      .right-panel { padding-bottom: 220px; }
 
       /* Tablet (768px - 1024px): Side by side with adjusted heights */
       @media (min-width: 768px) and (max-width: 1024px) {
@@ -156,24 +166,27 @@
         .payment-section {
           position: fixed;
           bottom: 0;
-          left: 0;
-          right: 0;
-          width: 100% !important;
-          transform: none !important;
+          left: 50%;
+          transform: translateX(-50%);
           background: white;
-          border-top: 2px solid #e2e8f0;
-          padding: 10px;
+          border-top: 3px solid #16a34a;
+          padding: 12px 15px;
           z-index: 99;
-          box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
-          border-radius: 12px 12px 0 0;
+          box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
+          border-radius: 16px 16px 0 0;
+          width: min(900px, 100vw - 20px) !important;
         }
         /* Maintain left column layout on mobile */
         .payment-section > div:first-child {
-          grid-template-columns: 280px 1fr !important;
-          gap: 10px !important;
+          grid-template-columns: auto 1fr !important;
+          gap: 12px !important;
+        }
+        .payment-section > div:first-child > div:first-child {
+          min-width: 300px !important;
         }
         .payment-section #totalPayableDisplay {
           font-size: 48px !important;
+          color: #16a34a !important;
         }
         .payment-section #paymentAmount {
           font-size: 18px !important;
@@ -505,26 +518,25 @@
 
           <!-- Fixed Payment Section -->
           <div class="payment-section">
-            <!-- Two Column Layout: Total (Left - Compact) + All Inputs (Right) -->
-            <div style="display: grid; grid-template-columns: 260px 1fr; gap: 10px; align-items: stretch; position: relative; min-height: 190px;">
+            <!-- Two Column Layout: Total (Left - Auto Width) + All Inputs (Right) -->
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: stretch; position: relative; min-height: 200px;">
 
-              <!-- TOTAL PAYABLE (Left Column - Full Height) -->
-              <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 4px solid #16a34a; border-radius: 12px; padding: 15px 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%;">
-                <div style="font-size: 12px; color: #166534; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1.5px;">Net Payable</div>
-                <div id="totalPayableDisplay" style="font-size: 56px; font-weight: 900; color: #16a34a; line-height: 1.1; width: 100%;">₹0.00</div>
+              <!-- TOTAL PAYABLE (Left Column - Full Height, Auto Width) -->
+              <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 4px solid #16a34a; border-radius: 12px; padding: 15px 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; min-width: 350px;">
+                <div style="font-size: 13px; color: #166534; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; white-space: nowrap;">Net Payable</div>
+                <div id="totalPayableDisplay" style="font-size: 56px; font-weight: 900; color: #16a34a; line-height: 1.1; white-space: nowrap;">₹0.00</div>
               </div>
 
               <!-- Right Column: Payment Form (Shows when advance is closed) -->
               <div id="paymentForm" style="display: flex !important; flex-direction: column; gap: 6px; justify-content: center;">
-                <!-- Row 1: Payment Amount + Roundup (Side by Side) -->
-                <div style="display: grid; grid-template-columns: 1fr 100px; gap: 6px;">
-                  <input type="number" id="paymentAmount" placeholder="Enter amount (₹)" style="width: 100%; padding: 11px; border: 2px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 17px; box-sizing:border-box;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
-                  <input type="number" id="roundupInput" placeholder="Round" step="1" style="width: 100%; padding: 11px; border: 2px dashed #3b82f6; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; background: #eff6ff; box-sizing:border-box;" oninput="applyRoundup()" title="Round to nearest 10, 50, 100 etc." />
+                <!-- Row 1: Payment Amount (with integrated roundup) -->
+                <div style="display: flex; gap: 6px;">
+                  <input type="number" id="paymentAmount" placeholder="Enter amount (₹)" style="flex: 1; padding: 11px; border: 2px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 17px; box-sizing:border-box;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
+                  <input type="number" id="roundupInput" placeholder="Round" step="1" style="width: 80px; padding: 11px; border: 2px dashed #3b82f6; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; background: #eff6ff; box-sizing:border-box;" oninput="applyRoundup()" title="Round to nearest 10, 50, 100 etc." />
                 </div>
 
-                <!-- Row 2: Roundup Label + Status (Text Only, Minimal Height) -->
+                <!-- Row 2: Status Display -->
                 <div style="display: flex; justify-content: center; align-items: center; gap: 12px; min-height: 20px;">
-                  <div id="roundupLabel" style="font-size: 11px; color: #3b82f6; font-weight: 700; display: none;">🔄 ₹<span id="roundupValue">0</span></div>
                   <div id="creditDisplay" style="font-size: 13px; font-weight: 700; color: #166534;">सही राशि!</div>
                 </div>
 
@@ -606,21 +618,30 @@
         <div class="modal" style="width:450px; height:auto;">
             <div class="panelHeader"><span>👤 Add/Edit Customer</span> <button onclick="closeModal('addCustModal')">✖</button></div>
             <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
-                <input type="text" id="newName" placeholder="Full Name" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
-                <input type="tel" id="newPhone" placeholder="WhatsApp Mobile (e.g., 9876543210)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" inputmode="tel" pattern="[0-9]{10}" />
-                <input type="email" id="newEmail" placeholder="Email (for invoice)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" />
-                <input type="date" id="newBirthday" placeholder="Birthday" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" />
-                <input type="text" id="newGst" placeholder="GST Number (Optional)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" />
-                <select id="newType" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
-                    <option value="Retail">Retail Walk-in</option>
-                    <option value="PACS">PACS Member</option>
-                    <option value="FPO">FPO Shareholder</option>
-                </select>
-                <div style="background:#f8fafc; padding:10px; border-radius:10px; border:1px solid var(--line);">
-    <label style="font-size:11px; font-weight:1000; color:var(--muted);">SUBSCRIPTION PLAN (Point 17)</label>
-    <input type="number" id="subQty" placeholder="Daily Quantity (L)" style="width:100%; padding:10px; border:none; background:transparent; font-weight:1000;">
-</div>
-                <button class="add-btn" style="height:50px; background:var(--green);" onclick="addCust()">Save Customer</button>
+                <!-- Customer ID (Auto-generated, Editable) -->
+                <div style="display:grid; grid-template-columns: 1fr 2fr; gap:8px;">
+                  <input type="text" id="newCustId" placeholder="ID (e.g., C001)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size:13px;" />
+                  <input type="text" id="newName" placeholder="Full Name *" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" required />
+                </div>
+                <input type="tel" id="newPhone" placeholder="📱 WhatsApp Mobile (e.g., 9876543210)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" inputmode="tel" pattern="[0-9]{10}" />
+                <input type="email" id="newEmail" placeholder="✉️ Email (optional)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
+                <input type="text" id="newAddress" placeholder="📍 Address (optional)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
+
+                <!-- Unit Selection with Suggestions -->
+                <div style="position:relative;">
+                  <input type="text" id="newUnit" placeholder="Unit (L/kg/g/ml)" list="unitSuggestions" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000; width:100%; box-sizing:border-box;">
+                  <datalist id="unitSuggestions">
+                    <option value="L">
+                    <option value="ml">
+                    <option value="kg">
+                    <option value="g">
+                    <option value="pcs">
+                    <option value="box">
+                  </datalist>
+                  <a href="https://emojicombos.com/unit-measurement" target="_blank" style="font-size:11px; color:#3b82f6; text-decoration:none; display:block; margin-top:4px;">🔗 Get unit emojis</a>
+                </div>
+
+                <button class="add-btn" style="padding:14px; background:var(--blue); color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-size:15px;" onclick="addNewCustomer()">➕ Add Customer</button>
             </div>
         </div>
     </div>
@@ -633,32 +654,41 @@
     </div>
 
     <div class="overlay" id="historyModal">
-      <div class="modal" style="width:700px; height:auto; max-height:90vh;">
-        <div class="panelHeader">
+      <div class="modal" style="width:min(800px, 95vw); height:auto; max-height:95vh; display:flex; flex-direction:column;">
+        <div class="panelHeader" style="flex-shrink:0;">
           <span id="lblHistTitle">🧾 History</span>
-          <button onclick="closeModal('historyModal')">✖</button>
+          <button onclick="closeModal('historyModal')" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b; padding:0; width:32px; height:32px;">✖</button>
         </div>
 
         <!-- Tabs -->
-        <div style="display:flex; border-bottom:1px solid var(--line); padding:0 20px;">
+        <div style="display:flex; border-bottom:1px solid var(--line); padding:0 20px; flex-shrink:0;">
           <button onclick="switchHistoryTab('today')" id="tabToday" style="flex:1; padding:12px; border:none; background:none; font-weight:700; cursor:pointer; border-bottom:3px solid var(--blue);">📅 Today</button>
           <button onclick="switchHistoryTab('all')" id="tabAll" style="flex:1; padding:12px; border:none; background:none; font-weight:700; cursor:pointer; border-bottom:3px solid transparent;">📚 All History</button>
         </div>
 
-        <!-- Tab Content -->
-        <div class="modalBody" style="display:block; padding:15px; overflow-y:auto; max-height:70vh;">
+        <!-- Tab Content - Takes remaining space -->
+        <div style="flex:1; overflow-y:auto; padding:15px; min-height:0;">
           <div id="historyToday" style="display:block;"></div>
           <div id="historyWeekly" style="display:none;"></div>
         </div>
 
         <!-- Footer Actions -->
-        <div style="padding:15px 20px; border-top:1px solid var(--line); display:flex; gap:10px; justify-content:space-between;">
-          <div style="font-size:13px; color:var(--muted); font-weight:700;">
-            <span id="historyCount">1 today • 0 in 7d</span>
+        <div style="padding:15px 20px; border-top:1px solid var(--line); flex-shrink:0;">
+          <!-- Cash In/Out Buttons -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+            <button onclick="promptCashIn()" style="padding:10px; background:#dcfce7; color:#166534; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">💰 Cash In</button>
+            <button onclick="promptCashOut()" style="padding:10px; background:#fef3c7; color:#92400e; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">💸 Cash Out</button>
           </div>
-          <div style="display:flex; gap:8px;">
-            <button onclick="downloadHistoryCSV()" style="padding:8px 16px; background:#eff6ff; color:#1e40af; border:none; border-radius:8px; font-weight:700; cursor:pointer;">⬇️ Export</button>
-            <button onclick="clearTodayHistory()" style="padding:8px 16px; background:#fecaca; color:#7f1d1d; border:none; border-radius:8px; font-weight:700; cursor:pointer;">🗑️ Clear Today</button>
+
+          <div style="display:flex; gap:10px; justify-content:space-between; align-items:center;">
+            <div style="font-size:13px; color:var(--muted); font-weight:700;">
+              <span id="historyCount">1 today • 0 in 7d</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button onclick="downloadHistoryExcel()" style="padding:8px 16px; background:#eff6ff; color:#1e40af; border:none; border-radius:8px; font-weight:700; cursor:pointer;">⬇️ Excel</button>
+              <button onclick="downloadHistoryPDF()" style="padding:8px 16px; background:#fef3c7; color:#92400e; border:none; border-radius:8px; font-weight:700; cursor:pointer;">📄 PDF</button>
+              <button onclick="clearTodayHistory()" style="padding:8px 16px; background:#fecaca; color:#7f1d1d; border:none; border-radius:8px; font-weight:700; cursor:pointer;">🗑️ Clear</button>
+            </div>
           </div>
         </div>
       </div>
@@ -684,12 +714,16 @@
         <div class="modal" style="width:90vw !important; max-width:450px !important; height:auto !important; max-height:90vh !important; overflow-y:auto !important; display:block !important; grid-template-rows:none !important;">
             <div class="panelHeader"><span>📦 Add New Product</span> <button onclick="closeModal('addProductModal')" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b; padding:0; width:32px; height:32px; display:flex; align-items:center; justify-content:center;">✖</button></div>
             <form onsubmit="event.preventDefault(); addNewProductFromModal();" style="padding:20px; display:flex; flex-direction:column; gap:15px;">
-                <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" onkeydown="handleProductFieldEnter(event)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" required />
+                <input type="text" id="pName" placeholder="Product Name (e.g., Curd 500g)" onkeydown="handleProductFieldEnter(event)" oninput="updateEmojiLink(this.value)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" required />
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                   <input type="number" id="pPrice" placeholder="Price (₹)" step="0.01" min="0" onkeydown="handleProductFieldEnter(event)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" required />
-                  <input type="text" id="pUnit" placeholder="Unit (L/kg/g)" value="unit" onkeydown="handleProductFieldEnter(event)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" />
-                </div>
+                  <input type="text" id="pUnit" placeholder="Unit (L/kg/g)" list="dairyUnitSuggestions" value="unit" onkeydown="handleProductFieldEnter(event)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" />
+                <datalist id="dairyUnitSuggestions">
+                  <option value="L"><option value="ml"><option value="kg"><option value="g"><option value="pcs"><option value="box"><option value="packet"><option value="bottle">
+                </datalist>
+              </div>
                 <input type="text" id="pEmoji" placeholder="Emoji (🥛, 🧀)" value="📦" onkeydown="handleProductFieldEnter(event)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" />
+                <a id="emojiComboLink" href="https://emojicombos.com/" target="_blank" style="font-size:11px; color:#3b82f6; text-decoration:none; display:block; margin-top:4px;">🔗 Copy emojis from EmojiCombos</a>
 
                 <!-- Editable Steps Section -->
                 <div style="background:#f8fafc; padding:16px; border-radius:10px; border:1px solid var(--line);">
@@ -1054,28 +1088,43 @@
       // Load data with signature verification AND RECOVERY
       function loadData(key, defaultValue = null) {
         try {
-          const wrapped = JSON.parse(localStorage.getItem(key) || 'null');
-          if (!wrapped || !wrapped.data) return defaultValue;
-
-          // Verify signature
-          const expectedSig = createSignature(wrapped.data);
-          if (wrapped.signature !== expectedSig) {
-            console.warn('⚠️ Data signature mismatch for', key, '- attempting recovery');
-            return recoverData(key, defaultValue);
-          }
+          const raw = localStorage.getItem(key);
+          if (!raw) return defaultValue;
           
-          // FINAL VALIDATION: Ensure array data is actually an array
-          if (key.includes('cart') || key.includes('customers') || 
-              key.includes('history') || key.includes('products') || 
-              key.includes('order')) {
-            if (!Array.isArray(wrapped.data)) {
-              console.error('❌ Loaded non-array for', key, '- using default');
-              return Array.isArray(defaultValue) ? defaultValue : [];
+          const parsed = JSON.parse(raw);
+          
+          // Check if this is NEW format (wrapped object) or OLD format (raw array)
+          if (parsed && typeof parsed === 'object' && parsed.data !== undefined) {
+            // NEW format: {data: [...], signature: '...', timestamp: '...'}
+            const wrapped = parsed;
+            
+            // Verify signature
+            const expectedSig = createSignature(wrapped.data);
+            if (wrapped.signature !== expectedSig) {
+              console.warn('⚠️ Data signature mismatch for', key, '- attempting recovery');
+              return recoverData(key, defaultValue);
             }
-          }
 
-          console.log(`✅ [${wrapped.timestamp}] Loaded ${key}`);
-          return wrapped.data;
+            // FINAL VALIDATION: Ensure array data is actually an array
+            if (key.includes('cart') || key.includes('customers') ||
+                key.includes('history') || key.includes('products') ||
+                key.includes('order')) {
+              if (!Array.isArray(wrapped.data)) {
+                console.error('❌ Loaded non-array for', key, '- using default');
+                return Array.isArray(defaultValue) ? defaultValue : [];
+              }
+            }
+
+            console.log(`✅ [${wrapped.timestamp}] Loaded ${key}`);
+            return wrapped.data;
+          } else {
+            // OLD format: raw array - use it but don't trust signature
+            console.log(`⚠️ Loaded old format data for ${key}, will update on next save`);
+            if (Array.isArray(parsed)) {
+              return parsed;
+            }
+            return defaultValue;
+          }
         } catch (error) {
           console.error('❌ Load failed:', error);
           return recoverData(key, defaultValue);
@@ -1339,8 +1388,8 @@
       function updateTotalPayableDisplay() {
         const totalPayable = el("totalPayableDisplay");
         if (totalPayable) {
-          // Format with commas for better readability
-          totalPayable.textContent = '₹' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          // Format with Indian numbering system (lakhs and crores)
+          totalPayable.textContent = formatINR(total);
           totalPayable.style.color = '#16a34a'; // Reset to green
         }
       }
@@ -1348,42 +1397,27 @@
       // Apply roundup to payment amount - this becomes the FINAL accepted amount
       function applyRoundup() {
         const roundValue = parseInt(el("roundupInput").value) || 0;
-        const roundupLabel = el("roundupLabel");
-        const roundupValue = el("roundupValue");
         const paymentAmount = el("paymentAmount");
         const totalPayableDisplay = el("totalPayableDisplay");
-        
+
         if (roundValue > 0 && total > 0) {
           // Round to nearest value (10, 50, 100, etc.)
           const rounded = Math.round(total / roundValue) * roundValue;
-          
+
           // Auto-update payment amount to rounded total
-          paymentAmount.value = rounded;
-          
+          paymentAmount.value = formatIndianNumber(rounded);
+
           // Also update the big TOTAL PAYABLE display to show rounded amount
-          totalPayableDisplay.textContent = '₹' + rounded.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          totalPayableDisplay.textContent = formatINR(rounded);
           totalPayableDisplay.style.color = '#1e40af'; // Darker blue to show it's modified
-          
-          if (roundupLabel) {
-            roundupLabel.style.display = 'flex';
-            const diff = rounded - total;
-            if (diff >= 0) {
-              roundupValue.textContent = '+' + diff.toFixed(2);
-              roundupValue.style.color = '#16a34a';
-            } else {
-              roundupValue.textContent = diff.toFixed(2);
-              roundupValue.style.color = '#dc2626';
-            }
-          }
         } else {
           // Reset to total if no roundup
-          if (roundupLabel) roundupLabel.style.display = 'none';
-          paymentAmount.value = total.toFixed(2);
-          
+          paymentAmount.value = formatIndianNumber(total);
+
           // Reset total payable display to original total
           updateTotalPayableDisplay();
         }
-        
+
         calculateCredit();
       }
 
@@ -1456,19 +1490,22 @@
 
         // Save the entry with the ACTUAL accepted amount (rounded/negotiated)
         // This becomes the invoice amount
+        // IMPORTANT: Save cart items BEFORE resetCart() clears them!
+        const cartItemsForInvoice = JSON.parse(JSON.stringify(cart));
+        
         saveEntryWithPayment(paymentMode, paymentAmount, creditAmount);
 
-        // Generate and download invoice with accepted amount
-        generateInvoice(customerName, paymentAmount, paymentMode, creditAmount);
+        // Generate and download invoice with accepted amount (use saved cart items)
+        generateInvoice(customerName, paymentAmount, paymentMode, creditAmount, cartItemsForInvoice);
 
         // Open WhatsApp after a short delay if phone exists, otherwise print
         setTimeout(() => {
           if (customer && customer.phone && customer.phone.trim().length >= 10) {
-            // Phone exists - open WhatsApp
-            openWhatsAppInvoice(customer, paymentAmount, creditAmount);
+            // Phone exists - open WhatsApp (use saved cart items)
+            openWhatsAppInvoice(customer, paymentAmount, creditAmount, cartItemsForInvoice);
           } else {
-            // No phone - open invoice in new tab and print
-            printInvoice(customerName, paymentAmount, paymentMode, creditAmount);
+            // No phone - open invoice in new tab and print (use saved cart items)
+            printInvoice(customerName, paymentAmount, paymentMode, creditAmount, cartItemsForInvoice);
           }
         }, 500);
       }
@@ -1537,30 +1574,35 @@
         // Update UI
         const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px; cursor:pointer;" onclick="loadOrderFromHistory('${custName}', ${JSON.stringify(cart).replace(/"/g, '&quot;')})">
           <div style="width:100%; display:flex; justify-content:space-between;">
-            <b>${custName}</b><b>₹${total.toFixed(2)}</b>
+            <b>${custName}</b><b>${formatINR(total)}</b>
           </div>
           <div style="font-size:11px; color:var(--muted); font-weight:700;">
-            ${time} • 🛒 ${itemsDetail} • ${modeIcon(mode)} ${mode}${creditAmount > 0 ? ` • Credit: ₹${creditAmount.toFixed(2)}` : ''}
+            ${time} • 🛒 ${itemsDetail} • ${modeIcon(mode)} ${mode}${creditAmount > 0 ? ` • Credit: ${formatINR(creditAmount)}` : ''}
             <span style="color:var(--blue); font-weight:700; margin-left:8px;">🔁 Click to reload</span>
           </div>
         </div>`;
         el("historyToday").innerHTML = entry + el("historyToday").innerHTML;
+
+        // Track frequent buys for this customer
+        if (custName !== "Walking Customer") {
+          trackFrequentBuy(custName, cart);
+        }
 
         resetCart();
         showToast(`Saved! Paid: ₹${paidAmount.toFixed(2)}${creditAmount > 0 ? ` • Credit: ₹${creditAmount.toFixed(2)}` : ''} ✅`);
       }
       
       // Generate invoice HTML and download as PDF
-      function generateInvoice(customerName, paymentAmount, paymentMode, creditAmount) {
+      function generateInvoice(customerName, paymentAmount, paymentMode, creditAmount, cartItems = null) {
         const date = new Date().toLocaleDateString('en-IN', {
           day: 'numeric', month: 'short', year: 'numeric',
           hour: '2-digit', minute: '2-digit'
         });
         const invoiceNo = 'INV-' + Date.now().toString().slice(-6);
-        
+
         // Get customer object for contact details
         const customer = customers.find(c => c.name === customerName);
-        
+
         // Get shop name from booth selection or localStorage
         const booth = localStorage.getItem('milkbook_booth') || 'main';
         const boothNames = {
@@ -1571,6 +1613,12 @@
         };
         const shopName = localStorage.getItem('milkbook_shop_name') || boothNames[booth] || 'Gopal Dairy Shop';
         const shopPhone = localStorage.getItem('milkbook_shop_phone') || '';
+        const shopAddress = localStorage.getItem('milkbook_shop_address') || '';
+        const shopEmail = localStorage.getItem('milkbook_shop_email') || '';
+        const shopGST = localStorage.getItem('milkbook_shop_gst') || '';
+
+        // Use provided cart items OR fall back to global cart
+        const itemsToDisplay = cartItems || cart;
 
         // Create invoice HTML
         const invoiceHTML = `
@@ -1583,103 +1631,103 @@
                 body { padding: 10px; }
                 .no-print { display: none; }
               }
-              body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
-              .header { text-align: center; border-bottom: 3px solid #3b82f6; padding-bottom: 15px; margin-bottom: 20px; }
-              .header h1 { color: #1e293b; margin: 0; font-size: 24px; }
-              .header p { color: #64748b; margin: 5px 0; font-size: 14px; }
-              .shop-info { background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
-              .shop-info h2 { margin: 0 0 5px 0; color: #1e293b; font-size: 18px; }
-              .shop-info p { margin: 0; color: #64748b; font-size: 13px; }
-              .info { display: flex; justify-content: space-between; margin-bottom: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; }
-              .info div { font-size: 14px; line-height: 1.6; }
-              .customer-details { font-weight: 600; color: #1e293b; }
-              .customer-contact { font-size: 12px; color: #64748b; margin-top: 4px; }
-              table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-              th { background: #f1f5f9; padding: 10px; text-align: left; font-weight: 700; }
-              td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
-              .total { text-align: right; font-size: 18px; font-weight: 900; color: #1e293b; padding: 10px; background: #f0fdf4; border-radius: 8px; }
-              .payment { background: #f0fdf4; padding: 15px; border-radius: 8px; margin-top: 15px; }
-              .footer { text-align: center; margin-top: 30px; padding-top: 15px; border-top: 2px solid #e2e8f0; color: #64748b; font-size: 12px; }
-              .btn-group { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
-              .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; }
-              .btn-print { background: #3b82f6; color: white; }
-              .btn-whatsapp { background: #25D366; color: white; }
-              .btn:hover { opacity: 0.9; }
+              body { font-family: Arial, sans-serif; padding: 15px; max-width: 650px; margin: 0 auto; font-size: 13px; }
+              .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; }
+              .header h1 { color: #000; margin: 0 0 5px 0; font-size: 22px; font-weight: bold; }
+              .header p { color: #333; margin: 3px 0; font-size: 12px; }
+              .shop-info { background: #f5f5f5; padding: 12px; border-radius: 6px; margin-bottom: 15px; }
+              .shop-info h2 { margin: 0 0 8px 0; color: #000; font-size: 16px; font-weight: bold; }
+              .shop-info p { margin: 4px 0; color: #333; font-size: 12px; }
+              .info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; padding: 12px; background: #f9f9f9; border-radius: 6px; }
+              .info div { font-size: 12px; line-height: 1.8; }
+              .customer-details { font-weight: bold; color: #000; }
+              .customer-contact { font-size: 11px; color: #555; margin-top: 3px; }
+              table { width: 100%; border-collapse: collapse; margin-bottom: 20px; border: 1px solid #000; }
+              th { background: #e0e0e0; padding: 10px 8px; text-align: left; font-weight: bold; border: 1px solid #000; font-size: 12px; }
+              td { padding: 10px 8px; border: 1px solid #000; font-size: 12px; }
+              .total { text-align: right; font-size: 16px; font-weight: bold; color: #000; padding: 12px; background: #f0f0f0; border-radius: 6px; border: 2px solid #000; }
+              .payment { background: #f5f5f5; padding: 12px; border-radius: 6px; margin-top: 15px; border: 1px solid #000; }
+              .footer { text-align: center; margin-top: 25px; padding-top: 12px; border-top: 2px solid #000; color: #333; font-size: 11px; }
             </style>
           </head>
           <body>
             <div class="shop-info">
               <h2>${shopName}</h2>
               ${shopPhone ? `<p>📱 +91${shopPhone}</p>` : ''}
+              ${shopAddress ? `<p>📍 ${shopAddress}</p>` : ''}
+              ${shopEmail ? `<p>✉️ ${shopEmail}</p>` : ''}
+              ${shopGST ? `<p>GSTIN: ${shopGST}</p>` : ''}
             </div>
             <div class="header">
-              <h1>🧾 Tax Invoice</h1>
+              <h1>TAX INVOICE</h1>
               <p>${invoiceNo} | ${date}</p>
             </div>
             <div class="info">
               <div>
-                <div class="customer-details"><strong>Customer:</strong><br>${customerName}</div>
+                <div class="customer-details"><strong>Billed To:</strong></div>
+                <div style="font-weight: bold; font-size: 13px;">${customerName}</div>
                 ${customer && customer.phone ? `<div class="customer-contact">📱 +91${customer.phone}</div>` : ''}
                 ${customer && customer.email ? `<div class="customer-contact">✉️ ${customer.email}</div>` : ''}
+                ${customer && customer.address ? `<div class="customer-contact">📍 ${customer.address}</div>` : ''}
+                ${customer && customer.gst ? `<div class="customer-contact">GSTIN: ${customer.gst}</div>` : ''}
               </div>
               <div style="text-align: right;">
-                <strong>Payment:</strong><br>
-                ${paymentMode} - ₹${paymentAmount.toFixed(2)}<br>
-                ${creditAmount > 0 ? `<span style="color: #dc2626;">Credit (Udhar): ₹${creditAmount.toFixed(2)}</span>` : ''}
+                <div style="font-weight: bold; margin-bottom: 5px;">Payment Details:</div>
+                <div>${paymentMode} - ${formatINR(paymentAmount)}</div>
+                ${creditAmount > 0 ? `<div style="color: #c00; margin-top: 5px;"><strong>Credit (Udhar): ${formatINR(creditAmount)}</strong></div>` : ''}
+                ${creditAmount > 0 ? `<div style="color: #c00;"><strong>Balance Due: ${formatINR(creditAmount)}</strong></div>` : ''}
               </div>
             </div>
             <table>
               <thead>
                 <tr>
-                  <th>Item</th>
-                  <th style="text-align:center">Qty</th>
-                  <th style="text-align:right">Rate</th>
-                  <th style="text-align:right">Amount</th>
+                  <th style="width: 40%;">Item</th>
+                  <th style="text-align:center; width: 15%;">Qty</th>
+                  <th style="text-align:right; width: 20%;">Rate</th>
+                  <th style="text-align:right; width: 25%;">Amount</th>
                 </tr>
               </thead>
               <tbody>
-                ${cart.map(item => `
+                ${itemsToDisplay.map(item => `
                   <tr>
                     <td>${item.name}</td>
                     <td style="text-align:center">${item.qty}</td>
-                    <td style="text-align:right">₹${item.rate}</td>
-                    <td style="text-align:right">₹${(item.qty * item.rate).toFixed(2)}</td>
+                    <td style="text-align:right">${formatINR(item.rate)}</td>
+                    <td style="text-align:right">${formatINR(item.qty * item.rate)}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
             <div class="total">
-              Total: ₹${total.toFixed(2)}
+              <strong>Grand Total: ${formatINR(total)}</strong>
             </div>
             <div class="payment">
-              <strong>Amount Paid:</strong> ₹${paymentAmount.toFixed(2)}<br>
-              ${creditAmount > 0 ? `<strong>Credit (Udhar):</strong> ₹${creditAmount.toFixed(2)}` : ''}
+              <div><strong>Amount Paid:</strong> ${formatINR(paymentAmount)}</div>
+              ${creditAmount > 0 ? `<div style="margin-top: 8px;"><strong>Credit (Udhar):</strong> ${formatINR(creditAmount)}</div>` : ''}
+              ${creditAmount > 0 ? `<div style="margin-top: 8px; color: #c00;"><strong>Balance Due:</strong> ${formatINR(creditAmount)}</div>` : ''}
             </div>
             <div class="footer">
-              <p>Thank you for your business! 🙏</p>
-              <p>${shopName} | MilkRecord POS</p>
-              <p>Generated: ${date}</p>
-            </div>
-            <div class="btn-group no-print">
-              <button class="btn btn-print" onclick="window.print()">🖨️ Print Invoice</button>
-              <a href="https://wa.me/${customer && customer.phone ? '91' + customer.phone.replace(/\D/g, '') : ''}?text=${encodeURIComponent(generateWhatsAppMessage(invoiceNo, date, customerName, paymentAmount, creditAmount))}" target="_blank" class="btn btn-whatsapp">💬 Share on WhatsApp</a>
+              <p style="font-size: 12px; margin: 8px 0;"><strong>Terms & Conditions:</strong></p>
+              <p style="font-size: 10px; margin: 4px 0;">• Goods once sold will not be taken back</p>
+              <p style="font-size: 10px; margin: 4px 0;">• Interest @18% p.a. will be charged on delayed payments</p>
+              <p style="font-size: 10px; margin: 4px 0;">• Subject to local jurisdiction</p>
+              <p style="margin-top: 15px; font-weight: bold;">Thank you for your business! 🙏</p>
+              <p style="margin-top: 8px;">${shopName}</p>
+              <p style="font-size: 10px; color: #666;">Generated: ${date}</p>
             </div>
           </body>
           </html>
         `;
 
-        // Create blob and download
-        const blob = new Blob([invoiceHTML], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Invoice-${invoiceNo}.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        showToast('Invoice downloaded! 📄');
+        // Auto-print invoice immediately (no user interaction)
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(invoiceHTML);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+          printWindow.print();
+          printWindow.close();
+        }, 250);
       }
       
       // Generate WhatsApp message
@@ -1701,24 +1749,27 @@
         cart.forEach(item => {
           message += `• ${item.name} - ${item.qty} x ₹${item.rate} = ₹${(item.qty * item.rate).toFixed(2)}\n`;
         });
-        message += `\n*Total: ₹${total.toFixed(2)}*`;
-        message += `\nPaid: ₹${paymentAmount.toFixed(2)}`;
+        message += `\n*Total: ${formatINR(total)}*`;
+        message += `\nPaid: ${formatINR(paymentAmount)}`;
         if (creditAmount > 0) {
-          message += `\n*Credit (Udhar): ₹${creditAmount.toFixed(2)}*`;
+          message += `\n*Credit (Udhar): ${formatINR(creditAmount)}*`;
         }
         message += `\n\nThank you for your business! 🙏`;
         return message;
       }
       
       // Print invoice in new tab
-      function printInvoice(customerName, paymentAmount, paymentMode, creditAmount) {
-        const date = new Date().toLocaleDateString('en-IN', { 
+      function printInvoice(customerName, paymentAmount, paymentMode, creditAmount, cartItems = null) {
+        const date = new Date().toLocaleDateString('en-IN', {
           day: 'numeric', month: 'short', year: 'numeric',
           hour: '2-digit', minute: '2-digit'
         });
         const invoiceNo = 'INV-' + Date.now().toString().slice(-6);
         const customer = customers.find(c => c.name === customerName);
         
+        // Use provided cart items OR fall back to global cart
+        const itemsToDisplay = cartItems || cart;
+
         // Create invoice HTML for printing
         const invoiceHTML = `
           <!DOCTYPE html>
@@ -1766,47 +1817,51 @@
                 </tr>
               </thead>
               <tbody>
-                ${cart.map(item => `
+                ${itemsToDisplay.map(item => `
                   <tr>
                     <td>${item.name}</td>
                     <td style="text-align:center">${item.qty}</td>
-                    <td style="text-align:right">₹${item.rate}</td>
-                    <td style="text-align:right">₹${(item.qty * item.rate).toFixed(2)}</td>
+                    <td style="text-align:right">${formatINR(item.rate)}</td>
+                    <td style="text-align:right">${formatINR(item.qty * item.rate)}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
             <div class="total">
-              Total: ₹${total.toFixed(2)}
+              Total: ${formatINR(total)}
             </div>
             <div class="payment">
-              <strong>Amount Paid:</strong> ₹${paymentAmount.toFixed(2)}<br>
-              ${creditAmount > 0 ? `<strong>Credit (Udhar):</strong> ₹${creditAmount.toFixed(2)}` : ''}
-              ${creditAmount > 0 ? `<br><strong>Remaining Balance:</strong> ₹${creditAmount.toFixed(2)}` : ''}
+              <strong>Amount Paid:</strong> ${formatINR(paymentAmount)}<br>
+              ${creditAmount > 0 ? `<strong>Credit (Udhar):</strong> ${formatINR(creditAmount)}` : ''}
+              ${creditAmount > 0 ? `<br><strong>Remaining Balance:</strong> ${formatINR(creditAmount)}` : ''}
             </div>
             <div class="footer">
               <p>Thank you for your business! 🙏</p>
-              <p>MilkRecord POS | Generated: ${date}</p>
+              <p>${shopName} | Generated: ${date}</p>
             </div>
-            <button class="print-btn no-print" onclick="window.print()">🖨️ Print Invoice</button>
-            <p class="no-print" style="text-align:center; color:#64748b; font-size:12px;">Press Ctrl+P to print</p>
           </body>
           </html>
         `;
-        
-        // Open in new tab
-        const newWindow = window.open('', '_blank');
-        newWindow.document.write(invoiceHTML);
-        newWindow.document.close();
-        
-        showToast('Opening invoice for print... 🖨️');
+
+        // Auto-print invoice immediately (no user interaction)
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(invoiceHTML);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+          printWindow.print();
+          printWindow.close();
+        }, 250);
       }
       
       // Open WhatsApp with invoice message
-      function openWhatsAppInvoice(customer, paymentAmount, creditAmount) {
+      function openWhatsAppInvoice(customer, paymentAmount, creditAmount, cartItems = null) {
         const customerName = el("activeCust").innerText;
         const date = new Date().toLocaleDateString('en-IN');
         const invoiceNo = 'INV-' + Date.now().toString().slice(-6);
+        
+        // Use provided cart items OR fall back to global cart
+        const itemsToDisplay = cartItems || cart;
 
         // Build WhatsApp message with emojis
         let message = `🧾 *MilkRecord Invoice*
@@ -1815,12 +1870,12 @@
 👤 *Customer:* ${customerName}
 
 🛒 *Items:*
-${cart.map(item => `${getEmojiForProduct(item.name)} ${item.name} - ${item.qty} x ₹${item.rate} = ₹${(item.qty * item.rate).toFixed(2)}`).join('\n')}
+${itemsToDisplay.map(item => `${getEmojiForProduct(item.name)} ${item.name} - ${item.qty} x ${formatINR(item.rate)} = ${formatINR(item.qty * item.rate)}`).join('\n')}
 
-💰 *Total:* ₹${total.toFixed(2)}
-💵 *Paid:* ₹${paymentAmount.toFixed(2)}
-${creditAmount > 0 ? `📒 *Credit (Udhar):* ₹${creditAmount.toFixed(2)}` : ''}
-${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
+💰 *Total:* ${formatINR(total)}
+💵 *Paid:* ${formatINR(paymentAmount)}
+${creditAmount > 0 ? `📒 *Credit (Udhar):* ${formatINR(creditAmount)}` : ''}
+${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
 
 🙏 Thank you!
 🏪 MilkRecord POS`;
@@ -1844,49 +1899,37 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
       // Logic: Persistent Search Dropdown with Keyboard Support
       let selectedDropIndex = -1;
       
-      // Load customers from localStorage (offline mode)
+      // Load customers from localStorage (offline mode) - USES loadData()!
       function loadCustomers() {
         try {
-          const stored = localStorage.getItem('mr_pos_customers');
-          if (stored) {
-            customers = JSON.parse(stored);
-            // Ensure it's an array
-            if (!Array.isArray(customers)) {
-              throw new Error('Not an array');
-            }
+          // Use loadData() which handles both old and new formats
+          const loaded = loadData('mr_pos_customers', []);
+          if (Array.isArray(loaded)) {
+            customers = loaded;
             console.log('✅ Loaded', customers.length, 'customers (Offline)');
           } else {
-            // Initialize with empty array
             customers = [];
           }
         } catch (error) {
           console.error('⚠️ Customer data corrupted, attempting recovery...');
           customers = [];
-          
-          // Try backup 1
+
+          // Try backup 1 - USE loadData() helper
           try {
-            const backup1 = localStorage.getItem('mr_pos_customers_backup');
-            if (backup1) {
-              customers = JSON.parse(backup1);
-              if (Array.isArray(customers)) {
-                console.log('✅ Recovered', customers.length, 'customers from backup 1!');
-              } else {
-                throw new Error();
-              }
+            const backup1 = loadData('mr_pos_customers_backup', []);
+            if (Array.isArray(backup1)) {
+              customers = backup1;
+              console.log('✅ Recovered', customers.length, 'customers from backup 1!');
             } else {
               throw new Error();
             }
           } catch(e2) {
-            // Try backup 2
+            // Try backup 2 - USE loadData() helper
             try {
-              const backup2 = localStorage.getItem('mr_pos_customers_backup2');
-              if (backup2) {
-                customers = JSON.parse(backup2);
-                if (Array.isArray(customers)) {
-                  console.log('✅ Recovered', customers.length, 'customers from backup 2!');
-                } else {
-                  throw new Error();
-                }
+              const backup2 = loadData('mr_pos_customers_backup2', []);
+              if (Array.isArray(backup2)) {
+                customers = backup2;
+                console.log('✅ Recovered', customers.length, 'customers from backup 2!');
               } else {
                 throw new Error();
               }
@@ -1917,14 +1960,25 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
       // Load customers on page load
       loadCustomers();
 
+      // Frequent buys tracking - stores customer's recent orders
+      let frequentBuys = {};
+      
       function handleSearch(val) {
           const drop = el("searchDropdown");
           const searchVal = val.trim();
 
           // Show ALL customers when search is focused (even if empty)
+          // Search in: ID, Name, Phone, Email, Address
+          const searchLower = searchVal.toLowerCase();
           const filtered = !searchVal
             ? customers
-            : customers.filter(c => c.name.toLowerCase().includes(searchVal.toLowerCase()));
+            : customers.filter(c => 
+                (c.id && c.id.toLowerCase().includes(searchLower)) ||
+                c.name.toLowerCase().includes(searchLower) ||
+                (c.phone && c.phone.includes(searchVal)) ||
+                (c.email && c.email.toLowerCase().includes(searchLower)) ||
+                (c.address && c.address.toLowerCase().includes(searchLower))
+              );
 
           // Always show dropdown when there's input or focus
           if (searchVal || document.activeElement === el("custSearch")) {
@@ -1946,20 +2000,35 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
                   `;
               }
 
-              // Show matching customers
+              // Show matching customers with their frequent buys
               if (filtered.length > 0) {
-                  html += filtered.map((c, i) => `
+                  html += filtered.map((c, i) => {
+                    // Get customer's frequent buys
+                    const custBuys = frequentBuys[c.name] || [];
+                    const buysHtml = custBuys.length > 0 ?
+                      `<div style="font-size:10px; color:#16a34a; font-weight:700; margin-top:2px;">🔄 Frequent: ${custBuys.slice(0,3).join(', ')}</div>` : '';
+                    
+                    // Show customer ID if available
+                    const idDisplay = c.id ? `<span style="font-size:10px; color:#3b82f6; font-weight:700; margin-right:6px;">#${c.id}</span>` : '';
+
+                    return `
                     <div class="drop-item" onclick="selectCust('${c.name}')" data-index="${i + 1}" style="display:flex; justify-content:space-between; align-items:center;">
                       <div>
-                        <div style="font-weight:700;">${c.name}</div>
-                        <div style="font-size:11px; color:var(--muted);">${c.phone || 'No phone'}</div>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                          ${idDisplay}
+                          <div style="font-weight:700;">${c.name}</div>
+                        </div>
+                        <div style="font-size:10px; color:var(--muted);">
+                          ${c.phone || 'No phone'}${c.address ? ' • ' + c.address : ''}
+                        </div>
+                        ${buysHtml}
                       </div>
                       <div style="text-align:right;">
-                        ${c.balance > 0 ? `<div style="font-size:11px; color:#dc2626; font-weight:700;">📕 ₹${c.balance.toFixed(2)}</div>` : ''}
-                        <div style="font-size:11px; color:var(--muted);">Bal: ₹${(c.balance || 0).toFixed(2)}</div>
+                        ${c.balance > 0 ? `<div style="font-size:11px; color:#dc2626; font-weight:700;">📕 ${formatINR(c.balance)}</div>` : ''}
+                        <div style="font-size:11px; color:var(--muted);">Bal: ${formatINR(c.balance || 0)}</div>
                       </div>
                     </div>
-                  `).join('');
+                  `}).join('');
               } else if (!searchVal) {
                   html += '<div style="padding:15px; text-align:center; color:var(--muted); font-size:12px;">Start typing to search customers</div>';
               }
@@ -1971,13 +2040,46 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           }
       }
       
+      // Track frequent buys when sale is made
+      function trackFrequentBuy(customerName, items) {
+        if (!frequentBuys[customerName]) frequentBuys[customerName] = [];
+        
+        items.forEach(item => {
+          const itemName = item.name;
+          const existingIndex = frequentBuys[customerName].indexOf(itemName);
+          if (existingIndex >= 0) {
+            // Move to front (most recent)
+            frequentBuys[customerName].splice(existingIndex, 1);
+          }
+          // Add to front
+          frequentBuys[customerName].unshift(itemName);
+          // Keep only last 5 items
+          frequentBuys[customerName] = frequentBuys[customerName].slice(0, 5);
+        });
+        
+        // Save to localStorage
+        localStorage.setItem('mr_frequent_buys', JSON.stringify(frequentBuys));
+      }
+      
+      // Load frequent buys from localStorage
+      function loadFrequentBuys() {
+        try {
+          const saved = localStorage.getItem('mr_frequent_buys');
+          if (saved) {
+            frequentBuys = JSON.parse(saved);
+          }
+        } catch(e) {
+          frequentBuys = {};
+        }
+      }
+      
       // Arrow key navigation for dropdown
       el("custSearch").addEventListener('keydown', function(e) {
         const drop = el("searchDropdown");
         const items = drop.querySelectorAll('.drop-item');
-        
+
         if (drop.style.display === 'none' || items.length === 0) return;
-        
+
         if (e.key === 'ArrowDown') {
           e.preventDefault();
           selectedDropIndex = Math.min(selectedDropIndex + 1, items.length - 1);
@@ -1986,9 +2088,19 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           e.preventDefault();
           selectedDropIndex = Math.max(selectedDropIndex - 1, 0);
           updateSelectedDropItem(items);
-        } else if (e.key === 'Enter' && selectedDropIndex >= 0) {
+        } else if (e.key === 'Enter') {
           e.preventDefault();
-          items[selectedDropIndex].click();
+          // If no item selected, select first one (skip "Add New Customer")
+          if (selectedDropIndex < 0) {
+            // Select first actual customer (index 1, skipping "Add New")
+            if (items.length > 1) {
+              items[1].click();
+            } else if (items.length > 0) {
+              items[0].click();
+            }
+          } else {
+            items[selectedDropIndex].click();
+          }
         } else if (e.key === 'Escape') {
           drop.style.display = 'none';
         }
@@ -2045,22 +2157,60 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         handleSearch('');
       });
       
+      // Generate next customer ID (auto-increment)
+      function getNextCustomerId() {
+        // Get highest existing ID number
+        let maxNum = 0;
+        customers.forEach(c => {
+          if (c.id) {
+            const match = c.id.match(/C(\d+)/);
+            if (match) {
+              const num = parseInt(match[1]);
+              if (num > maxNum) maxNum = num;
+            }
+          }
+        });
+        // Return next ID (C001, C002, etc.)
+        return 'C' + String(maxNum + 1).padStart(3, '0');
+      }
+      
       // Add customer with validation
       function addCust() {
         const name = el("newName").value;
-        const type = el("newType").value;
-        const sub = el("subQty").value || 0;
+        const phone = el("newPhone").value || "";
+        const email = el("newEmail").value || "";
+        const address = el("newAddress").value || "";
+        const custId = el("newCustId").value || getNextCustomerId();
+        
         if(!name) return showToast("Name required!");
 
-        customers.push({ name, lastOrder: "No order yet", rate: 0, qty: 0, type, sub });
+        customers.push({ 
+          id: custId,
+          name, 
+          phone,
+          email,
+          address,
+          lastOrder: "No order yet", 
+          rate: 0, 
+          qty: 0,
+          balance: 0,
+          advance: 0
+        });
         localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+        // Create backup
+        localStorage.setItem('mr_pos_customers_backup', JSON.stringify(customers));
+        localStorage.setItem('mr_pos_customers_backup2', JSON.stringify(customers));
 
         selectCust(name);
         closeModal('addCustModal');
+        // Clear form
         el("newName").value = "";
-        el("subQty").value = "";
-        showToast(name + " Added!");
-        
+        el("newPhone").value = "";
+        el("newEmail").value = "";
+        el("newAddress").value = "";
+        el("newCustId").value = "";
+        showToast(`${name} (${custId}) Added!`);
+
         // Return focus to search
         setTimeout(() => el("custSearch").focus(), 100);
       }
@@ -2093,6 +2243,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
                 name: buy.name,
                 rate: buy.rate,
                 qty: buy.qty,
+                emoji: buy.emoji || '📦',
                 id: Date.now() + Math.random()
               });
             });
@@ -2116,13 +2267,13 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         if (!customer.monthMilk) customer.monthMilk = 0;
 
         el("monthMilk").textContent = customer.monthMilk.toFixed(1) + ' L';
-        el("currentAdvance").textContent = '₹' + customer.advance.toFixed(2);
+        el("currentAdvance").textContent = formatINR(customer.advance);
 
         // Update advance button text if customer has unpaid/credit history
         const advanceBtn = el("advanceToggleBtn");
         if (advanceBtn) {
           if (customer.advance > 0) {
-            advanceBtn.innerHTML = `📒 Udhar: ₹${customer.advance.toFixed(2)}`;
+            advanceBtn.innerHTML = `📒 Udhar: ${formatINR(customer.advance)}`;
           } else {
             advanceBtn.innerHTML = '📒 Advance / Udhar';
           }
@@ -2214,9 +2365,9 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         
         if (showToastMsg) {
           if (isCredit) {
-            showToast(`₹${amount.toFixed(2)} Udhar likha ✅`);
+            showToast(`${formatINR(amount)} Udhar likha ✅`);
           } else {
-            showToast(`₹${amount.toFixed(2)} Payment likha ✅`);
+            showToast(`${formatINR(amount)} Payment likha ✅`);
           }
         }
       }
@@ -2231,7 +2382,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         const monthMilk = customer.monthMilk || 0;
         const advance = customer.advance || 0;
         
-        const message = `*Monthly Summary - ${customerName}*\n\n🥛 Total Milk: ${monthMilk.toFixed(1)}L\n💰 Current Advance: ₹${advance.toFixed(2)}\n\nThank you for your business!`;
+        const message = `*Monthly Summary - ${customerName}*\n\n🥛 Total Milk: ${monthMilk.toFixed(1)}L\n💰 Current Advance: ${formatINR(advance)}\n\nThank you for your business!`;
         
         const phone = customer.phone || "";
         const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
@@ -2283,15 +2434,15 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         showToast(`Product updated: ${newName} ✅`);
       }
 
-      function tapAdd(name, rate, qty, step) {
+      function tapAdd(name, rate, qty, step, emoji) {
         // Check if item already exists in cart - match by NAME ONLY (merge Cow Milk regardless of rate)
         const existingItem = cart.find(item => item.name === name);
         if (existingItem) {
           // Increase quantity of existing item (merge all Cow Milk together)
           existingItem.qty = Math.round((existingItem.qty + qty) * 10) / 10;
         } else {
-          // Add new item with step size
-          cart.push({name, rate, qty, step: step || qty, id: Date.now()});
+          // Add new item with step size and emoji
+          cart.push({name, rate, qty, step: step || qty, emoji: emoji || '📦', id: Date.now()});
         }
         selectedProduct = {name, rate}; // Track for highlighting
         updateUI();
@@ -2341,7 +2492,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           tbody.innerHTML += `<tr style="border-bottom:1px solid #f1f5f9; background:${bgColor};" draggable="true" ondragstart="handleCartDragStart(event)" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)" ondragend="handleCartDragEnd(event)" data-index="${index}">
             <td style="padding:12px 0;">
               <div style="display:flex; align-items:center; gap:12px;">
-                <span style="font-size:${emojiSize}px;">${getEmojiForProduct(i.name)}</span>
+                <span style="font-size:${emojiSize}px;">${i.emoji || '📦'}</span>
                 <div>
                   <div style="font-weight:900; font-size:20px;">${i.name}</div>
                   <div style="font-size:14px; color:var(--muted); font-weight:700;">₹${i.rate}/unit</div>
@@ -2379,7 +2530,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         // Update total display (if element exists)
         const totalAmt = el("totalAmt");
         if (totalAmt) {
-          totalAmt.textContent = `₹${total.toFixed(2)}`;
+          totalAmt.textContent = formatINR(total);
         }
 
         // Sync total payable display
@@ -2393,7 +2544,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           const wasExactMatch = Math.abs(currentValue - (parseFloat(paymentInput.dataset.prevTotal) || 0)) < 0.01;
 
           if (!paymentInput.value || wasExactMatch || currentValue === total) {
-            paymentInput.value = total.toFixed(2);
+            paymentInput.value = formatIndianNumber(total);
           }
           paymentInput.dataset.prevTotal = total.toFixed(2);
         }
@@ -2410,17 +2561,101 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         scheduleAutoSave();
       }
       
-      // Get emoji for product name
+      // Indian number formatting (lakhs and crores system)
+      function formatIndianNumber(num) {
+        if (num === null || num === undefined || isNaN(num)) return '0.00';
+        const parts = num.toString().split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{2})+(?!\d)(?=(\d{3})))/g, ',');
+        return parts[1] ? parts.join('.') : parts[0] + '.00';
+      }
+      
+      // Format currency in Indian system
+      function formatINR(num) {
+        return '₹' + formatIndianNumber(num);
+      }
+      
+      // Get emoji for product name (case-insensitive matching)
       function getEmojiForProduct(name) {
-        const emojiMap = {
-          'Cow': '🐄', 'Buff': '🐃', 'Paneer': '🧀', 'Ghee': '🍯', 
-          'Milk Cake': '🍰', 'Curd': '🥛', 'Milk': '🥛'
-        };
-        for (const [key, emoji] of Object.entries(emojiMap)) {
-          if (name.includes(key)) return emoji;
+        if (!name) return '📦';
+        
+        const nameLower = name.toLowerCase();
+        
+        // Extended emoji mappings for dairy products
+        const emojiMap = [
+          { keywords: ['cow'], emoji: '🐄' },
+          { keywords: ['buff', 'buffalo'], emoji: '🐃' },
+          { keywords: ['paneer'], emoji: '🧀' },
+          { keywords: ['ghee'], emoji: '🍯' },
+          { keywords: ['milk cake', 'cake'], emoji: '🍰' },
+          { keywords: ['curd', 'dahi', 'yogurt'], emoji: '🥛' },
+          { keywords: ['milk', 'doodh'], emoji: '🥛' },
+          { keywords: ['butter', 'makhan'], emoji: '🧈' },
+          { keywords: ['cream', 'malai'], emoji: '🥛' },
+          { keywords: ['lassi'], emoji: '🥤' },
+          { keywords: ['sweet', 'mithai'], emoji: '🍬' },
+          { keywords: ['ice cream', 'icecream'], emoji: '🍦' },
+          { keywords: ['cheese'], emoji: '🧀' },
+          { keywords: ['chocolate'], emoji: '🍫' },
+          { keywords: ['cookie', 'biscuit'], emoji: '🍪' },
+          { keywords: ['bread'], emoji: '🍞' },
+          { keywords: ['egg'], emoji: '🥚' },
+          { keywords: ['chicken'], emoji: '🍗' },
+          { keywords: ['mutton', 'meat'], emoji: '🥩' },
+          { keywords: ['fish'], emoji: '🐟' },
+          { keywords: ['rice', 'chawal'], emoji: '🍚' },
+          { keywords: ['roti', 'chapati'], emoji: '🫓' },
+          { keywords: ['dal', 'pulse'], emoji: '🥘' },
+          { keywords: ['vegetable', 'sabzi', 'veg'], emoji: '🥬' },
+          { keywords: ['fruit'], emoji: '🍎' },
+          { keywords: ['juice'], emoji: '🧃' },
+          { keywords: ['water'], emoji: '💧' },
+          { keywords: ['tea', 'chai'], emoji: '☕' },
+          { keywords: ['coffee'], emoji: '☕' },
+          { keywords: ['sugar'], emoji: '🍬' },
+          { keywords: ['salt'], emoji: '🧂' },
+          { keywords: ['oil'], emoji: '🫗' },
+          { keywords: ['flour', 'atta'], emoji: '🌾' },
+          { keywords: ['spice', 'masala'], emoji: '🌶️' }
+        ];
+        
+        // Find matching emoji
+        for (const mapping of emojiMap) {
+          for (const keyword of mapping.keywords) {
+            if (nameLower.includes(keyword)) {
+              return mapping.emoji;
+            }
+          }
         }
+        
         return '📦'; // Default
       }
+      
+      // Get emoji combo link for product name
+      function getEmojiComboLink(productName) {
+        const searchTerm = productName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        return `https://emojicombos.com/${searchTerm}`;
+      }
+      
+      // Update emoji link when product name changes
+      function updateEmojiLink(productName) {
+        const link = document.getElementById('emojiComboLink');
+        if (link && productName) {
+          link.href = getEmojiComboLink(productName);
+          link.textContent = `🔗 Copy "${productName}" emojis from EmojiCombos`;
+        }
+      }
+      
+      // Dairy-related unit suggestions
+      const dairyUnits = [
+        { value: 'L', label: 'Liter', emoji: '🥛' },
+        { value: 'ml', label: 'Milliliter', emoji: '🧪' },
+        { value: 'kg', label: 'Kilogram', emoji: '⚖️' },
+        { value: 'g', label: 'Gram', emoji: '🥄' },
+        { value: 'pcs', label: 'Pieces', emoji: '🔢' },
+        { value: 'box', label: 'Box', emoji: '📦' },
+        { value: 'packet', label: 'Packet', emoji: '📮' },
+        { value: 'bottle', label: 'Bottle', emoji: '🍼' }
+      ];
       
       // Decrease quantity (uses item's step size)
       function decreaseQty(index) {
@@ -2566,10 +2801,11 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
             cart.push({
               name: item.name,
               rate: item.rate,
-              qty: item.qty
+              qty: item.qty,
+              emoji: item.emoji || '📦'
             });
           });
-          
+
           updateUI();
           showToast(`Loaded memory: ${customerMemory.items.length} items ✅`);
         }
@@ -2693,6 +2929,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           saveCustomerMemory(custName);
 
           // 5. Update local history for immediate UI
+          const invoiceId = "INV-" + Date.now().toString().slice(-6);
           const newSale = {
             date: new Date().toLocaleDateString(),
             time,
@@ -2702,7 +2939,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
             method: mode,
             cartItems: JSON.parse(JSON.stringify(cart)),
             credit: creditAmount,
-            invoiceId: result.sale.id
+            invoiceId: invoiceId
           };
 
           exportHistory.push(newSale);
@@ -2711,29 +2948,29 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
           // 6. Update UI
           const entry = `<div class="cardRow" style="flex-direction:column; align-items:flex-start; gap:4px; cursor:pointer;" onclick="loadOrderFromHistory('${custName}', ${JSON.stringify(cart).replace(/"/g, '&quot;')})">
             <div style="width:100%; display:flex; justify-content:space-between;">
-              <b>${custName}</b><b>₹${total.toFixed(2)}</b>
+              <b>${custName}</b><b>${formatINR(total)}</b>
             </div>
             <div style="font-size:11px; color:var(--muted); font-weight:700;">
               ${time} • 🛒 ${itemsDetail} • ${modeIcon(mode)} ${mode}
-              ${creditAmount > 0 ? `<span style="color:#dc2626; font-weight:700;"> • 📕 ₹${creditAmount.toFixed(2)} Udhar</span>` : ''}
+              ${creditAmount > 0 ? `<span style="color:#dc2626; font-weight:700;"> • 📕 ${formatINR(creditAmount)} Udhar</span>` : ''}
               <span style="color:var(--blue); font-weight:700; margin-left:8px;">🔁 Click to reload</span>
             </div>
           </div>`;
           el("historyToday").innerHTML = entry + el("historyToday").innerHTML;
 
-          // 7. Auto-download invoice (silent, no new tab)
-          downloadInvoiceAuto(custName, paymentAmount, mode, creditAmount, result.sale.id);
+          // 7. Auto-print invoice (silent, no user interaction)
+          generateInvoice(custName, paymentAmount, mode, creditAmount);
 
           // 8. Show success message
           if (creditAmount > 0) {
-            showToast(`Saved! ₹${creditAmount.toFixed(2)} added to Udhar ✅`);
+            showToast(`Saved! ${formatINR(creditAmount)} added to Udhar ✅`);
           } else {
             showToast(`Saved ✅`);
           }
 
           // 9. Reset cart and prepare for next customer
           resetCart();
-          
+
           // 10. If customer has phone and it's credit mode, offer WhatsApp
           if (creditAmount > 0 && customerPhone && customerPhone.length >= 10) {
             setTimeout(() => {
@@ -2768,15 +3005,15 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         invoiceText += `${invoiceNo} | ${dateStr} ${timeStr}\n`;
         invoiceText += `━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
         invoiceText += `Customer: ${customerName}\n`;
-        invoiceText += `Payment: ${paymentMode} - ₹${paymentAmount.toFixed(2)}\n\n`;
+        invoiceText += `Payment: ${paymentMode} - ${formatINR(paymentAmount)}\n\n`;
         invoiceText += `ITEMS:\n`;
         cart.forEach(item => {
           invoiceText += `  ${item.name} x${item.qty} @ ₹${item.rate} = ₹${(item.qty * item.rate).toFixed(2)}\n`;
         });
         invoiceText += `\n━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-        invoiceText += `TOTAL: ₹${total.toFixed(2)}\n`;
+        invoiceText += `TOTAL: ${formatINR(total)}\n`;
         if (creditAmount > 0) {
-          invoiceText += `CREDIT (Udhar): ₹${creditAmount.toFixed(2)}\n`;
+          invoiceText += `CREDIT (Udhar): ${formatINR(creditAmount)}\n`;
         }
         invoiceText += `\nThank you! 🙏\n`;
         invoiceText += `${shopName}\n`;
@@ -2805,11 +3042,11 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ₹${creditAmount.toFixed(2)}` : ''}
         let message = `*${shopName}*\n`;
         message += `📅 ${date}\n\n`;
         message += `Hi ${customerName},\n`;
-        message += `Your credit balance: *₹${creditAmount.toFixed(2)}*\n`;
-        message += `Total purchase: ₹${total.toFixed(2)}\n\n`;
+        message += `Your credit balance: *${formatINR(creditAmount)}*\n`;
+        message += `Total purchase: ${formatINR(total)}\n\n`;
         message += `Items:\n`;
         cart.forEach(item => {
-          message += `• ${item.name} (${item.qty}) - ₹${(item.qty * item.rate).toFixed(2)}\n`;
+          message += `• ${item.name} (${item.qty}) - ${formatINR(item.qty * item.rate)}\n`;
         });
         message += `\nPlease settle soon. Thank you! 🙏`;
         
@@ -2851,7 +3088,7 @@ function switchHistoryTab(tab) {
     allDiv.style.display = 'none';
     tabToday.style.borderBottomColor = 'var(--blue)';
     tabAll.style.borderBottomColor = 'transparent';
-    renderHistory();
+    loadHistoryOnStart();
   } else {
     todayDiv.style.display = 'none';
     allDiv.style.display = 'block';
@@ -2861,59 +3098,312 @@ function switchHistoryTab(tab) {
   }
 }
 
-// Render ALL history (no date limit)
+// Render ALL history (no date limit) - Shows Sales + Cash In/Out + Credit/Debit
 function renderAllHistory() {
   const container = el("historyWeekly");
-  
+
   if (exportHistory.length === 0) {
     container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--muted);">No sales history yet</div>';
     return;
   }
-  
+
   // Show ALL history, newest first
   const allHistory = [...exportHistory].reverse();
-  
+
   container.innerHTML = allHistory.map((sale, i) => {
     // Get payment mode icon
     let modeIcon = '💵';
-    if (sale.method === 'Credit' || sale.method === 'Udhar') modeIcon = '📕';
-    else if (sale.method === 'UPI') modeIcon = '📱';
-    
+    let modeText = sale.method;
+    if (sale.method === 'Credit' || sale.method === 'Udhar') {
+      modeIcon = '📒';
+      modeText = 'Credit';
+    } else if (sale.method === 'UPI') {
+      modeIcon = '📱';
+    } else if (sale.method === 'Cash In') {
+      modeIcon = '💰';
+    } else if (sale.method === 'Cash Out') {
+      modeIcon = '💸';
+    }
+
+    // Show items list
+    const itemsList = (sale.cartItems || []).map(item => 
+      `${getEmojiForProduct(item.name)} ${item.name} (${item.qty} × ₹${item.rate})`
+    ).join('<br>');
+
     return `
-    <div class="cardRow" style="cursor:pointer;" onclick="loadOrderFromHistory('${sale.customer.replace(/'/g, "\\'")}', ${JSON.stringify(sale.cartItems || []).replace(/"/g, '&quot;')})">
+    <div class="cardRow" style="cursor:pointer; padding:12px;" onclick="loadOrderFromHistory('${sale.customer.replace(/'/g, "\\'")}', ${JSON.stringify(sale.cartItems || []).replace(/"/g, '&quot;')})">
       <div style="flex:1">
-        <b>${sale.customer}</b><br>
-        <small style="color:var(--muted); font-weight:700;">${sale.date} ${sale.time} • ${sale.products} • ${modeIcon} ${sale.method}</small>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <b style="font-size:15px;">${sale.customer}</b>
+          <b style="color:var(--blue); font-size:16px;">₹${sale.amount}</b>
+        </div>
+        <div style="margin:6px 0; font-size:13px; color:#64748b;">
+          ${itemsList || sale.products || 'Cash Transaction'}
+        </div>
+        <div style="display:flex; gap:12px; font-size:12px; color:#94a3b8; font-weight:700;">
+          <span>📅 ${sale.date} ${sale.time}</span>
+          <span>${modeIcon} ${modeText}</span>
+          ${sale.creditAmount > 0 ? `<span style="color:#dc2626;">📒 Due: ${formatINR(sale.creditAmount)}</span>` : ''}
+        </div>
       </div>
-      <b style="color:var(--blue);">₹${sale.amount}</b>
     </div>
   `}).join('');
-  
+
   // Update count
   const todayCount = exportHistory.filter(s => s.date === new Date().toLocaleDateString()).length;
   el("historyCount").textContent = `${todayCount} today • ${exportHistory.length} total`;
 }
 
-// Export history to CSV
-function downloadHistoryCSV() {
+// Export history to Excel - Includes Sales + Cash In/Out + Credit/Debit
+function downloadHistoryExcel() {
   if (exportHistory.length === 0) return showToast("No history to export!");
 
-  let csv = "Date,Time,Customer,Products,Amount,Payment Method\n";
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Create Excel-compatible HTML table
+  let html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid black; padding: 8px; text-align: left; }
+    th { background-color: #4CAF50; color: white; font-weight: bold; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2>MilkRecord POS - Sales History (${today})</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Invoice No</th>
+        <th>Customer</th>
+        <th>Items</th>
+        <th>Qty</th>
+        <th>Total Amount</th>
+        <th>Paid</th>
+        <th>Payment Method</th>
+        <th>Credit/Udhar</th>
+      </tr>
+    </thead>
+    <tbody>
+`;
+
   exportHistory.forEach(r => {
-    let safeCust = r.customer.replace(/,/g, "");
-    let safeProd = r.products.replace(/,/g, " | ");
-    csv += `${r.date},${r.time},${safeCust},"${safeProd}",${r.amount},${r.method}\n`;
+    const items = (r.cartItems || []).map(i => `${i.name}`).join(", ") || r.products || "Cash Transaction";
+    const qty = (r.cartItems || []).reduce((sum, i) => sum + (i.qty || 0), 0) || 0;
+    const paid = r.method === 'Credit' ? 0 : (r.amount - (r.credit || 0));
+    
+    html += `
+      <tr>
+        <td>${r.date || ''}</td>
+        <td>${r.time || ''}</td>
+        <td>${r.invoiceId || ''}</td>
+        <td>${r.customer.replace(/"/g, "'") || ''}</td>
+        <td>${items.replace(/"/g, "'")}</td>
+        <td style="text-align:center;">${qty}</td>
+        <td style="text-align:right;">₹${r.amount || 0}</td>
+        <td style="text-align:right;">₹${paid}</td>
+        <td>${r.method || ''}</td>
+        <td style="text-align:right; color: ${r.credit ? 'red' : 'black'};">${r.credit ? '₹' + r.credit : ''}</td>
+      </tr>
+    `;
   });
 
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  html += `
+    </tbody>
+  </table>
+  <p style="margin-top: 20px; font-size: 12px; color: #666;">
+    Generated: ${new Date().toLocaleString()} | Total Records: ${exportHistory.length}
+  </p>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.setAttribute("href", url);
-  a.setAttribute("download", `MilkRecord_History_${new Date().toISOString().split('T')[0]}.csv`);
+  a.setAttribute("download", `MilkRecord_Sales_History_${today}.xls`);
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  showToast("History Exported! 📊✅");
+  showToast("Excel Exported! 📊✅");
+}
+
+// Export history to PDF
+function downloadHistoryPDF() {
+  if (exportHistory.length === 0) return showToast("No history to export!");
+
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Create print-friendly HTML
+  let html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MilkRecord POS - Sales History</title>
+  <style>
+    @media print {
+      @page { margin: 1cm; size: A4 landscape; }
+      body { font-family: Arial, sans-serif; font-size: 11px; }
+      .no-print { display: none; }
+    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 10px; }
+    th { background-color: #4CAF50; color: white; font-weight: bold; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    .amount { text-align: right; }
+    .credit { color: red; font-weight: bold; }
+    .summary { margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>🧾 MilkRecord POS - Sales History</h1>
+  <div class="summary">
+    <strong>Date:</strong> ${today} | 
+    <strong>Total Records:</strong> ${exportHistory.length} |
+    <strong>Generated:</strong> ${new Date().toLocaleString()}
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Invoice</th>
+        <th>Customer</th>
+        <th>Items</th>
+        <th class="amount">Amount</th>
+        <th class="amount">Paid</th>
+        <th>Method</th>
+        <th class="amount">Credit</th>
+      </tr>
+    </thead>
+    <tbody>
+`;
+
+  let totalAmount = 0, totalPaid = 0, totalCredit = 0;
+  
+  exportHistory.forEach(r => {
+    const items = (r.cartItems || []).map(i => `${i.name} (${i.qty})`).join(", ") || r.products || '-';
+    const paid = r.method === 'Credit' ? 0 : (parseFloat(r.amount) - (parseFloat(r.credit) || 0));
+    const credit = parseFloat(r.credit) || 0;
+    
+    totalAmount += parseFloat(r.amount) || 0;
+    totalPaid += paid;
+    totalCredit += credit;
+    
+    html += `
+      <tr>
+        <td>${r.date || '-'}</td>
+        <td>${r.time || '-'}</td>
+        <td>${r.invoiceId || '-'}</td>
+        <td>${(r.customer || '').replace(/"/g, "'")}</td>
+        <td>${items.replace(/"/g, "'")}</td>
+        <td class="amount">₹${r.amount || 0}</td>
+        <td class="amount">₹${paid.toFixed(2)}</td>
+        <td>${r.method || '-'}</td>
+        <td class="amount ${credit ? 'credit' : ''}">${credit ? '₹' + credit.toFixed(2) : '-'}</td>
+      </tr>
+    `;
+  });
+
+  html += `
+      <tr style="background: #e8f5e9; font-weight: bold;">
+        <td colspan="5">TOTAL</td>
+        <td class="amount">₹${totalAmount.toFixed(2)}</td>
+        <td class="amount">₹${totalPaid.toFixed(2)}</td>
+        <td></td>
+        <td class="amount credit">₹${totalCredit.toFixed(2)}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="no-print" style="margin-top: 20px;">
+    <button onclick="window.print()" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">🖨️ Print / Save as PDF</button>
+  </div>
+</body>
+</html>`;
+
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(html);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 500);
+}
+
+// Record Cash In transaction
+function recordCashIn(amount, note = "") {
+  if (!amount || amount <= 0) return showToast("Enter valid amount!");
+  
+  const newTransaction = {
+    id: Date.now(),
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+    customer: "💰 Cash In",
+    products: note || "Cash received",
+    amount: amount,
+    method: "Cash In",
+    creditAmount: 0,
+    cartItems: []
+  };
+  
+  exportHistory.push(newTransaction);
+  localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
+  localStorage.setItem('mr_sales_history_backup', JSON.stringify(exportHistory));
+  localStorage.setItem('mr_sales_history_backup2', JSON.stringify(exportHistory));
+  
+  renderAllHistory();
+  showToast(`💰 Cash In: ${formatINR(amount)} recorded!`);
+}
+
+// Record Cash Out transaction
+function recordCashOut(amount, note = "") {
+  if (!amount || amount <= 0) return showToast("Enter valid amount!");
+  
+  const newTransaction = {
+    id: Date.now(),
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+    customer: "💸 Cash Out",
+    products: note || "Cash paid",
+    amount: amount,
+    method: "Cash Out",
+    creditAmount: 0,
+    cartItems: []
+  };
+  
+  exportHistory.push(newTransaction);
+  localStorage.setItem('mr_sales_history', JSON.stringify(exportHistory));
+  localStorage.setItem('mr_sales_history_backup', JSON.stringify(exportHistory));
+  localStorage.setItem('mr_sales_history_backup2', JSON.stringify(exportHistory));
+  
+  renderAllHistory();
+  showToast(`💸 Cash Out: ${formatINR(amount)} recorded!`);
+}
+
+// Prompt for Cash In
+function promptCashIn() {
+  const amount = parseFloat(prompt("💰 Enter Cash In Amount (₹):", "0"));
+  if (isNaN(amount) || amount <= 0) return showToast("Invalid amount!");
+  const note = prompt("📝 Note (optional):", "") || "";
+  recordCashIn(amount, note);
+}
+
+// Prompt for Cash Out
+function promptCashOut() {
+  const amount = parseFloat(prompt("💸 Enter Cash Out Amount (₹):", "0"));
+  if (isNaN(amount) || amount <= 0) return showToast("Invalid amount!");
+  const note = prompt("📝 Note (optional):", "") || "";
+  recordCashOut(amount, note);
 }
 
 // Clear today's history
@@ -3123,7 +3613,7 @@ function clearTodayHistory() {
               <b>${h.customer}</b>
               <div style="font-size:11px; color:var(--muted);">${new Date(h.timestamp).toLocaleString()}</div>
             </div>
-            <b>₹${h.total.toFixed(2)}</b>
+            <b>${formatINR(h.total)}</b>
           </div>
         `).join('');
         
@@ -3163,20 +3653,21 @@ function clearTodayHistory() {
           }
         }
       }
-      function closeModal(id) { 
+      function closeModal(id) {
         const modal = el(id);
-        if (modal) modal.style.display = "none"; 
+        if (modal) modal.style.display = "none";
       }
-      
-      // Close modal when clicking on overlay (outside modal content)
-      document.querySelectorAll('.overlay').forEach(overlay => {
-        overlay.addEventListener('click', (e) => {
-          if (e.target === overlay) {
-            overlay.style.display = 'none';
-          }
-        });
-      });
-      
+
+      // Note: Modals can ONLY be closed via X button - prevents accidental data loss
+      // Close modal when clicking on overlay (outside modal content) - DISABLED for safety
+      // document.querySelectorAll('.overlay').forEach(overlay => {
+      //   overlay.addEventListener('click', (e) => {
+      //     if (e.target === overlay) {
+      //       overlay.style.display = 'none';
+      //     }
+      //   });
+      // });
+
       function showToast(msg) { const t = el("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1500); }
 
       // Drag and Drop for Product Cards
@@ -3358,7 +3849,8 @@ function clearTodayHistory() {
     loadHistoryOnStart();
     loadCustomProducts();
     loadCardOrder(); // Load saved card order
-    
+    loadFrequentBuys(); // Load customer frequent buys
+
     // Load cart from robust storage
     const savedCart = loadData('mr_pos_cart', []);
     if (savedCart && savedCart.length > 0) {
@@ -3366,7 +3858,7 @@ function clearTodayHistory() {
       updateUI();
       console.log('🔄 Restored cart from previous session');
     }
-    
+
     setInterval(updateShift, 60000);
     
     // Show data status
@@ -3502,7 +3994,7 @@ function convertMilkToProduct() {
   if (existingItem) {
     existingItem.qty += qty;
   } else {
-    cart.push({name: productName, rate, qty, id: Date.now()});
+    cart.push({name: productName, rate, qty, emoji: '🥛', id: Date.now()});
   }
   updateUI();
   closeModal('convertModal');
@@ -3627,7 +4119,7 @@ function addNewProductFromModal() {
     newCard.setAttribute('data-rank', rank);
     newCard.setAttribute('draggable', 'true');
     newCard.ondragstart = handleDragStart;
-    newCard.onclick = function() { tapAdd(name, price, step); };
+    newCard.onclick = function() { tapAdd(name, price, step, emoji); };
 
     // Format step display
     const stepDisplay = step < 0 ? `(${step}x)` : `(${step}x)`;
@@ -3767,55 +4259,29 @@ function addNewProduct() {
   addNewProductFromModal();
 }
 
-// Load custom products on page load
+// Load custom products on page load - USES loadData()!
 function loadCustomProducts() {
   // Check if localStorage has been initialized
   const hasInitialized = localStorage.getItem('mr_pos_initialized');
-  let customProducts = [];
   
-  try {
-    // Try to load main data
-    const mainData = localStorage.getItem('mr_pos_custom_products');
-    if (mainData) {
-      customProducts = JSON.parse(mainData);
-      // Validate it's an array
-      if (!Array.isArray(customProducts)) {
-        throw new Error('Not an array');
-      }
-      console.log('✅ Loaded', customProducts.length, 'products from main storage');
-    }
-  } catch(e) {
-    console.error('⚠️ Main data corrupted, trying backup...');
-    customProducts = [];
-    
-    // Try backup 1
-    try {
-      const backup1 = localStorage.getItem('mr_pos_custom_products_backup');
-      if (backup1) {
-        customProducts = JSON.parse(backup1);
-        if (Array.isArray(customProducts)) {
-          console.log('✅ Recovered', customProducts.length, 'products from backup 1!');
-        } else {
-          throw new Error('Backup 1 not array');
-        }
-      }
-    } catch(e2) {
-      console.error('⚠️ Backup 1 failed, trying backup 2...');
-      
-      // Try backup 2
-      try {
-        const backup2 = localStorage.getItem('mr_pos_custom_products_backup2');
-        if (backup2) {
-          customProducts = JSON.parse(backup2);
-          if (Array.isArray(customProducts)) {
-            console.log('✅ Recovered', customProducts.length, 'products from backup 2!');
-          }
-        }
-      } catch(e3) {
-        console.error('❌ All backups failed, starting fresh');
-        customProducts = [];
+  // Use loadData() which handles both old and new formats
+  let customProducts = loadData('mr_pos_custom_products', []);
+  
+  // If loadData failed, try backups using loadData()
+  if (!Array.isArray(customProducts) || customProducts.length === 0) {
+    customProducts = loadData('mr_pos_custom_products_backup', []);
+    if (Array.isArray(customProducts) && customProducts.length > 0) {
+      console.log('✅ Recovered', customProducts.length, 'products from backup 1!');
+    } else {
+      customProducts = loadData('mr_pos_custom_products_backup2', []);
+      if (Array.isArray(customProducts) && customProducts.length > 0) {
+        console.log('✅ Recovered', customProducts.length, 'products from backup 2!');
       }
     }
+  }
+  
+  if (Array.isArray(customProducts)) {
+    console.log('✅ Loaded', customProducts.length, 'products');
   }
   
   // ALWAYS create BOTH backups immediately if we have valid data
