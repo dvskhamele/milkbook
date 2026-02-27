@@ -3989,9 +3989,11 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
             products: itemsDetail,
             amount: total.toFixed(2),
             method: mode,
+            paidAmount: paymentAmount.toFixed(2),
+            creditAmount: creditAmount.toFixed(2),
             cartItems: JSON.parse(JSON.stringify(cart)),
-            credit: creditAmount,
-            invoiceId: invoiceId
+            invoiceId: invoiceId,
+            createdAt: Date.now()
           };
 
           exportHistory.push(newSale);
@@ -6704,12 +6706,21 @@ function loadCustomerLedger() {
   // Calculate summary statistics
   const totalCustomers = custData.length;
   const advances = history.filter(h => h.method === 'Cash In');
-  const credits = history.filter(h => h.method === 'Credit' || h.method === 'Udhar' || (h.creditAmount && h.creditAmount > 0));
-  const cashCollected = history.filter(h => h.method === 'Cash' || h.method === 'UPI');
+  // Detect credit: method is Credit/Udhar OR creditAmount exists and > 0
+  const credits = history.filter(h => 
+    h.method === 'Credit' || 
+    h.method === 'Udhar' || 
+    (h.creditAmount && parseFloat(h.creditAmount) > 0) ||
+    (h.credit && parseFloat(h.credit) > 0)  // Backward compatibility
+  );
+  const cashCollected = history.filter(h => 
+    (h.method === 'Cash' || h.method === 'UPI') && 
+    (!h.creditAmount || parseFloat(h.creditAmount) <= 0)
+  );
   const todaySales = history.filter(h => h.date === today);
-  
+
   const totalAdvance = advances.reduce((sum, a) => sum + parseFloat(a.amount || 0), 0);
-  const totalCredit = credits.reduce((sum, c) => sum + parseFloat(c.creditAmount || c.amount || 0), 0);
+  const totalCredit = credits.reduce((sum, c) => sum + parseFloat(c.creditAmount || c.credit || c.amount || 0), 0);
   const totalCash = cashCollected.reduce((sum, c) => sum + parseFloat(c.paidAmount || c.amount || 0), 0);
   const todayTotal = todaySales.reduce((sum, s) => sum + parseFloat(s.amount || 0), 0);
   
@@ -6774,15 +6785,24 @@ function filterCustomerLedger() {
     // Show all customers with their summary
     html += '<h3 style="font-size:14px; font-weight:700; color:#1e293b; margin-bottom:12px;">📋 All Customers Master List</h3>';
     html += '<div style="display:grid; gap:12px;">';
-    
+
     custData.forEach(cust => {
       const custHistory = filteredHistory.filter(h => h.customer === cust.name);
       const custAdvances = custHistory.filter(h => h.method === 'Cash In');
-      const custCredits = custHistory.filter(h => h.method === 'Credit' || h.method === 'Udhar');
-      const custCash = custHistory.filter(h => h.method === 'Cash' || h.method === 'UPI');
-      
+      // Detect credit by method OR creditAmount field
+      const custCredits = custHistory.filter(h => 
+        h.method === 'Credit' || 
+        h.method === 'Udhar' || 
+        (h.creditAmount && parseFloat(h.creditAmount) > 0) ||
+        (h.credit && parseFloat(h.credit) > 0)
+      );
+      const custCash = custHistory.filter(h => 
+        (h.method === 'Cash' || h.method === 'UPI') &&
+        (!h.creditAmount || parseFloat(h.creditAmount) <= 0)
+      );
+
       const totalAdv = custAdvances.reduce((sum, a) => sum + parseFloat(a.amount || 0), 0);
-      const totalCred = custCredits.reduce((sum, c) => sum + parseFloat(c.creditAmount || c.amount || 0), 0);
+      const totalCred = custCredits.reduce((sum, c) => sum + parseFloat(c.creditAmount || c.credit || c.amount || 0), 0);
       const totalCashCust = custCash.reduce((sum, c) => sum + parseFloat(c.paidAmount || c.amount || 0), 0);
       
       html += `
@@ -6850,17 +6870,23 @@ function filterCustomerLedger() {
     html += '</div>';
     
   } else if (customerLedgerView === 'credits') {
-    // Show credit/udhari
+    // Show credit/udhari - detect by method OR creditAmount field
     html += '<h3 style="font-size:14px; font-weight:700; color:#1e293b; margin-bottom:12px;">📒 Credit/Udhari (Date-wise)</h3>';
     html += '<div style="display:grid; gap:8px;">';
-    
-    const credits = filteredHistory.filter(h => h.method === 'Credit' || h.method === 'Udhar' || (h.creditAmount && h.creditAmount > 0));
-    
+
+    const credits = filteredHistory.filter(h => 
+      h.method === 'Credit' || 
+      h.method === 'Udhar' || 
+      (h.creditAmount && parseFloat(h.creditAmount) > 0) ||
+      (h.credit && parseFloat(h.credit) > 0)
+    );
+
     if (credits.length === 0) {
       html += '<div style="padding:40px; text-align:center; color:#64748b;">✅ No credit/udhari found</div>';
     } else {
       credits.forEach(c => {
         const date = new Date(c.createdAt || Date.now());
+        const creditAmt = parseFloat(c.creditAmount || c.credit || c.amount || 0);
         html += `
           <div style="background:#fef2f2; padding:12px; border-radius:8px; border-left:4px solid #dc2626;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -6870,7 +6896,7 @@ function filterCustomerLedger() {
                 ${c.products ? `<div style="font-size:12px; color:#991b1b;">📝 ${c.products}</div>` : ''}
               </div>
               <div style="text-align:right;">
-                <div style="font-size:18px; font-weight:900; color:#dc2626;">-${formatINR(parseFloat(c.creditAmount || c.amount || 0))}</div>
+                <div style="font-size:18px; font-weight:900; color:#dc2626;">-${formatINR(creditAmt)}</div>
                 <div style="font-size:11px; color:#64748b;">Credit</div>
               </div>
             </div>
