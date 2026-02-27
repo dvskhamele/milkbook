@@ -603,6 +603,9 @@
         background: transparent;
         color: #334155;
       }
+      .numInput:focus {
+        text-align: left;
+      }
       .numInput::-webkit-outer-spin-button,
       .numInput::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -2761,6 +2764,11 @@ function playSuccessSound() {
       const holdBadge = el("holdBadge");
       const toast = el("toast");
 
+      // Auto-select text on click for manual rate input
+      if (manualRateInput) {
+        manualRateInput.addEventListener("click", function() { this.select(); });
+      }
+
       const recentTbody = el("recentTbody");
       const recentMeta = el("recentMeta");
       const trailMini = el("trailMini");
@@ -2771,6 +2779,11 @@ function playSuccessSound() {
       const qtyInput = el("qtyInput");
       const fatInput = el("fatInput");
       const snfInput = el("snfInput");
+
+      // Auto-select all text on click/focus for easy editing
+      qtyInput.addEventListener("click", function() { this.select(); });
+      fatInput.addEventListener("click", function() { this.select(); });
+      snfInput.addEventListener("click", function() { this.select(); });
 
       /* Manual typing → state update */
       qtyInput.addEventListener("input", (e) => {
