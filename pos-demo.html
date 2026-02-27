@@ -315,6 +315,7 @@
       .p-card[draggable="true"]:hover { cursor: grab; }
       .p-card[draggable="true"]:active { cursor: grabbing; }
       .p-card.dragging { opacity: 0.4; border: 2px dashed #3b82f6; }
+      .p-card.drop-target { background: #eff6ff !important; border: 2px dashed #3b82f6 !important; }
       .recent-table tr[draggable="true"]:hover { cursor: grab; }
       .recent-table tr[draggable="true"]:active { cursor: grabbing; }
       .recent-table tr[draggable="true"] { transition: all 0.2s; }
@@ -473,13 +474,13 @@
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
             <!-- Products loaded dynamically from localStorage -->
             <!-- Add & Edit Buttons -->
-            <div class="p-card" style="border: 2px dashed #3b82f6; background: #eff6ff;" onclick="openModal('addProductModal')">
-              <div style="font-size:48px; color:#3b82f6; font-weight: 900;">➕</div>
-              <div style="font-weight:900; color:#3b82f6; font-size:9px; margin-top: 4px;">ADD</div>
+            <div class="p-card" style="border: 2px dashed #3b82f6; background: #eff6ff; min-height: 100px !important;" onclick="openModal('addProductModal')">
+              <div style="font-size:40px; color:#3b82f6; font-weight: 900;">🛒➕</div>
+              <div style="font-weight:900; color:#3b82f6; font-size:11px; margin-top: 4px;">Add Product</div>
             </div>
-            <div class="p-card" style="border: 2px solid #f59e0b; background: #fffbeb;" onclick="openEditInventory()" title="Edit Product Prices">
-              <div style="font-size:36px; color:#f59e0b; font-weight: 900;">✏️</div>
-              <div style="font-weight:900; color:#f59e0b; font-size:9px; margin-top: 4px;">EDIT</div>
+            <div class="p-card" style="border: 2px solid #f59e0b; background: #fffbeb; min-height: 100px !important;" onclick="openEditInventory()" title="Edit Product Prices">
+              <div style="font-size:36px; color:#f59e0b; font-weight: 900;">📝✏️</div>
+              <div style="font-weight:900; color:#f59e0b; font-size:11px; margin-top: 4px;">Edit Product</div>
             </div>
           </div>
         </div>
@@ -4653,14 +4654,27 @@ function clearTodayHistory() {
       function handleDragOver(e) {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
+        this.style.background = '#eff6ff';
+        this.style.border = '2px dashed #3b82f6';
         return false;
       }
 
       function handleDrop(e) {
+        e.preventDefault();
         e.stopPropagation();
+        
+        // Reset style
+        const cards = document.querySelectorAll('.p-card');
+        cards.forEach(card => {
+          if (!card.onclick?.toString().includes('addProductModal') && !card.onclick?.toString().includes('openEdit')) {
+            card.style.background = '';
+            card.style.border = '';
+          }
+        });
+        
         if (draggedCard && this !== draggedCard) {
           const grid = document.getElementById('productGrid');
-          const cards = Array.from(grid.querySelectorAll('.p-card'));
+          const cards = Array.from(grid.querySelectorAll('.p-card:not([onclick*="addProduct"]):not([onclick*="openEdit"])'));
           const draggedIndex = cards.indexOf(draggedCard);
           const dropIndex = cards.indexOf(this);
 
@@ -4672,8 +4686,14 @@ function clearTodayHistory() {
 
           // Save card order to localStorage
           saveCardOrder();
+          
+          // Visual feedback
+          showToast('✅ Product order saved!');
         }
-        if (draggedCard) draggedCard.style.opacity = '1';
+        if (draggedCard) {
+          draggedCard.style.opacity = '1';
+          draggedCard = null;
+        }
         return false;
       }
 
