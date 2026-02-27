@@ -5216,14 +5216,14 @@ function addNewProductFromModal() {
     newCard.ondragstart = handleDragStart;
     newCard.onclick = function() { tapAdd(name, price, qty, emoji); };
 
-    // Format quantity display
-    const qtyDisplay = qty < 0 ? `(${qty}x)` : `(${qty}x)`;
-    const nameDisplay = qty < 0 ? `${name} ${qtyDisplay}` : `${name} ${qtyDisplay}`;
+    // Format quantity display - show exact quantity with unit
+    const qtyDisplay = `${qty}${unit}`;
+    const nameDisplay = `${name} (${qtyDisplay})`;
 
     newCard.innerHTML = `
       <span class="emoji">${emoji}</span>
       <div style="font-weight: 900; margin-top: 2px;">${nameDisplay}</div>
-      <small>₹${price}/${unit}</small>
+      <span class="price-tag">₹${price}/${unit}</span>
       <button class="edit-prod-btn" onclick="event.stopPropagation(); editProductCard(this)" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
       <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
     `;
@@ -5477,8 +5477,8 @@ function loadCustomProducts() {
         newCard.ondragstart = handleDragStart;
         newCard.onclick = function() { tapAdd(p.name, p.price, qty || 1); };
 
-        const qtyDisplay = (qty || 1) < 0 ? `(${qty}x)` : `(${qty}x)`;
-        const nameDisplay = (qty || 1) < 0 ? `${p.name} ${qtyDisplay}` : `${p.name} ${qtyDisplay}`;
+        const qtyDisplay = `${qty}${p.unit || 'unit'}`;
+        const nameDisplay = `${p.name} (${qtyDisplay})`;
 
         newCard.innerHTML = `
           <span class="emoji">${p.emoji || '📦'}</span>
