@@ -446,7 +446,8 @@
       }
 
       .fcard {
-        height: 60px;
+        height: auto;
+        min-height: 60px;
         border-radius: 12px;
         border: 1px solid var(--line);
         background: #fff;
@@ -456,7 +457,7 @@
         padding: 8px;
         cursor: pointer;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
       }
       .fcard:active {
         transform: translateY(1px);
@@ -482,10 +483,14 @@
       .fname {
         font-weight: 1000;
         font-size: 14px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 150px;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        max-width: none;
+        word-break: break-word;
+        line-height: 1.2;
+        flex: 1 1 auto;
+        min-width: 0;
       }
       .fsub {
         color: var(--muted);
@@ -500,6 +505,7 @@
       .editFarmerBtn {
         opacity: 0;
         transition: opacity 0.2s;
+        flex: 0 0 auto;
       }
       .fcard:hover .editFarmerBtn {
         opacity: 0.7;
