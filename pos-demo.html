@@ -5214,7 +5214,12 @@ function handleProductFieldEnter(e) {
 
 // Add new product card from modal - creates multiple cards for each quantity
 function addNewProductFromModal() {
-  const name = el("pName").value.trim();
+  // Capitalize first letter of each word in product name
+  const capitalizeName = (str) => {
+    return str.replace(/\b\w/g, c => c.toUpperCase());
+  };
+  
+  const name = capitalizeName(el("pName").value.trim());
   const price = parseFloat(el("pPrice").value);
   const unit = el("pUnit").value.trim() || 'unit';
   const emoji = el("pEmoji").value.trim() || '📦';
@@ -5874,11 +5879,16 @@ function updateBooth() {
 
 // Save shop settings
 function saveShopSettings() {
-  const shopName = el("shopNameInput").value.trim();
+  // Capitalize first letter of each word for names
+  const capitalizeName = (str) => {
+    return str.replace(/\b\w/g, c => c.toUpperCase());
+  };
+  
+  const shopName = capitalizeName(el("shopNameInput").value.trim());
   const shopPhone = el("shopPhoneInput").value.trim();
-  const shopProprietor = el("shopProprietorInput").value.trim();
+  const shopProprietor = capitalizeName(el("shopProprietorInput").value.trim());
   const shopAddress = el("shopAddressInput").value.trim();
-  const shopCity = el("shopCityInput").value.trim();
+  const shopCity = capitalizeName(el("shopCityInput").value.trim());
   const shopPincode = el("shopPincodeInput").value.trim();
   const shopGst = el("shopGstInput").value.trim().toUpperCase();
   const shopPan = el("shopPanInput").value.trim().toUpperCase();

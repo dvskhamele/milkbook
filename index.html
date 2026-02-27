@@ -3118,7 +3118,11 @@ function playSuccessSound() {
 
         const newName = prompt("Edit farmer name:", farmer.name);
         if (newName && newName.trim() !== "" && newName !== farmer.name) {
-          farmer.name = newName.trim();
+          // Capitalize first letter of each word
+          const capitalizeName = (str) => {
+            return str.replace(/\b\w/g, c => c.toUpperCase());
+          };
+          farmer.name = capitalizeName(newName.trim());
           // Update split name fields for better search
           const nameParts = farmer.name.split(/\s+/).filter(p => p.length > 0);
           farmer.firstName = nameParts[0] || '';
@@ -5249,22 +5253,28 @@ function showAuditProof(entryId) {
             }
 
             const fullName = fName.value ? fName.value.trim() : '';
-            
+
+            // Capitalize first letter of each word in name
+            const capitalizeName = (str) => {
+              return str.replace(/\b\w/g, c => c.toUpperCase());
+            };
+            const capitalizedFullName = capitalizeName(fullName);
+
             // Split name for better search (first name, last name, short name)
-            const nameParts = fullName.split(/\s+/).filter(p => p.length > 0);
+            const nameParts = capitalizedFullName.split(/\s+/).filter(p => p.length > 0);
             const firstName = nameParts[0] || '';
             const lastName = nameParts.slice(1).join(' ') || '';
             const shortName = firstName ? firstName.charAt(0).toUpperCase() : '';
 
             const f = {
               serial: serialNum,
-              name: fullName,
+              name: capitalizedFullName,
               firstName: firstName,
               lastName: lastName,
               shortName: shortName,
               phone: fPhone ? (fPhone.value ? fPhone.value.trim() : '') : '',
               address: fAddress ? (fAddress.value ? fAddress.value.trim() : '') : '',
-              city: fCity ? (fCity.value ? fCity.value.trim() : '') : '',
+              city: fCity ? capitalizeName(fCity.value.trim()) : '',
               pincode: fPincode ? (fPincode.value ? fPincode.value.trim() : '') : '',
               balance: fBalance ? (Number(fBalance.value) || 0) : 0,
               active: fActive ? fActive.value === "1" : true,
