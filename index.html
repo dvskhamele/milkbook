@@ -1559,6 +1559,20 @@
         </div>
       </div>
 
+      <!-- Initialize dropdown function immediately -->
+      <script>
+        // Define toggleHeaderDropdown immediately so it's available for onclick
+        window.toggleHeaderDropdown = function() {
+          const dropdown = document.getElementById('headerDropdown');
+          console.log('🔵 toggleHeaderDropdown called, dropdown:', dropdown);
+          if (dropdown) {
+            const isVisible = dropdown.style.display === 'block';
+            dropdown.style.display = isVisible ? 'none' : 'block';
+            console.log('🔵 Header dropdown toggled:', isVisible ? 'closed' : 'opened');
+          }
+        }
+      </script>
+
       <!-- CORE -->
       <div class="core">
         <!-- LEFT -->
