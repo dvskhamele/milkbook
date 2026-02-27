@@ -412,6 +412,11 @@
           </a>
         </div>
         <div class="hdr-actions">
+          <!-- Rate List Button -->
+          <button class="pillbtn primary" onclick="openRateListModal()" style="background:#7c3aed; border-color:#7c3aed;" title="View & Share Rate List">
+            📋 Rate List
+          </button>
+          
           <!-- Switch to Collection -->
           <button class="pillbtn primary" onclick="location.href='index.html'" style="background:#16a34a; border-color:#16a34a;">
             📊 Collection
@@ -739,6 +744,33 @@
             <button onclick="exportAdvanceOrders()" style="flex:1; padding:12px; background:#3b82f6; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer;">📊 Export All</button>
             <button onclick="closeModal('advanceOrdersModal')" style="padding:12px 24px; background:#e2e8f0; color:#475569; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Close</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rate List Modal -->
+    <div class="overlay" id="rateListModal">
+      <div class="modal" style="width:min(700px, 95vw); height:min(80vh, 90vh); display:flex; flex-direction:column;">
+        <div class="panelHeader" style="flex-shrink:0;">
+          <span>📋 Product Rate List</span>
+          <button onclick="closeModal('rateListModal')" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b;">✖</button>
+        </div>
+
+        <!-- Shop Info -->
+        <div style="padding:12px 16px; background:#f8fafc; border-bottom:1px solid #e2e8f0; flex-shrink:0;">
+          <div style="font-size:13px; font-weight:700; color:#1e293b;" id="rateListShopName">🏪 Shop Name</div>
+          <div style="font-size:11px; color:#64748b;" id="rateListDate">📅 <span id="rateListCurrentDate"></span></div>
+        </div>
+
+        <!-- Products List -->
+        <div style="flex:1; overflow-y:auto; padding:16px;" id="rateListProducts">
+          <!-- Products will be populated here -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="padding:16px; border-top:1px solid #e2e8f0; flex-shrink:0; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button onclick="sendRateListWhatsApp()" style="padding:12px; background:#25d366; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">📱 Send via WhatsApp</button>
+          <button onclick="printRateList()" style="padding:12px; background:#3b82f6; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">🖨️ Print Rate List</button>
         </div>
       </div>
     </div>
@@ -5696,6 +5728,270 @@ setTimeout(() => {
     productSearch.select();
   }
 }, 300);
+
+// ========== RATE LIST FUNCTIONS ==========
+
+// Open rate list modal
+function openRateListModal() {
+  const modal = document.getElementById('rateListModal');
+  if (!modal) return;
+  
+  // Set shop name and date
+  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  document.getElementById('rateListShopName').textContent = '🏪 ' + shopName;
+  document.getElementById('rateListCurrentDate').textContent = new Date().toLocaleDateString('en-IN', { 
+    day: 'numeric', 
+    month: 'long', 
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  
+  // Load and display products
+  renderRateListProducts();
+  
+  // Open modal
+  openModal('rateListModal');
+}
+
+// Render products in rate list
+function renderRateListProducts() {
+  const container = document.getElementById('rateListProducts');
+  if (!container) return;
+  
+  // Load products from localStorage
+  const customProducts = loadData('mr_pos_custom_products', []);
+  
+  if (!Array.isArray(customProducts) || customProducts.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:60px 20px; color:#64748b;">
+        <div style="font-size:64px; margin-bottom:16px;">📦</div>
+        <div style="font-size:18px; font-weight:700; margin-bottom:8px;">No Products</div>
+        <div style="font-size:14px;">Add products to see them in the rate list</div>
+      </div>
+    `;
+    return;
+  }
+  
+  // Group products by step/category
+  const productsByStep = {};
+  customProducts.forEach(p => {
+    const step = p.step || 0;
+    if (!productsByStep[step]) productsByStep[step] = [];
+    productsByStep[step].push(p);
+  });
+  
+  // Sort steps
+  const steps = Object.keys(productsByStep).sort((a, b) => parseInt(a) - parseInt(b));
+  
+  // Generate HTML
+  let html = '';
+  steps.forEach(step => {
+    const stepName = step == 0 ? '🥛 Milk & Dairy' : (step == 1 ? '🧀 Paneer & Products' : `Step ${step}`);
+    const products = productsByStep[step];
+    
+    html += `
+      <div style="margin-bottom:24px;">
+        <div style="font-size:16px; font-weight:900; color:#1e293b; margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid #e2e8f0;">
+          ${stepName} (${products.length})
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
+    `;
+    
+    products.forEach(p => {
+      const emoji = p.emoji || '📦';
+      const name = p.name || 'Product';
+      const price = parseFloat(p.price) || 0;
+      const unit = p.unit || 'unit';
+      
+      html += `
+        <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
+          <div style="font-size:32px;">${emoji}</div>
+          <div style="flex:1;">
+            <div style="font-weight:700; color:#1e293b; font-size:14px;">${name}</div>
+            <div style="font-size:12px; color:#64748b;">Per ${unit}</div>
+          </div>
+          <div style="font-weight:900; color:#16a34a; font-size:16px;">${formatINR(price)}</div>
+        </div>
+      `;
+    });
+    
+    html += `
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+// Send rate list via WhatsApp
+function sendRateListWhatsApp() {
+  const customProducts = loadData('mr_pos_custom_products', []);
+  
+  if (!Array.isArray(customProducts) || customProducts.length === 0) {
+    return showToast('📋 No products to send!');
+  }
+  
+  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  
+  // Build WhatsApp message
+  let message = `*${shopName}*\n`;
+  message += `📋 *Product Rate List*\n`;
+  message += `📅 ${date}\n\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  
+  // Group by step
+  const productsByStep = {};
+  customProducts.forEach(p => {
+    const step = p.step || 0;
+    if (!productsByStep[step]) productsByStep[step] = [];
+    productsByStep[step].push(p);
+  });
+  
+  const steps = Object.keys(productsByStep).sort((a, b) => parseInt(a) - parseInt(b));
+  
+  steps.forEach(step => {
+    const stepName = step == 0 ? '*🥛 MILK & DAIRY*' : (step == 1 ? '*🧀 PANEER & PRODUCTS*' : `*STEP ${step}*`);
+    message += `${stepName}\n`;
+    message += `━━━━━━━━━━━━━━━━━━━━\n`;
+    
+    productsByStep[step].forEach(p => {
+      const emoji = p.emoji || '📦';
+      const name = p.name || 'Product';
+      const price = parseFloat(p.price) || 0;
+      const unit = p.unit || 'unit';
+      
+      message += `${emoji} ${name} - ${formatINR(price)}/${unit}\n`;
+    });
+    
+    message += `\n`;
+  });
+  
+  message += `━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `📞 Contact us for orders!\n`;
+  message += `🙏 Thank you!`;
+  
+  // Open WhatsApp
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  window.open(whatsappUrl, '_blank');
+  
+  showToast('📱 Opening WhatsApp...');
+}
+
+// Print rate list
+function printRateList() {
+  const customProducts = loadData('mr_pos_custom_products', []);
+  
+  if (!Array.isArray(customProducts) || customProducts.length === 0) {
+    return showToast('📋 No products to print!');
+  }
+  
+  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  
+  // Group by step
+  const productsByStep = {};
+  customProducts.forEach(p => {
+    const step = p.step || 0;
+    if (!productsByStep[step]) productsByStep[step] = [];
+    productsByStep[step].push(p);
+  });
+  
+  const steps = Object.keys(productsByStep).sort((a, b) => parseInt(a) - parseInt(b));
+  
+  // Generate print HTML
+  let productsHTML = '';
+  steps.forEach(step => {
+    const stepName = step == 0 ? '🥛 Milk & Dairy' : (step == 1 ? '🧀 Paneer & Products' : `Step ${step}`);
+    
+    productsHTML += `
+      <div style="margin-bottom:20px;">
+        <div style="font-size:16px; font-weight:bold; color:#1e293b; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid #e2e8f0;">
+          ${stepName}
+        </div>
+        <table style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="background:#f8fafc;">
+              <th style="padding:8px; text-align:left; border:1px solid #e2e8f0; font-size:12px;">Product</th>
+              <th style="padding:8px; text-align:left; border:1px solid #e2e8f0; font-size:12px;">Unit</th>
+              <th style="padding:8px; text-align:right; border:1px solid #e2e8f0; font-size:12px;">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+    
+    productsByStep[step].forEach(p => {
+      const emoji = p.emoji || '📦';
+      const name = p.name || 'Product';
+      const price = parseFloat(p.price) || 0;
+      const unit = p.unit || 'unit';
+      
+      productsHTML += `
+        <tr>
+          <td style="padding:8px; border:1px solid #e2e8f0; font-size:13px;">${emoji} ${name}</td>
+          <td style="padding:8px; border:1px solid #e2e8f0; font-size:13px;">Per ${unit}</td>
+          <td style="padding:8px; border:1px solid #e2e8f0; font-size:13px; text-align:right; font-weight:bold; color:#16a34a;">${formatINR(price)}</td>
+        </tr>
+      `;
+    });
+    
+    productsHTML += `
+          </tbody>
+        </table>
+      </div>
+    `;
+  });
+  
+  const printHTML = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Rate List - ${shopName}</title>
+      <style>
+        @media print {
+          body { padding: 10mm; }
+          .no-print { display: none; }
+          @page { margin: 10mm; }
+        }
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; border-bottom: 3px solid #7c3aed; padding-bottom: 15px; margin-bottom: 20px; }
+        .header h1 { color: #1e293b; margin: 0; font-size: 24px; }
+        .header p { color: #64748b; margin: 5px 0; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th { background: #f8fafc; padding: 10px; text-align: left; font-weight: bold; border: 1px solid #e2e8f0; font-size: 13px; }
+        td { padding: 10px; border: 1px solid #e2e8f0; font-size: 13px; }
+        .footer { text-align: center; margin-top: 30px; padding-top: 15px; border-top: 2px solid #e2e8f0; color: #64748b; font-size: 12px; }
+        .print-btn { background: #7c3aed; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; margin: 20px auto; display: block; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>📋 ${shopName}</h1>
+        <p>Product Rate List | ${date}</p>
+      </div>
+      ${productsHTML}
+      <div class="footer">
+        <p>📞 Contact us for orders! | 🙏 Thank you!</p>
+        <p>Generated: ${new Date().toLocaleString('en-IN')}</p>
+      </div>
+      <button class="print-btn no-print" onclick="window.print(); window.close();">🖨️ Print Now</button>
+    </body>
+    </html>
+  `;
+  
+  // Open print window
+  const printWindow = window.open('', '_blank');
+  if (printWindow) {
+    printWindow.document.write(printHTML);
+    printWindow.document.close();
+    setTimeout(() => {
+      printWindow.focus();
+      printWindow.print();
+    }, 500);
+  }
+}
     </script>
   </body>
 </html>
