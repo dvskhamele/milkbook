@@ -2080,10 +2080,9 @@
         <!-- RIGHT -->
         <div class="panel">
           <div class="panelHeader">
-            <!-- Summary Info Row - ALL in ONE row: Calc | Rate Btn | Cow/Buff | OLD | NEW -->
+            <!-- Summary Info Row - ALL in ONE row: Calc | Cow/Buff | OLD | NEW -->
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; white-space: nowrap;">
               <div id="summaryCalcText" style="color: #64748b; font-weight: 800; font-size: 12px;">0.0L×₹0.00/L(F:0.0%)</div>
-              <button onclick="openRateTable()" style="padding: 4px 8px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; color: #64748b; white-space: nowrap;" title="View Rate List">Rate: ₹30.00 📋</button>
               <div style="display: flex; gap: 6px; color: #64748b; font-weight: 800; font-size: 12px;">
                 <span style="color: #16a34a;">🐄<span id="cowQtyInline">0.0</span></span>
                 <span style="color: #dc2626;">🐃<span id="buffQtyInline">0.0</span></span>
@@ -5063,14 +5062,21 @@ function printCollectionBill(entry) {
 ${entry.paymentMode === 'Cash' ? '💵 Cash' : entry.paymentMode === 'UPI' ? '📱 UPI' : entry.paymentMode === 'Account' ? '🏦 Account' : '📒 Credit'}
 </span>
         </div>
+        ${entry.paymentMode === 'Credit' ? `
         <div class="row">
             <span>Previous Balance:</span>
             <span class="bold">${formatAmt((farmer.balance || 0) - (entry.amount || 0))}</span>
         </div>
-        <div class="row bold" style="background: #f0fdf4; padding: 8px; margin-top: 5px;">
+        <div class="row bold" style="background: #fef3c7; padding: 8px; margin-top: 5px;">
             <span>NEW BALANCE:</span>
             <span>${formatAmt(farmer.balance || 0)}</span>
         </div>
+        ` : `
+        <div class="row bold" style="background: #f0fdf4; padding: 8px; margin-top: 5px;">
+            <span>STATUS:</span>
+            <span style="color: #16a34a;">✅ Settled / Paid</span>
+        </div>
+        `}
 
         ${shopUPI || shopBankName ? `
         <div style="margin-top: 15px; padding: 12px; background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 8px;">
