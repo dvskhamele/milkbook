@@ -1995,9 +1995,9 @@
         if (!useBackend || !currentShopId) return;
         
         try {
-          // In real implementation, fetch from API
-          // const response = await fetch('/.netlify/functions/customers', {
-          //   headers: { 'Authorization': `Bearer ${authToken}` }
+          In real implementation, fetch from API
+          const response = await fetch('/api/customers', {
+            headers: { 'Authorization': `Bearer ${authToken}` }
           // });
           // const { customers } = await response.json();
           // customers.forEach(c => {
@@ -2016,7 +2016,7 @@
         if (!useBackend || !currentShopId) return;
         
         try {
-          // In real implementation, fetch from API
+          In real implementation, fetch from API
           console.log('Loaded sales from backend');
         } catch (error) {
           console.error('Failed to load sales:', error);
@@ -2028,7 +2028,7 @@
         if (!useBackend || !currentShopId) return null;
         
         try {
-          const response = await fetch('/.netlify/functions/sales', {
+          const response = await fetch('/api/sales', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

@@ -2,11 +2,11 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
+      "src": "vercel_app.py",
       "use": "@vercel/python"
     },
     {
-      "src": "../apps/**",
+      "src": "apps/**",
       "use": "@vercel/static"
     }
   ],
@@ -17,17 +17,17 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/vercel_app.py"
     },
     {
       "src": "/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/apps/$1"
     }
   ],
   "env": {
+    "PYTHON_VERSION": "3.9",
     "FLASK_ENV": "production",
-    "FLASK_DEBUG": "False",
-    "RUNTIME": "cloud"
-  },
-  "outputDirectory": "apps"
+    "RUNTIME": "cloud",
+    "VERCEL": "1"
+  }
 }
