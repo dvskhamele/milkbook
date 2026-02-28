@@ -444,10 +444,10 @@
       }
       .farmerGrid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 6px;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 4px;
 
-        max-height: 240px;
+        max-height: 280px;
         overflow-y: auto;
         padding-right: 6px;
 
@@ -456,14 +456,14 @@
 
       .fcard {
         height: auto;
-        min-height: 60px;
-        border-radius: 12px;
+        min-height: 55px;
+        border-radius: 10px;
         border: 1px solid var(--line);
         background: #fff;
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 8px;
+        gap: 6px;
+        padding: 6px;
         cursor: pointer;
         position: relative;
         overflow: visible;
@@ -472,15 +472,15 @@
         transform: translateY(1px);
       }
       .fimg {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
         background: #f1f5f9;
         border: 1px solid var(--line);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        font-size: 16px;
         flex: 0 0 auto;
         overflow: hidden;
       }
@@ -490,26 +490,25 @@
         object-fit: cover;
       }
       .fname {
-        font-weight: 1000;
-        font-size: 14px;
-        white-space: normal;
-        overflow: visible;
-        text-overflow: clip;
-        max-width: none;
-        word-break: break-word;
-        line-height: 1.2;
+        font-weight: 900;
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        line-height: 1.3;
         flex: 1 1 auto;
         min-width: 0;
       }
       .fsub {
         color: var(--muted);
         font-weight: 900;
-        font-size: 11px;
+        font-size: 10px;
         margin-top: 2px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 210px;
+        max-width: 100%;
       }
       .editFarmerBtn {
         opacity: 0;
