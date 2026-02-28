@@ -447,7 +447,7 @@
               <button onclick="openModal('settingsModal'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">⚙️ Settings</button>
               <button onclick="exportDetailedExcel(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">📊 Export Data</button>
               <button onclick="openModal('historyModal'); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🧾 History</button>
-              <button onclick="toggleLanguage(); toggleProfileDropdown()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🌐 HI/EN/BHO Language</button>
+              <button onclick="toggleLanguage(); toggleProfileDropdown()" id="langToggleBtn" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);">🌐 English (EN)</button>
               <div style="border-top: 1px solid var(--line); margin: 4px 0;"></div>
               <button onclick="logout()" style="width: 100%; padding: 10px 12px; background: none; border: none; text-align: left; cursor: pointer; font-size: 13px; font-weight: 600; color: #dc2626;">🚪 Logout</button>
             </div>
@@ -1650,9 +1650,9 @@
       // Language toggle with English, Hindi, and Bhojpuri
       // currentLang already declared at line 1383
       const langData = {
-          en: { shop:"MilkRecord POS", mem:"🧠 Memory", hist:"🧾 History", exp:"📊 Export", term:"Terminal", sum:"Summary", payable:"TOTAL PAYABLE", cash:"CASH", credit:"LIKH LO (Credit)", hold:"🟡 HOLD", done:"🟢 DONE", clear:"🔴 CLEAR" },
-          hi: { shop:"मिल्क-रिकॉर्ड", mem:"🧠 यादें", hist:"🧾 इतिहास", exp:"📊 एक्सपोर्ट", term:"टर्मिनल", sum:"सारांश", payable:"कुल देय राशि", cash:"नकद", credit:"लिख लो (उधार)", hold:"🟡 होल्ड", done:"🟢 पूर्ण", clear:"🔴 साफ़ करें" },
-          bho: { shop:"मिल्क-रिकॉर्ड", mem:"🧠 याद", hist:"🧾 इतिहास", exp:"📊 एक्सपोर्ट", term:"टर्मिनल", sum:"सारांश", payable:"कुल देय", cash:"नगदी", credit:"लिख लउ (उधार)", hold:"🟡 होल्ड", done:"🟢 हो गइल", clear:"🔴 साफ करी" }
+          en: { shop:"MilkRecord POS", mem:"🧠 Memory", hist:"🧾 History", exp:"📊 Export", term:"Terminal", sum:"Summary", payable:"TOTAL PAYABLE", cash:"CASH", credit:"LIKH LO (Credit)", hold:"🟡 HOLD", done:"🟢 DONE", clear:"🔴 CLEAR", lang:"🌐 English (EN)" },
+          hi: { shop:"मिल्क-रिकॉर्ड POS", mem:"🧠 यादें", hist:"🧾 इतिहास", exp:"📊 एक्सपोर्ट", term:"टर्मिनल", sum:"सारांश", payable:"कुल देय राशि", cash:"नकद", credit:"लिख लो (उधार)", hold:"🟡 होल्ड", done:"🟢 पूर्ण", clear:"🔴 साफ़ करें", lang:"🌐 हिंदी (HI)" },
+          bho: { shop:"मिल्क-रिकॉर्ड POS", mem:"🧠 याद", hist:"🧾 इतिहास", exp:"📊 एक्सपोर्ट", term:"टर्मिनल", sum:"सारांश", payable:"कुल देय", cash:"नगदी", credit:"लिख लउ (उधार)", hold:"🟡 होल्ड", done:"🟢 हो गइल", clear:"🔴 साफ करी", lang:"🌐 भोजपुरी (BHO)" }
       };
 
       function toggleLanguage() {
@@ -1664,7 +1664,19 @@
           } else {
               currentLang = 'en';
           }
-          
+
+          // Update button text to show current language
+          const langBtn = el("langToggleBtn");
+          if (langBtn) {
+            if (currentLang === 'en') {
+              langBtn.textContent = '🌐 English (EN)';
+            } else if (currentLang === 'hi') {
+              langBtn.textContent = '🌐 हिंदी (HI)';
+            } else {
+              langBtn.textContent = '🌐 भोजपुरी (BHO)';
+            }
+          }
+
           const t = langData[currentLang];
 
           // Safe element updates with null checks
@@ -1709,13 +1721,13 @@
           });
           
           updateShift();
-          
-          // Show language name in toast
+
+          // Show language name in toast with native script
           let langName = '';
-          if (currentLang === 'en') langName = 'English Enabled';
-          else if (currentLang === 'hi') langName = 'हिंदी सक्रिय';
-          else langName = 'भोजपुरी सक्रिय';
-          
+          if (currentLang === 'en') langName = '🇬🇧 English (EN)';
+          else if (currentLang === 'hi') langName = '🇮🇳 हिंदी (HI)';
+          else langName = '🇮🇳 भोजपुरी (BHO)';
+
           showToast(langName);
       }
 
