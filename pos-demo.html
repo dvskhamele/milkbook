@@ -552,22 +552,22 @@
       <div class="topbar">
         <!-- Product Category Filters (Left of Logo) -->
         <div style="display: flex; gap: 4px; align-items: center; padding: 4px 8px; background: #f8fafc; border-radius: 8px; margin-right: 8px;">
-          <button onclick="filterProductsByCategory('all')" class="category-btn" style="padding: 4px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;">📦</button>
-          <button onclick="filterProductsByCategory('milk')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Milk">🥛</button>
-          <button onclick="filterProductsByCategory('paneer')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Paneer">🧀</button>
-          <button onclick="filterProductsByCategory('ghee')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Ghee">🧈</button>
-          <button onclick="filterProductsByCategory('curd')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Curd">🥣</button>
-          <button onclick="filterProductsByCategory('sweets')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Sweets">🍬</button>
-          <button onclick="filterProductsByCategory('bakery')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Bakery">🥐</button>
+          <button onclick="filterProductsByCategory('all')" class="category-btn" style="padding: 4px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;">📦 All</button>
+          <button onclick="filterProductsByCategory('milk')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Milk">🥛 Milk</button>
+          <button onclick="filterProductsByCategory('paneer')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Paneer">🧀 Paneer</button>
+          <button onclick="filterProductsByCategory('ghee')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Ghee">🧈 Ghee</button>
+          <button onclick="filterProductsByCategory('curd')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Curd">🥣 Curd</button>
+          <button onclick="filterProductsByCategory('sweets')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Sweets">🍬 Sweets</button>
+          <button onclick="filterProductsByCategory('bakery')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Bakery">🥐 Bakery</button>
         </div>
         <div class="brand">
-          <a href="homepage.html" style="text-decoration:none; color:inherit;">
-            <div class="logo-box">
-              <img src="logo.jpg" alt="MilkRecord" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;" onerror="this.style.display='none'; this.parentElement.innerHTML='🥛'" />
+          <a href="homepage.html" style="text-decoration:none; color:inherit; display: flex; align-items: center; gap: 6px;">
+            <div class="logo-box" style="display: flex; align-items: center; justify-content: center;">
+              <img src="logo.jpg" alt="🥛" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;" onerror="this.style.display='none'; this.parentElement.textContent='🥛'" />
             </div>
-            <div class="brand-text">
-              <div class="title" id="shopTitle">MilkRecord POS</div>
-              <div class="sub-text" id="todayLabel" style="display:none;">—</div>
+            <div class="brand-text" style="display: flex; flex-direction: column; justify-content: center;">
+              <div class="title" id="shopTitle" style="font-weight: 700; font-size: 11px; color: #0f172a; white-space: nowrap;">MilkRecord</div>
+              <div class="title" id="shopTitlePos" style="font-weight: 500; font-size: 9px; color: #64748b; white-space: nowrap;">POS</div>
             </div>
           </a>
         </div>
@@ -6621,9 +6621,8 @@ let draggedProductIndex = null;
 
 function handleProductOrderDragStart(e) {
   draggedProductIndex = parseInt(this.getAttribute('data-index'));
-  this.style.opacity = '0.4';
+  this.style.opacity = '0.6';
   this.style.background = '#e0f2fe';
-  this.style.cursor = 'grabbing';
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', draggedProductIndex);
   console.log('🔵 Drag started:', draggedProductIndex);
@@ -6632,14 +6631,13 @@ function handleProductOrderDragStart(e) {
 function handleProductOrderDragOver(e) {
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
-  this.style.borderTop = '3px solid #3b82f6';
+  this.style.borderLeft = '4px solid #3b82f6';
   this.style.background = '#f0f9ff';
-  console.log('🔵 Drag over:', parseInt(this.getAttribute('data-index')));
   return false;
 }
 
 function handleProductOrderDragLeave(e) {
-  this.style.borderTop = '';
+  this.style.borderLeft = '';
   this.style.background = '#f8fafc';
 }
 
@@ -6651,14 +6649,12 @@ function handleProductOrderDrop(e) {
 
   // Remove border highlights
   document.querySelectorAll('#editInventoryList > div').forEach(div => {
-    div.style.borderTop = '';
+    div.style.borderLeft = '';
     div.style.background = '#f8fafc';
-    div.style.cursor = 'grab';
+    div.style.opacity = '1';
   });
 
   if (draggedProductIndex === null || draggedProductIndex === dropIndex) {
-    this.style.opacity = '1';
-    this.style.background = '#f8fafc';
     draggedProductIndex = null;
     return false;
   }
@@ -6705,7 +6701,7 @@ function handleProductOrderDrop(e) {
   // Save new order - USE saveData() for consistency
   saveData('mr_pos_product_order', productOrder, 'order_update');
 
-  showToast('Product order updated ✅');
+  showToast('✅ Product order updated');
   draggedProductIndex = null;
 
   // Reload modal to show new order
@@ -6719,11 +6715,10 @@ function handleProductOrderDrop(e) {
 function handleProductOrderDragEnd(e) {
   this.style.opacity = '1';
   this.style.background = '#f8fafc';
-  this.style.cursor = 'grab';
   draggedProductIndex = null;
-  // Remove any remaining border highlights
+  // Remove any remaining highlights
   document.querySelectorAll('#editInventoryList > div').forEach(div => {
-    div.style.borderTop = '';
+    div.style.borderLeft = '';
     div.style.background = '#f8fafc';
   });
 }
