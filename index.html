@@ -4895,6 +4895,29 @@ function saveEntryAsCredit() {
     const ratePerL = getRatePerLiter();
     const amount = getAmount();
 
+    // Check for duplicate recent LIKH LO entry (same farmer, same amount, within 5 minutes)
+    const now = Date.now();
+    const recentCredit = entries.find(e => 
+        e.farmerId === farmer.id && 
+        e.paymentMode === 'Credit' && 
+        Math.abs(e.amount - amount) < 0.01 &&
+        (now - e.createdAt) < 300000 // 5 minutes
+    );
+
+    if (recentCredit) {
+        const recentTime = new Date(recentCredit.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        const confirmSave = confirm(
+            `⚠️ Similar LIKH LO entry found!\n\n` +
+            `📒 Udhar ₹${amount} was recorded at ${recentTime}\n` +
+            `Farmer: ${farmer.name}\n\n` +
+            `Click OK to save again, or Cancel to skip.`
+        );
+        if (!confirmSave) {
+            showToast("⚠️ Duplicate entry skipped");
+            return;
+        }
+    }
+
     const entry = {
         id: uid("e"),
         farmerId: farmer.id,
