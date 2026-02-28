@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MilkBook - Database Status Check</title>
+    <title>MilkRecord - Database Status Check</title>
     <style>
         body { font-family: 'Inter', sans-serif; background: #f8fafc; padding: 40px 20px; max-width: 900px; margin: 0 auto; }
         h1 { color: #1e293b; margin-bottom: 30px; }
@@ -112,7 +112,7 @@
                 document.getElementById('supabaseUrl').textContent = SUPABASE_URL.substring(0, 40) + '...';
 
                 // Check session
-                const session = localStorage.getItem('milkbook_session');
+                const session = localStorage.getItem('MilkRecord_session');
                 if (session) {
                     const sessionData = JSON.parse(session);
                     if (sessionData.expires > Date.now()) {
@@ -128,7 +128,7 @@
                 }
 
                 // Check Supabase mode
-                const useSupabase = localStorage.getItem('milkbook_use_supabase') === 'true';
+                const useSupabase = localStorage.getItem('MilkRecord_use_supabase') === 'true';
                 apiModeEl.textContent = useSupabase ? 'Supabase (Database)' : 'LocalStorage Only';
                 apiModeEl.style.color = useSupabase ? '#16a34a' : '#dc2626';
             } else {
@@ -143,8 +143,8 @@
         async function checkLocalStorage() {
             const badge = document.getElementById('localStorageBadge');
             
-            const farmers = JSON.parse(localStorage.getItem('milkbook_farmers') || '[]');
-            const entries = JSON.parse(localStorage.getItem('milkbook_entries') || '[]');
+            const farmers = JSON.parse(localStorage.getItem('MilkRecord_farmers') || '[]');
+            const entries = JSON.parse(localStorage.getItem('MilkRecord_entries') || '[]');
             const customers = JSON.parse(localStorage.getItem('mr_pos_customers') || '[]');
             const sales = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
 
@@ -183,7 +183,7 @@
             try {
                 // Test 1: Check connection
                 output.textContent += '1. Testing connection...\n';
-                const { farmers, error } = await window.MilkBookDB.farmers.getAll();
+                const { farmers, error } = await window.MilkRecordDB.farmers.getAll();
                 
                 if (error) {
                     throw new Error(`Farmers table error: ${error.message}`);
@@ -198,7 +198,7 @@
 
                 for (const table of tables) {
                     try {
-                        const result = await window.MilkBookDB[table].getAll();
+                        const result = await window.MilkRecordDB[table].getAll();
                         const count = (result[table] || []).length;
                         tableStatus += `✅ ${table}: ${count} records\n`;
                     } catch (e) {
@@ -221,15 +221,15 @@
         }
 
         function enableAPIMode() {
-            localStorage.setItem('milkbook_use_supabase', 'true');
+            localStorage.setItem('MilkRecord_use_supabase', 'true');
             alert('Supabase Mode Enabled! Data will now be saved to database.\n\nMake sure you have:\n1. Set Supabase credentials in supabase-client.js\n2. Created database tables (see VERCEL_DEPLOYMENT.md)\n3. Deployed to Vercel');
             location.reload();
         }
 
         function exportLocalStorage() {
             const data = {
-                farmers: JSON.parse(localStorage.getItem('milkbook_farmers') || '[]'),
-                entries: JSON.parse(localStorage.getItem('milkbook_entries') || '[]'),
+                farmers: JSON.parse(localStorage.getItem('MilkRecord_farmers') || '[]'),
+                entries: JSON.parse(localStorage.getItem('MilkRecord_entries') || '[]'),
                 customers: JSON.parse(localStorage.getItem('mr_pos_customers') || '[]'),
                 sales: JSON.parse(localStorage.getItem('mr_sales_history') || '[]'),
                 exportedAt: new Date().toISOString()
@@ -239,7 +239,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `milkbook-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `MilkRecord-backup-${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

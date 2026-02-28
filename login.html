@@ -322,13 +322,13 @@
         }
 
         // Check existing session
-        const session = localStorage.getItem('milkbook_session');
+        const session = localStorage.getItem('MilkRecord_session');
         if (session) {
             const sessionData = JSON.parse(session);
             if (sessionData.expires > Date.now()) {
                 window.location.href = 'pos-demo.html';
             } else {
-                localStorage.removeItem('milkbook_session');
+                localStorage.removeItem('MilkRecord_session');
             }
         }
 
@@ -358,7 +358,7 @@
                 }
                 
                 // Save session
-                localStorage.setItem('milkbook_session', JSON.stringify({
+                localStorage.setItem('MilkRecord_session', JSON.stringify({
                     shop_name: data.user.shop,
                     email: data.user.email,
                     user_id: data.user.id,
@@ -406,7 +406,7 @@
                 }
                 
                 // Auto-login
-                localStorage.setItem('milkbook_session', JSON.stringify({
+                localStorage.setItem('MilkRecord_session', JSON.stringify({
                     shop_name: data.user.shop,
                     email: data.user.email,
                     user_id: data.user.id,
@@ -436,7 +436,7 @@
 
     <!-- Footer Navigation -->
     <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); padding: 12px 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; gap: 20px; font-size: 14px; font-weight: 600;">
-        <a href="stitch_milkbook_login 2/milkrecord_landing_page_3/code.html" style="color: #667eea; text-decoration: none;">🏠 Home</a>
+        <a href="stitch_MilkRecord_login 2/milkrecord_landing_page_3/code.html" style="color: #667eea; text-decoration: none;">🏠 Home</a>
         <span style="color: #cbd5e1;">•</span>
         <a href="index.html" style="color: #667eea; text-decoration: none;">📊 Collection</a>
         <span style="color: #cbd5e1;">•</span>

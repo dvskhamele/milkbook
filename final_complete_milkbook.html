@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MilkBook - Automatic Milk Collection & Dairy Accounting - Designed by signimus</title>
+    <title>MilkRecord - Automatic Milk Collection & Dairy Accounting - Designed by signimus</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -1212,11 +1212,11 @@
                         
                         <div class="grid grid-cols-2 gap-6 mb-6">
                             <button 
-                                onclick="localStorage.setItem('milkbook_backup_v1', JSON.stringify(window.state)); alert('Backup Secured Locally');"
+                                onclick="localStorage.setItem('MilkRecord_backup_v1', JSON.stringify(window.state)); alert('Backup Secured Locally');"
                                 class="py-6 bg-blue-600 text-white rounded-2xl font-black text-lg hover:bg-blue-700"
                             >Secure Backup</button>
                             <button 
-                                onclick="const data = localStorage.getItem('milkbook_backup_v1'); if (data && confirm('Wipe current data and restore?')) { window.state = JSON.parse(data); alert('Restored'); }"
+                                onclick="const data = localStorage.getItem('MilkRecord_backup_v1'); if (data && confirm('Wipe current data and restore?')) { window.state = JSON.parse(data); alert('Restored'); }"
                                 class="py-6 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-800"
                             >Restore Data</button>
                         </div>
@@ -1227,7 +1227,7 @@
                             </div>
                             <div class="card-body space-y-6">
                                 <button 
-                                    onclick="const dataStr = JSON.stringify(window.state, null, 2); const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr); const exportFileDefaultName = 'milkbook_data_export.json'; const linkElement = document.createElement('a'); linkElement.setAttribute('href', dataUri); linkElement.setAttribute('download', exportFileDefaultName); linkElement.click();"
+                                    onclick="const dataStr = JSON.stringify(window.state, null, 2); const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr); const exportFileDefaultName = 'MilkRecord_data_export.json'; const linkElement = document.createElement('a'); linkElement.setAttribute('href', dataUri); linkElement.setAttribute('download', exportFileDefaultName); linkElement.click();"
                                     class="w-full py-5 bg-green-600 text-white rounded-xl font-black text-lg hover:bg-green-700"
                                 >Export All Data (JSON)</button>
                                 <div class="bg-amber-50 p-6 rounded-2xl border border-amber-200">
@@ -1388,7 +1388,7 @@
         lucide.createIcons();
         
         // Global state object
-        window.MilkBook = {
+        window.MilkRecord = {
             currentUser: { name: 'Ramesh Kumar', mobile: '9876543210' },
             role: 'owner', // 'owner' or 'labour'
             mode: 'normal', // 'normal' or 'collection'
@@ -1501,11 +1501,11 @@
         document.getElementById('dashboard').classList.add('active-section');
         
         // Update header information
-        document.getElementById('dairyName').textContent = window.MilkBook.dairyName;
+        document.getElementById('dairyName').textContent = window.MilkRecord.dairyName;
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN');
-        document.getElementById('userName').textContent = window.MilkBook.currentUser.name;
-        document.getElementById('userInitial').textContent = window.MilkBook.currentUser.name.charAt(0).toUpperCase();
-        document.getElementById('pendingCount').textContent = window.MilkBook.pendingRecords;
+        document.getElementById('userName').textContent = window.MilkRecord.currentUser.name;
+        document.getElementById('userInitial').textContent = window.MilkRecord.currentUser.name.charAt(0).toUpperCase();
+        document.getElementById('pendingCount').textContent = window.MilkRecord.pendingRecords;
         
         // Set today's date in date inputs
         document.getElementById('dateInput').valueAsDate = new Date();
@@ -1537,16 +1537,16 @@
                     isManual: true, // Flag for manual entry
                     inputSource: 'keyboard', // 'scale' or 'keyboard'
                     deviceId: navigator.userAgent,
-                    operatorId: window.MilkBook.currentUser.mobile
+                    operatorId: window.MilkRecord.currentUser.mobile
                 };
                 
                 // Calculate amount based on rates
-                const rates = window.MilkBook.state.rates;
+                const rates = window.MilkRecord.state.rates;
                 const calc = calculateMilkAmount(
                     form.qty, 
                     form.fat, 
                     form.snf, 
-                    window.MilkBook.state.dairyInfo.rateType, 
+                    window.MilkRecord.state.dairyInfo.rateType, 
                     rates, 
                     form.type
                 );
@@ -1559,8 +1559,8 @@
                 };
                 
                 // Add to state
-                window.MilkBook.state.milkEntries.push(newEntry);
-                window.MilkBook.state.settings.pendingRecords = (window.MilkBook.state.settings.pendingRecords || 0) + 1;
+                window.MilkRecord.state.milkEntries.push(newEntry);
+                window.MilkRecord.state.settings.pendingRecords = (window.MilkRecord.state.settings.pendingRecords || 0) + 1;
                 
                 // Show notification
                 alert(`Collection recorded for ${form.qty}L at ${form.fat}% fat. Amount: ₹${calc.amount}`);
@@ -1577,7 +1577,7 @@
         // Update recent collections display
         function updateRecentCollections() {
             const today = new Date().toISOString().split('T')[0];
-            const todayEntries = window.MilkBook.state.milkEntries.filter(e => e.date === today);
+            const todayEntries = window.MilkRecord.state.milkEntries.filter(e => e.date === today);
 
             const recentCollections = document.getElementById('recentCollections');
             if (recentCollections) {
@@ -1585,7 +1585,7 @@
 
                 if (todayEntries.length > 0) {
                     todayEntries.slice(0, 10).forEach(entry => {
-                        const farmer = window.MilkBook.state.farmers.find(f => f.id === entry.farmerId);
+                        const farmer = window.MilkRecord.state.farmers.find(f => f.id === entry.farmerId);
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td class="py-4 font-bold text-slate-500">${entry.date}</td>
@@ -1612,8 +1612,8 @@
             if (farmersList) {
                 farmersList.innerHTML = '';
 
-                if (window.MilkBook.state.farmers.length > 0) {
-                    window.MilkBook.state.farmers.filter(f => f.active !== false).forEach(farmer => {
+                if (window.MilkRecord.state.farmers.length > 0) {
+                    window.MilkRecord.state.farmers.filter(f => f.active !== false).forEach(farmer => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td class="py-4 font-black">${farmer.name}</td>
@@ -1652,7 +1652,7 @@
                 };
                 
                 // Add to state
-                window.MilkBook.state.farmers.push(farmerData);
+                window.MilkRecord.state.farmers.push(farmerData);
                 
                 // Show notification
                 alert(`Farmer ${farmerData.name} registered successfully`);
@@ -1669,7 +1669,7 @@
         updateFarmersList();
         
         // Update pending records count display
-        document.getElementById('pendingCount').textContent = window.MilkBook.state.settings.pendingRecords || 0;
+        document.getElementById('pendingCount').textContent = window.MilkRecord.state.settings.pendingRecords || 0;
     </script>
 </body>
 </html>

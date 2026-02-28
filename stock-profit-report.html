@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock & Profit Report - MilkBook POS</title>
+    <title>Stock & Profit Report - MilkRecord POS</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -216,8 +216,8 @@
         function loadData() {
             // Load inventory (purchases) from multiple sources
             const mrInventory = JSON.parse(localStorage.getItem('mr_inventory') || '[]');
-            const milkbookData = JSON.parse(localStorage.getItem('milkbook_data') || '{}');
-            const inventoryEntries = milkbookData.inventory || [];
+            const MilkRecordData = JSON.parse(localStorage.getItem('MilkRecord_data') || '{}');
+            const inventoryEntries = MilkRecordData.inventory || [];
             
             // Combine inventory sources
             inventory = [
@@ -243,10 +243,10 @@
             const salesHistory = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
             const posSales = JSON.parse(localStorage.getItem('mr_pos_sales') || '[]');
             const auditHistory = JSON.parse(localStorage.getItem('mr_pos_history') || '[]');
-            const milkbookSales = milkbookData.sales || [];
+            const MilkRecordSales = MilkRecordData.sales || [];
             
             // Combine all sales sources
-            let allSales = [...salesHistory, ...posSales, ...auditHistory, ...milkbookSales];
+            let allSales = [...salesHistory, ...posSales, ...auditHistory, ...MilkRecordSales];
             
             // Remove duplicates
             const uniqueSales = [];

@@ -341,7 +341,7 @@
         document.querySelectorAll('.choice-card').forEach(card => {
             card.addEventListener('click', function() {
                 const icp = this.classList.contains('bmc') ? 'bmc' : 'pos';
-                localStorage.setItem('milkbook_icp_selected', icp);
+                localStorage.setItem('MilkRecord_icp_selected', icp);
                 
                 // Analytics event (when implemented)
                 console.log(`ICP Selected: ${icp.toUpperCase()}`);

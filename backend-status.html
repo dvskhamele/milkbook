@@ -67,8 +67,8 @@
       const statusDiv = document.getElementById('statusContent');
       const setupCard = document.getElementById('setupCard');
       
-      if (window.MilkBookDB && typeof window.MilkBookDB.getStatus === 'function') {
-        const status = window.MilkBookDB.getStatus();
+      if (window.MilkRecordDB && typeof window.MilkRecordDB.getStatus === 'function') {
+        const status = window.MilkRecordDB.getStatus();
         
         if (status.useSupabase) {
           statusDiv.innerHTML = `
@@ -105,33 +105,33 @@
       const output = document.getElementById('output');
       output.textContent = 'Testing backend connection...\n\n';
 
-      if (!window.MilkBookDB) {
+      if (!window.MilkRecordDB) {
         output.textContent += '❌ Backend not loaded! Refresh page.\n';
         return;
       }
       
-      const status = window.MilkBookDB.getStatus();
+      const status = window.MilkRecordDB.getStatus();
       output.textContent += `Backend Mode: ${status.message}\n\n`;
       
       try {
         // Test farmers
         output.textContent += '1. Testing farmers...\n';
-        const farmers = await window.MilkBookDB.farmers.getAll();
+        const farmers = await window.MilkRecordDB.farmers.getAll();
         output.textContent += `   ✅ ${farmers.farmers.length} farmer(s)\n`;
 
         // Test entries
         output.textContent += '2. Testing milk entries...\n';
-        const entries = await window.MilkBookDB.entries.getAll();
+        const entries = await window.MilkRecordDB.entries.getAll();
         output.textContent += `   ✅ ${entries.entries.length} entry(ies)\n`;
 
         // Test customers
         output.textContent += '3. Testing customers...\n';
-        const customers = await window.MilkBookDB.customers.getAll();
+        const customers = await window.MilkRecordDB.customers.getAll();
         output.textContent += `   ✅ ${customers.customers.length} customer(s)\n`;
 
         // Test sales
         output.textContent += '4. Testing sales...\n';
-        const sales = await window.MilkBookDB.sales.getAll();
+        const sales = await window.MilkRecordDB.sales.getAll();
         output.textContent += `   ✅ ${sales.sales.length} sale(s)\n`;
 
         output.textContent += '\n✅ Backend working perfectly!\n';
@@ -160,8 +160,8 @@
     // Clear all data
     function clearData() {
       if (confirm('Clear all data? This cannot be undone!')) {
-        localStorage.removeItem('milkbook_farmers');
-        localStorage.removeItem('milkbook_entries');
+        localStorage.removeItem('MilkRecord_farmers');
+        localStorage.removeItem('MilkRecord_entries');
         localStorage.removeItem('mr_pos_customers');
         localStorage.removeItem('mr_sales_history');
         const output = document.getElementById('output');

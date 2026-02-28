@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>BMC Reconciliation - MilkBook</title>
+    <title>BMC Reconciliation - MilkRecord</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -288,14 +288,14 @@
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN');
         
         // Check authentication
-        const session = sessionStorage.getItem('milkbook_session');
+        const session = sessionStorage.getItem('MilkRecord_session');
         if (!session) {
             window.location.href = 'index.html';
             return;
         }
         
         // Load state from localStorage
-        const STORAGE_KEY = 'milkbook_data';
+        const STORAGE_KEY = 'MilkRecord_data';
         const INITIAL_STATE = {
             auth: { 
                 isAuthenticated: true, 
@@ -398,7 +398,7 @@
             });
             
             // Save updated state
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             alert(`BMC Reconciliation processed:\nBatch: ${batchId}\nSlips: ${slipsMilk.toFixed(1)} L\nBMC: ${totalMilk.toFixed(1)} L\nDifference: ${difference.toFixed(1)} L`);
         }
@@ -421,11 +421,11 @@
             });
             
             // Save updated state
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             // Update pending records count
             state.settings.pendingRecords = (state.settings.pendingRecords || 0) + 1;
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             // Update pending count display
             document.getElementById('pendingCount').textContent = state.settings.pendingRecords;

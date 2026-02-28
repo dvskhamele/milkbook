@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disaster Recovery - MilkBook</title>
+    <title>Disaster Recovery - MilkRecord</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="app.css">
@@ -114,13 +114,13 @@
         initAuth();
 
         // Check authentication
-        const session = sessionStorage.getItem('milkbook_session');
+        const session = sessionStorage.getItem('MilkRecord_session');
         if (!session) {
             window.location.href = 'index.html';
         }
 
         // Load state from localStorage
-        const savedData = localStorage.getItem('milkbook_data');
+        const savedData = localStorage.getItem('MilkRecord_data');
         let state;
         try {
             state = savedData ? JSON.parse(savedData) : { ...INITIAL_STATE };
@@ -146,7 +146,7 @@
                 };
 
                 // Save to localStorage as backup
-                localStorage.setItem('milkbook_backup', JSON.stringify(backupData));
+                localStorage.setItem('MilkRecord_backup', JSON.stringify(backupData));
                 
                 // Update last backup time
                 document.getElementById('lastBackupTime').textContent = new Date().toLocaleTimeString('en-IN');
@@ -161,14 +161,14 @@
         // Restore data function
         async function restoreData() {
             try {
-                const backupData = localStorage.getItem('milkbook_backup');
+                const backupData = localStorage.getItem('MilkRecord_backup');
                 if (!backupData) {
                     alert('No backup found!');
                     return;
                 }
 
                 const parsedBackup = JSON.parse(backupData);
-                localStorage.setItem('milkbook_data', JSON.stringify(parsedBackup.data));
+                localStorage.setItem('MilkRecord_data', JSON.stringify(parsedBackup.data));
                 
                 alert('Data restored successfully! Please refresh the page.');
                 location.reload();

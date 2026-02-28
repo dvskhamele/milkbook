@@ -15,7 +15,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="logo.jpg">
     
-    <title>MilkBook - Dairy Management</title>
+    <title>MilkRecord - Dairy Management</title>
 
     <style>
       :root {
@@ -1537,7 +1537,7 @@
     </style>
   </head>
   <div class="overlay" id="overlayFarmerDetail">
-  <div class="modal" style="width: min(900px, 95vw); height: min(80vh, 90vh); display: flex; flex-direction: column;">
+  <div class="modal" style="width: min(900px, 95vw); height: min(85vh, 90vh); display: flex; flex-direction: column;">
     <div class="modalHead" style="flex-shrink: 0;">
       <div class="left">
         <button class="closeBtn" data-close="overlayFarmerDetail">✖</button>
@@ -1545,9 +1545,9 @@
       </div>
       <div class="muted">📊 Complete Farmer Profile</div>
     </div>
-    
-    <!-- Farmer Info Cards -->
-    <div style="padding: 16px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; flex-shrink: 0;">
+
+    <!-- Farmer Info Cards - Scrollable -->
+    <div style="padding: 16px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; flex-shrink: 0; overflow-y: auto; max-height: 200px;">
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px;">
         <div style="background: white; padding: 12px; border-radius: 8px; border: 2px solid #e2e8f0;">
           <div style="font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 4px;">📱 PHONE</div>
@@ -2143,11 +2143,11 @@
       // Debug: Check if backend loaded
       window.addEventListener('DOMContentLoaded', function() {
         console.log('✅ DOM Loaded');
-        console.log('Backend available:', !!window.MilkBookDB);
+        console.log('Backend available:', !!window.MilkRecordDB);
 
         // Test backend
-        if (window.MilkBookDB) {
-          window.MilkBookDB.farmers.getAll().then(result => {
+        if (window.MilkRecordDB) {
+          window.MilkRecordDB.farmers.getAll().then(result => {
             console.log('✅ Backend working! Farmers:', result.farmers.length);
           }).catch(err => {
             console.error('❌ Backend error:', err);
@@ -4752,8 +4752,8 @@ function playSuccessSound() {
     saveEntries(entries);
     
     // Save to backend if API mode is enabled
-    if (window.USE_API && window.MilkBookAPI) {
-      window.MilkBookAPI.milkEntries.create({
+    if (window.USE_API && window.MilkRecordAPI) {
+      window.MilkRecordAPI.milkEntries.create({
         farmer_id: farmer.id,
         day: entry.day,
         session: entry.session,
@@ -4964,11 +4964,11 @@ function printCollectionBill(entry) {
         return '₹' + parts.join('.');
     };
 
-    const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
-    const shopUPI = localStorage.getItem('milkbook_shop_upi') || '';
-    const shopBankName = localStorage.getItem('milkbook_shop_bank') || '';
-    const shopAccountNo = localStorage.getItem('milkbook_shop_account') || '';
-    const shopIFSC = localStorage.getItem('milkbook_shop_ifsc') || '';
+    const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
+    const shopUPI = localStorage.getItem('MilkRecord_shop_upi') || '';
+    const shopBankName = localStorage.getItem('MilkRecord_shop_bank') || '';
+    const shopAccountNo = localStorage.getItem('MilkRecord_shop_account') || '';
+    const shopIFSC = localStorage.getItem('MilkRecord_shop_ifsc') || '';
 
     const billHTML = `
 <!DOCTYPE html>
@@ -5403,11 +5403,11 @@ function showAuditProof(entryId) {
             if (el("setSessionHour")) el("setSessionHour").value = settings.sessionSwitchHour || 4;
             
             // Load shop payment details from localStorage
-            if (el("setShopUPI")) el("setShopUPI").value = localStorage.getItem('milkbook_shop_upi') || '';
-            if (el("setShopBank")) el("setShopBank").value = localStorage.getItem('milkbook_shop_bank') || '';
-            if (el("setShopAccount")) el("setShopAccount").value = localStorage.getItem('milkbook_shop_account') || '';
-            if (el("setShopIFSC")) el("setShopIFSC").value = localStorage.getItem('milkbook_shop_ifsc') || '';
-            if (el("setShopAccountName")) el("setShopAccountName").value = localStorage.getItem('milkbook_shop_account_name') || '';
+            if (el("setShopUPI")) el("setShopUPI").value = localStorage.getItem('MilkRecord_shop_upi') || '';
+            if (el("setShopBank")) el("setShopBank").value = localStorage.getItem('MilkRecord_shop_bank') || '';
+            if (el("setShopAccount")) el("setShopAccount").value = localStorage.getItem('MilkRecord_shop_account') || '';
+            if (el("setShopIFSC")) el("setShopIFSC").value = localStorage.getItem('MilkRecord_shop_ifsc') || '';
+            if (el("setShopAccountName")) el("setShopAccountName").value = localStorage.getItem('MilkRecord_shop_account_name') || '';
             
             updateFormulaPreview();
             updateLivePreview();
@@ -5654,11 +5654,11 @@ function showAuditProof(entryId) {
           const shopIFSC = el("setShopIFSC") ? el("setShopIFSC").value.trim().toUpperCase() : '';
           const shopAccountName = el("setShopAccountName") ? el("setShopAccountName").value.trim() : '';
           
-          if (shopUPI) localStorage.setItem('milkbook_shop_upi', shopUPI);
-          if (shopBank) localStorage.setItem('milkbook_shop_bank', shopBank);
-          if (shopAccount) localStorage.setItem('milkbook_shop_account', shopAccount);
-          if (shopIFSC) localStorage.setItem('milkbook_shop_ifsc', shopIFSC);
-          if (shopAccountName) localStorage.setItem('milkbook_shop_account_name', shopAccountName);
+          if (shopUPI) localStorage.setItem('MilkRecord_shop_upi', shopUPI);
+          if (shopBank) localStorage.setItem('MilkRecord_shop_bank', shopBank);
+          if (shopAccount) localStorage.setItem('MilkRecord_shop_account', shopAccount);
+          if (shopIFSC) localStorage.setItem('MilkRecord_shop_ifsc', shopIFSC);
+          if (shopAccountName) localStorage.setItem('MilkRecord_shop_account_name', shopAccountName);
 
           saveSettings(settings);
           
@@ -5926,7 +5926,7 @@ function showAuditProof(entryId) {
       function logout() {
           if (confirm('Are you sure you want to logout?')) {
               // Clear session
-              localStorage.removeItem('milkbook_session');
+              localStorage.removeItem('MilkRecord_session');
 
               showToast('Logged out successfully!');
 
@@ -5943,7 +5943,7 @@ function showAuditProof(entryId) {
           dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
 
           // Load user info
-          const session = localStorage.getItem('milkbook_session');
+          const session = localStorage.getItem('MilkRecord_session');
           if (session) {
               const data = JSON.parse(session);
               document.getElementById('profileName').textContent = data.shop_name || 'User';
@@ -7635,7 +7635,7 @@ const defaultCollectionPoints = [
 function updateCollectionPoint() {
   const select = document.getElementById('collectionPointSelect');
   selectedCollectionPointId = select.value;
-  localStorage.setItem('milkbook_collection_point', selectedCollectionPointId);
+  localStorage.setItem('MilkRecord_collection_point', selectedCollectionPointId);
   
   // Update header button to show booth name
   const headerUserName = document.getElementById('headerUserName');
@@ -7656,7 +7656,7 @@ function updateCollectionPoint() {
 
 // Load saved collection point on init
 function loadSavedCollectionPoint() {
-  const saved = localStorage.getItem('milkbook_collection_point');
+  const saved = localStorage.getItem('MilkRecord_collection_point');
   if (saved) {
     const select = document.getElementById('collectionPointSelect');
     if (select) {

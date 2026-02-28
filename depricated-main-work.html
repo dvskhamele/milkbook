@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Milk Collection Station UI - MilkBook</title>
+    <title>Milk Collection Station UI - MilkRecord</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -574,7 +574,7 @@
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN');
         
         // Check authentication
-        const session = sessionStorage.getItem('milkbook_session');
+        const session = sessionStorage.getItem('MilkRecord_session');
         if (!session) {
             window.location.href = 'index.html';
             return;
@@ -881,11 +881,11 @@
             
             // Add to state
             state.milkEntries.push(newEntry);
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             // Update pending records count
             state.settings.pendingRecords = (state.settings.pendingRecords || 0) + 1;
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             // Update pending count display
             document.getElementById('pendingCount').textContent = state.settings.pendingRecords;
@@ -919,11 +919,11 @@
         function undoLastEntry() {
             if (state.milkEntries.length > 0) {
                 const lastEntry = state.milkEntries.pop();
-                localStorage.setItem('milkbook_data', JSON.stringify(state));
+                localStorage.setItem('MilkRecord_data', JSON.stringify(state));
                 
                 // Update pending records count
                 state.settings.pendingRecords = Math.max((state.settings.pendingRecords || 0) - 1, 0);
-                localStorage.setItem('milkbook_data', JSON.stringify(state));
+                localStorage.setItem('MilkRecord_data', JSON.stringify(state));
                 
                 // Update pending count display
                 document.getElementById('pendingCount').textContent = state.settings.pendingRecords;
@@ -978,11 +978,11 @@
             
             // Add to state
             state.farmers.push(form);
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             // Update pending records count
             state.settings.pendingRecords = (state.settings.pendingRecords || 0) + 1;
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             // Update pending count display
             document.getElementById('pendingCount').textContent = state.settings.pendingRecords;
@@ -1041,7 +1041,7 @@
             });
             
             // Also update farmer dropdowns in other open tabs/windows using storage event
-            localStorage.setItem('milkbook_data', JSON.stringify(newState));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(newState));
         }
         
         // Update recent collections display
@@ -1077,7 +1077,7 @@
         // Initialize dispatch records if not exists
         if (!state.dispatchRecords) {
             state.dispatchRecords = [];
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
         }
         
         // Function to mark milk sent to dairy
@@ -1102,11 +1102,11 @@
             };
             
             state.dispatchRecords.push(dispatchForm);
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             // Update pending records count
             state.settings.pendingRecords = (state.settings.pendingRecords || 0) + 1;
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             // Update pending count display
             document.getElementById('pendingCount').textContent = state.settings.pendingRecords;

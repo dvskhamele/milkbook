@@ -122,8 +122,8 @@
                 return;
             }
             
-            localStorage.setItem('milkbook_supabase_url', url);
-            localStorage.setItem('milkbook_supabase_key', key);
+            localStorage.setItem('MilkRecord_supabase_url', url);
+            localStorage.setItem('MilkRecord_supabase_key', key);
             
             log('✅ Credentials saved!');
             initializeSupabase(url, key);
@@ -150,8 +150,8 @@
             output.textContent = 'Testing Supabase connection...\n\n';
             statusDiv.innerHTML = '<div class="status warning">⏳ Testing...</div>';
             
-            const url = localStorage.getItem('milkbook_supabase_url');
-            const key = localStorage.getItem('milkbook_supabase_key');
+            const url = localStorage.getItem('MilkRecord_supabase_url');
+            const key = localStorage.getItem('MilkRecord_supabase_key');
             
             if (!url || !key) {
                 output.textContent += '❌ No credentials found. Please enter and save credentials first.\n';
@@ -217,8 +217,8 @@
                 log(`📝 User ID: ${data.user.id}`);
                 
                 // Save test user credentials for login test
-                localStorage.setItem('milkbook_test_email', testEmail);
-                localStorage.setItem('milkbook_test_password', testPassword);
+                localStorage.setItem('MilkRecord_test_email', testEmail);
+                localStorage.setItem('MilkRecord_test_password', testPassword);
                 
                 alert(`✅ Test user created!\nEmail: ${testEmail}\nPassword: ${testPassword}\n\nCheck your email for confirmation link (if email confirmation is enabled)`);
             } catch (error) {
@@ -236,8 +236,8 @@
             
             log('🔐 Testing login...');
             
-            const testEmail = localStorage.getItem('milkbook_test_email') || prompt('Enter test email:');
-            const testPassword = localStorage.getItem('milkbook_test_password') || prompt('Enter test password:');
+            const testEmail = localStorage.getItem('MilkRecord_test_email') || prompt('Enter test email:');
+            const testPassword = localStorage.getItem('MilkRecord_test_password') || prompt('Enter test password:');
             
             if (!testEmail || !testPassword) {
                 log('❌ No credentials provided');
@@ -289,7 +289,7 @@
                 log(`📝 Shop ID: ${shop.id}`);
                 
                 // Save for read test
-                localStorage.setItem('milkbook_test_shop_id', shop.id);
+                localStorage.setItem('MilkRecord_test_shop_id', shop.id);
                 
                 alert(`✅ Data created successfully!\nShop: ${shop.name}`);
             } catch (error) {
@@ -361,11 +361,11 @@
                 return;
             }
             
-            localStorage.removeItem('milkbook_supabase_url');
-            localStorage.removeItem('milkbook_supabase_key');
-            localStorage.removeItem('milkbook_test_email');
-            localStorage.removeItem('milkbook_test_password');
-            localStorage.removeItem('milkbook_test_shop_id');
+            localStorage.removeItem('MilkRecord_supabase_url');
+            localStorage.removeItem('MilkRecord_supabase_key');
+            localStorage.removeItem('MilkRecord_test_email');
+            localStorage.removeItem('MilkRecord_test_password');
+            localStorage.removeItem('MilkRecord_test_shop_id');
             
             document.getElementById('supabaseUrl').value = '';
             document.getElementById('supabaseKey').value = '';

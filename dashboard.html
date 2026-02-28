@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Owner Peace-of-Mind Report - MilkBook</title>
+    <title>Owner Peace-of-Mind Report - MilkRecord</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -273,14 +273,14 @@
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN');
 
         // Check authentication
-        const session = sessionStorage.getItem('milkbook_session');
+        const session = sessionStorage.getItem('MilkRecord_session');
         if (!session) {
             window.location.href = 'index.html';
             return;
         }
 
         // Load state from localStorage
-        const STORAGE_KEY = 'milkbook_data';
+        const STORAGE_KEY = 'MilkRecord_data';
         const INITIAL_STATE = {
             auth: { 
                 isAuthenticated: true, 

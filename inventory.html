@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Inventory Management - MilkBook</title>
+    <title>Inventory Management - MilkRecord</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -364,14 +364,14 @@
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN');
         
         // Check authentication
-        const session = sessionStorage.getItem('milkbook_session');
+        const session = sessionStorage.getItem('MilkRecord_session');
         if (!session) {
             window.location.href = 'index.html';
             return;
         }
         
         // Load state from localStorage
-        const STORAGE_KEY = 'milkbook_data';
+        const STORAGE_KEY = 'MilkRecord_data';
         const INITIAL_STATE = {
             auth: { 
                 isAuthenticated: true, 
@@ -459,11 +459,11 @@
             
             // Add to state
             state.inventory.push(form);
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             // Update pending records count
             state.settings.pendingRecords = (state.settings.pendingRecords || 0) + 1;
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
             
             // Update pending count display
             document.getElementById('pendingCount').textContent = state.settings.pendingRecords;
@@ -561,7 +561,7 @@
             });
             
             // Also update farmer dropdowns in other open tabs/windows using storage event
-            localStorage.setItem('milkbook_data', JSON.stringify(newState));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(newState));
         }
         
         // Open add item modal
@@ -600,11 +600,11 @@
 
             state.inventoryItems = state.inventoryItems || [];
             state.inventoryItems.push(newItem);
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
 
             // Update pending records count
             state.settings.pendingRecords = (state.settings.pendingRecords || 0) + 1;
-            localStorage.setItem('milkbook_data', JSON.stringify(state));
+            localStorage.setItem('MilkRecord_data', JSON.stringify(state));
 
             // Update pending count display
             document.getElementById('pendingCount').textContent = state.settings.pendingRecords;

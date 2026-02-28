@@ -408,7 +408,7 @@
     <div class="app">
       <div class="topbar">
         <div class="brand">
-          <a href="stitch_milkbook_login 2/milkrecord_landing_page_3/code.html" style="text-decoration:none; color:inherit;">
+          <a href="stitch_MilkRecord_login 2/milkrecord_landing_page_3/code.html" style="text-decoration:none; color:inherit;">
             <div class="logo-box">
               <img src="logo.jpg" alt="MilkRecord" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;" onerror="this.style.display='none'; this.parentElement.innerHTML='🥛'" />
             </div>
@@ -1212,18 +1212,18 @@
       // Initialize Supabase
       window.addEventListener('DOMContentLoaded', async () => {
         // Update profile name with shop/booth name
-        const shopName = localStorage.getItem('milkbook_shop_name') || localStorage.getItem('milkbook_booth') || 'Gopal Dairy';
+        const shopName = localStorage.getItem('MilkRecord_shop_name') || localStorage.getItem('MilkRecord_booth') || 'Gopal Dairy';
         const profileName = document.getElementById('profileName');
         if (profileName) {
           profileName.textContent = shopName;
         }
         
-        if (window.MilkBookConfig && window.MilkBookConfig.isConfigured()) {
+        if (window.MilkRecordConfig && window.MilkRecordConfig.isConfigured()) {
           useBackend = true;
           console.log('✅ Backend connected');
 
           // Check if user is logged in
-          const session = localStorage.getItem('milkbook_session');
+          const session = localStorage.getItem('MilkRecord_session');
           if (session) {
             const sessionData = JSON.parse(session);
             currentShopId = sessionData.shop_id;
@@ -1626,7 +1626,7 @@
       
       // Load user info from session
       function loadUserInfo() {
-          const session = localStorage.getItem('milkbook_session');
+          const session = localStorage.getItem('MilkRecord_session');
           if (session) {
               try {
                   const sessionData = JSON.parse(session);
@@ -1736,11 +1736,11 @@
       function logout() {
           if (confirm('Are you sure you want to logout?')) {
               // Clear session
-              localStorage.removeItem('milkbook_session');
+              localStorage.removeItem('MilkRecord_session');
 
               // Clear any other stored data if needed
-              // localStorage.removeItem('milkbook_supabase_url');
-              // localStorage.removeItem('milkbook_supabase_key');
+              // localStorage.removeItem('MilkRecord_supabase_url');
+              // localStorage.removeItem('MilkRecord_supabase_key');
 
               showToast('Logged out successfully!');
 
@@ -1757,7 +1757,7 @@
           dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
           
           // Load user info
-          const session = localStorage.getItem('milkbook_session');
+          const session = localStorage.getItem('MilkRecord_session');
           if (session) {
               const data = JSON.parse(session);
               document.getElementById('profileName').textContent = data.shop_name || 'User';
@@ -2003,18 +2003,18 @@
         const customer = customers.find(c => c.name === customerName);
 
         // Get shop name from booth selection or localStorage
-        const booth = localStorage.getItem('milkbook_booth') || 'main';
+        const booth = localStorage.getItem('MilkRecord_booth') || 'main';
         const boothNames = {
           'main': 'Main Booth',
           'village-a': 'Village A Booth',
           'village-b': 'Village B Booth',
           'market': 'Market Booth'
         };
-        const shopName = localStorage.getItem('milkbook_shop_name') || boothNames[booth] || 'Gopal Dairy Shop';
-        const shopPhone = localStorage.getItem('milkbook_shop_phone') || '';
-        const shopAddress = localStorage.getItem('milkbook_shop_address') || '';
-        const shopEmail = localStorage.getItem('milkbook_shop_email') || '';
-        const shopGST = localStorage.getItem('milkbook_shop_gst') || '';
+        const shopName = localStorage.getItem('MilkRecord_shop_name') || boothNames[booth] || 'Gopal Dairy Shop';
+        const shopPhone = localStorage.getItem('MilkRecord_shop_phone') || '';
+        const shopAddress = localStorage.getItem('MilkRecord_shop_address') || '';
+        const shopEmail = localStorage.getItem('MilkRecord_shop_email') || '';
+        const shopGST = localStorage.getItem('MilkRecord_shop_gst') || '';
 
         // Use provided cart items OR fall back to global cart
         const itemsToDisplay = cartItems || cart;
@@ -2132,14 +2132,14 @@
       
       // Generate WhatsApp message
       function generateWhatsAppMessage(invoiceNo, date, customerName, paymentAmount, creditAmount) {
-        const booth = localStorage.getItem('milkbook_booth') || 'main';
+        const booth = localStorage.getItem('MilkRecord_booth') || 'main';
         const boothNames = {
           'main': 'Main Booth',
           'village-a': 'Village A Booth',
           'village-b': 'Village B Booth',
           'market': 'Market Booth'
         };
-        const shopName = localStorage.getItem('milkbook_shop_name') || boothNames[booth] || 'Gopal Dairy Shop';
+        const shopName = localStorage.getItem('MilkRecord_shop_name') || boothNames[booth] || 'Gopal Dairy Shop';
         
         let message = `*${shopName}*\n`;
         message += `🧾 Invoice: ${invoiceNo}\n`;
@@ -4121,7 +4121,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         const invoiceNo = `INV-${invoiceId ? invoiceId.substring(0,8).toUpperCase() : Date.now().toString().substring(5)}`;
         
         // Get shop name from session
-        const session = localStorage.getItem('milkbook_session');
+        const session = localStorage.getItem('MilkRecord_session');
         const shopName = session ? JSON.parse(session).shop_name : 'MilkRecord POS';
         
         // Create simple text invoice for download
@@ -4159,7 +4159,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       
       // Send WhatsApp reminder for credit
       function sendWhatsAppReminder(customerName, phone, creditAmount, total) {
-        const session = localStorage.getItem('milkbook_session');
+        const session = localStorage.getItem('MilkRecord_session');
         const shopName = session ? JSON.parse(session).shop_name : 'MilkRecord POS';
         const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
         
@@ -5894,8 +5894,8 @@ function updateBooth() {
     'village-b': 'Village B Booth',
     'market': 'Market Booth'
   };
-  localStorage.setItem('milkbook_booth', booth);
-  localStorage.setItem('milkbook_shop_name', boothNames[booth]);
+  localStorage.setItem('MilkRecord_booth', booth);
+  localStorage.setItem('MilkRecord_shop_name', boothNames[booth]);
   showToast(`Booth: ${boothNames[booth]}`);
 }
 
@@ -5916,28 +5916,28 @@ function saveShopSettings() {
   const shopPan = el("shopPanInput").value.trim().toUpperCase();
 
   if (shopName) {
-    localStorage.setItem('milkbook_shop_name', shopName);
+    localStorage.setItem('MilkRecord_shop_name', shopName);
   }
   if (shopPhone) {
-    localStorage.setItem('milkbook_shop_phone', shopPhone);
+    localStorage.setItem('MilkRecord_shop_phone', shopPhone);
   }
   if (shopProprietor) {
-    localStorage.setItem('milkbook_shop_proprietor', shopProprietor);
+    localStorage.setItem('MilkRecord_shop_proprietor', shopProprietor);
   }
   if (shopAddress) {
-    localStorage.setItem('milkbook_shop_address', shopAddress);
+    localStorage.setItem('MilkRecord_shop_address', shopAddress);
   }
   if (shopCity) {
-    localStorage.setItem('milkbook_shop_city', shopCity);
+    localStorage.setItem('MilkRecord_shop_city', shopCity);
   }
   if (shopPincode) {
-    localStorage.setItem('milkbook_shop_pincode', shopPincode);
+    localStorage.setItem('MilkRecord_shop_pincode', shopPincode);
   }
   if (shopGst) {
-    localStorage.setItem('milkbook_shop_gst', shopGst);
+    localStorage.setItem('MilkRecord_shop_gst', shopGst);
   }
   if (shopPan) {
-    localStorage.setItem('milkbook_shop_pan', shopPan);
+    localStorage.setItem('MilkRecord_shop_pan', shopPan);
   }
 
   closeModal('settingsModal');
@@ -5946,7 +5946,7 @@ function saveShopSettings() {
 
 // Load saved booth on startup
 window.addEventListener('DOMContentLoaded', function() {
-  const savedBooth = localStorage.getItem('milkbook_booth');
+  const savedBooth = localStorage.getItem('MilkRecord_booth');
   if (savedBooth && el('boothSelect')) {
     el('boothSelect').value = savedBooth;
     // Also set shop name from booth
@@ -5956,8 +5956,8 @@ window.addEventListener('DOMContentLoaded', function() {
       'village-b': 'Village B Booth',
       'market': 'Market Booth'
     };
-    if (!localStorage.getItem('milkbook_shop_name')) {
-      localStorage.setItem('milkbook_shop_name', boothNames[savedBooth]);
+    if (!localStorage.getItem('MilkRecord_shop_name')) {
+      localStorage.setItem('MilkRecord_shop_name', boothNames[savedBooth]);
     }
   }
 
@@ -5967,14 +5967,14 @@ window.addEventListener('DOMContentLoaded', function() {
     settingsModal.addEventListener('click', function(e) {
       if (e.target === settingsModal) {
         // Load current settings
-        el('shopNameInput').value = localStorage.getItem('milkbook_shop_name') || '';
-        el('shopPhoneInput').value = localStorage.getItem('milkbook_shop_phone') || '';
-        el('shopProprietorInput').value = localStorage.getItem('milkbook_shop_proprietor') || '';
-        el('shopAddressInput').value = localStorage.getItem('milkbook_shop_address') || '';
-        el('shopCityInput').value = localStorage.getItem('milkbook_shop_city') || '';
-        el('shopPincodeInput').value = localStorage.getItem('milkbook_shop_pincode') || '';
-        el('shopGstInput').value = localStorage.getItem('milkbook_shop_gst') || '';
-        el('shopPanInput').value = localStorage.getItem('milkbook_shop_pan') || '';
+        el('shopNameInput').value = localStorage.getItem('MilkRecord_shop_name') || '';
+        el('shopPhoneInput').value = localStorage.getItem('MilkRecord_shop_phone') || '';
+        el('shopProprietorInput').value = localStorage.getItem('MilkRecord_shop_proprietor') || '';
+        el('shopAddressInput').value = localStorage.getItem('MilkRecord_shop_address') || '';
+        el('shopCityInput').value = localStorage.getItem('MilkRecord_shop_city') || '';
+        el('shopPincodeInput').value = localStorage.getItem('MilkRecord_shop_pincode') || '';
+        el('shopGstInput').value = localStorage.getItem('MilkRecord_shop_gst') || '';
+        el('shopPanInput').value = localStorage.getItem('MilkRecord_shop_pan') || '';
       }
     });
   }
@@ -6125,7 +6125,7 @@ function openRateListModal() {
   if (!modal) return;
   
   // Set shop name and date
-  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
   document.getElementById('rateListShopName').textContent = '🏪 ' + shopName;
   document.getElementById('rateListCurrentDate').textContent = new Date().toLocaleDateString('en-IN', { 
     day: 'numeric', 
@@ -6424,7 +6424,7 @@ function copyCustomerDetails(customerId) {
   const cashIn = customerEntries.filter(e => e.method === 'Cash In').reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
   const cashOut = customerEntries.filter(e => e.method === 'Cash Out').reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
 
-  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
 
   let details = `*${shopName}*\n`;
   details += `👤 *Customer Details*\n\n`;
@@ -6698,7 +6698,7 @@ function sendAdvanceReceipt(advanceId) {
   
   if (!advance || !currentLedgerCustomer) return showToast('Advance not found!');
   
-  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
   const date = new Date(advance.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
   
   let message = `*${shopName}*\n`;
@@ -6738,7 +6738,7 @@ function sendUdhariReceipt(entryId) {
   
   if (!entry || !currentLedgerCustomer) return showToast('Entry not found!');
   
-  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
   const date = new Date(entry.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
   
   let message = `*${shopName}*\n`;
@@ -6775,7 +6775,7 @@ function sendLedgerWhatsApp() {
   const totalAdvance = advances.reduce((sum, a) => sum + parseFloat(a.amount || 0), 0);
   const totalUdhari = udharis.reduce((sum, u) => sum + parseFloat(u.creditAmount || u.amount || 0), 0);
   
-  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
   
   let message = `*${shopName}*\n`;
   message += `📒 *Account Summary*\n\n`;
@@ -7254,7 +7254,7 @@ function sendRateListWhatsApp() {
     }
   });
 
-  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
   // Build WhatsApp message - Simple list without categories
@@ -7299,7 +7299,7 @@ function copyRateList() {
     }
   });
 
-  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
   let message = `*${shopName}*\n`;
@@ -7343,7 +7343,7 @@ function printRateList() {
     }
   });
 
-  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
   // Generate print HTML - Simple table without categories

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MilkBook - Automatic Milk Collection & Dairy Accounting - Designed by signimus</title>
+    <title>MilkRecord - Automatic Milk Collection & Dairy Accounting - Designed by signimus</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -797,7 +797,7 @@
         lucide.createIcons();
         
         // Global state object
-        window.MilkBook = {
+        window.MilkRecord = {
             currentUser: { name: 'Mere nana ji', mobile: '1234567890' },
             role: 'owner', // 'owner' or 'labour'
             mode: 'normal', // 'normal' or 'collection'
@@ -933,8 +933,8 @@
                     formData.qty, 
                     formData.fat, 
                     formData.snf, 
-                    MilkBook.state.dairyInfo.rateType, 
-                    MilkBook.state.rates, 
+                    MilkRecord.state.dairyInfo.rateType, 
+                    MilkRecord.state.rates, 
                     formData.type
                 );
                 
@@ -946,8 +946,8 @@
                 };
                 
                 // Add to state
-                MilkBook.state.milkEntries.push(newEntry);
-                MilkBook.state.settings.pendingRecords = (MilkBook.state.settings.pendingRecords || 0) + 1;
+                MilkRecord.state.milkEntries.push(newEntry);
+                MilkRecord.state.settings.pendingRecords = (MilkRecord.state.settings.pendingRecords || 0) + 1;
                 
                 // Show notification
                 alert(`Collection recorded for ${formData.qty}L at ${formData.fat}% fat. Amount: ₹${calc.amount}`);
@@ -964,7 +964,7 @@
         // Update recent collections display
         function updateRecentCollections() {
             const today = new Date().toISOString().split('T')[0];
-            const todayEntries = MilkBook.state.milkEntries.filter(e => e.date === today);
+            const todayEntries = MilkRecord.state.milkEntries.filter(e => e.date === today);
 
             const recentCollections = document.getElementById('recentCollections');
             if (recentCollections) {
@@ -972,7 +972,7 @@
 
                 if (todayEntries.length > 0) {
                     todayEntries.slice(0, 10).forEach(entry => {
-                        const farmer = MilkBook.state.farmers.find(f => f.id === entry.farmerId);
+                        const farmer = MilkRecord.state.farmers.find(f => f.id === entry.farmerId);
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td class="py-4 font-bold text-slate-500">${entry.date}</td>
@@ -1010,7 +1010,7 @@
                 };
                 
                 // Add to state
-                MilkBook.state.farmers.push(farmerData);
+                MilkRecord.state.farmers.push(farmerData);
                 
                 // Show notification
                 alert(`Farmer ${farmerData.name} registered successfully`);
@@ -1029,8 +1029,8 @@
             if (farmersList) {
                 farmersList.innerHTML = '';
 
-                if (MilkBook.state.farmers.length > 0) {
-                    MilkBook.state.farmers.filter(f => f.active).forEach(farmer => {
+                if (MilkRecord.state.farmers.length > 0) {
+                    MilkRecord.state.farmers.filter(f => f.active).forEach(farmer => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td class="py-4 font-black">${farmer.name}</td>
@@ -1056,7 +1056,7 @@
         updateFarmersList();
         
         // Update pending records count display
-        document.getElementById('pendingCount').textContent = MilkBook.state.settings.pendingRecords || 0;
+        document.getElementById('pendingCount').textContent = MilkRecord.state.settings.pendingRecords || 0;
     </script>
 </body>
 </html>

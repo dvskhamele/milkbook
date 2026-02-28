@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MilkBook - Database Connection Test</title>
+    <title>MilkRecord - Database Connection Test</title>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -151,7 +151,7 @@
         // Test 1: Configuration
         async function testConfig() {
             try {
-                const config = window.MilkBookConfig;
+                const config = window.MilkRecordConfig;
                 
                 const details = {
                     url: config.supabaseUrl,
@@ -178,7 +178,7 @@
         // Test 2: Database Connection
         async function testConnection() {
             try {
-                const result = await window.MilkBookConfig.testConnection();
+                const result = await window.MilkRecordConfig.testConnection();
                 
                 if (result.success) {
                     updateStatus('connection-status', 'success', `Connected to Supabase successfully!<br>Shops found: ${result.data?.length || 0}`);
@@ -196,7 +196,7 @@
         // Test 3: Tables Check
         async function testTables() {
             try {
-                supabase = window.MilkBookConfig.getSupabase();
+                supabase = window.MilkRecordConfig.getSupabase();
                 
                 const tables = ['shops', 'users', 'farmers', 'milk_intake_entries', 'retail_sales', 'balances'];
                 const results = [];
@@ -225,7 +225,7 @@
         // Test 4: Sample Data
         async function testData() {
             try {
-                supabase = window.MilkBookConfig.getSupabase();
+                supabase = window.MilkRecordConfig.getSupabase();
                 
                 // Check for sample shop
                 const { data: shops } = await supabase

@@ -33,7 +33,7 @@
       <strong>Step 1:</strong> Get credentials from https://supabase.com → Settings → API
     </div>
     <div class="step">
-      <strong>Step 2:</strong> Edit <a href="https://github.com/dvskhamele/milkbook/edit/main/supabase-client.js" target="_blank">supabase-client.js</a> on GitHub
+      <strong>Step 2:</strong> Edit <a href="https://github.com/dvskhamele/MilkRecord/edit/main/supabase-client.js" target="_blank">supabase-client.js</a> on GitHub
     </div>
     <div class="step">
       <strong>Step 3:</strong> Replace lines 7-8 with your credentials
@@ -81,7 +81,7 @@
 
     // Enable Supabase mode
     function enableSupabase() {
-      localStorage.setItem('milkbook_use_supabase', 'true');
+      localStorage.setItem('MilkRecord_use_supabase', 'true');
       document.getElementById('output').textContent = '✅ Supabase mode enabled! Refreshing...';
       setTimeout(() => location.reload(), 1000);
     }
@@ -108,22 +108,22 @@
       try {
         // Test farmers table
         output.textContent += '1. Testing farmers table...\n';
-        const farmers = await window.MilkBookDB.farmers.getAll();
+        const farmers = await window.MilkRecordDB.farmers.getAll();
         output.textContent += `   ✅ Found ${farmers.farmers.length} farmer(s)\n`;
 
         // Test entries table
         output.textContent += '2. Testing milk_intake_entries table...\n';
-        const entries = await window.MilkBookDB.entries.getAll();
+        const entries = await window.MilkRecordDB.entries.getAll();
         output.textContent += `   ✅ Found ${entries.entries.length} entry(ies)\n`;
 
         // Test customers table
         output.textContent += '3. Testing customers table...\n';
-        const customers = await window.MilkBookDB.customers.getAll();
+        const customers = await window.MilkRecordDB.customers.getAll();
         output.textContent += `   ✅ Found ${customers.customers.length} customer(s)\n`;
 
         // Test sales table
         output.textContent += '4. Testing retail_sales table...\n';
-        const sales = await window.MilkBookDB.sales.getAll();
+        const sales = await window.MilkRecordDB.sales.getAll();
         output.textContent += `   ✅ Found ${sales.sales.length} sale(s)\n`;
 
         output.textContent += '\n✅ All tables accessible! Supabase is working!\n';

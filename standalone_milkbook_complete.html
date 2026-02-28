@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MilkBook - Automatic Milk Collection & Dairy Accounting - Designed by signimus</title>
+    <title>MilkRecord - Automatic Milk Collection & Dairy Accounting - Designed by signimus</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -853,7 +853,7 @@
         lucide.createIcons();
         
         // Storage key
-        const STORAGE_KEY = 'milkbook_data_v1';
+        const STORAGE_KEY = 'MilkRecord_data_v1';
         
         // Initial state
         const INITIAL_STATE = {
@@ -894,7 +894,7 @@
         
         // Global state
         let state = (() => {
-            const saved = localStorage.getItem('milkbook_data_v1');
+            const saved = localStorage.getItem('MilkRecord_data_v1');
             return saved ? JSON.parse(saved) : INITIAL_STATE;
         })();
         

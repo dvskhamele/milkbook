@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logout - MilkBook</title>
+    <title>Logout - MilkRecord</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="app.css">
@@ -76,14 +76,14 @@
         initAuth();
 
         // Check authentication
-        const session = sessionStorage.getItem('milkbook_session');
+        const session = sessionStorage.getItem('MilkRecord_session');
         if (!session) {
             window.location.href = 'index.html';
             // Just redirect, no return needed in global scope
         }
         
         // Load state from localStorage
-        const savedData = localStorage.getItem('milkbook_data');
+        const savedData = localStorage.getItem('MilkRecord_data');
         let state;
         try {
             state = savedData ? JSON.parse(savedData) : { ...INITIAL_STATE };
@@ -101,7 +101,7 @@
         // Perform logout function
         function performLogout() {
             // Clear session from sessionStorage only
-            sessionStorage.removeItem('milkbook_session');
+            sessionStorage.removeItem('MilkRecord_session');
 
             // Redirect to login page
             window.location.href = 'index.html';
