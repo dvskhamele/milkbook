@@ -538,6 +538,60 @@
         color: #166534;
         font-size: 12px;
       }
+      
+      /* Mobile Optimization for Farmer Cards */
+      @media (max-width: 768px) {
+        .fcard {
+          padding: 10px;
+          gap: 10px;
+          min-height: 70px;
+        }
+        .fimg {
+          width: 50px;
+          height: 50px;
+          font-size: 22px;
+        }
+        .fname {
+          font-size: 15px;
+        }
+        .fsub {
+          font-size: 12px;
+        }
+        .editFarmerBtn {
+          opacity: 0.5;
+          font-size: 18px;
+        }
+        .badge {
+          font-size: 10px;
+          padding: 4px 6px;
+          top: 4px;
+          right: 4px;
+        }
+      }
+      
+      /* Extra Small Mobile */
+      @media (max-width: 480px) {
+        .fcard {
+          padding: 8px;
+          gap: 6px;
+        }
+        .fimg {
+          width: 40px;
+          height: 40px;
+          font-size: 18px;
+        }
+        .fname {
+          font-size: 13px;
+        }
+        .fsub {
+          font-size: 11px;
+        }
+        .editFarmerBtn {
+          opacity: 0.4;
+          font-size: 16px;
+          padding: 2px 4px;
+        }
+      }
       .farmerNav {
         display: flex;
         justify-content: center;
