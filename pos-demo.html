@@ -3685,8 +3685,14 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       }
 
       function tapAdd(name, rate, qty, step, emoji) {
+        // Validate inputs
+        if (!name || !rate || !qty) {
+          console.warn('⚠️ tapAdd called with invalid params:', {name, rate, qty});
+          return;
+        }
+        
         // Check if item already exists in cart - match by NAME ONLY (merge Cow Milk regardless of rate)
-        const existingItem = cart.find(item => item.name === name);
+        const existingItem = cart.find(item => item && item.name === name);
         if (existingItem) {
           // Increase quantity of existing item (merge all Cow Milk together)
           existingItem.qty = Math.round((existingItem.qty + qty) * 10) / 10;
@@ -3724,11 +3730,19 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         // Calculate purchase frequency for each item
         const purchaseCount = {};
         cart.forEach(item => {
-          purchaseCount[item.name] = (purchaseCount[item.name] || 0) + (item.qty * item.rate);
+          if (item && item.name) {
+            purchaseCount[item.name] = (purchaseCount[item.name] || 0) + (item.qty * item.rate);
+          }
         });
         const maxAmount = Math.max(...Object.values(purchaseCount), 1);
 
         cart.forEach((i, index) => {
+          // Skip null/invalid items
+          if (!i || !i.name) {
+            console.warn('⚠️ Skipping invalid cart item at index', index);
+            return;
+          }
+          
           const itemAmount = i.rate * i.qty;
           total += itemAmount;
 
@@ -4918,6 +4932,19 @@ function clearTodayHistory() {
         return false;
       }
 
+      function handleDragEnd(e) {
+        this.style.opacity = '1';
+        // Reset all card styles
+        document.querySelectorAll('.p-card').forEach(card => {
+          if (!card.onclick?.toString().includes('addProductModal') && !card.onclick?.toString().includes('openEdit')) {
+            card.style.background = '';
+            card.style.border = '';
+          }
+        });
+        draggedCard = null;
+        draggedCardId = null;
+      }
+
       function handleDrop(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -5065,18 +5092,21 @@ function clearTodayHistory() {
       function handleProductDragToCart(e) {
         e.preventDefault();
         if (!draggedCard || !(draggedCard instanceof Element)) {
+          draggedCard = null;
           return false;
         }
         const onclick = draggedCard.getAttribute('onclick');
         if (onclick) {
-          const match = onclick.match(/tapAdd\('([^']+)',\s*([\d.]+),\s*([\d.]+)\)/);
+          const match = onclick.match(/tapAdd\('([^']+)',\s*([\d.]+),\s*([\d.]+),\s*([\d.]+)\)/);
           if (match) {
             const name = match[1];
             const rate = parseFloat(match[2]);
             const step = parseFloat(match[3]);
-            tapAdd(name, rate, step, step);
+            const qty = parseFloat(match[4]) || step;
+            tapAdd(name, rate, qty, step);
           }
         }
+        draggedCard = null;
         return false;
       }
 
@@ -5410,6 +5440,7 @@ function addNewProductFromModal() {
     newCard.setAttribute('data-rank', rank);
     newCard.setAttribute('draggable', 'true');
     newCard.ondragstart = handleDragStart;
+    newCard.ondragend = handleDragEnd;
     newCard.onclick = function() { tapAdd(name, price, qty, emoji); };
 
     // Format quantity display - show exact quantity with unit (with fallback)
@@ -5672,6 +5703,7 @@ function loadCustomProducts() {
         newCard.setAttribute('data-rank', rank);
         newCard.setAttribute('draggable', 'true');
         newCard.ondragstart = handleDragStart;
+        newCard.ondragend = handleDragEnd;
         newCard.onclick = function() { tapAdd(p.name, p.price, qty || 1); };
 
         const qtyDisplay = `${qty}${p.unit || 'unit'}`;
