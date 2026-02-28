@@ -714,12 +714,12 @@
                   <input type="number" id="roundupInput" placeholder="Round" step="1" style="width: 60px; padding: 8px; border: 2px dashed #3b82f6; border-radius: 6px; font-weight: 700; font-size: 12px; text-align: center; background: #eff6ff; box-sizing:border-box;" oninput="applyRoundup()" />
                   <div id="creditDisplay" style="font-size: 11px; font-weight: 700; color: #166534; min-width: 70px; text-align: center;">सही!</div>
                 </div>
-                
-                <!-- Row 3: Credit + Advance Buttons -->
+
+                <!-- Row 3: Credit + Advance + Relations Buttons -->
                 <div style="display: flex; gap: 6px;">
                   <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="flex: 1; padding: 8px; font-size: 11px; font-weight: 700;">📒 LIKH LO</button>
                   <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 8px 12px; background:#fef3c7; border:2px solid #f59e0b; border-radius:6px; font-weight:700; color:#92400e; cursor:pointer; font-size: 10px; white-space: nowrap;">📒 Udhar</button>
-                  <button onclick="toggleAdvanceOrder()" id="advanceOrderBtn" style="padding: 8px 12px; background:#f5f3ff; border:2px solid #7c3aed; border-radius:6px; font-weight:700; color:#7c3aed; cursor:pointer; font-size: 10px; white-space: nowrap;">📅 Order</button>
+                  <button onclick="openCustomerRelation(activeCust)" id="btnCustomerRelation" style="padding: 8px 12px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border:2px solid #7c3aed; border-radius:6px; font-weight:700; color:#fff; cursor:pointer; font-size: 10px; white-space: nowrap;">🤝 Relations</button>
                 </div>
               </div>
               
