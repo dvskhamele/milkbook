@@ -8179,7 +8179,7 @@ function filterCustomerLedger() {
 
   const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
   let custData = localStorage.getItem('mr_pos_customers');
-  
+
   // Handle custData - ensure it's an array
   if (!custData) {
     custData = [];
@@ -8195,7 +8195,7 @@ function filterCustomerLedger() {
       custData = [];
     }
   }
-  
+
   const searchTerm = document.getElementById('ledgerSearch').value.toLowerCase();
   const fromDate = document.getElementById('ledgerFromDate').value;
   const toDate = document.getElementById('ledgerToDate').value;
@@ -8219,11 +8219,16 @@ function filterCustomerLedger() {
     });
   }
 
-  // Filter by search term
+  // Filter by search term (search in customer name/phone)
+  let filteredCustomers = custData;
   if (searchTerm) {
+    filteredCustomers = custData.filter(c =>
+      c.name.toLowerCase().includes(searchTerm) ||
+      (c.phone && c.phone.includes(searchTerm))
+    );
+    // Also filter history by matching customers
     filteredHistory = filteredHistory.filter(h =>
-      h.customer.toLowerCase().includes(searchTerm) ||
-      (h.phone && h.phone.includes(searchTerm))
+      h.customer.toLowerCase().includes(searchTerm)
     );
   }
 
@@ -8234,59 +8239,63 @@ function filterCustomerLedger() {
     html += '<h3 style="font-size:14px; font-weight:700; color:#1e293b; margin-bottom:12px;">📋 All Customers Master List</h3>';
     html += '<div style="display:grid; gap:12px;">';
 
-    custData.forEach(cust => {
-      const custHistory = filteredHistory.filter(h => h.customer === cust.name);
-      const custAdvances = custHistory.filter(h => h.method === 'Cash In');
-      // Detect credit by method OR creditAmount field
-      const custCredits = custHistory.filter(h => 
-        h.method === 'Credit' || 
-        h.method === 'Udhar' || 
-        (h.creditAmount && parseFloat(h.creditAmount) > 0) ||
-        (h.credit && parseFloat(h.credit) > 0)
-      );
-      const custCash = custHistory.filter(h => 
-        (h.method === 'Cash' || h.method === 'UPI') &&
-        (!h.creditAmount || parseFloat(h.creditAmount) <= 0)
-      );
+    if (filteredCustomers.length === 0) {
+      html += '<div style="padding:40px; text-align:center; color:#64748b;">📋 No customers found</div>';
+    } else {
+      filteredCustomers.forEach(cust => {
+        const custHistory = filteredHistory.filter(h => h.customer === cust.name);
+        const custAdvances = custHistory.filter(h => h.method === 'Cash In');
+        // Detect credit by method OR creditAmount field
+        const custCredits = custHistory.filter(h =>
+          h.method === 'Credit' ||
+          h.method === 'Udhar' ||
+          (h.creditAmount && parseFloat(h.creditAmount) > 0) ||
+          (h.credit && parseFloat(h.credit) > 0)
+        );
+        const custCash = custHistory.filter(h =>
+          (h.method === 'Cash' || h.method === 'UPI') &&
+          (!h.creditAmount || parseFloat(h.creditAmount) <= 0)
+        );
 
-      const totalAdv = custAdvances.reduce((sum, a) => sum + parseFloat(a.amount || 0), 0);
-      const totalCred = custCredits.reduce((sum, c) => sum + parseFloat(c.creditAmount || c.credit || c.amount || 0), 0);
-      const totalCashCust = custCash.reduce((sum, c) => sum + parseFloat(c.paidAmount || c.amount || 0), 0);
-      
-      // Get latest sale for this customer
-      const latestSale = custHistory.filter(h => h.cartItems && h.cartItems.length > 0).pop();
-      
-      html += `
-        <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0; ${latestSale ? 'cursor:pointer;' : ''}" ${latestSale ? `onclick="restoreCartFromLedger('${cust.name}', ${JSON.stringify(latestSale.cartItems || []).replace(/"/g, '&quot;')})" title="Click to restore last order"` : ''}>
-          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
-            <div>
-              <div style="font-size:16px; font-weight:900; color:#1e293b;">${cust.name}</div>
-              <div style="font-size:12px; color:#64748b;">${cust.phone || '📱 No phone'}${cust.address ? ' • 📍 ' + cust.address : ''}</div>
+        const totalAdv = custAdvances.reduce((sum, a) => sum + parseFloat(a.amount || 0), 0);
+        const totalCred = custCredits.reduce((sum, c) => sum + parseFloat(c.creditAmount || c.credit || c.amount || 0), 0);
+        const totalCashCust = custCash.reduce((sum, c) => sum + parseFloat(c.paidAmount || c.amount || 0), 0);
+
+        // Get latest sale for this customer
+        const latestSale = custHistory.filter(h => h.cartItems && h.cartItems.length > 0).pop();
+
+        html += `
+          <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0; ${latestSale ? 'cursor:pointer;' : ''}" ${latestSale ? `onclick="restoreCartFromLedger('${cust.name}', ${JSON.stringify(latestSale.cartItems || []).replace(/"/g, '&quot;')})" title="Click to restore last order"` : ''}>
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
+              <div>
+                <div style="font-size:16px; font-weight:900; color:#1e293b;">${cust.name}</div>
+                <div style="font-size:12px; color:#64748b;">${cust.phone || '📱 No phone'}${cust.address ? ' • 📍 ' + cust.address : ''}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:18px; font-weight:900; color:${cust.balance > 0 ? '#dc2626' : '#16a34a'};">${formatINR(cust.balance || 0)}</div>
+                <div style="font-size:11px; color:#64748b;">Balance</div>
+              </div>
             </div>
-            <div style="text-align:right;">
-              <div style="font-size:18px; font-weight:900; color:${cust.balance > 0 ? '#dc2626' : '#16a34a'};">${formatINR(cust.balance || 0)}</div>
-              <div style="font-size:11px; color:#64748b;">Balance</div>
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; padding-top:12px; border-top:1px solid #f1f5f9;">
+              <div style="text-align:center;">
+                <div style="font-size:11px; color:#64748b;">Advance</div>
+                <div style="font-size:14px; font-weight:700; color:#16a34a;">${formatINR(totalAdv)}</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:11px; color:#64748b;">Credit</div>
+                <div style="font-size:14px; font-weight:700; color:#dc2626;">${formatINR(totalCred)}</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:11px; color:#64748b;">Cash Paid</div>
+                <div style="font-size:14px; font-weight:700; color:#16a34a;">${formatINR(totalCashCust)}</div>
+              </div>
             </div>
+            ${latestSale ? `<div style="font-size:9px; color:#64748b; margin-top:8px; text-align:center;">🔁 Click to restore last order</div>` : ''}
           </div>
-          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; padding-top:12px; border-top:1px solid #f1f5f9;">
-            <div style="text-align:center;">
-              <div style="font-size:11px; color:#64748b;">Advance</div>
-              <div style="font-size:14px; font-weight:700; color:#16a34a;">${formatINR(totalAdv)}</div>
-            </div>
-            <div style="text-align:center;">
-              <div style="font-size:11px; color:#64748b;">Credit</div>
-              <div style="font-size:14px; font-weight:700; color:#dc2626;">${formatINR(totalCred)}</div>
-            </div>
-            <div style="text-align:center;">
-              <div style="font-size:11px; color:#64748b;">Cash Paid</div>
-              <div style="font-size:14px; font-weight:700; color:#16a34a;">${formatINR(totalCashCust)}</div>
-            </div>
-          </div>
-          ${latestSale ? `<div style="font-size:9px; color:#64748b; margin-top:8px; text-align:center;">🔁 Click to restore last order</div>` : ''}
-        </div>
-      `;
-    });
-    
+        `;
+      });
+    }
+
     html += '</div>';
     
   } else if (customerLedgerView === 'advances') {
@@ -8576,7 +8585,7 @@ function renderRateListProducts() {
   container.innerHTML = html;
 }
 
-// Send rate list via WhatsApp
+// Send rate list via WhatsApp - WITH CATEGORIES
 function sendRateListWhatsApp() {
   const customProducts = loadData('mr_pos_custom_products', []);
 
@@ -8597,20 +8606,62 @@ function sendRateListWhatsApp() {
     }
   });
 
+  // Group by category
+  const categories = {
+    '🥛 Milk & Dairy': ['milk', 'cow', 'buff', 'curd', 'dahi', 'lassi', 'paneer', 'cheese'],
+    '🧈 Ghee & Butter': ['ghee', 'butter', 'makhan'],
+    '🍬 Sweets': ['sweet', 'mithai', 'cake', 'barfi', 'ladoo', 'jalebi', 'rasgulla', 'peda', 'kalakand', 'milk cake'],
+    '🥐 Bakery': ['bakery', 'bread', 'bun', 'pav', 'toast', 'rusk', 'biscuit', 'cookie', 'khari'],
+    '📦 Others': []
+  };
+
+  const categorizedProducts = {};
+  Object.keys(categories).forEach(cat => {
+    categorizedProducts[cat] = [];
+  });
+
+  Object.values(uniqueProducts).forEach(p => {
+    const nameLower = p.name.toLowerCase();
+    let assigned = false;
+    
+    for (const [category, keywords] of Object.entries(categories)) {
+      if (category === '📦 Others') continue;
+      
+      if (keywords.some(kw => nameLower.includes(kw))) {
+        categorizedProducts[category].push(p);
+        assigned = true;
+        break;
+      }
+    }
+    
+    if (!assigned) {
+      categorizedProducts['📦 Others'].push(p);
+    }
+  });
+
   const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  // Build WhatsApp message - Simple list without categories
+  // Build WhatsApp message - WITH CATEGORIES
   let message = `*${shopName}*\n`;
   message += `📋 *Product Rate List*\n`;
   message += `📅 ${date}\n\n`;
   message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
 
-  Object.values(uniqueProducts).forEach(p => {
-    message += `${p.emoji} ${p.name} - ${formatINR(p.price)}/${p.unit}\n`;
-  });
+  for (const [category, products] of Object.entries(categorizedProducts)) {
+    if (products.length === 0) continue;
+    
+    message += `*${category}*\n`;
+    message += `────────────────────\n`;
+    
+    products.forEach(p => {
+      message += `${p.emoji} ${p.name} - ${formatINR(p.price)}/${p.unit}\n`;
+    });
+    
+    message += `\n`;
+  }
 
-  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n`;
   message += `📞 Contact us for orders!\n`;
   message += `🙏 Thank you!`;
 
@@ -8621,7 +8672,7 @@ function sendRateListWhatsApp() {
   showToast('📱 Opening WhatsApp...');
 }
 
-// Copy rate list to clipboard
+// Copy rate list to clipboard - WITH CATEGORIES
 function copyRateList() {
   const customProducts = loadData('mr_pos_custom_products', []);
 
@@ -8642,6 +8693,39 @@ function copyRateList() {
     }
   });
 
+  // Group by category
+  const categories = {
+    '🥛 Milk & Dairy': ['milk', 'cow', 'buff', 'curd', 'dahi', 'lassi', 'paneer', 'cheese'],
+    '🧈 Ghee & Butter': ['ghee', 'butter', 'makhan'],
+    '🍬 Sweets': ['sweet', 'mithai', 'cake', 'barfi', 'ladoo', 'jalebi', 'rasgulla', 'peda', 'kalakand', 'milk cake'],
+    '🥐 Bakery': ['bakery', 'bread', 'bun', 'pav', 'toast', 'rusk', 'biscuit', 'cookie', 'khari'],
+    '📦 Others': []
+  };
+
+  const categorizedProducts = {};
+  Object.keys(categories).forEach(cat => {
+    categorizedProducts[cat] = [];
+  });
+
+  Object.values(uniqueProducts).forEach(p => {
+    const nameLower = p.name.toLowerCase();
+    let assigned = false;
+    
+    for (const [category, keywords] of Object.entries(categories)) {
+      if (category === '📦 Others') continue;
+      
+      if (keywords.some(kw => nameLower.includes(kw))) {
+        categorizedProducts[category].push(p);
+        assigned = true;
+        break;
+      }
+    }
+    
+    if (!assigned) {
+      categorizedProducts['📦 Others'].push(p);
+    }
+  });
+
   const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -8650,11 +8734,20 @@ function copyRateList() {
   message += `📅 ${date}\n\n`;
   message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
 
-  Object.values(uniqueProducts).forEach(p => {
-    message += `${p.emoji} ${p.name} - ${formatINR(p.price)}/${p.unit}\n`;
-  });
+  for (const [category, products] of Object.entries(categorizedProducts)) {
+    if (products.length === 0) continue;
+    
+    message += `*${category}*\n`;
+    message += `────────────────────\n`;
+    
+    products.forEach(p => {
+      message += `${p.emoji} ${p.name} - ${formatINR(p.price)}/${p.unit}\n`;
+    });
+    
+    message += `\n`;
+  }
 
-  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n`;
   message += `📞 Contact us for orders!\n`;
   message += `🙏 Thank you!`;
 
