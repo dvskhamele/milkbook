@@ -146,24 +146,28 @@
           left: 0;
           right: 0;
           width: 100% !important;
-          padding: 8px;
+          padding: 6px !important;
           z-index: 100;
         }
         .payment-section > div {
-          gap: 4px !important;
+          grid-template-columns: 1fr !important;
+          gap: 6px !important;
+        }
+        .payment-section #totalPayableDisplay {
+          font-size: 24px !important;
         }
         .payment-section input {
-          font-size: 12px !important;
-          padding: 6px !important;
+          font-size: 11px !important;
+          padding: 5px !important;
         }
         .payment-section button {
-          font-size: 10px !important;
-          padding: 6px 8px !important;
+          font-size: 9px !important;
+          padding: 5px 6px !important;
         }
         #roundupInput {
-          width: 50px !important;
+          width: 40px !important;
         }
-        body { padding-bottom: 140px !important; }
+        body { padding-bottom: 150px !important; }
       }
 
       @media (max-width: 480px) {
@@ -189,9 +193,12 @@
           font-size: 8px !important;
         }
         .payment-section {
-          padding: 6px !important;
+          padding: 4px !important;
         }
-        body { padding-bottom: 150px !important; }
+        .payment-section #totalPayableDisplay {
+          font-size: 20px !important;
+        }
+        body { padding-bottom: 160px !important; }
       }
 
       /* Customer Ledger Mobile */
@@ -855,42 +862,43 @@
             <table class="recent-table"><tbody id="cartItems" ondragover="handleCartDragOver(event)" ondrop="handleCartDrop(event)"></tbody></table>
           </div>
 
-          <!-- Fixed Payment Section -->
-          <div class="payment-section">
-            <!-- Compact Bottom Layout -->
-            <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 3px solid #16a34a; border-radius: 10px; padding: 10px 15px; display: flex; flex-direction: column; gap: 8px;">
-              
-              <!-- Row 1: Total + Payment Buttons -->
-              <div style="display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center;">
-                <!-- Total Display -->
-                <div style="text-align: center; min-width: 140px;">
-                  <div style="font-size: 10px; color: #166534; font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">Net Payable</div>
-                  <div id="totalPayableDisplay" style="font-size: 32px; font-weight: 900; color: #16a34a; line-height: 1;">₹0.00</div>
-                </div>
-                
-                <!-- Payment Buttons -->
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;">
-                  <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534; padding: 8px; font-size: 11px;" onclick="saveEntry('Cash')">CASH</button>
-                  <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af; padding: 8px; font-size: 11px;" onclick="saveEntry('UPI')">UPI</button>
-                  <button class="pay-btn" style="background:#fef3c7; color:#92400e; padding: 8px; font-size: 11px;" onclick="holdCart()">🟡 HOLD</button>
-                  <button class="pay-btn" style="background:#f1f5f9; color:#475569; padding: 8px; font-size: 11px;" onclick="showHeldCarts()">📋 <span id="heldCount">0</span></button>
-                </div>
-              </div>
-              
-              <!-- Row 2: Amount Input + Roundup + Credit -->
-              <div id="paymentForm" style="display: flex !important; flex-direction: column; gap: 6px;">
-                <div style="display: flex; gap: 6px; align-items: center;">
-                  <input type="number" id="paymentAmount" placeholder="₹" style="flex: 1; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 14px; box-sizing:border-box;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
-                  <input type="number" id="roundupInput" placeholder="Round" step="1" style="width: 60px; padding: 8px; border: 2px dashed #3b82f6; border-radius: 6px; font-weight: 700; font-size: 12px; text-align: center; background: #eff6ff; box-sizing:border-box;" oninput="applyRoundup()" />
-                  <div id="creditDisplay" style="font-size: 11px; font-weight: 700; color: #166534; min-width: 70px; text-align: center;">सही!</div>
+            <!-- Fixed Payment Section -->
+            <div class="payment-section">
+              <!-- Compact Bottom Layout -->
+              <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 3px solid #16a34a; border-radius: 10px; padding: 8px; display: grid; grid-template-columns: 1fr 2fr; gap: 8px;">
+
+                <!-- Left Column: Net Payable (Maximum Font Size) -->
+                <div style="background: white; border: 2px solid #16a34a; border-radius: 8px; padding: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                  <div style="font-size: 9px; color: #166534; font-weight: 700; text-transform: uppercase;">Net Payable</div>
+                  <div id="totalPayableDisplay" style="font-size: 28px; font-weight: 900; color: #16a34a; line-height: 1;">₹0.00</div>
                 </div>
 
-                <!-- Row 3: Credit + Advance + Advance Order + Relations Buttons -->
-                <div style="display: flex; gap: 4px;">
-                  <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="flex: 1; padding: 6px; font-size: 10px; font-weight: 700;">📒 LIKH LO</button>
-                  <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 6px 8px; background:#fef3c7; border:2px solid #f59e0b; border-radius:6px; font-weight:700; color:#92400e; cursor:pointer; font-size: 9px; white-space: nowrap;">📒 Udhar</button>
-                  <button onclick="toggleAdvanceOrder()" id="advanceOrderBtn" style="padding: 6px 8px; background:#f5f3ff; border:2px solid #7c3aed; border-radius:6px; font-weight:700; color:#7c3aed; cursor:pointer; font-size: 9px; white-space: nowrap;">📅 Order</button>
-                  <button onclick="openCustomerRelation(activeCust)" id="btnCustomerRelation" style="padding: 6px 8px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border:2px solid #7c3aed; border-radius:6px; font-weight:700; color:#fff; cursor:pointer; font-size: 9px; white-space: nowrap;">🤝 Relations</button>
+                <!-- Right Column: Payment Controls -->
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <!-- Payment Buttons Row -->
+                  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;">
+                    <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534; padding: 6px; font-size: 10px;" onclick="saveEntry('Cash')">CASH</button>
+                    <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af; padding: 6px; font-size: 10px;" onclick="saveEntry('UPI')">UPI</button>
+                    <button class="pay-btn" style="background:#fef3c7; color:#92400e; padding: 6px; font-size: 10px;" onclick="holdCart()">🟡 HOLD</button>
+                    <button class="pay-btn" style="background:#f1f5f9; color:#475569; padding: 6px; font-size: 10px;" onclick="showHeldCarts()">📋 <span id="heldCount">0</span></button>
+                  </div>
+                  
+                  <!-- Amount Input Row -->
+                  <div id="paymentForm" style="display: flex !important; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                      <input type="number" id="paymentAmount" placeholder="₹" style="flex: 1; padding: 6px; border: 2px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 12px; box-sizing:border-box;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
+                      <input type="number" id="roundupInput" placeholder="Round" step="1" style="width: 45px; padding: 6px; border: 2px dashed #3b82f6; border-radius: 4px; font-weight: 700; font-size: 10px; text-align: center; background: #eff6ff; box-sizing:border-box;" oninput="applyRoundup()" />
+                      <div id="creditDisplay" style="font-size: 9px; font-weight: 700; color: #166534; min-width: 50px; text-align: center;">सही!</div>
+                    </div>
+
+                    <!-- Action Buttons Row -->
+                    <div style="display: flex; gap: 4px;">
+                      <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="flex: 1; padding: 5px; font-size: 9px; font-weight: 700;">📒 LIKH LO</button>
+                      <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 5px 6px; background:#fef3c7; border:2px solid #f59e0b; border-radius:4px; font-weight:700; color:#92400e; cursor:pointer; font-size: 8px; white-space: nowrap;">📒</button>
+                      <button onclick="toggleAdvanceOrder()" id="advanceOrderBtn" style="padding: 5px 6px; background:#f5f3ff; border:2px solid #7c3aed; border-radius:4px; font-weight:700; color:#7c3aed; cursor:pointer; font-size: 8px; white-space: nowrap;">📅</button>
+                      <button onclick="openCustomerRelation(activeCust)" id="btnCustomerRelation" style="padding: 5px 6px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border:2px solid #7c3aed; border-radius:4px; font-weight:700; color:#fff; cursor:pointer; font-size: 8px; white-space: nowrap;">🤝</button>
+                    </div>
+                  </div>
                 </div>
               </div>
               
