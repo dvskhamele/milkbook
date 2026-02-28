@@ -3106,8 +3106,10 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
           advanceForm.style.setProperty('display', 'flex', 'important');
 
           // Auto-fill amount from Net Payable
-          if (advanceAmount) {
+          if (advanceAmount && total > 0) {
             advanceAmount.value = total.toFixed(2);
+            advanceAmount.focus();
+            advanceAmount.select();
           }
 
           const customerName = el("activeCust").innerText;
