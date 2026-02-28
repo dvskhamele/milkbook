@@ -41,12 +41,12 @@
       }
       
       /* --- HEADER - Fully Responsive --- */
-      .topbar { background: transparent; border: none; border-radius: 8px; box-shadow: none; padding: 2px 8px; display: flex; align-items: center; justify-content: space-between; height: 16px; gap: 6px; flex-shrink: 0; z-index: 100; }
-      .brand { display: flex; align-items: center; gap: 6px; min-width: 0; }
-      .logo-box { width: 12px; height: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #e0f2fe, #dbeafe); border: 1px solid #c7d2fe; font-size: 6px; flex-shrink: 0; }
-      .brand-text { min-width: 0; }
-      .brand-text .title { font-weight: 700; font-size: 8px; color: #0f172a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
-      .brand-text .sub-text { font-size: 6px; font-weight: 500; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .topbar { background: transparent; border: none; border-radius: 8px; box-shadow: none; padding: 2px 8px; display: flex; align-items: center; justify-content: space-between; height: 24px; gap: 6px; flex-shrink: 0; z-index: 100; }
+      .brand { display: flex; align-items: center; gap: 6px; min-width: 0; flex-shrink: 0; }
+      .logo-box { width: 16px; height: 16px; border-radius: 4px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #e0f2fe, #dbeafe); border: 1px solid #c7d2fe; font-size: 8px; flex-shrink: 0; overflow: hidden; }
+      .brand-text { min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+      .brand-text .title { font-weight: 700; font-size: 10px; color: #0f172a; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+      .brand-text .sub-text { font-size: 7px; font-weight: 500; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .hdr-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
       .pillbtn { height: 24px; padding: 0 8px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-weight: 700; font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; white-space: nowrap; }
       .pillbtn.primary { background: #3b82f6; color: white; border-color: #3b82f6; }
@@ -823,7 +823,7 @@
                     </select>
                     <button onclick="openAddCustomerFromAdvanceOrder()" style="padding:10px 16px; background:#3b82f6; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">➕ New</button>
                   </div>
-                  <div style="font-size:10px; color:#dc2626; font-weight:700; margin-top:4px;">⚠️ Customer with phone number is required</div>
+                  <div id="advanceOrderPhoneWarning" style="font-size:10px; color:#dc2626; font-weight:700; margin-top:4px; display:none;">⚠️ Customer with phone number is required</div>
                 </div>
 
                 <!-- Delivery Details -->
@@ -2317,6 +2317,10 @@
 
         // Get customer object for contact details
         const customer = customers.find(c => c.name === customerName);
+        
+        // Calculate new balance after this transaction
+        const previousBalance = customer ? (customer.balance || 0) : 0;
+        const newBalance = creditAmount > 0 ? previousBalance + creditAmount : previousBalance;
 
         // Get shop name from booth selection or localStorage
         const booth = localStorage.getItem('MilkRecord_booth') || 'main';
@@ -2392,6 +2396,10 @@
                 ${creditAmount > 0 ? `<div style="color: #c00; margin-top: 8px; padding: 8px; background: #fef2f2; border-radius: 4px;"><strong>📒 Credit (Udhar): ${formatINR(creditAmount)}</strong></div>` : ''}
                 ${creditAmount > 0 ? `<div style="color: #c00; font-weight: bold; font-size: 14px;">⚖️ Balance Due: ${formatINR(creditAmount)}</div>` : ''}
                 ${creditAmount === 0 ? `<div style="color: #16a34a; margin-top: 5px;"><strong>✅ Paid in Full</strong></div>` : ''}
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 11px;">
+                  <div>Previous Balance: ${formatINR(previousBalance)}</div>
+                  <div style="font-weight: bold; font-size: 13px;">New Balance: ${formatINR(newBalance)}</div>
+                </div>
               </div>
             </div>
             <table>
@@ -3157,10 +3165,20 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         const select = document.getElementById('advanceOrderCustomer');
         const locationInput = document.getElementById('advanceOrderLocation');
         const notesInput = document.getElementById('advanceOrderNotes');
+        const phoneWarning = document.getElementById('advanceOrderPhoneWarning');
         if (!select || !locationInput) return;
 
         const selectedName = select.value;
         const customer = customers.find(c => c.name === selectedName);
+
+        // Show/hide phone warning based on customer selection
+        if (phoneWarning) {
+          if (!selectedName || (customer && (!customer.phone || customer.phone.trim() === ''))) {
+            phoneWarning.style.display = 'block';
+          } else {
+            phoneWarning.style.display = 'none';
+          }
+        }
 
         if (customer) {
           // Auto-fill location from customer address
