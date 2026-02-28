@@ -1691,7 +1691,7 @@
         </div>
         <div style="margin-top: 16px; padding: 12px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
           <div style="font-size: 13px; font-weight: 700; color: #92400e;">💡 Tip:</div>
-          <div style="font-size: 12px; color: #78350f; margin-top: 4px;">Give advance when farmer needs money. Cut advance when settling milk payments.</div>
+          <div style="font-size: 12px; color: #78350f; margin-top: 4px;">Give advance when farmer needs money. Cut advance when farmer pays in cash.</div>
         </div>
         
         <!-- Advance History Ledger -->
@@ -3553,15 +3553,16 @@ function calcYield() {
 
       function getRatePerLiter() {
     // Check if manual rate override has a value
-    const mInput = el("manualRateInput").value;
-    if (mInput && Number(mInput) > 0) {
-        return round2(Number(mInput));
+    const mInput = el("manualRateInput");
+    if (mInput && mInput.value && Number(mInput.value) > 0) {
+        return round2(Number(mInput.value));
     }
 
     // Auto calculate from Fat AND SNF using configured operators
-    const f = Number(el("fatInput").value) || 0;
-    const s = Number(el("snfInput").value) || 0;
-    const a = el("animalSelect").value;
+    // Use global variables (already updated by input listeners)
+    const f = fat || 0;
+    const s = snf || 0;
+    const a = animal || 'cow';
 
     if (a === "buffalo") {
         // Buffalo rate calculation with operators
@@ -4957,9 +4958,9 @@ function saveEntryAsCredit() {
         customer: farmer.name,
         products: `${entry.qty}L Milk (Fat: ${entry.fat}%)`,
         amount: entry.amount.toString(),
-        paidAmount: choice === 'cut_advance' ? entry.amount.toString() : '0.00',
-        creditAmount: choice === 'credit' ? entry.creditAmount.toString() : '0.00',
-        method: choice === 'credit' ? 'Credit' : 'Cash (Advance Cut)',
+        paidAmount: '0.00',
+        creditAmount: entry.creditAmount.toString(),
+        method: 'Credit',
         cartItems: [{name: 'Milk', qty: entry.qty, rate: entry.rateSnapshot}],
         createdAt: entry.createdAt
     };
