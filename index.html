@@ -2782,6 +2782,14 @@
         </div>
       </div>
       
+      <!-- Farmer Payment Details -->
+      <div style="padding: 15px; background: #eff6ff; border-bottom: 1px solid #3b82f6;">
+        <div style="font-size: 12px; font-weight: 800; color: #1e40af; margin-bottom: 8px; text-transform: uppercase;">💳 Farmer Payment Details</div>
+        <div id="farmerPaymentDetails" style="font-size: 11px; color: #1e40af; line-height: 1.6;">
+          <!-- Payment details will be inserted here -->
+        </div>
+      </div>
+      
       <!-- Transaction List -->
       <div style="padding: 15px;">
         <h4 style="margin: 0 0 10px 0; font-size: 14px; font-weight: 700; color: #1e293b;">📊 Transaction History</h4>
@@ -6864,6 +6872,26 @@ function openFarmerTransactions(fId) {
 
     selectedFarmerId = fId;
     el("transFarmerName").textContent = f.name + (f.serial ? ` (#${f.serial})` : '');
+    
+    // Show farmer payment details
+    const paymentDetailsEl = el("farmerPaymentDetails");
+    if (paymentDetailsEl) {
+        let detailsHtml = '';
+        if (f.upi) detailsHtml += `<div><strong>📱 UPI ID:</strong> ${f.upi}</div>`;
+        if (f.bankName) detailsHtml += `<div><strong>🏦 Bank:</strong> ${f.bankName}</div>`;
+        if (f.accountNo) detailsHtml += `<div><strong>🔢 Account:</strong> ${f.accountNo}</div>`;
+        if (f.ifsc) detailsHtml += `<div><strong>🔑 IFSC:</strong> ${f.ifsc}</div>`;
+        if (f.accountName) detailsHtml += `<div><strong>👤 Account Name:</strong> ${f.accountName}</div>`;
+        if (f.phone) detailsHtml += `<div><strong>📱 Phone:</strong> ${f.phone}</div>`;
+        if (f.address) detailsHtml += `<div><strong>📍 Address:</strong> ${f.address}</div>`;
+        if (f.city) detailsHtml += `<div><strong>🏙️ City:</strong> ${f.city}${f.pincode ? ` - ${f.pincode}` : ''}</div>`;
+        
+        if (detailsHtml) {
+            paymentDetailsEl.innerHTML = detailsHtml;
+        } else {
+            paymentDetailsEl.innerHTML = '<div style="color: #64748b; font-style: italic;">No payment details added yet</div>';
+        }
+    }
 
     // Get ALL entries for this farmer (not just current month)
     const allEntries = entries.filter(e => e.farmerId === fId);
