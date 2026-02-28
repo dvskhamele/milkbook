@@ -227,6 +227,61 @@
         body { padding-bottom: 230px !important; }
       }
 
+      /* Highlight animation for onboarding */
+      @keyframes highlight-pulse {
+        0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+        50% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+      }
+      .onboarding-highlight {
+        animation: highlight-pulse 2s infinite;
+        border: 3px solid #3b82f6 !important;
+        position: relative;
+        z-index: 1000;
+      }
+      .onboarding-tooltip {
+        position: absolute;
+        background: #3b82f6;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        z-index: 1001;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        animation: float 2s ease-in-out infinite;
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+      }
+
+      /* Welcome Modal */
+      .welcome-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+      }
+      .welcome-modal.active {
+        display: flex;
+      }
+      .welcome-content {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        max-width: 500px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      }
+
       /* Customer Ledger Mobile */
       @media (max-width: 768px) {
         #customerLedgerModal .modal {
@@ -1628,6 +1683,43 @@
 
     <div class="toast" id="toast"></div>
 
+    <!-- Welcome/Onboarding Modal -->
+    <div class="welcome-modal" id="welcomeModal">
+      <div class="welcome-content">
+        <div style="font-size: 64px; margin-bottom: 20px;">🎉</div>
+        <h2 style="font-size: 28px; font-weight: 900; color: #1e293b; margin-bottom: 10px;">Welcome to MilkRecord POS!</h2>
+        <p style="font-size: 16px; color: #64748b; margin-bottom: 20px; line-height: 1.6;">Let's get your dairy shop set up in 3 easy steps</p>
+        
+        <div style="text-align: left; background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+          <div id="step1" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: white; border-radius: 8px; margin-bottom: 10px; border: 2px solid #e2e8f0;">
+            <span style="font-size: 24px;">1️⃣</span>
+            <div>
+              <div style="font-weight: 700; color: #1e293b;">Add Your First Product</div>
+              <div style="font-size: 12px; color: #64748b;">Click "➕ Create" to add products</div>
+            </div>
+          </div>
+          <div id="step2" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: white; border-radius: 8px; margin-bottom: 10px; border: 2px solid #e2e8f0;">
+            <span style="font-size: 24px;">2️⃣</span>
+            <div>
+              <div style="font-weight: 700; color: #1e293b;">Add Your First Customer</div>
+              <div style="font-size: 12px; color: #64748b;">Click "➕ Add" to add customers</div>
+            </div>
+          </div>
+          <div id="step3" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: white; border-radius: 8px; border: 2px solid #e2e8f0;">
+            <span style="font-size: 24px;">3️⃣</span>
+            <div>
+              <div style="font-weight: 700; color: #1e293b;">Create Your First Invoice</div>
+              <div style="font-size: 12px; color: #64748b;">Select customer, add products, and save</div>
+            </div>
+          </div>
+        </div>
+        
+        <button onclick="closeWelcomeModal()" style="padding: 15px 30px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; width: 100%;">
+          🚀 Let's Get Started!
+        </button>
+      </div>
+    </div>
+
     <!-- Institutional Gaps Panel -->
     <button class="gaps-toggle" onclick="toggleGaps()" title="Institutional Records">📋</button>
     <div class="gaps-panel" id="gapsPanel">
@@ -1708,7 +1800,132 @@
         } else {
           console.log('⚠️ Using offline mode (localStorage)');
         }
+        
+        // Initialize onboarding for first-time users
+        initializeOnboarding();
       });
+
+      // ========== ONBOARDING SYSTEM ==========
+      let onboardingActive = false;
+      let currentOnboardingStep = 0;
+
+      // Check if this is first visit and initialize onboarding
+      function initializeOnboarding() {
+        const hasProducts = loadData('mr_pos_custom_products', []).length > 0;
+        const hasCustomers = loadData('mr_pos_customers', []).length > 0;
+        const hasHistory = loadData('mr_sales_history', []).length > 0;
+        const hasSeenWelcome = localStorage.getItem('MilkRecord_welcome_seen');
+        
+        // Show welcome modal on first visit
+        if (!hasSeenWelcome) {
+          showWelcomeModal();
+          localStorage.setItem('MilkRecord_welcome_seen', 'true');
+        }
+        
+        // Start onboarding guidance
+        if (!hasProducts || !hasCustomers || !hasHistory) {
+          onboardingActive = true;
+          startOnboarding();
+        }
+      }
+
+      // Show welcome modal
+      function showWelcomeModal() {
+        const modal = document.getElementById('welcomeModal');
+        if (modal) {
+          modal.classList.add('active');
+        }
+      }
+
+      // Close welcome modal
+      function closeWelcomeModal() {
+        const modal = document.getElementById('welcomeModal');
+        if (modal) {
+          modal.classList.remove('active');
+        }
+        startOnboarding();
+      }
+
+      // Start onboarding guidance
+      function startOnboarding() {
+        const hasProducts = loadData('mr_pos_custom_products', []).length > 0;
+        const hasCustomers = loadData('mr_pos_customers', []).length > 0;
+        const hasHistory = loadData('mr_sales_history', []).length > 0;
+        
+        // Update step indicators
+        updateStepIndicator('step1', hasProducts);
+        updateStepIndicator('step2', hasCustomers);
+        updateStepIndicator('step3', hasHistory);
+        
+        // Highlight appropriate fields
+        if (!hasProducts) {
+          highlightElement('productSearch', 'Search for products or click ➕ Create');
+          highlightElement('addProductModal', 'Click here to add your first product', true);
+        } else if (!hasCustomers) {
+          highlightElement('custSearch', 'Search for customers or click ➕ Add');
+          highlightElement('addCustModal', 'Click here to add your first customer', true);
+        } else if (!hasHistory) {
+          highlightElement('totalPayableDisplay', 'Add products to cart and click LIKH LO or CASH');
+          highlightElement('btnCredit', 'Click to create first invoice', true);
+        } else {
+          onboardingActive = false;
+          clearAllHighlights();
+        }
+      }
+
+      // Update step indicator style
+      function updateStepIndicator(stepId, completed) {
+        const step = document.getElementById(stepId);
+        if (step) {
+          if (completed) {
+            step.style.background = '#f0fdf4';
+            step.style.borderColor = '#22c55e';
+            step.innerHTML = '<span style="font-size: 24px;">✅</span><div><div style="font-weight: 700; color: #16a34a;">Completed!</div></div>';
+          }
+        }
+      }
+
+      // Highlight element with tooltip
+      function highlightElement(elementId, tooltipText, isModal = false) {
+        clearAllHighlights();
+        
+        let element;
+        if (isModal) {
+          element = document.getElementById(elementId);
+        } else {
+          element = document.getElementById(elementId);
+        }
+        
+        if (element) {
+          element.classList.add('onboarding-highlight');
+          
+          // Add tooltip
+          const tooltip = document.createElement('div');
+          tooltip.className = 'onboarding-tooltip';
+          tooltip.textContent = tooltipText;
+          tooltip.style.top = '-40px';
+          tooltip.style.left = '50%';
+          tooltip.style.transform = 'translateX(-50%)';
+          element.style.position = 'relative';
+          element.appendChild(tooltip);
+        }
+      }
+
+      // Clear all highlights
+      function clearAllHighlights() {
+        document.querySelectorAll('.onboarding-highlight').forEach(el => {
+          el.classList.remove('onboarding-highlight');
+          const tooltip = el.querySelector('.onboarding-tooltip');
+          if (tooltip) tooltip.remove();
+        });
+      }
+
+      // Check onboarding progress after actions
+      function checkOnboardingProgress() {
+        if (onboardingActive) {
+          setTimeout(() => startOnboarding(), 500);
+        }
+      }
       
       // Warn before close/refresh if cart has items
       window.addEventListener('beforeunload', (e) => {
@@ -2043,6 +2260,9 @@
         saveData('mr_pos_custom_products', products, 'products_update');
         saveData('mr_pos_product_order', productOrder, 'order_update');
         console.log('💾 Auto-saved all data');
+        
+        // Check onboarding progress
+        checkOnboardingProgress();
       }
       
       // Save before unload (browser close/tab close)
@@ -4764,6 +4984,9 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
 
           // 10. Reset cart and prepare for next customer
           resetCart();
+          
+          // 10b. Check onboarding progress (first invoice created!)
+          checkOnboardingProgress();
 
           // 11. If customer has phone and it's credit mode, offer WhatsApp
           if (creditAmount > 0 && customerPhone && customerPhone.length >= 10) {
