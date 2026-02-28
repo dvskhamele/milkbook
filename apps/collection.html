@@ -547,58 +547,275 @@
         color: #166534;
         font-size: 6px;
       }
-      
-      /* Mobile Optimization for Farmer Cards */
+
+      /* Complete Mobile Optimization - App-like Experience */
       @media (max-width: 768px) {
-        .fcard {
-          padding: 10px;
-          gap: 10px;
-          min-height: 70px;
+        html, body {
+          position: fixed;
+          overflow: hidden;
+          height: 100%;
+          width: 100%;
+          margin: 0;
+          padding: 0;
         }
-        .fimg {
-          width: 50px;
-          height: 50px;
-          font-size: 22px;
+        .app {
+          padding: 0;
+          gap: 0;
+          height: 100vh;
+          width: 100vw;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
         }
-        .fname {
-          font-size: 15px;
+        .topbar {
+          height: 40px;
+          padding: 4px 8px;
+          flex-shrink: 0;
+          background: #fff;
+          border-bottom: 1px solid #e2e8f0;
         }
-        .fsub {
-          font-size: 12px;
+        .panel {
+          border-radius: 0;
+          border: none;
+          border-bottom: 1px solid #e2e8f0;
         }
-        .editFarmerBtn {
-          opacity: 0.5;
-          font-size: 18px;
+        .panelHeader {
+          padding: 8px;
+          flex-shrink: 0;
         }
-        .badge {
+        .panelHeader .searchBox {
+          max-width: none;
+          flex: 1;
+        }
+        .panelHeader #searchInput {
+          font-size: 13px;
+          padding: 6px 8px;
+        }
+        .panelHeader #btnAddFarmerMain {
+          padding: 6px 10px;
+          font-size: 11px;
+        }
+        .panelHeader #farmerCount {
           font-size: 10px;
           padding: 4px 6px;
-          top: 4px;
-          right: 4px;
         }
-      }
-      
-      /* Extra Small Mobile */
-      @media (max-width: 480px) {
+        .panelHeader .today-summary {
+          font-size: 9px;
+          padding: 4px 6px;
+        }
+        .actionBody {
+          flex: 1;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .farmerPick {
+          flex: 1;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .farmerGrid {
+          flex: 1;
+          overflow-y: auto;
+          overflow-x: hidden !important;
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 6px !important;
+          padding: 8px !important;
+        }
         .fcard {
           padding: 8px;
           gap: 6px;
+          min-height: 60px;
         }
         .fimg {
-          width: 40px;
-          height: 40px;
-          font-size: 18px;
+          width: 36px;
+          height: 36px;
+          font-size: 16px;
         }
         .fname {
-          font-size: 13px;
+          font-size: 12px;
         }
         .fsub {
-          font-size: 11px;
+          font-size: 10px;
         }
         .editFarmerBtn {
-          opacity: 0.4;
-          font-size: 16px;
+          font-size: 14px;
+          padding: 2px;
+        }
+        .badge {
+          font-size: 8px;
           padding: 2px 4px;
+        }
+        .inputs {
+          grid-template-columns: 1fr;
+          gap: 8px;
+          padding: 8px;
+          flex-shrink: 0;
+        }
+        .control {
+          min-height: 80px;
+          padding: 8px;
+        }
+        .ctrlTop {
+          font-size: 10px;
+        }
+        .numBig {
+          font-size: 14px;
+        }
+        .numInput {
+          font-size: 20px;
+        }
+        .panel.right-panel {
+          flex: 1;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .trustBody {
+          flex: 1;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .amountBox {
+          flex-shrink: 0;
+        }
+        .recent {
+          flex: 1;
+          overflow-y: auto;
+          overflow-x: hidden !important;
+        }
+        .recent-table {
+          font-size: 11px;
+        }
+        .recent-table th {
+          font-size: 9px;
+          padding: 4px 2px;
+        }
+        .recent-table td {
+          font-size: 10px;
+          padding: 4px 2px;
+        }
+        .bottom {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 8px;
+          background: #fff;
+          border-top: 1px solid #e2e8f0;
+          z-index: 100;
+        }
+        .bottom .panicBtn {
+          font-size: 11px;
+          padding: 10px 12px;
+        }
+        .bottom .subnote {
+          display: none;
+        }
+        body {
+          padding-bottom: 60px;
+        }
+      }
+
+      /* Extra Small Mobile */
+      @media (max-width: 480px) {
+        .topbar {
+          height: 36px;
+          padding: 4px 6px;
+        }
+        .farmerGrid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 4px !important;
+          padding: 4px !important;
+        }
+        .fcard {
+          padding: 6px;
+          gap: 4px;
+          min-height: 50px;
+        }
+        .fimg {
+          width: 30px;
+          height: 30px;
+          font-size: 14px;
+        }
+        .fname {
+          font-size: 11px;
+        }
+        .fsub {
+          font-size: 9px;
+        }
+        .inputs {
+          padding: 6px;
+          gap: 6px;
+        }
+        .control {
+          min-height: 70px;
+          padding: 6px;
+        }
+        .numInput {
+          font-size: 18px;
+        }
+        .bottom {
+          padding: 6px;
+        }
+        .bottom .panicBtn {
+          font-size: 10px;
+          padding: 8px 10px;
+        }
+        body {
+          padding-bottom: 70px;
+        }
+      }
+
+      /* Farmer Detail Modal Mobile */
+      @media (max-width: 768px) {
+        #overlayFarmerDetail .modal {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          height: 100vh !important;
+          max-height: 100vh !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+        }
+        #overlayFarmerDetail .modalHead {
+          padding: 8px !important;
+        }
+        #overlayFarmerDetail .modalBody {
+          padding: 8px !important;
+        }
+        #detailTransactions > div {
+          padding: 8px !important;
+        }
+        .detail-info-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 8px !important;
+        }
+        .detail-info-grid > div {
+          padding: 8px !important;
+        }
+      }
+
+      /* Rate Editor Modal Mobile */
+      @media (max-width: 768px) {
+        #overlayRateEditor .modal {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          height: 100vh !important;
+          max-height: 100vh !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+        }
+        #overlayRateEditor .modalHead {
+          padding: 8px !important;
+        }
+        #overlayRateEditor .modalBody {
+          padding: 8px !important;
+        }
+        #rateTableBody td {
+          font-size: 12px !important;
+          padding: 6px 4px !important;
         }
       }
       .farmerNav {
@@ -1856,17 +2073,19 @@
       <!-- HEADER -->
       <div class="topbar">
         <div class="brand">
-          <div class="logo" style="background: linear-gradient(180deg, #2563eb, #1d4ed8); border-color: #1e40af;">
-            <img src="logo.jpg" alt="M" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;" onerror="this.style.display='none'; this.parentElement.innerHTML='M'">
-          </div>
-          <div>
-            <div class="title" style="font-size: 14px;">MilkRecord</div>
-            <div class="sub" id="todayLabel">—</div>
-          </div>
+          <a href="homepage_landing_recovered.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+            <div class="logo" style="background: linear-gradient(180deg, #2563eb, #1d4ed8); border-color: #1e40af;">
+              <img src="logo.jpg" alt="M" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;" onerror="this.style.display='none'; this.parentElement.innerHTML='M'">
+            </div>
+            <div>
+              <div class="title" style="font-size: 14px;">MilkRecord</div>
+              <div class="sub" id="todayLabel">—</div>
+            </div>
+          </a>
         </div>
         <div class="hdr-actions" style="flex: 1; justify-content: flex-end; display: flex; align-items: center; gap: 8px;">
           <!-- Switch to POS -->
-          <button class="pillbtn primary" onclick="location.href='pos-demo.html'" style="background:#2563eb; border-color:#2563eb; font-size:14px; padding:10px 16px; font-weight:700; cursor: pointer; border: 2px solid #1e40af;">
+          <button class="pillbtn primary" onclick="location.href='dairy-pos-billing-software-india.html'" style="background:#2563eb; border-color:#2563eb; font-size:14px; padding:10px 16px; font-weight:700; cursor: pointer; border: 2px solid #1e40af;">
             🛒 POS
           </button>
 
@@ -1949,18 +2168,17 @@
         <div class="panel">
           <div class="panelHeader">
             <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-              <div id="stationTitle">Milk Intake Station</div>
               <div class="searchBox" style="flex: 1; max-width: 300px;">
                 🔎
                 <input
                   id="searchInput"
                   inputmode="search"
                   autocomplete="off"
-                  placeholder="Search name…"
+                  placeholder="Search farmer…"
                 />
               </div>
               <button class="addNewBtn" id="btnAddFarmerMain" style="padding: 8px 16px; font-size: 13px;" onclick="openOverlay('overlayFarmer'); return false;">
-                ＋ Farmer
+                ➕ Farmer
               </button>
             </div>
             <small id="holdBadge"></small>
@@ -6658,14 +6876,16 @@ function openFarmerDetail(fId) {
     // Balance with clear label - Hinglish for clarity
     const balance = f.balance || 0;
     el("detailBalance").textContent = formatAmount(balance);
-    el("detailBalance").style.color = balance < 0 ? '#16a34a' : '#dc2626'; // Green if we owe, Red if they owe
+    el("detailBalance").style.color = balance < 0 ? '#dc2626' : '#16a34a'; // Red if farmer owes us, Green if we owe farmer
     const balanceLabel = el("detailBalanceLabel");
     if (balance < 0) {
-        balanceLabel.textContent = '⬇️ Humko farmer ko dene hai';
-        balanceLabel.style.color = '#16a34a';
-    } else if (balance > 0) {
+        // Negative balance = We gave advance to farmer = Farmer owes us
         balanceLabel.textContent = '⬆️ Farmer se lena hai';
         balanceLabel.style.color = '#dc2626';
+    } else if (balance > 0) {
+        // Positive balance = Farmer gave us credit = We owe farmer
+        balanceLabel.textContent = '⬇️ Humko farmer ko dene hai';
+        balanceLabel.style.color = '#16a34a';
     } else {
         balanceLabel.textContent = '✅ Settled / Barabar';
         balanceLabel.style.color = '#16a34a';
@@ -6884,37 +7104,66 @@ function sendWishes() {
     showToast('💐 Wishes sent!');
 }
 
-// Load last 5 purchases
+// Load last 5 purchases (includes milk entries + advance transactions)
 function loadLast5Purchases() {
     const f = getFarmerById(selectedFarmerId);
     if (!f) return;
-    
-    const allEntries = entries.filter(e => e.farmerId === f.id);
-    const last5 = allEntries.sort((a, b) => b.createdAt - a.createdAt).slice(0, 5);
-    
+
+    // Get milk entries
+    const milkEntries = entries.filter(e => e.farmerId === f.id).map(e => ({
+        type: 'milk',
+        date: e.createdAt,
+        qty: e.qty,
+        rate: e.rateSnapshot,
+        amount: e.amount,
+        paymentMode: e.paymentMode,
+        description: `${e.qty}L @ ${formatAmount(e.rateSnapshot)}/L`
+    }));
+
+    // Get advance transactions
+    const advanceEntries = (f.advanceHistory || []).map(a => ({
+        type: a.type,
+        date: new Date(a.date).getTime(),
+        amount: a.amount,
+        paymentMode: a.type === 'give' ? 'Advance Given' : 'Advance Cut',
+        description: a.note || (a.type === 'give' ? '➕ Advance Given' : '➖ Advance Cut')
+    }));
+
+    // Combine and sort by date
+    const allTransactions = [...milkEntries, ...advanceEntries].sort((a, b) => b.date - a.date).slice(0, 5);
+
     const container = document.getElementById('last5Purchases');
     if (!container) return;
-    
-    if (last5.length === 0) {
-        container.innerHTML = '<div style="color: #64748b; text-align: center; padding: 20px;">No purchases yet</div>';
+
+    if (allTransactions.length === 0) {
+        container.innerHTML = '<div style="color: #64748b; text-align: center; padding: 20px;">No transactions yet</div>';
         return;
     }
-    
+
     let html = '';
-    last5.forEach((e, i) => {
+    allTransactions.forEach((t, i) => {
+        let icon = t.type === 'milk' ? '🥛' : (t.type === 'give' ? '💰' : '✂️');
+        let color = t.type === 'milk' ? (t.paymentMode === 'Credit' ? '#dc2626' : '#16a34a') : (t.type === 'give' ? '#f59e0b' : '#16a34a');
+        let label = t.type === 'milk' ? (t.paymentMode === 'Credit' ? '📒 Credit' : '💵 Paid') : (t.type === 'give' ? '💰 Advance' : '✂️ Cut');
+
         html += `
-        <div style="display: flex; justify-content: space-between; padding: 8px 0; ${i < last5.length - 1 ? 'border-bottom: 1px solid #e2e8f0' : ''}">
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; ${i < allTransactions.length - 1 ? 'border-bottom: 1px solid #e2e8f0' : ''}">
             <div>
-                <div style="font-weight: 700; font-size: 12px;">${new Date(e.createdAt).toLocaleDateString()}</div>
-                <div style="font-size: 11px; color: #64748b;">${e.qty}L @ ${formatAmount(e.rateSnapshot)}/L</div>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px;">${icon}</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 12px;">${new Date(t.date).toLocaleDateString()}</div>
+                        <div style="font-size: 11px; color: #64748b;">${t.description}</div>
+                    </div>
+                </div>
             </div>
             <div style="text-align: right;">
-                <div style="font-weight: 700; font-size: 12px;">${formatAmount(e.amount)}</div>
-                <div style="font-size: 10px; color: ${e.paymentMode === 'Credit' ? '#dc2626' : '#16a34a'};">${e.paymentMode === 'Credit' ? '📒 Credit' : '💵 Paid'}</div>
+                <div style="font-weight: 700; font-size: 12px; color: ${color};">${formatAmount(t.amount)}</div>
+                <div style="font-size: 10px; color: ${color};">${label}</div>
             </div>
         </div>`;
     });
-    
+
     container.innerHTML = html;
 }
 
