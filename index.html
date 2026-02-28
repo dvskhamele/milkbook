@@ -3680,8 +3680,15 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
 
     // Show/hide navigation buttons based on farmer count
     const farmerNav = el("prevFarmers")?.parentElement;
+    const farmerCountEl = el("farmerCount");
+    
     if (farmerNav) {
       farmerNav.style.display = list.length > FARMERS_PER_PAGE ? 'flex' : 'none';
+    }
+    
+    // Update farmer count display
+    if (farmerCountEl) {
+      farmerCountEl.textContent = `${list.length} 👤`;
     }
 
     const start = farmerPage * FARMERS_PER_PAGE;
@@ -3689,10 +3696,8 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
 
     farmerGrid.innerHTML = "";
 
-    const toShow = [...pageItems];
-    while (toShow.length < FARMERS_PER_PAGE) toShow.push(null);
-
-    toShow.forEach((f, index) => {
+    // Only show actual farmers, no empty slots
+    pageItems.forEach((f) => {
         const card = document.createElement("div");
         card.className = "fcard";
 
@@ -3751,7 +3756,7 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
                 openFarmerTransactions(f.id);
             });
 
-        } else if (index === 0 && farmerSearch && list.length === 0) {
+        } else if (farmerSearch && list.length === 0) {
             // "Add New Farmer" card when search has no results
             card.style.opacity = 1;
             card.style.background = '#f0fdf4';
@@ -3771,17 +3776,6 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
                     el("fPhone").focus();
                 }, 300);
             });
-        } else {
-            // Empty slot
-            card.style.opacity = 0.4;
-            card.innerHTML = `
-                <div class="fimg">➕</div>
-                <div style="min-width:0;">
-                  <div class="fname">Add Farmer</div>
-                  <div class="fsub">Click to create new</div>
-                </div>
-            `;
-            card.addEventListener("click", () => openOverlay("overlayFarmer"));
         }
 
         farmerGrid.appendChild(card);
