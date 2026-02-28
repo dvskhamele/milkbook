@@ -831,7 +831,7 @@
           </button>
 
           <!-- Switch to Collection -->
-          <button class="pillbtn primary" onclick="location.href='collection.html'" style="background:#16a34a; border-color:#16a34a;">
+          <button class="pillbtn primary" onclick="location.href='automated-milk-collection-system-village.html'" style="background:#16a34a; border-color:#16a34a;">
             📊 Collection
           </button>
 
