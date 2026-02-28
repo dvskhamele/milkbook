@@ -448,16 +448,19 @@
       .farmerGrid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 2px;
+        gap: 4px;
 
-        max-height: 200px;
+        max-height: 220px;
         overflow-y: auto;
-        padding-right: 3px;
+        overflow-x: auto;
+        padding: 4px;
 
         position: relative;
         flex: 1 1 auto;
         min-height: 200px;
       }
+      .farmerGrid::-webkit-scrollbar { width: 6px; height: 6px; }
+      .farmerGrid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
       .fcard {
         height: auto;
@@ -3637,27 +3640,36 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
     farmerCount.textContent = `${activeCount} 👤`;
 
     // Debug logging
-    console.log('Farmers:', farmers.length, 'Active:', activeCount);
+    console.log('Farmers:', farmers.length, 'Active:', activeCount, 'Page:', farmerPage);
 
     const list = filterFarmers();
     const maxPage = Math.max(0, Math.ceil(list.length / FARMERS_PER_PAGE) - 1);
     if (farmerPage > maxPage) farmerPage = maxPage;
+    if (farmerPage < 0) farmerPage = 0;
 
     // Show/hide navigation buttons based on farmer count
     const farmerNav = el("prevFarmers")?.parentElement;
     const farmerCountEl = el("farmerCount");
-    
+    const prevBtn = el("prevFarmers");
+    const nextBtn = el("nextFarmers");
+
     if (farmerNav) {
       farmerNav.style.display = list.length > FARMERS_PER_PAGE ? 'flex' : 'none';
     }
-    
+
+    // Update button states
+    if (prevBtn) prevBtn.disabled = farmerPage <= 0;
+    if (nextBtn) nextBtn.disabled = farmerPage >= maxPage;
+
     // Update farmer count display
     if (farmerCountEl) {
-      farmerCountEl.textContent = `${list.length} 👤`;
+      farmerCountEl.textContent = `${list.length} 👤 Page ${farmerPage + 1}/${maxPage + 1}`;
     }
 
     const start = farmerPage * FARMERS_PER_PAGE;
     const pageItems = list.slice(start, start + FARMERS_PER_PAGE);
+
+    console.log('Rendering farmers:', pageItems.length, 'from index', start);
 
     farmerGrid.innerHTML = "";
 
@@ -5529,12 +5541,30 @@ function showAuditProof(entryId) {
         farmerPage = 0;
         renderFarmers();
 
-        // Paging
+        // Paging with bounds checking
         const prevFarmers = el("prevFarmers");
-        if (prevFarmers) prevFarmers.onclick = () => { farmerPage--; renderFarmers(); };
-        
+        if (prevFarmers) {
+          prevFarmers.onclick = () => {
+            const list = filterFarmers();
+            const maxPage = Math.max(0, Math.ceil(list.length / FARMERS_PER_PAGE) - 1);
+            if (farmerPage > 0) {
+              farmerPage--;
+              renderFarmers();
+            }
+          };
+        }
+
         const nextFarmers = el("nextFarmers");
-        if (nextFarmers) nextFarmers.onclick = () => { farmerPage++; renderFarmers(); };
+        if (nextFarmers) {
+          nextFarmers.onclick = () => {
+            const list = filterFarmers();
+            const maxPage = Math.max(0, Math.ceil(list.length / FARMERS_PER_PAGE) - 1);
+            if (farmerPage < maxPage) {
+              farmerPage++;
+              renderFarmers();
+            }
+          };
+        }
 
         // Manual rate override
         const manualRateApply = el("manualRateApply");
