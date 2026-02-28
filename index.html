@@ -4075,6 +4075,23 @@ function selectFarmerAnimal(type) {
     selectedBtn.style.background = '#dbeafe';
     selectedBtn.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.2)';
   }
+  
+  // Add Enter key support to move to next field (Balance)
+  ['fAnimalCow', 'fAnimalBuffalo', 'fAnimalBoth'].forEach(id => {
+    const btn = el(id);
+    if (btn) {
+      btn.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const balanceInput = el("fBalance");
+          if (balanceInput) {
+            balanceInput.focus();
+            balanceInput.select();
+          }
+        }
+      };
+    }
+  });
 }
 
 // Pill par rate dikhane ke liye

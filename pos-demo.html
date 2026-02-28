@@ -1093,8 +1093,11 @@
                   <option value="L"><option value="ml"><option value="kg"><option value="g"><option value="pcs"><option value="box"><option value="packet"><option value="bottle">
                 </datalist>
               </div>
-                <input type="text" id="pEmoji" placeholder="Emoji (🥛, 🧀)" value="📦" onkeydown="handleProductFieldEnter(event)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size: 14px; box-sizing:border-box;" />
-                <a id="emojiComboLink" href="https://emojicombos.com/" target="_blank" style="font-size:11px; color:#3b82f6; text-decoration:none; display:block; margin-top:4px;">🔗 Copy emojis from EmojiCombos</a>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <input type="text" id="pEmoji" placeholder="Emoji (🥛, 🧀)" value="📦" onkeydown="handleProductFieldEnter(event)" style="flex: 1; padding: 12px; border-radius: 10px; border: 2px solid #3b82f6; font-weight: 700; font-size: 14px; box-sizing: border-box;" />
+                  <button type="button" onclick="openEmojiPicker()" style="padding: 12px 16px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #3b82f6; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 18px; transition: all 0.2s;" title="Choose Emoji">🎭</button>
+                </div>
+                <div style="font-size: 10px; color: #64748b; margin-top: 4px;">💡 Click 🎭 to browse dairy emojis or type to search</div>
 
                 <!-- Quantity per Click Section -->
                 <div style="background:#f8fafc; padding:16px; border-radius:10px; border:1px solid var(--line);">
@@ -1128,6 +1131,32 @@
             <div style="position: sticky; bottom: 0; background: white; border-top: 2px solid #e2e8f0; padding: 12px 20px; display: flex; gap: 8px;">
               <button type="button" onclick="closeModal('addProductModal')" style="flex: 1; padding: 12px; background: #f1f5f9; color: #64748b; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;">❌ Cancel</button>
               <button type="submit" form="addProductForm" style="flex: 2; padding: 12px; background: #16a34a; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;">✅ Create Product</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emoji Picker Modal -->
+    <div class="overlay" id="emojiPickerModal">
+        <div class="modal" style="width: 90vw !important; max-width: 600px !important; height: auto !important; max-height: 80vh !important; overflow-y: auto !important;">
+            <div class="panelHeader">
+                <span>🎭 Choose Dairy Emoji</span>
+                <button onclick="closeModal('emojiPickerModal')" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">✖</button>
+            </div>
+            
+            <!-- Search Bar -->
+            <div style="padding: 16px; border-bottom: 2px solid #e2e8f0;">
+                <input type="text" id="emojiSearchInput" placeholder="🔍 Search emojis (milk, paneer, tea, coffee...)" oninput="filterEmojis()" style="width: 100%; padding: 12px; border: 2px solid #3b82f6; border-radius: 10px; font-weight: 700; font-size: 14px; box-sizing: border-box;" />
+            </div>
+            
+            <!-- Emoji Grid -->
+            <div id="emojiGrid" style="padding: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; max-height: 50vh; overflow-y: auto;">
+                <!-- Emojis will be loaded here -->
+            </div>
+            
+            <!-- Last Selected -->
+            <div id="lastSelectedEmoji" style="padding: 12px 16px; background: #f0f9ff; border-top: 2px solid #3b82f6; display: none;">
+                <div style="font-size: 11px; font-weight: 700; color: #1e40af; margin-bottom: 6px;">📌 Last Selected:</div>
+                <button id="lastEmojiBtn" onclick="useLastEmoji()" style="font-size: 24px; padding: 8px 16px; background: white; border: 2px solid #3b82f6; border-radius: 8px; cursor: pointer;"></button>
             </div>
         </div>
     </div>
@@ -5451,6 +5480,331 @@ function suggestQuantitiesForUnit() {
       tipDiv.style.background = '#eff6ff';
       tipDiv.style.borderColor = '#3b82f6';
     }, 1000);
+  }
+}
+
+// Dairy Emoji Picker Functions
+let lastSelectedEmoji = '📦';
+let allDairyEmojis = [];
+
+// Initialize dairy emojis
+function initDairyEmojis() {
+  allDairyEmojis = [
+    { emoji: '🥛', keywords: ['milk', 'glass', 'drink', 'dairy'] },
+    { emoji: '🧀', keywords: ['cheese', 'paneer', 'dairy'] },
+    { emoji: '🧈', keywords: ['butter', 'ghee', 'dairy'] },
+    { emoji: '🍦', keywords: ['ice cream', 'dessert', 'dairy'] },
+    { emoji: '🧁', keywords: ['cupcake', 'cake', 'bakery'] },
+    { emoji: '🍰', keywords: ['cake', 'slice', 'bakery'] },
+    { emoji: '🎂', keywords: ['birthday', 'cake', 'bakery'] },
+    { emoji: '🥐', keywords: ['croissant', 'bakery', 'bread'] },
+    { emoji: '🥖', keywords: ['bread', 'baguette', 'bakery'] },
+    { emoji: '🍞', keywords: ['bread', 'loaf', 'bakery'] },
+    { emoji: '🥞', keywords: ['pancakes', 'breakfast', 'dairy'] },
+    { emoji: '🥚', keywords: ['egg', 'breakfast', 'protein'] },
+    { emoji: '☕', keywords: ['coffee', 'hot', 'beverage', 'cafe'] },
+    { emoji: '🍵', keywords: ['tea', 'green', 'beverage', 'chai'] },
+    { emoji: '🧃', keywords: ['juice', 'beverage', 'drink'] },
+    { emoji: '🥤', keywords: ['soda', 'drink', 'beverage'] },
+    { emoji: '🍼', keywords: ['baby', 'bottle', 'milk'] },
+    { emoji: '🐄', keywords: ['cow', 'cattle', 'milk', 'dairy'] },
+    { emoji: '🐃', keywords: ['buffalo', 'water buffalo', 'milk'] },
+    { emoji: '🐮', keywords: ['cow face', 'cattle', 'milk'] },
+    { emoji: '🐐', keywords: ['goat', 'milk', 'animal'] },
+    { emoji: '🍕', keywords: ['pizza', 'cheese', 'food'] },
+    { emoji: '🥣', keywords: ['bowl', 'curd', 'yogurt', 'breakfast'] },
+    { emoji: '🏪', keywords: ['store', 'shop', 'convenience'] },
+    { emoji: '🛒', keywords: ['cart', 'shopping', 'trolley'] },
+    { emoji: '💰', keywords: ['money', 'cash', 'payment'] },
+    { emoji: '📦', keywords: ['package', 'box', 'parcel', 'default'] },
+    { emoji: '⚖️', keywords: ['scale', 'weight', 'measure'] },
+    { emoji: '✨', keywords: ['sparkles', 'fresh', 'new'] },
+    { emoji: '⭐', keywords: ['star', 'favorite', 'rating'] },
+    { emoji: '✅', keywords: ['check', 'done', 'complete'] },
+    { emoji: '📋', keywords: ['clipboard', 'list', 'order'] },
+    { emoji: '📝', keywords: ['memo', 'note', 'edit'] },
+    { emoji: '✏️', keywords: ['pencil', 'edit', 'write'] },
+    { emoji: '🔥', keywords: ['fire', 'hot', 'trending'] },
+    { emoji: '❄️', keywords: ['snowflake', 'cold', 'frozen'] },
+  ];
+  allDairyEmojis.sort((a, b) => {
+    const dairy = ['milk', 'dairy', 'cheese', 'paneer', 'butter', 'ghee', 'curd', 'cow', 'buffalo'];
+    const aIs = dairy.some(k => a.keywords.some(kw => kw.includes(k)));
+    const bIs = dairy.some(k => b.keywords.some(kw => kw.includes(k)));
+    if (aIs && !bIs) return -1;
+    if (!aIs && bIs) return 1;
+    return 0;
+  });
+}
+
+function openEmojiPicker() {
+  initDairyEmojis();
+  renderEmojis(allDairyEmojis);
+  openModal('emojiPickerModal');
+  document.getElementById('emojiSearchInput').focus();
+}
+
+function renderEmojis(emojis) {
+  const grid = document.getElementById('emojiGrid');
+  if (!grid) return;
+  grid.innerHTML = emojis.map(item => `<button onclick="selectEmoji('${item.emoji}')" style="font-size:32px;padding:8px;background:white;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;" onmouseover="this.style.borderColor='#3b82f6';this.style.transform='scale(1.1)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.transform='scale(1)'" title="${item.keywords.join(', ')}">${item.emoji}</button>`).join('');
+  const lastDiv = document.getElementById('lastSelectedEmoji');
+  const lastBtn = document.getElementById('lastEmojiBtn');
+  if (lastDiv && lastBtn) {
+    if (lastSelectedEmoji && lastSelectedEmoji !== '📦') {
+      lastDiv.style.display = 'block';
+      lastBtn.textContent = lastSelectedEmoji;
+    } else {
+      lastDiv.style.display = 'none';
+    }
+  }
+}
+
+function filterEmojis() {
+  const query = document.getElementById('emojiSearchInput').value.toLowerCase().trim();
+  if (!query) { renderEmojis(allDairyEmojis); return; }
+  const filtered = allDairyEmojis.filter(item => item.keywords.some(k => k.includes(query)));
+  if (filtered.length === 0) {
+    const lastDiv = document.getElementById('lastSelectedEmoji');
+    if (lastDiv) lastDiv.style.display = 'block';
+  }
+  renderEmojis(filtered);
+}
+
+function selectEmoji(emoji) {
+  lastSelectedEmoji = emoji;
+  const emojiInput = document.getElementById('pEmoji');
+  if (emojiInput) {
+    emojiInput.value = emoji;
+    emojiInput.style.borderColor = '#16a34a';
+    emojiInput.style.background = '#f0fdf4';
+    setTimeout(() => { emojiInput.style.borderColor = '#3b82f6'; emojiInput.style.background = 'white'; }, 500);
+  }
+  closeModal('emojiPickerModal');
+  showToast(`✅ Emoji ${emoji} selected!`);
+}
+
+function useLastEmoji() {
+  if (lastSelectedEmoji) selectEmoji(lastSelectedEmoji);
+}
+
+// Dairy Emoji Picker Functions
+let lastSelectedEmoji = '📦';
+let allDairyEmojis = [];
+
+// Initialize dairy emojis
+function initDairyEmojis() {
+  allDairyEmojis = [
+    // Milk & Dairy Products
+    { emoji: '🥛', keywords: ['milk', 'glass', 'drink', 'dairy'] },
+    { emoji: '🧀', keywords: ['cheese', 'paneer', 'dairy'] },
+    { emoji: '🧈', keywords: ['butter', 'ghee', 'dairy'] },
+    { emoji: '🍦', keywords: ['ice cream', 'soft serve', 'dessert', 'dairy'] },
+    { emoji: '🍨', keywords: ['ice cream', 'dessert', 'dairy'] },
+    { emoji: '🧁', keywords: ['cupcake', 'cake', 'bakery', 'dairy'] },
+    { emoji: '🍰', keywords: ['cake', 'slice', 'bakery', 'dairy'] },
+    { emoji: '🎂', keywords: ['birthday', 'cake', 'bakery', 'dairy'] },
+    { emoji: '🥧', keywords: ['pie', 'bakery', 'dessert'] },
+    { emoji: '🍩', keywords: ['donut', 'bakery', 'sweet'] },
+    { emoji: '🍪', keywords: ['cookie', 'biscuit', 'bakery'] },
+    { emoji: '🥐', keywords: ['croissant', 'bakery', 'bread'] },
+    { emoji: '🥯', keywords: ['bagel', 'bakery', 'bread'] },
+    { emoji: '🥖', keywords: ['bread', 'baguette', 'bakery'] },
+    { emoji: '🍞', keywords: ['bread', 'loaf', 'bakery'] },
+    { emoji: '🥞', keywords: ['pancakes', 'breakfast', 'dairy'] },
+    { emoji: '🧇', keywords: ['waffle', 'breakfast', 'dairy'] },
+    { emoji: '🍳', keywords: ['cooking', 'egg', 'breakfast'] },
+    { emoji: '🥚', keywords: ['egg', 'breakfast', 'protein'] },
+    
+    // Beverages
+    { emoji: '☕', keywords: ['coffee', 'hot', 'beverage', 'cafe'] },
+    { emoji: '🍵', keywords: ['tea', 'green', 'beverage', 'chai'] },
+    { emoji: '🧃', keywords: ['juice', 'beverage', 'drink'] },
+    { emoji: '🥤', keywords: ['soda', 'drink', 'beverage'] },
+    { emoji: '🧉', keywords: ['mate', 'tea', 'beverage'] },
+    { emoji: '🥛', keywords: ['milk', 'glass', 'drink'] },
+    { emoji: '🍼', keywords: ['baby', 'bottle', 'milk', 'feed'] },
+    
+    // Animals (Dairy Sources)
+    { emoji: '🐄', keywords: ['cow', 'cattle', 'milk', 'dairy'] },
+    { emoji: '🐂', keywords: ['ox', 'bull', 'cattle'] },
+    { emoji: '🐃', keywords: ['buffalo', 'water buffalo', 'milk'] },
+    { emoji: '🐮', keywords: ['cow face', 'cattle', 'milk'] },
+    { emoji: '🐐', keywords: ['goat', 'milk', 'animal'] },
+    { emoji: '🐑', keywords: ['sheep', 'wool', 'animal'] },
+    { emoji: '🐪', keywords: ['camel', 'desert', 'milk'] },
+    
+    // Food Items
+    { emoji: '🍕', keywords: ['pizza', 'cheese', 'food'] },
+    { emoji: '🍔', keywords: ['burger', 'hamburger', 'food'] },
+    { emoji: '🍟', keywords: ['fries', 'potato', 'food'] },
+    { emoji: '🌮', keywords: ['taco', 'mexican', 'food'] },
+    { emoji: '🌯', keywords: ['burrito', 'wrap', 'food'] },
+    { emoji: '🥗', keywords: ['salad', 'healthy', 'food'] },
+    { emoji: '🍜', keywords: ['noodles', 'ramen', 'food'] },
+    { emoji: '🍝', keywords: ['pasta', 'spaghetti', 'food'] },
+    { emoji: '🍛', keywords: ['curry', 'rice', 'food'] },
+    { emoji: '🍚', keywords: ['rice', 'food', 'grain'] },
+    { emoji: '🥘', keywords: ['paella', 'food', 'pan'] },
+    { emoji: '🍲', keywords: ['stew', 'pot', 'food'] },
+    { emoji: '🥣', keywords: ['bowl', 'curd', 'yogurt', 'breakfast'] },
+    { emoji: '🥄', keywords: ['spoon', 'utensil'] },
+    { emoji: '🍴', keywords: ['fork', 'knife', 'cutlery'] },
+    
+    // Shopping & Store
+    { emoji: '🏪', keywords: ['store', 'shop', 'convenience'] },
+    { emoji: '🏬', keywords: ['department', 'store', 'building'] },
+    { emoji: '🛒', keywords: ['cart', 'shopping', 'trolley'] },
+    { emoji: '🛍️', keywords: ['bags', 'shopping', 'purchase'] },
+    { emoji: '💰', keywords: ['money', 'cash', 'payment'] },
+    { emoji: '💳', keywords: ['card', 'credit', 'payment'] },
+    { emoji: '🏷️', keywords: ['tag', 'label', 'price'] },
+    { emoji: '📦', keywords: ['package', 'box', 'parcel', 'default'] },
+    
+    // Quantities & Units
+    { emoji: '⚖️', keywords: ['scale', 'weight', 'measure'] },
+    { emoji: '📏', keywords: ['ruler', 'measure', 'length'] },
+    { emoji: '📐', keywords: ['ruler', 'triangle', 'measure'] },
+    { emoji: '🔢', keywords: ['numbers', 'count', 'quantity'] },
+    { emoji: '💯', keywords: ['hundred', 'score', 'full'] },
+    
+    // Time & Fresh
+    { emoji: '⏰', keywords: ['alarm', 'clock', 'time'] },
+    { emoji: '🕐', keywords: ['clock', 'time', 'one'] },
+    { emoji: '📅', keywords: ['calendar', 'date', 'schedule'] },
+    { emoji: '🌅', keywords: ['sunrise', 'morning', 'fresh'] },
+    { emoji: '✨', keywords: ['sparkles', 'fresh', 'new'] },
+    { emoji: '💎', keywords: ['diamond', 'premium', 'quality'] },
+    { emoji: '🏆', keywords: ['trophy', 'winner', 'best'] },
+    { emoji: '⭐', keywords: ['star', 'favorite', 'rating'] },
+    { emoji: '🌟', keywords: ['star', 'glow', 'special'] },
+    
+    // Actions
+    { emoji: '✅', keywords: ['check', 'done', 'complete'] },
+    { emoji: '❌', keywords: ['cross', 'cancel', 'no'] },
+    { emoji: '➕', keywords: ['plus', 'add', 'increase'] },
+    { emoji: '➖', keywords: ['minus', 'subtract', 'decrease'] },
+    { emoji: '✖️', keywords: ['multiply', 'times'] },
+    { emoji: '➗', keywords: ['divide', 'division'] },
+    { emoji: '🔄', keywords: ['refresh', 'repeat', 'cycle'] },
+    { emoji: '🔁', keywords: ['repeat', 'loop'] },
+    { emoji: '📋', keywords: ['clipboard', 'list', 'order'] },
+    { emoji: '📝', keywords: ['memo', 'note', 'edit'] },
+    { emoji: '✏️', keywords: ['pencil', 'edit', 'write'] },
+    { emoji: '🖊️', keywords: ['pen', 'write'] },
+    
+    // Notifications
+    { emoji: '🔔', keywords: ['bell', 'notification', 'alert'] },
+    { emoji: '📢', keywords: ['loudspeaker', 'announcement'] },
+    { emoji: '📣', keywords: ['megaphone', 'cheering'] },
+    { emoji: '💬', keywords: ['speech', 'chat', 'message'] },
+    { emoji: '💡', keywords: ['idea', 'light', 'tip'] },
+    { emoji: '🔥', keywords: ['fire', 'hot', 'trending'] },
+    { emoji: '❄️', keywords: ['snowflake', 'cold', 'frozen'] },
+    { emoji: '🌡️', keywords: ['thermometer', 'temperature'] },
+    
+    // Indian Specific
+    { emoji: '🇮🇳', keywords: ['india', 'flag', 'indian'] },
+    { emoji: '🪔', keywords: ['diya', 'lamp', 'indian'] },
+    { emoji: '🕉️', keywords: ['om', 'hindu', 'indian'] },
+    { emoji: '☸️', keywords: ['wheel', 'dharma', 'indian'] },
+    { emoji: '📿', keywords: ['prayer', 'beads', 'indian'] },
+  ];
+  
+  // Sort by relevance (dairy items first)
+  allDairyEmojis.sort((a, b) => {
+    const dairyKeywords = ['milk', 'dairy', 'cheese', 'paneer', 'butter', 'ghee', 'curd', 'yogurt', 'cow', 'buffalo'];
+    const aIsDairy = dairyKeywords.some(k => a.keywords.some(kw => kw.includes(k)));
+    const bIsDairy = dairyKeywords.some(k => b.keywords.some(kw => kw.includes(k)));
+    if (aIsDairy && !bIsDairy) return -1;
+    if (!aIsDairy && bIsDairy) return 1;
+    return 0;
+  });
+}
+
+// Open emoji picker
+function openEmojiPicker() {
+  initDairyEmojis();
+  renderEmojis(allDairyEmojis);
+  openModal('emojiPickerModal');
+  document.getElementById('emojiSearchInput').focus();
+}
+
+// Render emojis in grid
+function renderEmojis(emojis) {
+  const grid = document.getElementById('emojiGrid');
+  if (!grid) return;
+  
+  grid.innerHTML = emojis.map(item => `
+    <button onclick="selectEmoji('${item.emoji}')" 
+            style="font-size: 32px; padding: 8px; background: white; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;"
+            onmouseover="this.style.borderColor='#3b82f6'; this.style.transform='scale(1.1)'"
+            onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='scale(1)'"
+            title="${item.keywords.join(', ')}">
+      ${item.emoji}
+    </button>
+  `).join('');
+  
+  // Show/hide last selected
+  const lastDiv = document.getElementById('lastSelectedEmoji');
+  const lastBtn = document.getElementById('lastEmojiBtn');
+  if (lastDiv && lastBtn) {
+    if (lastSelectedEmoji && lastSelectedEmoji !== '📦') {
+      lastDiv.style.display = 'block';
+      lastBtn.textContent = lastSelectedEmoji;
+    } else {
+      lastDiv.style.display = 'none';
+    }
+  }
+}
+
+// Filter emojis by search
+function filterEmojis() {
+  const query = document.getElementById('emojiSearchInput').value.toLowerCase().trim();
+  
+  if (!query) {
+    renderEmojis(allDairyEmojis);
+    return;
+  }
+  
+  const filtered = allDairyEmojis.filter(item => 
+    item.keywords.some(keyword => keyword.includes(query)) ||
+    item.emoji.includes(query)
+  );
+  
+  if (filtered.length === 0) {
+    // Show last matched/selected if no results
+    const lastDiv = document.getElementById('lastSelectedEmoji');
+    if (lastDiv) lastDiv.style.display = 'block';
+  }
+  
+  renderEmojis(filtered);
+}
+
+// Select emoji
+function selectEmoji(emoji) {
+  lastSelectedEmoji = emoji;
+  
+  // Set emoji in product form
+  const emojiInput = document.getElementById('pEmoji');
+  if (emojiInput) {
+    emojiInput.value = emoji;
+    emojiInput.style.borderColor = '#16a34a';
+    emojiInput.style.background = '#f0fdf4';
+    setTimeout(() => {
+      emojiInput.style.borderColor = '#3b82f6';
+      emojiInput.style.background = 'white';
+    }, 500);
+  }
+  
+  closeModal('emojiPickerModal');
+  showToast(`✅ Emoji ${emoji} selected!`);
+}
+
+// Use last selected emoji
+function useLastEmoji() {
+  if (lastSelectedEmoji) {
+    selectEmoji(lastSelectedEmoji);
   }
 }
 
