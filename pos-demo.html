@@ -1011,20 +1011,6 @@
                 <input type="email" id="newEmail" placeholder="✉️ Email (optional)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
                 <input type="text" id="newAddress" placeholder="📍 Address (optional)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
 
-                <!-- Unit Selection with Suggestions -->
-                <div style="position:relative;">
-                  <input type="text" id="newUnit" placeholder="Unit (L/kg/g/ml)" list="unitSuggestions" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000; width:100%; box-sizing:border-box;">
-                  <datalist id="unitSuggestions">
-                    <option value="L">
-                    <option value="ml">
-                    <option value="kg">
-                    <option value="g">
-                    <option value="pcs">
-                    <option value="box">
-                  </datalist>
-                  <a href="https://emojicombos.com/unit-measurement" target="_blank" style="font-size:11px; color:#3b82f6; text-decoration:none; display:block; margin-top:4px;">🔗 Get unit emojis</a>
-                </div>
-
                 <button class="add-btn" style="padding:14px; background:var(--blue); color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-size:15px;" onclick="addNewCustomer()">➕ Add Customer</button>
             </div>
             <!-- Fixed Bottom Actions -->
@@ -2432,9 +2418,15 @@
               <strong>Grand Total: ${formatINR(total)}</strong>
             </div>
             <div class="payment">
-              <div><strong>Amount Paid:</strong> ${formatINR(paymentAmount)}</div>
-              ${creditAmount > 0 ? `<div style="margin-top: 8px;"><strong>Credit (Udhar):</strong> ${formatINR(creditAmount)}</div>` : ''}
-              ${creditAmount > 0 ? `<div style="margin-top: 8px; color: #c00;"><strong>Balance Due:</strong> ${formatINR(creditAmount)}</div>` : ''}
+              ${paymentMode === 'Credit' || paymentMode === 'Udhar' ? `
+                <div><strong>Amount Paid:</strong> ₹0.00</div>
+                <div style="margin-top: 8px; color: #dc2626;"><strong>Credit (Udhar):</strong> ${formatINR(creditAmount)}</div>
+                <div style="margin-top: 8px; color: #dc2626;"><strong>Balance Due:</strong> ${formatINR(creditAmount)}</div>
+              ` : `
+                <div><strong>Amount Paid:</strong> ${formatINR(paymentAmount)}</div>
+                ${creditAmount > 0 ? `<div style="margin-top: 8px;"><strong>Credit (Udhar):</strong> ${formatINR(creditAmount)}</div>` : ''}
+                ${creditAmount > 0 ? `<div style="margin-top: 8px; color: #dc2626;"><strong>Balance Due:</strong> ${formatINR(creditAmount)}</div>` : ''}
+              `}
             </div>
             <div class="footer">
               <p style="font-size: 12px; margin: 8px 0;"><strong>Terms & Conditions:</strong></p>
