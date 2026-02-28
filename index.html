@@ -101,16 +101,16 @@
         min-width: 80px;
       }
       .logo {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         background: linear-gradient(180deg, #2563eb, #1d4ed8);
         border: 2px solid #1e40af;
         font-weight: 1000;
-        font-size: 18px;
+        font-size: 24px;
         box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
       }
       .brand .title {
@@ -2009,17 +2009,17 @@
         <div class="panel">
           <div class="panelHeader">
             <!-- Summary Info Row - ALL in ONE row: Calc | Cow/Buff | OLD | NEW -->
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 8px; background: #f8fafc; padding: 4px 6px; border-radius: 4px; white-space: nowrap;">
-              <div id="summaryCalcText" style="color: #64748b; font-weight: 700;">0.0L×₹0.00/L(F:0.0%)</div>
-              <div style="display: flex; gap: 4px; color: #64748b; font-weight: 700;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; white-space: nowrap;">
+              <div id="summaryCalcText" style="color: #64748b; font-weight: 800; font-size: 12px;">0.0L×₹0.00/L(F:0.0%)</div>
+              <div style="display: flex; gap: 6px; color: #64748b; font-weight: 800; font-size: 12px;">
                 <span style="color: #16a34a;">🐄<span id="cowQtyInline">0.0</span></span>
                 <span style="color: #dc2626;">🐃<span id="buffQtyInline">0.0</span></span>
               </div>
-              <div style="display: flex; gap: 4px;">
-                <span style="color: #64748b; font-weight: 700;">OLD:</span>
-                <span id="balBefore" style="font-weight: 900; color: #0f172a;"></span>
-                <span style="color: #64748b; font-weight: 700; margin-left: 4px;">NEW:</span>
-                <span id="balAfter" style="font-weight: 900; color: #16a34a;"></span>
+              <div style="display: flex; gap: 6px;">
+                <span style="color: #64748b; font-weight: 800; font-size: 11px;">OLD:</span>
+                <span id="balBefore" style="font-weight: 900; color: #0f172a; font-size: 12px;"></span>
+                <span style="color: #64748b; font-weight: 800; font-size: 11px; margin-left: 6px;">NEW:</span>
+                <span id="balAfter" style="font-weight: 900; color: #16a34a; font-size: 12px;"></span>
               </div>
             </div>
           </div>
@@ -2393,6 +2393,34 @@
                 <div style="font-weight: 700; font-size: 13px; padding: 10px; background: #fff; border: 2px solid #3b82f6; border-radius: 8px;" id="formulaPreview">
                   —
                 </div>
+              </div>
+              
+              <!-- Shop Payment Details Section -->
+              <div class="field full" style="padding: 10px; background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; margin: 16px 0 8px;">
+                <label style="font-size: 13px; font-weight: 800; color: #1e40af; display: block; margin-bottom: 8px;">💳 Shop Payment Details (For Invoices & WhatsApp)</label>
+              </div>
+              <div class="field full">
+                <label>📱 Shop UPI ID / VPA</label>
+                <input id="setShopUPI" type="text" placeholder="e.g., 9876543210@paytm or mobile@upi" style="font-weight: 700;" />
+              </div>
+              <div class="field full">
+                <label>🏦 Shop Bank Name</label>
+                <input id="setShopBank" type="text" placeholder="e.g., State Bank of India" style="font-weight: 700;" />
+              </div>
+              <div class="field">
+                <label>🔢 Shop Account Number</label>
+                <input id="setShopAccount" type="text" placeholder="Account number" style="font-weight: 700;" />
+              </div>
+              <div class="field">
+                <label>🔑 Shop IFSC Code</label>
+                <input id="setShopIFSC" type="text" placeholder="e.g., SBIN0001234" style="font-weight: 700; text-transform: uppercase;" />
+              </div>
+              <div class="field full">
+                <label>👤 Shop Account Holder Name</label>
+                <input id="setShopAccountName" type="text" placeholder="Name as per bank records" style="font-weight: 700;" />
+              </div>
+              <div class="field full" style="padding: 8px; background: #dbeafe; border-radius: 6px; border-left: 3px solid #3b82f6;">
+                <p style="font-size: 11px; color: #1e40af; margin: 0; font-weight: 600;">💡 These payment details will appear on all invoices and WhatsApp messages for easy customer payments</p>
               </div>
             </div>
           </div>
@@ -5124,6 +5152,14 @@ function showAuditProof(entryId) {
             if (el("setFatStep")) el("setFatStep").value = settings.fatStep || 0.1;
             if (el("setSnfStep")) el("setSnfStep").value = settings.snfStep || 0.1;
             if (el("setSessionHour")) el("setSessionHour").value = settings.sessionSwitchHour || 4;
+            
+            // Load shop payment details from localStorage
+            if (el("setShopUPI")) el("setShopUPI").value = localStorage.getItem('milkbook_shop_upi') || '';
+            if (el("setShopBank")) el("setShopBank").value = localStorage.getItem('milkbook_shop_bank') || '';
+            if (el("setShopAccount")) el("setShopAccount").value = localStorage.getItem('milkbook_shop_account') || '';
+            if (el("setShopIFSC")) el("setShopIFSC").value = localStorage.getItem('milkbook_shop_ifsc') || '';
+            if (el("setShopAccountName")) el("setShopAccountName").value = localStorage.getItem('milkbook_shop_account_name') || '';
+            
             updateFormulaPreview();
             updateLivePreview();
           }
@@ -5361,7 +5397,20 @@ function showAuditProof(entryId) {
           settings.fatStep = Number(el("setFatStep").value) || settings.fatStep;
           settings.snfStep = Number(el("setSnfStep").value) || settings.snfStep;
           settings.sessionSwitchHour = Number(el("setSessionHour").value) || settings.sessionSwitchHour;
+
+          // Save shop payment details to localStorage
+          const shopUPI = el("setShopUPI") ? el("setShopUPI").value.trim().toLowerCase() : '';
+          const shopBank = el("setShopBank") ? el("setShopBank").value.trim() : '';
+          const shopAccount = el("setShopAccount") ? el("setShopAccount").value.trim() : '';
+          const shopIFSC = el("setShopIFSC") ? el("setShopIFSC").value.trim().toUpperCase() : '';
+          const shopAccountName = el("setShopAccountName") ? el("setShopAccountName").value.trim() : '';
           
+          if (shopUPI) localStorage.setItem('milkbook_shop_upi', shopUPI);
+          if (shopBank) localStorage.setItem('milkbook_shop_bank', shopBank);
+          if (shopAccount) localStorage.setItem('milkbook_shop_account', shopAccount);
+          if (shopIFSC) localStorage.setItem('milkbook_shop_ifsc', shopIFSC);
+          if (shopAccountName) localStorage.setItem('milkbook_shop_account_name', shopAccountName);
+
           saveSettings(settings);
           
           // REAL-TIME UPDATE EVERYWHERE
