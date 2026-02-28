@@ -2683,6 +2683,31 @@
                 <option value="0">⛔ Inactive</option>
               </select>
             </div>
+            
+            <!-- Payment Details Section -->
+            <div style="grid-column: 1 / -1; padding: 16px 8px 8px; margin-top: 16px; border-top: 3px dashed #3b82f6; background: #eff6ff; border-radius: 8px;">
+              <label style="font-size: 12px; color: #1e40af; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px;">💳 Payment Details (For UPI/Account Payments)</label>
+            </div>
+            <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📱 UPI ID / VPA</label>
+              <input id="fUPI" type="text" autocomplete="off" placeholder="e.g., 9876543210@paytm or mobile@upi" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box;" />
+            </div>
+            <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🏦 Bank Name</label>
+              <input id="fBankName" type="text" autocomplete="off" placeholder="e.g., State Bank of India" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box;" />
+            </div>
+            <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🔢 Account Number</label>
+              <input id="fAccountNo" type="text" inputmode="numeric" autocomplete="off" placeholder="Account number" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box;" />
+            </div>
+            <div class="field" style="padding: 8px;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🔑 IFSC Code</label>
+              <input id="fIFSC" type="text" inputmode="text" autocomplete="off" placeholder="e.g., SBIN0001234" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; text-transform: uppercase;" />
+            </div>
+            <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
+              <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">👤 Account Holder Name</label>
+              <input id="fAccountName" type="text" autocomplete="name" placeholder="Name as per bank records" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box;" />
+            </div>
           </div>
         </div>
 
@@ -4655,6 +4680,10 @@ function printCollectionBill(entry) {
     };
 
     const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+    const shopUPI = localStorage.getItem('milkbook_shop_upi') || '';
+    const shopBankName = localStorage.getItem('milkbook_shop_bank') || '';
+    const shopAccountNo = localStorage.getItem('milkbook_shop_account') || '';
+    const shopIFSC = localStorage.getItem('milkbook_shop_ifsc') || '';
 
     const billHTML = `
 <!DOCTYPE html>
@@ -4730,6 +4759,16 @@ ${entry.paymentMode === 'Cash' ? '💵 Cash' : entry.paymentMode === 'UPI' ? '�
             <span>NEW BALANCE:</span>
             <span>${formatAmt(farmer.balance || 0)}</span>
         </div>
+
+        ${shopUPI || shopBankName ? `
+        <div style="margin-top: 15px; padding: 12px; background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 8px;">
+            <div style="font-weight: 700; color: #1e40af; margin-bottom: 8px; font-size: 13px;">💳 Payment Details (For UPI/Account)</div>
+            ${shopUPI ? `<div style="font-size: 12px; color: #1e40af;"><strong>📱 UPI ID:</strong> ${shopUPI}</div>` : ''}
+            ${shopBankName ? `<div style="font-size: 12px; color: #1e40af;"><strong>🏦 Bank:</strong> ${shopBankName}</div>` : ''}
+            ${shopAccountNo ? `<div style="font-size: 12px; color: #1e40af;"><strong>🔢 Account:</strong> ${shopAccountNo}</div>` : ''}
+            ${shopIFSC ? `<div style="font-size: 12px; color: #1e40af;"><strong>🔑 IFSC:</strong> ${shopIFSC}</div>` : ''}
+        </div>
+        ` : ''}
 
         <div class="footer">
             <p>Thank you for your business!</p>
@@ -5402,7 +5441,13 @@ function showAuditProof(entryId) {
               pincode: fPincode ? (fPincode.value ? fPincode.value.trim() : '') : '',
               balance: fBalance ? (Number(fBalance.value) || 0) : 0,
               active: fActive ? fActive.value === "1" : true,
-              animalType: fAnimalType ? fAnimalType.value : 'cow'
+              animalType: fAnimalType ? fAnimalType.value : 'cow',
+              // Payment Details
+              upi: fUPI ? (fUPI.value ? fUPI.value.trim().toLowerCase() : '') : '',
+              bankName: fBankName ? (fBankName.value ? fBankName.value.trim() : '') : '',
+              accountNo: fAccountNo ? (fAccountNo.value ? fAccountNo.value.trim() : '') : '',
+              ifsc: fIFSC ? (fIFSC.value ? fIFSC.value.trim().toUpperCase() : '') : '',
+              accountName: fAccountName ? (fAccountName.value ? fAccountName.value.trim() : '') : ''
             };
             console.log('🔵 Farmer data:', f);
 
