@@ -1701,11 +1701,16 @@
 
       <!-- Customer Relations Tab -->
       <div id="detailRelations" style="padding: 16px; display: none;">
-        <!-- Quick Actions -->
+        <!-- Purchase Streak -->
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">🔥 Purchase Streak</h3>
+          <div id="purchaseStreak" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 16px; text-align: center;"></div>
+        </div>
+
+        <!-- Send Wishes Only -->
         <div style="margin-bottom: 20px;">
           <h3 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">💝 Quick Actions</h3>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-            <button onclick="sendOfferMessage()" style="padding: 12px; background: #8b5cf6; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px;">🎁 Send Offer</button>
+          <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
             <button onclick="sendWishes()" style="padding: 12px; background: #ec4899; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px;">💐 Send Wishes</button>
           </div>
         </div>
@@ -6417,6 +6422,7 @@ function showDetailTab(tabName) {
     if (tabName === 'relations') {
         loadLast5Purchases();
         loadPurchasePattern();
+        loadPurchaseStreak();
     }
 }
 
@@ -6637,6 +6643,93 @@ function loadPurchasePattern() {
         <div style="margin-top: 12px; padding: 10px; background: #fef3c7; border-radius: 6px; font-size: 12px;">
             <strong>📅 Most Frequent Day:</strong> ${mostFrequentDay} (${dayCount[mostFrequentDay]} visits)
         </div>
+    `;
+}
+
+// Load purchase streak (Snapchat-style)
+function loadPurchaseStreak() {
+    const f = getFarmerById(selectedFarmerId);
+    if (!f) return;
+    
+    const allEntries = entries.filter(e => e.farmerId === f.id);
+    
+    const container = document.getElementById('purchaseStreak');
+    if (!container) return;
+    
+    if (allEntries.length === 0) {
+        container.innerHTML = '<div style="color: #64748b; font-size: 14px;">No purchases yet</div>';
+        return;
+    }
+    
+    // Sort entries by date
+    const sortedEntries = allEntries.sort((a, b) => b.createdAt - a.createdAt);
+    
+    // Calculate current streak
+    let currentStreak = 1;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    let lastDate = new Date(sortedEntries[0].createdAt);
+    lastDate.setHours(0, 0, 0, 0);
+    
+    // Check if last purchase was today or yesterday
+    const daysDiff = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
+    if (daysDiff > 1) {
+        // Streak broken
+        currentStreak = 1;
+    } else {
+        // Calculate streak
+        for (let i = 1; i < sortedEntries.length; i++) {
+            const currentDate = new Date(sortedEntries[i].createdAt);
+            currentDate.setHours(0, 0, 0, 0);
+            
+            const diff = Math.floor((lastDate - currentDate) / (1000 * 60 * 60 * 24));
+            
+            if (diff === 1) {
+                currentStreak++;
+                lastDate = currentDate;
+            } else if (diff > 1) {
+                break;
+            }
+        }
+    }
+    
+    // Find longest streak
+    let longestStreak = 1;
+    let tempStreak = 1;
+    let prevDate = new Date(sortedEntries[0].createdAt);
+    prevDate.setHours(0, 0, 0, 0);
+    
+    for (let i = 1; i < sortedEntries.length; i++) {
+        const currentDate = new Date(sortedEntries[i].createdAt);
+        currentDate.setHours(0, 0, 0, 0);
+        
+        const diff = Math.floor((prevDate - currentDate) / (1000 * 60 * 60 * 24));
+        
+        if (diff === 1) {
+            tempStreak++;
+            longestStreak = Math.max(longestStreak, tempStreak);
+        } else {
+            tempStreak = 1;
+        }
+        prevDate = currentDate;
+    }
+    
+    // Display streak
+    const emoji = currentStreak >= 7 ? '🔥' : currentStreak >= 3 ? '💪' : '✨';
+    container.innerHTML = `
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+            <div>
+                <div style="font-size: 36px; font-weight: 900; color: #dc2626;">${emoji} ${currentStreak}</div>
+                <div style="font-size: 11px; color: #64748b; font-weight: 700;">CURRENT STREAK</div>
+            </div>
+            <div style="border-left: 2px solid #e2e8f0; height: 50px;"></div>
+            <div>
+                <div style="font-size: 36px; font-weight: 900; color: #f59e0b;">🏆 ${longestStreak}</div>
+                <div style="font-size: 11px; color: #64748b; font-weight: 700;">LONGEST STREAK</div>
+            </div>
+        </div>
+        ${currentStreak >= 7 ? '<div style="margin-top: 12px; font-size: 12px; color: #dc2626; font-weight: 700;">🎉 Amazing! Keep it up!</div>' : ''}
     `;
 }
 

@@ -539,41 +539,39 @@
 
           <!-- Fixed Payment Section -->
           <div class="payment-section">
-            <!-- Two Column Layout: Total (Left - Auto Width) + All Inputs (Right) -->
-            <div style="display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: stretch; position: relative; min-height: 200px;">
-
-              <!-- TOTAL PAYABLE (Left Column - Full Height, Auto Width) -->
-              <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 4px solid #16a34a; border-radius: 12px; padding: 15px 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; min-width: 350px;">
-                <div style="font-size: 13px; color: #166534; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; white-space: nowrap;">Net Payable</div>
-                <div id="totalPayableDisplay" style="font-size: 56px; font-weight: 900; color: #16a34a; line-height: 1.1; white-space: nowrap;">₹0.00</div>
+            <!-- Compact Bottom Layout -->
+            <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 3px solid #16a34a; border-radius: 10px; padding: 10px 15px; display: flex; flex-direction: column; gap: 8px;">
+              
+              <!-- Row 1: Total + Payment Buttons -->
+              <div style="display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center;">
+                <!-- Total Display -->
+                <div style="text-align: center; min-width: 140px;">
+                  <div style="font-size: 10px; color: #166534; font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">Net Payable</div>
+                  <div id="totalPayableDisplay" style="font-size: 32px; font-weight: 900; color: #16a34a; line-height: 1;">₹0.00</div>
+                </div>
+                
+                <!-- Payment Buttons -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;">
+                  <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534; padding: 8px; font-size: 11px;" onclick="saveEntry('Cash')">CASH</button>
+                  <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af; padding: 8px; font-size: 11px;" onclick="saveEntry('UPI')">UPI</button>
+                  <button class="pay-btn" style="background:#fef3c7; color:#92400e; padding: 8px; font-size: 11px;" onclick="holdCart()">🟡 HOLD</button>
+                  <button class="pay-btn" style="background:#f1f5f9; color:#475569; padding: 8px; font-size: 11px;" onclick="showHeldCarts()">📋 <span id="heldCount">0</span></button>
+                </div>
               </div>
-
-              <!-- Right Column: Payment Form (Shows when advance is closed) -->
-              <div id="paymentForm" style="display: flex !important; flex-direction: column; gap: 6px; justify-content: center;">
-                <!-- Row 1: Payment Amount (with integrated roundup) -->
+              
+              <!-- Row 2: Amount Input + Roundup + Credit -->
+              <div id="paymentForm" style="display: flex !important; flex-direction: column; gap: 6px;">
+                <div style="display: flex; gap: 6px; align-items: center;">
+                  <input type="number" id="paymentAmount" placeholder="₹" style="flex: 1; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 14px; box-sizing:border-box;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
+                  <input type="number" id="roundupInput" placeholder="Round" step="1" style="width: 60px; padding: 8px; border: 2px dashed #3b82f6; border-radius: 6px; font-weight: 700; font-size: 12px; text-align: center; background: #eff6ff; box-sizing:border-box;" oninput="applyRoundup()" />
+                  <div id="creditDisplay" style="font-size: 11px; font-weight: 700; color: #166534; min-width: 70px; text-align: center;">सही!</div>
+                </div>
+                
+                <!-- Row 3: Credit + Advance Buttons -->
                 <div style="display: flex; gap: 6px;">
-                  <input type="number" id="paymentAmount" placeholder="Enter amount (₹)" style="flex: 1; padding: 11px; border: 2px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 17px; box-sizing:border-box;" oninput="calculateCredit()" onkeydown="if(event.key==='Enter'){saveAndInvoice();}" />
-                  <input type="number" id="roundupInput" placeholder="Round" step="1" style="width: 80px; padding: 11px; border: 2px dashed #3b82f6; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; background: #eff6ff; box-sizing:border-box;" oninput="applyRoundup()" title="Round to nearest 10, 50, 100 etc." />
-                </div>
-
-                <!-- Row 2: Status Display -->
-                <div style="display: flex; justify-content: center; align-items: center; gap: 12px; min-height: 20px;">
-                  <div id="creditDisplay" style="font-size: 13px; font-weight: 700; color: #166534;">सही राशि!</div>
-                </div>
-
-                <!-- Row 3: Payment Buttons Grid -->
-                <div class="pay-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px;">
-                  <button class="pay-btn" id="btnCash" style="background:#dcfce7; color:#166534; padding: 9px;" onclick="saveEntry('Cash')">CASH</button>
-                  <button class="pay-btn" id="btnUpi" style="background:#eff6ff; color:#1e40af; padding: 9px;" onclick="saveEntry('UPI')">UPI</button>
-                  <button class="pay-btn" style="background:#fef3c7; color:#92400e; padding: 9px;" onclick="holdCart()">🟡 HOLD</button>
-                  <button class="pay-btn" style="background:#f1f5f9; color:#475569; padding: 9px;" onclick="showHeldCarts()">📋 <span id="heldCount">0</span></button>
-                </div>
-
-                <!-- Row 4: Credit Button + Advance Toggle + Advance Order (Same Row) -->
-                <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 6px;">
-                  <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="width: 100%; padding: 11px; font-size: 13px; font-weight: 700;">LIKH LO (Credit)</button>
-                  <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 11px 14px; background:#fef3c7; border:2px solid #f59e0b; border-radius:8px; font-weight:700; color:#92400e; cursor:pointer; font-size: 12px; white-space: nowrap;">📒 Advance / Udhar</button>
-                  <button onclick="toggleAdvanceOrder()" id="advanceOrderBtn" style="padding: 11px 14px; background:#f5f3ff; border:2px solid #7c3aed; border-radius:8px; font-weight:700; color:#7c3aed; cursor:pointer; font-size: 12px; white-space: nowrap;">📅 Advance Order</button>
+                  <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="flex: 1; padding: 8px; font-size: 11px; font-weight: 700;">📒 LIKH LO</button>
+                  <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 8px 12px; background:#fef3c7; border:2px solid #f59e0b; border-radius:6px; font-weight:700; color:#92400e; cursor:pointer; font-size: 10px; white-space: nowrap;">📒 Udhar</button>
+                  <button onclick="toggleAdvanceOrder()" id="advanceOrderBtn" style="padding: 8px 12px; background:#f5f3ff; border:2px solid #7c3aed; border-radius:6px; font-weight:700; color:#7c3aed; cursor:pointer; font-size: 10px; white-space: nowrap;">📅 Order</button>
                 </div>
               </div>
               
