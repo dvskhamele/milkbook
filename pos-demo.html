@@ -50,48 +50,208 @@
       .hdr-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
       .pillbtn { height: 24px; padding: 0 8px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-weight: 700; font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; white-space: nowrap; }
       .pillbtn.primary { background: #3b82f6; color: white; border-color: #3b82f6; }
-      
-      /* Mobile Responsive */
+
+      /* Mobile Responsive - Complete App-like Experience */
       @media (max-width: 768px) {
         html, body {
-          position: relative;
-          overflow: auto;
-          height: auto;
-          min-height: 100%;
+          position: fixed;
+          overflow: hidden;
+          height: 100%;
+          width: 100%;
+          margin: 0;
+          padding: 0;
         }
         .app {
-          padding: 8px;
-          gap: 8px;
-          height: auto;
-          min-height: 100vh;
+          padding: 0;
+          gap: 0;
+          height: 100vh;
+          width: 100vw;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+        .topbar { 
+          height: 40px; 
+          padding: 4px 8px; 
+          flex-shrink: 0; 
+          z-index: 100 !important;
+          background: #fff;
+          border-bottom: 1px solid #e2e8f0;
+        }
+        .category-filters { display: none !important; }
+        .logo-box { width: 24px; height: 24px; }
+        .brand-text .title { font-size: 14px; max-width: 120px; }
+        .brand-text .sub-text { font-size: 10px; display: block; }
+        .pillbtn { height: 32px; padding: 0 10px; font-size: 11px; }
+        .pillbtn span { display: inline; }
+        .hdr-actions { gap: 6px; }
+        .hdr-actions > button { padding: 0 8px !important; font-size: 10px !important; }
+        .core { 
+          grid-template-columns: 1fr; 
+          height: calc(100vh - 40px); 
+          min-height: auto;
+          overflow: hidden;
+        }
+        .panel { 
+          max-height: none !important; 
+          height: auto; 
+          border-radius: 0;
+          border: none;
+          border-bottom: 1px solid #e2e8f0;
+        }
+        .left-panel { 
+          flex: 1;
+          overflow: hidden;
           display: flex;
           flex-direction: column;
         }
-        .topbar { height: 14px; padding: 2px 6px; flex-shrink: 0; z-index: 100 !important; }
-        .logo-box { width: 12px; height: 12px; }
-        .brand-text .title { font-size: 8px; max-width: 60px; }
-        .brand-text .sub-text { display: none; }
-        .pillbtn { height: 22px; padding: 0 6px; font-size: 8px; }
-        .pillbtn span { display: none; }
-        .pillbtn.primary span { display: inline; }
-        .hdr-actions > div:first-child { display: none; }
-        .core { grid-template-columns: 1fr; height: auto; min-height: auto; }
-        .panel { max-height: none !important; height: auto; }
+        .left-panel .panelHeader { flex-shrink: 0; }
+        .left-panel .product-grid {
+          flex: 1;
+          overflow-y: auto;
+          overflow-x: hidden !important;
+        }
+        .product-grid {
+          grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+          gap: 6px !important;
+          padding: 8px !important;
+        }
+        .p-card {
+          min-height: 70px !important;
+          padding: 4px 2px !important;
+        }
+        .p-card .emoji {
+          font-size: 24px !important;
+        }
+        .p-card > div:nth-child(2) {
+          font-size: 9px !important;
+        }
+        .p-card .price-tag {
+          font-size: 8px !important;
+          padding: 2px 4px !important;
+        }
+        .right-panel {
+          flex: 1;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        #cartItems {
+          max-height: 150px;
+          overflow-y: auto;
+        }
+        .payment-section {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          width: 100% !important;
+          padding: 8px;
+          z-index: 100;
+        }
+        .payment-section > div {
+          gap: 4px !important;
+        }
+        .payment-section input {
+          font-size: 12px !important;
+          padding: 6px !important;
+        }
+        .payment-section button {
+          font-size: 10px !important;
+          padding: 6px 8px !important;
+        }
+        #roundupInput {
+          width: 50px !important;
+        }
+        body { padding-bottom: 140px !important; }
       }
 
       @media (max-width: 480px) {
-        .topbar { height: 16px; }
-        .logo-box { width: 10px; height: 10px; font-size: 6px; }
-        .brand-text .title { font-size: 7px; max-width: 50px; }
-        .brand-text .sub-text { display: none; }
-        .pillbtn { height: 20px; font-size: 7px; }
+        .topbar { height: 36px; padding: 4px 6px; }
+        .logo-box { width: 20px; height: 20px; font-size: 12px; }
+        .brand-text .title { font-size: 12px; max-width: 100px; }
+        .brand-text .sub-text { font-size: 9px; }
+        .pillbtn { height: 28px; font-size: 9px; padding: 0 6px; }
+        .hdr-actions > button { padding: 0 6px !important; font-size: 9px !important; }
+        .product-grid {
+          grid-template-columns: repeat(3, 1fr) !important;
+          gap: 4px !important;
+          padding: 4px !important;
+        }
+        .p-card {
+          min-height: 60px !important;
+          padding: 3px 1px !important;
+        }
+        .p-card .emoji {
+          font-size: 20px !important;
+        }
+        .p-card > div:nth-child(2) {
+          font-size: 8px !important;
+        }
+        .payment-section {
+          padding: 6px !important;
+        }
+        body { padding-bottom: 150px !important; }
       }
-      
-      /* Mobile: Fixed footer for save buttons */
+
+      /* Customer Ledger Mobile */
       @media (max-width: 768px) {
-        body { padding-bottom: 70px; }
-        .mobile-footer { display: block !important; }
-        .bottom { display: none !important; }
+        #customerLedgerModal .modal {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          height: 100vh !important;
+          max-height: 100vh !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+        }
+        #customerLedgerModal .modalBody {
+          padding: 8px !important;
+        }
+        #customerLedgerContent > div {
+          padding: 8px !important;
+        }
+        .ledger-summary-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 8px !important;
+        }
+        .ledger-summary-grid > div {
+          padding: 8px !important;
+        }
+        .ledger-summary-grid .amount {
+          font-size: 16px !important;
+        }
+      }
+
+      /* Rate List Modal Mobile */
+      @media (max-width: 768px) {
+        #rateListModal .modal {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          height: 100vh !important;
+          max-height: 100vh !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+        }
+        #rateListProducts > div {
+          margin-bottom: 12px !important;
+        }
+        #rateListProducts h3 {
+          font-size: 14px !important;
+          margin-bottom: 8px !important;
+        }
+        #rateListProducts .product-item {
+          padding: 8px !important;
+          margin-bottom: 6px !important;
+        }
+        #rateListProducts .emoji {
+          font-size: 24px !important;
+        }
+        #rateListProducts .product-name {
+          font-size: 12px !important;
+        }
+        #rateListProducts .product-price {
+          font-size: 14px !important;
+        }
       }
 
       /* --- CORE LAYOUT --- */

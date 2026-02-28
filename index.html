@@ -547,58 +547,275 @@
         color: #166534;
         font-size: 6px;
       }
-      
-      /* Mobile Optimization for Farmer Cards */
+
+      /* Complete Mobile Optimization - App-like Experience */
       @media (max-width: 768px) {
-        .fcard {
-          padding: 10px;
-          gap: 10px;
-          min-height: 70px;
+        html, body {
+          position: fixed;
+          overflow: hidden;
+          height: 100%;
+          width: 100%;
+          margin: 0;
+          padding: 0;
         }
-        .fimg {
-          width: 50px;
-          height: 50px;
-          font-size: 22px;
+        .app {
+          padding: 0;
+          gap: 0;
+          height: 100vh;
+          width: 100vw;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
         }
-        .fname {
-          font-size: 15px;
+        .topbar {
+          height: 40px;
+          padding: 4px 8px;
+          flex-shrink: 0;
+          background: #fff;
+          border-bottom: 1px solid #e2e8f0;
         }
-        .fsub {
-          font-size: 12px;
+        .panel {
+          border-radius: 0;
+          border: none;
+          border-bottom: 1px solid #e2e8f0;
         }
-        .editFarmerBtn {
-          opacity: 0.5;
-          font-size: 18px;
+        .panelHeader {
+          padding: 8px;
+          flex-shrink: 0;
         }
-        .badge {
+        .panelHeader .searchBox {
+          max-width: none;
+          flex: 1;
+        }
+        .panelHeader #searchInput {
+          font-size: 13px;
+          padding: 6px 8px;
+        }
+        .panelHeader #btnAddFarmerMain {
+          padding: 6px 10px;
+          font-size: 11px;
+        }
+        .panelHeader #farmerCount {
           font-size: 10px;
           padding: 4px 6px;
-          top: 4px;
-          right: 4px;
         }
-      }
-      
-      /* Extra Small Mobile */
-      @media (max-width: 480px) {
+        .panelHeader .today-summary {
+          font-size: 9px;
+          padding: 4px 6px;
+        }
+        .actionBody {
+          flex: 1;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .farmerPick {
+          flex: 1;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .farmerGrid {
+          flex: 1;
+          overflow-y: auto;
+          overflow-x: hidden !important;
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 6px !important;
+          padding: 8px !important;
+        }
         .fcard {
           padding: 8px;
           gap: 6px;
+          min-height: 60px;
         }
         .fimg {
-          width: 40px;
-          height: 40px;
-          font-size: 18px;
+          width: 36px;
+          height: 36px;
+          font-size: 16px;
         }
         .fname {
-          font-size: 13px;
+          font-size: 12px;
         }
         .fsub {
-          font-size: 11px;
+          font-size: 10px;
         }
         .editFarmerBtn {
-          opacity: 0.4;
-          font-size: 16px;
+          font-size: 14px;
+          padding: 2px;
+        }
+        .badge {
+          font-size: 8px;
           padding: 2px 4px;
+        }
+        .inputs {
+          grid-template-columns: 1fr;
+          gap: 8px;
+          padding: 8px;
+          flex-shrink: 0;
+        }
+        .control {
+          min-height: 80px;
+          padding: 8px;
+        }
+        .ctrlTop {
+          font-size: 10px;
+        }
+        .numBig {
+          font-size: 14px;
+        }
+        .numInput {
+          font-size: 20px;
+        }
+        .panel.right-panel {
+          flex: 1;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .trustBody {
+          flex: 1;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .amountBox {
+          flex-shrink: 0;
+        }
+        .recent {
+          flex: 1;
+          overflow-y: auto;
+          overflow-x: hidden !important;
+        }
+        .recent-table {
+          font-size: 11px;
+        }
+        .recent-table th {
+          font-size: 9px;
+          padding: 4px 2px;
+        }
+        .recent-table td {
+          font-size: 10px;
+          padding: 4px 2px;
+        }
+        .bottom {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 8px;
+          background: #fff;
+          border-top: 1px solid #e2e8f0;
+          z-index: 100;
+        }
+        .bottom .panicBtn {
+          font-size: 11px;
+          padding: 10px 12px;
+        }
+        .bottom .subnote {
+          display: none;
+        }
+        body {
+          padding-bottom: 60px;
+        }
+      }
+
+      /* Extra Small Mobile */
+      @media (max-width: 480px) {
+        .topbar {
+          height: 36px;
+          padding: 4px 6px;
+        }
+        .farmerGrid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 4px !important;
+          padding: 4px !important;
+        }
+        .fcard {
+          padding: 6px;
+          gap: 4px;
+          min-height: 50px;
+        }
+        .fimg {
+          width: 30px;
+          height: 30px;
+          font-size: 14px;
+        }
+        .fname {
+          font-size: 11px;
+        }
+        .fsub {
+          font-size: 9px;
+        }
+        .inputs {
+          padding: 6px;
+          gap: 6px;
+        }
+        .control {
+          min-height: 70px;
+          padding: 6px;
+        }
+        .numInput {
+          font-size: 18px;
+        }
+        .bottom {
+          padding: 6px;
+        }
+        .bottom .panicBtn {
+          font-size: 10px;
+          padding: 8px 10px;
+        }
+        body {
+          padding-bottom: 70px;
+        }
+      }
+
+      /* Farmer Detail Modal Mobile */
+      @media (max-width: 768px) {
+        #overlayFarmerDetail .modal {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          height: 100vh !important;
+          max-height: 100vh !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+        }
+        #overlayFarmerDetail .modalHead {
+          padding: 8px !important;
+        }
+        #overlayFarmerDetail .modalBody {
+          padding: 8px !important;
+        }
+        #detailTransactions > div {
+          padding: 8px !important;
+        }
+        .detail-info-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 8px !important;
+        }
+        .detail-info-grid > div {
+          padding: 8px !important;
+        }
+      }
+
+      /* Rate Editor Modal Mobile */
+      @media (max-width: 768px) {
+        #overlayRateEditor .modal {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          height: 100vh !important;
+          max-height: 100vh !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+        }
+        #overlayRateEditor .modalHead {
+          padding: 8px !important;
+        }
+        #overlayRateEditor .modalBody {
+          padding: 8px !important;
+        }
+        #rateTableBody td {
+          font-size: 12px !important;
+          padding: 6px 4px !important;
         }
       }
       .farmerNav {
