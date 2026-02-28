@@ -447,12 +447,13 @@
         grid-template-columns: repeat(4, 1fr);
         gap: 4px;
 
-        max-height: 420px;
+        max-height: none;
         overflow-y: auto;
         padding-right: 6px;
 
         position: relative;
-        transition: max-height 0.3s ease;
+        flex: 1 1 auto;
+        min-height: 200px;
       }
 
       .fcard {
@@ -4258,18 +4259,6 @@ function refreshRatePill() {
 
       function renderTrust() {
     console.log('🔵 renderTrust() called, qty:', qty, 'fat:', fat, 'snf:', snf, 'selectedFarmerId:', selectedFarmerId);
-
-    // Expand farmer grid when no calculation (qty = 0)
-    const farmerGridEl = document.querySelector('.farmerGrid');
-    if (farmerGridEl) {
-      if (qty === 0 || !qty) {
-        // No calculation - maximize farmer grid to show more farmers
-        farmerGridEl.style.maxHeight = '420px';
-      } else {
-        // Calculation in progress - compact size
-        farmerGridEl.style.maxHeight = '340px';
-      }
-    }
 
     const farmer = getFarmerById(selectedFarmerId);
     console.log('🔵 Farmer:', farmer ? farmer.name : 'none selected', 'Farmers in array:', farmers.length);
