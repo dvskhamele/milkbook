@@ -396,7 +396,9 @@
       .farmerPick {
         display: flex;
         flex-direction: column;
-        gap: 12px; /* sabke beech gap */
+        gap: 8px;
+        flex: 1 1 auto;
+        min-height: 250px;
       }
 
       .searchBox {
@@ -2830,6 +2832,33 @@
   </div>
 </div>
 
+<!-- Edit Phone Modal -->
+<div class="overlay" id="overlayEditPhone">
+  <div class="modal" style="height: auto; max-height: 60vh; width: min(400px, 95vw);">
+    <div class="modalHead">
+      <div class="left">
+        <button class="closeBtn" data-close="overlayEditPhone">✖</button>
+        <div>📱 Update Phone Number</div>
+      </div>
+    </div>
+    <div class="modalBody onecol" style="padding: 20px;">
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
+        This farmer doesn't have a phone number. Add one to enable WhatsApp features.
+      </p>
+      <div style="margin-bottom: 16px;">
+        <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">👤 Farmer Name</label>
+        <input id="editPhoneFarmerName" type="text" readonly style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 14px; background: #f8fafc;" />
+      </div>
+      <div style="margin-bottom: 16px;">
+        <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📱 Phone Number *</label>
+        <input id="editPhoneInput" type="tel" inputmode="tel" placeholder="e.g., 9876543210" style="width: 100%; padding: 12px; border: 2px solid #3b82f6; border-radius: 8px; font-weight: 700; font-size: 14px;" />
+        <p style="font-size: 11px; color: #64748b; margin-top: 6px;">10 digit mobile number</p>
+      </div>
+      <button onclick="savePhoneFromEditModal()" style="width: 100%; padding: 14px; background: #16a34a; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 15px;">💾 Save Phone Number</button>
+    </div>
+  </div>
+</div>
+
 <!-- Farmer Transaction History Modal -->
 <div class="overlay" id="overlayFarmerTransactions">
   <div class="modal" style="height: auto; max-height: 80vh;">
@@ -3315,7 +3344,7 @@ function playSuccessSound() {
       function toggleFarmerPaymentDetails() {
         const fieldsDiv = document.getElementById('farmerPaymentFields');
         const toggleBtn = document.getElementById('togglePaymentBtn');
-        
+
         if (fieldsDiv.style.display === 'none') {
           fieldsDiv.style.display = 'block';
           toggleBtn.textContent = '🙈 Hide';
@@ -3325,6 +3354,51 @@ function playSuccessSound() {
           toggleBtn.textContent = '👁️ Show';
           showToast('🔒 Payment details hidden');
         }
+      }
+
+      // Open edit phone modal
+      function openEditPhoneModal() {
+        const f = getFarmerById(selectedFarmerId);
+        if (!f) return;
+
+        document.getElementById('editPhoneFarmerName').value = f.name;
+        document.getElementById('editPhoneInput').value = f.phone || '';
+        openOverlay('overlayEditPhone');
+
+        // Focus phone input
+        setTimeout(() => {
+          const phoneInput = document.getElementById('editPhoneInput');
+          if (phoneInput) {
+            phoneInput.focus();
+            phoneInput.select();
+          }
+        }, 300);
+      }
+
+      // Save phone from edit modal
+      function savePhoneFromEditModal() {
+        const f = getFarmerById(selectedFarmerId);
+        const phone = document.getElementById('editPhoneInput').value.trim();
+
+        if (!phone) {
+          showToast('⚠️ Phone number required');
+          return;
+        }
+
+        if (phone.length !== 10 || !/^[0-9]+$/.test(phone)) {
+          showToast('⚠️ Enter valid 10 digit number');
+          return;
+        }
+
+        // Update farmer phone
+        f.phone = phone;
+        saveFarmers(farmers);
+
+        closeOverlay('overlayEditPhone');
+        showToast('✅ Phone number saved!');
+
+        // Refresh UI
+        renderAll();
       }
 
       /***********************
@@ -6495,7 +6569,8 @@ function loadAdvanceHistory(fId) {
 function sendFarmerWhatsAppSummary() {
     const f = getFarmerById(selectedFarmerId);
     if (!f || !f.phone) {
-        showToast("❌ Phone number not available");
+        // Open edit phone modal instead of toast
+        openEditPhoneModal();
         return;
     }
     
@@ -6885,7 +6960,7 @@ function filterLedger() {
 function sendAdvanceReceipt(farmerName, amount, date) {
     const f = farmers.find(f => f.name === farmerName);
     if (!f || !f.phone) {
-        showToast('❌ Phone number not available');
+        openEditPhoneModal();
         return;
     }
     
@@ -6905,7 +6980,7 @@ function sendAdvanceReceipt(farmerName, amount, date) {
 function sendCreditReminder(farmerId, amount) {
     const f = getFarmerById(farmerId);
     if (!f || !f.phone) {
-        showToast('❌ Phone number not available');
+        openEditPhoneModal();
         return;
     }
     
@@ -6925,7 +7000,7 @@ function sendCreditReminder(farmerId, amount) {
 function sendFarmerReceipt(farmerId) {
     const f = getFarmerById(farmerId);
     if (!f || !f.phone) {
-        showToast('❌ Phone number not available');
+        openEditPhoneModal();
         return;
     }
     
@@ -7266,7 +7341,7 @@ function sendDailySummary() {
         window.open(wpLink, '_blank');
         showToast("Summary Sent! 📊✅");
     } else {
-        showToast("Farmer phone number missing!");
+        openEditPhoneModal();
     }
 }
 
