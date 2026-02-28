@@ -398,7 +398,7 @@
         flex-direction: column;
         gap: 8px;
         flex: 1 1 auto;
-        min-height: 250px;
+        min-height: 320px;
       }
 
       .searchBox {
@@ -460,8 +460,8 @@
 
       .fcard {
         height: auto;
-        min-height: 65px;
-        border-radius: 10px;
+        min-height: 50px;
+        border-radius: 8px;
         border: 1px solid var(--line);
         background: #fff;
         display: flex;
@@ -476,16 +476,16 @@
         transform: translateY(1px);
       }
       .fimg {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         border-radius: 8px;
         background: #f1f5f9;
         border: 1px solid var(--line);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
-        flex: 0 0 36px;
+        font-size: 14px;
+        flex: 0 0 32px;
         overflow: hidden;
       }
       .fimg img {
@@ -1636,6 +1636,33 @@
           <div class="field">
             <label style="font-size: 12px; font-weight: 700;">📮 Pincode</label>
             <input id="editPincode" type="text" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 14px;" />
+          </div>
+          
+          <!-- Payment Details Section -->
+          <div style="grid-column: 1 / -1; margin-top: 16px; padding: 12px; background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px;">
+            <label style="font-size: 12px; font-weight: 800; color: #1e40af; display: block; margin-bottom: 12px;">💳 Payment Details (For UPI/Account Payments)</label>
+            <div class="formGrid" style="grid-template-columns: repeat(2, 1fr); gap: 12px;">
+              <div class="field">
+                <label style="font-size: 11px; font-weight: 700;">📱 UPI ID / VPA</label>
+                <input id="editUPI" type="text" placeholder="e.g., 9876543210@paytm" style="width: 100%; padding: 8px; border: 2px solid #3b82f6; border-radius: 6px; font-size: 13px;" />
+              </div>
+              <div class="field">
+                <label style="font-size: 11px; font-weight: 700;">🏦 Bank Name</label>
+                <input id="editBankName" type="text" placeholder="e.g., State Bank" style="width: 100%; padding: 8px; border: 2px solid #3b82f6; border-radius: 6px; font-size: 13px;" />
+              </div>
+              <div class="field">
+                <label style="font-size: 11px; font-weight: 700;">🔢 Account Number</label>
+                <input id="editAccountNo" type="text" placeholder="Account number" style="width: 100%; padding: 8px; border: 2px solid #3b82f6; border-radius: 6px; font-size: 13px;" />
+              </div>
+              <div class="field">
+                <label style="font-size: 11px; font-weight: 700;">🔑 IFSC Code</label>
+                <input id="editIFSC" type="text" placeholder="e.g., SBIN0001234" style="width: 100%; padding: 8px; border: 2px solid #3b82f6; border-radius: 6px; font-size: 13px; text-transform: uppercase;" />
+              </div>
+              <div class="field" style="grid-column: 1 / -1;">
+                <label style="font-size: 11px; font-weight: 700;">👤 Account Holder Name</label>
+                <input id="editAccountName" type="text" placeholder="Name as per bank" style="width: 100%; padding: 8px; border: 2px solid #3b82f6; border-radius: 6px; font-size: 13px;" />
+              </div>
+            </div>
           </div>
         </div>
         <button onclick="saveFarmerDetails()" style="width: 100%; margin-top: 16px; padding: 12px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer;">✅ Save Changes</button>
@@ -6262,6 +6289,13 @@ function openFarmerDetail(fId) {
     el("editCity").value = f.city || '';
     el("editPincode").value = f.pincode || '';
     
+    // Load payment details
+    if (el("editUPI")) el("editUPI").value = f.upi || '';
+    if (el("editBankName")) el("editBankName").value = f.bankName || '';
+    if (el("editAccountNo")) el("editAccountNo").value = f.accountNo || '';
+    if (el("editIFSC")) el("editIFSC").value = f.ifsc || '';
+    if (el("editAccountName")) el("editAccountName").value = f.accountName || '';
+    
     // Load transactions
     loadFarmerTransactions(fId);
     
@@ -6372,7 +6406,7 @@ function loadFarmerTransactions(fId) {
 function saveFarmerDetails() {
     const f = getFarmerById(selectedFarmerId);
     if (!f) return;
-    
+
     f.name = el("editName").value.trim();
     f.phone = el("editPhone").value.trim();
     f.serial = el("editSerial").value.trim();
@@ -6381,10 +6415,17 @@ function saveFarmerDetails() {
     f.city = el("editCity").value.trim();
     f.pincode = el("editPincode").value.trim();
     
+    // Save payment details
+    f.upi = el("editUPI") ? el("editUPI").value.trim() : (f.upi || '');
+    f.bankName = el("editBankName") ? el("editBankName").value.trim() : (f.bankName || '');
+    f.accountNo = el("editAccountNo") ? el("editAccountNo").value.trim() : (f.accountNo || '');
+    f.ifsc = el("editIFSC") ? el("editIFSC").value.trim().toUpperCase() : (f.ifsc || '');
+    f.accountName = el("editAccountName") ? el("editAccountName").value.trim() : (f.accountName || '');
+
     saveFarmers(farmers);
     renderFarmers();
     showToast("✅ Farmer details updated!");
-    
+
     // Refresh modal
     openFarmerDetail(selectedFarmerId);
 }
