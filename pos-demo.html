@@ -149,18 +149,40 @@
       /* Product grid responsive with proper scrolling */
       .product-grid { 
         display: grid; 
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); 
-        gap: 4px; 
-        padding: 8px; 
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); 
+        gap: 3px; 
+        padding: 6px; 
         outline: none; 
         align-content: start; 
         overflow-y: auto;
         overflow-x: auto;
-        max-height: calc(100vh - 300px);
+        max-height: calc(100vh - 280px);
+        min-width: 100%;
       }
       .product-grid::-webkit-scrollbar { width: 6px; height: 6px; }
       .product-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
       .product-grid::-webkit-scrollbar-track { background: #f1f5f9; }
+      
+      /* Ultra compact cards when many products */
+      .p-card.compact {
+        min-height: 55px;
+        padding: 2px 1px;
+      }
+      .p-card.compact .emoji {
+        font-size: 20px;
+      }
+      .p-card.compact > div:nth-child(2) {
+        font-size: 8px;
+        min-height: 20px;
+      }
+      .p-card.compact .price-tag {
+        display: none; /* Hide price in compact mode */
+      }
+      
+      /* No price mode for ultra compact */
+      .p-card.no-price .price-tag {
+        display: none;
+      }
       
       /* Smaller product cards when many products */
       .p-card {
@@ -5752,6 +5774,20 @@ function loadCustomProducts() {
     });
   }
 
+  // Sort quantities within each product (step-wise: smallest to largest)
+  products.forEach(p => {
+    if (Array.isArray(p.qtys)) {
+      p.qtys.sort((a, b) => a - b); // Sort ascending: 0.5, 1, 2
+    }
+  });
+
+  // Count total product cards
+  const totalCards = products.reduce((sum, p) => sum + (p.qtys?.length || 0), 0);
+  
+  // Auto-enable compact mode if many products
+  const enableCompact = totalCards > 30;
+  const hidePrices = totalCards > 50;
+
   // Calculate quantity ranks (1-5 based on relative quantity sizes) - SAFETY CHECK
   const allQtys = Array.isArray(customProducts)
     ? [...new Set(customProducts.map(p => p.qty))].sort((a, b) => a - b)
@@ -5769,9 +5805,14 @@ function loadCustomProducts() {
         const safeUnit = p.unit || 'unit';
         const safeQty = qty || 1;
         const safePrice = p.price || 0;
-        
+
         const newCard = document.createElement('div');
         newCard.className = 'p-card';
+        
+        // Add compact/no-price classes if needed
+        if (enableCompact) newCard.classList.add('compact');
+        if (hidePrices) newCard.classList.add('no-price');
+        
         newCard.setAttribute('data-qty', '1');
         newCard.setAttribute('data-qty-val', safeQty);
         newCard.setAttribute('data-rank', rank);
@@ -5794,6 +5835,10 @@ function loadCustomProducts() {
       });
     }
   });
+  
+  // Log mode
+  if (enableCompact) console.log('📦 Compact mode enabled (' + totalCards + ' products)');
+  if (hidePrices) console.log('💰 Prices hidden (' + totalCards + ' products)');
 }
 
 // Create default products on first-time setup
