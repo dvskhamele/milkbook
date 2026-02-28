@@ -2488,6 +2488,32 @@
         return message;
       }
       
+      // Generate UUID for shareable links
+      function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+
+      // Save invoice for public access
+      function saveInvoicePublic(invoiceData) {
+        const uuid = generateUUID();
+        const invoices = JSON.parse(localStorage.getItem('mr_public_invoices') || '[]');
+        invoiceData.uuid = uuid;
+        invoiceData.createdAt = Date.now();
+        invoices.push(invoiceData);
+        localStorage.setItem('mr_public_invoices', JSON.stringify(invoices));
+        return uuid;
+      }
+
+      // Get invoice by UUID
+      function getInvoiceByUUID(uuid) {
+        const invoices = JSON.parse(localStorage.getItem('mr_public_invoices') || '[]');
+        return invoices.find(inv => inv.uuid === uuid);
+      }
+
       // Print invoice in new tab - NON-BLOCKING
       function printInvoice(customerName, paymentAmount, paymentMode, creditAmount, cartItems = null) {
         const date = new Date().toLocaleDateString('en-IN', {
@@ -2495,10 +2521,25 @@
           hour: '2-digit', minute: '2-digit'
         });
         const invoiceNo = 'INV-' + Date.now().toString().slice(-6);
+        const uuid = generateUUID();
         const customer = customers.find(c => c.name === customerName);
 
         // Use provided cart items OR fall back to global cart
         const itemsToDisplay = cartItems || cart;
+
+        // Save invoice for public access
+        saveInvoicePublic({
+          invoiceNo,
+          uuid,
+          customerName,
+          customerPhone: customer?.phone,
+          paymentMode,
+          paymentAmount,
+          creditAmount,
+          items: itemsToDisplay,
+          total,
+          date
+        });
 
         // Create invoice HTML for printing
         const invoiceHTML = `
@@ -2526,6 +2567,8 @@
               .footer { text-align: center; margin-top: 30px; padding-top: 15px; border-top: 2px solid #e2e8f0; color: #64748b; font-size: 11px; }
               .print-btn { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; margin: 20px auto; display: block; }
               .print-btn:hover { background: #2563eb; }
+              .share-link { background: #f0f9ff; padding: 12px; border-radius: 6px; margin: 20px 0; font-size: 12px; border: 1px solid #3b82f6; }
+              .share-link input { width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 12px; margin-top: 8px; }
             </style>
           </head>
           <body>
@@ -2564,6 +2607,11 @@
               <strong>Amount Paid:</strong> ${formatINR(paymentAmount)}<br>
               ${creditAmount > 0 ? `<strong>Credit (Udhar):</strong> ${formatINR(creditAmount)}` : ''}
               ${creditAmount > 0 ? `<br><strong>Remaining Balance:</strong> ${formatINR(creditAmount)}` : ''}
+            </div>
+            <div class="share-link no-print">
+              <strong>🔗 Shareable Link:</strong>
+              <input type="text" value="${window.location.origin}${window.location.pathname}#invoice/${uuid}" readonly onclick="this.select()" />
+              <button onclick="navigator.clipboard.writeText('${window.location.origin}${window.location.pathname}#invoice/${uuid}'); alert('Link copied!')" style="margin-top: 8px; padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">📋 Copy Link</button>
             </div>
             <div class="footer">
               <p>Thank you for your business! 🙏</p>
@@ -2993,6 +3041,10 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
           // Update hidden activeCust element for backwards compatibility
           const activeCustEl = el("activeCust");
           if (activeCustEl) activeCustEl.innerText = name;
+
+          // IMPORTANT: Clear cart when switching customers!
+          cart = [];
+          updateUI();
 
           showToast("Customer: " + name + " ✏️");
 
