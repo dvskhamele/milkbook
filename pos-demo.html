@@ -384,7 +384,9 @@
         position: absolute;
         top: 100%;
         left: 0;
+        right: 0;
         width: 100%;
+        min-width: 100%;
         max-width: 100%;
         background: #fff;
         border: 2px solid #3b82f6;
@@ -623,13 +625,13 @@
             <span id="activeCust" style="display:none;">Walking Customer</span>
 
             <!-- Customer Search with Actions -->
-            <div style="display: flex; gap: 8px; margin-bottom: 8px; width: 100%;">
-              <div style="position: relative; flex: 1; max-width: calc(100% - 80px);">
-                <input type="text" id="custSearch" placeholder="👤 Search customer..." oninput="handleSearch(this.value)" style="width: 100%; max-width: 100%; padding: 8px 8px 8px 30px; border: 2px solid #3b82f6; border-radius: 8px; font-weight: 700; font-size: 13px; background: white; box-sizing: border-box;" />
+            <div style="display: flex; gap: 8px; margin-bottom: 8px; width: 100%; max-width: 100%;">
+              <div style="position: relative; flex: 1; width: 100%; min-width: 0;">
+                <input type="text" id="custSearch" placeholder="👤 Search customer..." oninput="handleSearch(this.value)" style="width: 100%; min-width: 0; padding: 8px 8px 8px 30px; border: 2px solid #3b82f6; border-radius: 8px; font-weight: 700; font-size: 13px; background: white; box-sizing: border-box;" />
                 <span style="position: absolute; left: 10px; top: 8px; font-size: 14px;">🔎</span>
-                <div id="searchDropdown" class="search-dropdown" onclick="event.stopPropagation()" style="top: 100%; border-radius: 0 0 8px 8px; width: 100%;"></div>
+                <div id="searchDropdown" class="search-dropdown" onclick="event.stopPropagation()" style="top: 100%; left: 0; border-radius: 0 0 8px 8px; width: 100%; min-width: 0;"></div>
               </div>
-              <button onclick="openModal('addCustModal')" style="padding: 8px 12px; background: #16a34a; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; white-space: nowrap; min-width: 70px;" title="Add New Customer">➕ Add</button>
+              <button onclick="openModal('addCustModal')" style="padding: 8px 16px; background: #16a34a; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; white-space: nowrap; flex-shrink: 0;" title="Add New Customer">➕ Add</button>
             </div>
           </div>
 
