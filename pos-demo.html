@@ -989,6 +989,13 @@
                   <input type="text" id="newCustId" placeholder="ID (e.g., C001)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:700; font-size:13px;" />
                   <input type="text" id="newName" placeholder="Full Name *" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" required />
                 </div>
+                
+                <!-- Customer Emoji -->
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <input type="text" id="newCustEmoji" placeholder="👤 Customer Emoji" value="👤" style="flex: 1; padding:12px; border-radius:10px; border:2px solid #3b82f6; font-weight:700; font-size:14px;" />
+                  <button type="button" onclick="openCustomerEmojiPicker()" style="padding: 12px 16px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #3b82f6; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 18px;" title="Choose Customer Emoji">👤</button>
+                </div>
+                
                 <input type="tel" id="newPhone" placeholder="📱 WhatsApp Mobile (e.g., 9876543210)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;" inputmode="tel" pattern="[0-9]{10}" />
                 <input type="email" id="newEmail" placeholder="✉️ Email (optional)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
                 <input type="text" id="newAddress" placeholder="📍 Address (optional)" style="padding:12px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
@@ -1013,6 +1020,32 @@
             <div style="position: sticky; bottom: 0; background: white; border-top: 2px solid #e2e8f0; padding: 12px 20px; display: flex; gap: 8px;">
               <button type="button" onclick="closeModal('addCustModal')" style="flex: 1; padding: 12px; background: #f1f5f9; color: #64748b; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;">❌ Cancel</button>
               <button type="button" onclick="addNewCustomer()" style="flex: 2; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;">✅ Add Customer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Emoji Picker Modal -->
+    <div class="overlay" id="customerEmojiPickerModal">
+        <div class="modal" style="width: 90vw !important; max-width: 600px !important; height: auto !important; max-height: 80vh !important; overflow-y: auto !important;">
+            <div class="panelHeader">
+                <span>👤 Choose Customer Emoji</span>
+                <button onclick="closeModal('customerEmojiPickerModal')" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">✖</button>
+            </div>
+            
+            <!-- Search Bar -->
+            <div style="padding: 16px; border-bottom: 2px solid #e2e8f0;">
+                <input type="text" id="customerEmojiSearchInput" placeholder="🔍 Search emojis (person, man, woman, business...)" oninput="filterCustomerEmojis()" style="width: 100%; padding: 12px; border: 2px solid #3b82f6; border-radius: 10px; font-weight: 700; font-size: 14px; box-sizing: border-box;" />
+            </div>
+            
+            <!-- Emoji Grid -->
+            <div id="customerEmojiGrid" style="padding: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; max-height: 50vh; overflow-y: auto;">
+                <!-- Emojis will be loaded here -->
+            </div>
+            
+            <!-- Last Selected -->
+            <div id="customerLastSelectedEmoji" style="padding: 12px 16px; background: #f0f9ff; border-top: 2px solid #3b82f6; display: none;">
+                <div style="font-size: 11px; font-weight: 700; color: #1e40af; margin-bottom: 6px;">📌 Last Selected:</div>
+                <button id="customerLastEmojiBtn" onclick="useCustomerLastEmoji()" style="font-size: 24px; padding: 8px 16px; background: white; border: 2px solid #3b82f6; border-radius: 8px; cursor: pointer;"></button>
             </div>
         </div>
     </div>
@@ -5612,6 +5645,176 @@ function selectEmoji(emoji) {
 
 function useLastEmoji() {
   if (lastSelectedEmoji) selectEmoji(lastSelectedEmoji);
+}
+
+// Customer Emoji Picker Functions
+let customerLastEmoji = '👤';
+const customerEmojis = [
+  { emoji: '👤', keywords: ['person', 'silhouette', 'customer'] },
+  { emoji: '👥', keywords: ['people', 'group', 'customers'] },
+  { emoji: '👨', keywords: ['man', 'male', 'person'] },
+  { emoji: '👩', keywords: ['woman', 'female', 'person'] },
+  { emoji: '👦', keywords: ['boy', 'child', 'young'] },
+  { emoji: '👧', keywords: ['girl', 'child', 'young'] },
+  { emoji: '🧑', keywords: ['person', 'adult', 'neutral'] },
+  { emoji: '👴', keywords: ['old', 'man', 'elderly', 'senior'] },
+  { emoji: '👵', keywords: ['old', 'woman', 'elderly', 'senior'] },
+  { emoji: '👨‍💼', keywords: ['business', 'man', 'professional', 'office'] },
+  { emoji: '👩‍💼', keywords: ['business', 'woman', 'professional', 'office'] },
+  { emoji: '👨‍🌾', keywords: ['farmer', 'man', 'agriculture'] },
+  { emoji: '👩‍🌾', keywords: ['farmer', 'woman', 'agriculture'] },
+  { emoji: '👨‍🍳', keywords: ['cook', 'chef', 'man'] },
+  { emoji: '👩‍🍳', keywords: ['cook', 'chef', 'woman'] },
+  { emoji: '👨‍🔧', keywords: ['mechanic', 'worker', 'man'] },
+  { emoji: '👩‍🔧', keywords: ['mechanic', 'worker', 'woman'] },
+  { emoji: '👨‍🏭', keywords: ['factory', 'worker', 'man', 'industrial'] },
+  { emoji: '👩‍🏭', keywords: ['factory', 'worker', 'woman', 'industrial'] },
+  { emoji: '👨‍💻', keywords: ['technology', 'coder', 'man', 'developer'] },
+  { emoji: '👩‍💻', keywords: ['technology', 'coder', 'woman', 'developer'] },
+  { emoji: '👨‍🎓', keywords: ['student', 'graduate', 'man'] },
+  { emoji: '👩‍🎓', keywords: ['student', 'graduate', 'woman'] },
+  { emoji: '👨‍🎤', keywords: ['singer', 'performer', 'man'] },
+  { emoji: '👩‍🎤', keywords: ['singer', 'performer', 'woman'] },
+  { emoji: '👨‍⚕️', keywords: ['doctor', 'health', 'man', 'nurse'] },
+  { emoji: '👩‍⚕️', keywords: ['doctor', 'health', 'woman', 'nurse'] },
+  { emoji: '👨‍🏫', keywords: ['teacher', 'professor', 'man'] },
+  { emoji: '👩‍🏫', keywords: ['teacher', 'professor', 'woman'] },
+  { emoji: '👨‍⚖️', keywords: ['judge', 'law', 'man'] },
+  { emoji: '👩‍⚖️', keywords: ['judge', 'law', 'woman'] },
+  { emoji: '👨‍🚀', keywords: ['astronaut', 'space', 'man'] },
+  { emoji: '👩‍🚀', keywords: ['astronaut', 'space', 'woman'] },
+  { emoji: '👨‍🚒', keywords: ['firefighter', 'fire', 'man'] },
+  { emoji: '👩‍🚒', keywords: ['firefighter', 'fire', 'woman'] },
+  { emoji: '👮', keywords: ['police', 'officer', 'law'] },
+  { emoji: '👮‍♂️', keywords: ['police', 'officer', 'man', 'law'] },
+  { emoji: '👮‍♀️', keywords: ['police', 'officer', 'woman', 'law'] },
+  { emoji: '🕵️', keywords: ['detective', 'spy', 'investigator'] },
+  { emoji: '🕵️‍♂️', keywords: ['detective', 'spy', 'man'] },
+  { emoji: '🕵️‍♀️', keywords: ['detective', 'spy', 'woman'] },
+  { emoji: '💂', keywords: ['guard', 'royal', 'british'] },
+  { emoji: '💂‍♂️', keywords: ['guard', 'man', 'royal'] },
+  { emoji: '💂‍♀️', keywords: ['guard', 'woman', 'royal'] },
+  { emoji: '👷', keywords: ['construction', 'worker', 'builder'] },
+  { emoji: '👷‍♂️', keywords: ['construction', 'worker', 'man'] },
+  { emoji: '👷‍♀️', keywords: ['construction', 'worker', 'woman'] },
+  { emoji: '🤴', keywords: ['prince', 'royal', 'king'] },
+  { emoji: '👸', keywords: ['princess', 'royal', 'queen'] },
+  { emoji: '🤵', keywords: ['tuxedo', 'formal', 'waiter'] },
+  { emoji: '👰', keywords: ['bride', 'wedding', 'marriage'] },
+  { emoji: '🤰', keywords: ['pregnant', 'woman', 'expecting'] },
+  { emoji: '🤱', keywords: ['breastfeeding', 'mother', 'baby'] },
+  { emoji: '👼', keywords: ['angel', 'baby', 'heaven'] },
+  { emoji: '🎅', keywords: ['santa', 'christmas', 'father'] },
+  { emoji: '🤶', keywords: ['mrs', 'claus', 'christmas'] },
+  { emoji: '🦸', keywords: ['superhero', 'hero', 'power'] },
+  { emoji: '🦸‍♂️', keywords: ['superhero', 'man', 'hero'] },
+  { emoji: '🦸‍♀️', keywords: ['superhero', 'woman', 'hero'] },
+  { emoji: '🦹', keywords: ['supervillain', 'villain', 'evil'] },
+  { emoji: '🦹‍♂️', keywords: ['supervillain', 'man', 'villain'] },
+  { emoji: '🦹‍♀️', keywords: ['supervillain', 'woman', 'villain'] },
+  { emoji: '🧙', keywords: ['wizard', 'mage', 'magic'] },
+  { emoji: '🧙‍♂️', keywords: ['wizard', 'man', 'magic'] },
+  { emoji: '🧙‍♀️', keywords: ['wizard', 'woman', 'magic'] },
+  { emoji: '🧚', keywords: ['fairy', 'wings', 'magical'] },
+  { emoji: '🧚‍♂️', keywords: ['fairy', 'man', 'wings'] },
+  { emoji: '🧚‍♀️', keywords: ['fairy', 'woman', 'wings'] },
+  { emoji: '🧛', keywords: ['vampire', 'dracula', 'undead'] },
+  { emoji: '🧛‍♂️', keywords: ['vampire', 'man', 'dracula'] },
+  { emoji: '🧛‍♀️', keywords: ['vampire', 'woman', 'dracula'] },
+  { emoji: '🧜', keywords: ['merperson', 'mermaid', 'ocean'] },
+  { emoji: '🧜‍♂️', keywords: ['merman', 'man', 'ocean'] },
+  { emoji: '🧜‍♀️', keywords: ['mermaid', 'woman', 'ocean'] },
+  { emoji: '🧝', keywords: ['elf', 'magical', 'pointed'] },
+  { emoji: '🧝‍♂️', keywords: ['elf', 'man', 'magical'] },
+  { emoji: '🧝‍♀️', keywords: ['elf', 'woman', 'magical'] },
+  { emoji: '🧞', keywords: ['genie', 'djinn', 'magical'] },
+  { emoji: '🧞‍♂️', keywords: ['genie', 'man', 'magical'] },
+  { emoji: '🧞‍♀️', keywords: ['genie', 'woman', 'magical'] },
+  { emoji: '🧟', keywords: ['zombie', 'undead', 'walking'] },
+  { emoji: '🧟‍♂️', keywords: ['zombie', 'man', 'undead'] },
+  { emoji: '🧟‍♀️', keywords: ['zombie', 'woman', 'undead'] },
+];
+
+function openCustomerEmojiPicker() {
+  renderCustomerEmojis(customerEmojis);
+  openModal('customerEmojiPickerModal');
+  document.getElementById('customerEmojiSearchInput').focus();
+}
+
+function renderCustomerEmojis(emojis) {
+  const grid = document.getElementById('customerEmojiGrid');
+  if (!grid) return;
+  grid.innerHTML = emojis.map(item => `
+    <button onclick="selectCustomerEmoji('${item.emoji}')"
+            style="font-size: 32px; padding: 8px; background: white; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;"
+            onmouseover="this.style.borderColor='#3b82f6'; this.style.transform='scale(1.1)'"
+            onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='scale(1)'"
+            title="${item.keywords.join(', ')}">
+      ${item.emoji}
+    </button>
+  `).join('');
+  const lastDiv = document.getElementById('customerLastSelectedEmoji');
+  const lastBtn = document.getElementById('customerLastEmojiBtn');
+  if (lastDiv && lastBtn) {
+    if (customerLastEmoji && customerLastEmoji !== '👤') {
+      lastDiv.style.display = 'block';
+      lastBtn.textContent = customerLastEmoji;
+    } else {
+      lastDiv.style.display = 'none';
+    }
+  }
+}
+
+function filterCustomerEmojis() {
+  const query = document.getElementById('customerEmojiSearchInput').value.toLowerCase().trim();
+  if (!query) { renderCustomerEmojis(customerEmojis); return; }
+  const filtered = customerEmojis.filter(item => item.keywords.some(k => k.includes(query)));
+  if (filtered.length === 0) {
+    const grid = document.getElementById('customerEmojiGrid');
+    if (grid) {
+      const searchWithoutSpace = query.replace(/\s+/g, '');
+      grid.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px 20px;">
+          <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+          <div style="font-size: 14px; font-weight: 700; color: #64748b; margin-bottom: 8px;">
+            No emojis found for "${query}"
+          </div>
+          <div style="font-size: 12px; color: #94a3b8; margin-bottom: 16px;">
+            Find and copy emojis from
+          </div>
+          <a href="https://emojicombos.com/${searchWithoutSpace}" target="_blank" 
+             style="display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 13px; transition: all 0.2s;"
+             onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            🎭 Open EmojiCombos →
+          </a>
+          <div style="font-size: 11px; color: #64748b; margin-top: 12px;">
+            Click link → Copy emoji → Paste in field
+          </div>
+        </div>
+      `;
+    }
+    const lastDiv = document.getElementById('customerLastSelectedEmoji');
+    if (lastDiv) lastDiv.style.display = 'block';
+  } else {
+    renderCustomerEmojis(filtered);
+  }
+}
+
+function selectCustomerEmoji(emoji) {
+  customerLastEmoji = emoji;
+  const emojiInput = document.getElementById('newCustEmoji');
+  if (emojiInput) {
+    emojiInput.value = emoji;
+    emojiInput.style.borderColor = '#16a34a';
+    emojiInput.style.background = '#f0fdf4';
+    setTimeout(() => { emojiInput.style.borderColor = '#3b82f6'; emojiInput.style.background = 'white'; }, 500);
+  }
+  closeModal('customerEmojiPickerModal');
+  showToast(`✅ Customer emoji ${emoji} selected!`);
+}
+
+function useCustomerLastEmoji() {
+  if (customerLastEmoji) selectCustomerEmoji(customerLastEmoji);
 }
 
 // Add quantity input field in Add Product modal
