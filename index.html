@@ -3786,7 +3786,21 @@ function playSuccessSound() {
         return farmers.find((f) => f.id === id) || null;
       }
       function activeFarmers() {
-        return farmers.filter((f) => f.active !== false);
+        const today = fmtDate(new Date());
+        const active = farmers.filter((f) => f.active !== false);
+        
+        // Sort: Farmers WITHOUT today's entry first, farmers WITH today's entry last
+        return active.sort((a, b) => {
+          const aHasToday = entries.some(e => e.farmerId === a.id && e.day === today);
+          const bHasToday = entries.some(e => e.farmerId === b.id && e.day === today);
+          
+          // If both have same status (both have today's entry or both don't), keep original order
+          if (aHasToday === bHasToday) return 0;
+          
+          // If 'a' has today's entry, move to end (return 1)
+          // If 'b' has today's entry, move to end (return -1)
+          return aHasToday ? 1 : -1;
+        });
       }
       function filterFarmers() {
         let list = activeFarmers();
