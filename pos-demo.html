@@ -6682,17 +6682,29 @@ function openRateListModal() {
 function openCustomerRelation(customerId) {
   const modal = document.getElementById('customerRelationModal');
   if (!modal) return;
-  
-  // Find customer
+
+  // Get customer name from activeCust if no ID provided
+  if (!customerId || customerId === 'Walking Customer') {
+    customerId = document.getElementById('activeCust').innerText;
+  }
+
+  if (!customerId || customerId === 'Walking Customer') {
+    return showToast('⚠️ Select a customer first!');
+  }
+
+  // Find customer by name or ID
   const customer = customers.find(c => c.id === customerId || c.name === customerId);
-  if (!customer) return showToast('❌ Customer not found!');
-  
+  if (!customer) {
+    console.error('❌ Customer not found:', customerId, 'Available:', customers.map(c => c.name));
+    return showToast('❌ Customer not found! Try selecting from search.');
+  }
+
   // Set customer name
   document.getElementById('relationCustomerName').textContent = customer.name + (customer.serial ? ` (#${customer.serial})` : '');
-  
+
   // Load customer details
   loadCustomerRelationData(customer);
-  
+
   // Open modal
   openModal('customerRelationModal');
 }
