@@ -4589,6 +4589,8 @@ function printCollectionBill(entry) {
         return '₹' + parts.join('.');
     };
 
+    const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+
     const billHTML = `
 <!DOCTYPE html>
 <html>
@@ -4613,7 +4615,7 @@ function printCollectionBill(entry) {
     <div class="bill">
         <div class="header">
             <h2>🥛 Milk Collection Bill</h2>
-            <p>Gopal Dairy Shop</p>
+            <p>${shopName}</p>
             <p>${date}</p>
         </div>
 
@@ -4664,7 +4666,7 @@ function printCollectionBill(entry) {
 
         <div class="footer">
             <p>Thank you for your business!</p>
-            <p>Gopal Dairy Shop</p>
+            <p>${shopName}</p>
         </div>
 
         <button class="no-print" onclick="window.print();" style="width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 15px;">🖨️ Print Bill (Ctrl+P)</button>
