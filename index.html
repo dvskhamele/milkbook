@@ -2455,52 +2455,6 @@
                   —
                 </div>
               </div>
-              
-              <!-- Shop Payment Details Section -->
-              <div class="field full" style="padding: 10px; background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; margin: 16px 0 8px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                  <label style="font-size: 13px; font-weight: 800; color: #1e40af; display: block;">💳 Shop Payment Details (For Invoices & WhatsApp)</label>
-                  <button onclick="copyShopPaymentDetails()" style="padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px;" title="Copy all payment details">📋 Copy All</button>
-                </div>
-              </div>
-              <div class="field full" style="position: relative;">
-                <label>📱 Shop UPI ID / VPA</label>
-                <div style="display: flex; gap: 6px;">
-                  <input id="setShopUPI" type="text" placeholder="e.g., 9876543210@paytm or mobile@upi" style="font-weight: 700; flex: 1;" />
-                  <button onclick="copyToClipboard('setShopUPI')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
-                </div>
-              </div>
-              <div class="field full" style="position: relative;">
-                <label>🏦 Shop Bank Name</label>
-                <div style="display: flex; gap: 6px;">
-                  <input id="setShopBank" type="text" placeholder="e.g., State Bank of India" style="font-weight: 700; flex: 1;" />
-                  <button onclick="copyToClipboard('setShopBank')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
-                </div>
-              </div>
-              <div class="field" style="position: relative;">
-                <label>🔢 Shop Account Number</label>
-                <div style="display: flex; gap: 6px;">
-                  <input id="setShopAccount" type="text" placeholder="Account number" style="font-weight: 700; flex: 1;" />
-                  <button onclick="copyToClipboard('setShopAccount')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
-                </div>
-              </div>
-              <div class="field" style="position: relative;">
-                <label>🔑 Shop IFSC Code</label>
-                <div style="display: flex; gap: 6px;">
-                  <input id="setShopIFSC" type="text" placeholder="e.g., SBIN0001234" style="font-weight: 700; text-transform: uppercase; flex: 1;" />
-                  <button onclick="copyToClipboard('setShopIFSC')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
-                </div>
-              </div>
-              <div class="field full" style="position: relative;">
-                <label>👤 Shop Account Holder Name</label>
-                <div style="display: flex; gap: 6px;">
-                  <input id="setShopAccountName" type="text" placeholder="Name as per bank records" style="font-weight: 700; flex: 1;" />
-                  <button onclick="copyToClipboard('setShopAccountName')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
-                </div>
-              </div>
-              <div class="field full" style="padding: 8px; background: #dbeafe; border-radius: 6px; border-left: 3px solid #3b82f6;">
-                <p style="font-size: 11px; color: #1e40af; margin: 0; font-weight: 600;">💡 These payment details will appear on all invoices and WhatsApp messages for easy customer payments</p>
-              </div>
             </div>
           </div>
         </div>
@@ -3339,33 +3293,6 @@ function playSuccessSound() {
           });
         } else {
           showToast('⚠️ Nothing to copy');
-        }
-      }
-
-      // Copy all shop payment details
-      function copyShopPaymentDetails() {
-        const upi = document.getElementById('setShopUPI')?.value || '';
-        const bank = document.getElementById('setShopBank')?.value || '';
-        const account = document.getElementById('setShopAccount')?.value || '';
-        const ifsc = document.getElementById('setShopIFSC')?.value || '';
-        const accountName = document.getElementById('setShopAccountName')?.value || '';
-        
-        let details = '💳 Shop Payment Details\n';
-        details += '━━━━━━━━━━━━━━━━━━━━\n';
-        if (upi) details += `📱 UPI: ${upi}\n`;
-        if (bank) details += `🏦 Bank: ${bank}\n`;
-        if (account) details += `🔢 Account: ${account}\n`;
-        if (ifsc) details += `🔑 IFSC: ${ifsc}\n`;
-        if (accountName) details += `👤 Name: ${accountName}\n`;
-        
-        if (details.split('\n').length > 2) {
-          navigator.clipboard.writeText(details).then(() => {
-            showToast('📋 All details copied!');
-          }).catch(() => {
-            showToast('⚠️ Copy failed');
-          });
-        } else {
-          showToast('⚠️ No details to copy');
         }
       }
 
@@ -5477,14 +5404,7 @@ function showAuditProof(entryId) {
             if (el("setFatStep")) el("setFatStep").value = settings.fatStep || 0.1;
             if (el("setSnfStep")) el("setSnfStep").value = settings.snfStep || 0.1;
             if (el("setSessionHour")) el("setSessionHour").value = settings.sessionSwitchHour || 4;
-            
-            // Load shop payment details from localStorage
-            if (el("setShopUPI")) el("setShopUPI").value = localStorage.getItem('MilkRecord_shop_upi') || '';
-            if (el("setShopBank")) el("setShopBank").value = localStorage.getItem('MilkRecord_shop_bank') || '';
-            if (el("setShopAccount")) el("setShopAccount").value = localStorage.getItem('MilkRecord_shop_account') || '';
-            if (el("setShopIFSC")) el("setShopIFSC").value = localStorage.getItem('MilkRecord_shop_ifsc') || '';
-            if (el("setShopAccountName")) el("setShopAccountName").value = localStorage.getItem('MilkRecord_shop_account_name') || '';
-            
+
             updateFormulaPreview();
             updateLivePreview();
           }
@@ -5723,21 +5643,8 @@ function showAuditProof(entryId) {
           settings.snfStep = Number(el("setSnfStep").value) || settings.snfStep;
           settings.sessionSwitchHour = Number(el("setSessionHour").value) || settings.sessionSwitchHour;
 
-          // Save shop payment details to localStorage
-          const shopUPI = el("setShopUPI") ? el("setShopUPI").value.trim().toLowerCase() : '';
-          const shopBank = el("setShopBank") ? el("setShopBank").value.trim() : '';
-          const shopAccount = el("setShopAccount") ? el("setShopAccount").value.trim() : '';
-          const shopIFSC = el("setShopIFSC") ? el("setShopIFSC").value.trim().toUpperCase() : '';
-          const shopAccountName = el("setShopAccountName") ? el("setShopAccountName").value.trim() : '';
-          
-          if (shopUPI) localStorage.setItem('MilkRecord_shop_upi', shopUPI);
-          if (shopBank) localStorage.setItem('MilkRecord_shop_bank', shopBank);
-          if (shopAccount) localStorage.setItem('MilkRecord_shop_account', shopAccount);
-          if (shopIFSC) localStorage.setItem('MilkRecord_shop_ifsc', shopIFSC);
-          if (shopAccountName) localStorage.setItem('MilkRecord_shop_account_name', shopAccountName);
-
           saveSettings(settings);
-          
+
           // REAL-TIME UPDATE EVERYWHERE
           refreshRatePill();           // Update rate pill in header
           renderTrust();               // Update right panel (amount, rate, balances)
