@@ -440,7 +440,7 @@
               🏪 <span id="profileName">Loading...</span> ▼
             </button>
             <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: #f8fafc; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 220px; z-index: 1005;">
-              <div style="padding: 12px; border-bottom: 1px solid var(--line);">
+              <div id="profileDropdownHeader" style="padding: 12px; border-bottom: 1px solid var(--line);">
                 <div style="font-weight: 700; font-size: 13px;" id="dropdownEmail">user@email.com</div>
                 <div style="font-size: 11px; color: var(--muted);" id="dropdownShop">Shop Name</div>
               </div>
@@ -1796,7 +1796,7 @@
               document.getElementById('dropdownShop').textContent = data.shop_name || 'Shop';
               
               // Update dropdown header with progress
-              const header = dropdown.querySelector('div[style*="border-bottom"]');
+              const header = document.getElementById('profileDropdownHeader');
               if (header) {
                   header.innerHTML = `
                       <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
@@ -2832,8 +2832,9 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       function onAdvanceOrderCustomerChange() {
         const select = document.getElementById('advanceOrderCustomer');
         const locationInput = document.getElementById('advanceOrderLocation');
+        const notesInput = document.getElementById('advanceOrderNotes');
         if (!select || !locationInput) return;
-        
+
         const selectedName = select.value;
         const customer = customers.find(c => c.name === selectedName);
 
@@ -2843,12 +2844,17 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
             locationInput.value = customer.address;
           }
 
+          // Auto-fill notes with customer phone
+          if (notesInput && customer.phone) {
+            notesInput.value = `Call on ${customer.phone}`;
+          }
+
           // Check if customer has phone number - ONLY show warning if they have advance orders
           if (!customer.phone || customer.phone.trim() === '') {
             // Check if customer has any advance orders
             const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
             const hasAdvances = history.some(h => h.customer === customer.name && h.method === 'Cash In');
-            
+
             // Only show phone warning if customer has advance orders
             if (hasAdvances) {
               setTimeout(() => {
