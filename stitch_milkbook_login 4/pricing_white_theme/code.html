@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkRecord - Pricing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0a63bd",
+                        "secondary": "#49739c",
+                        "background-light": "#f8fafc", // Very light slate
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display bg-background-light text-slate-900 overflow-x-hidden antialiased selection:bg-primary/20">
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-white/80 px-6 py-4 backdrop-blur-md lg:px-10">
+<div class="flex items-center gap-3">
+<div class="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-2xl">water_drop</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-slate-900">MilkRecord</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors" href="#">Features</a>
+<a class="text-sm font-medium text-primary" href="#">Pricing</a>
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors" href="#">Contact</a>
+</nav>
+<div class="hidden md:flex gap-3">
+<button class="flex h-10 items-center justify-center rounded-lg px-5 text-sm font-semibold text-primary transition-colors hover:bg-slate-50">
+                    Login
+                </button>
+<button class="flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md">
+                    Sign Up
+                </button>
+</div>
+<!-- Mobile Menu Button -->
+<button class="md:hidden flex items-center justify-center p-2 text-slate-600">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<main class="flex-1">
+<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+<!-- Hero Section -->
+<div class="mx-auto mb-16 max-w-2xl text-center">
+<h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                        Simple, Transparent Pricing
+                    </h1>
+<p class="mt-4 text-lg text-slate-600">
+                        Choose the perfect plan for your dairy collection center. No hidden fees.
+                    </p>
+</div>
+<!-- Pricing Cards Grid -->
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+<!-- Free Plan -->
+<div class="relative flex flex-col rounded-2xl bg-white p-8 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 border-t-4 border-primary ring-1 ring-slate-200">
+<div class="mb-6">
+<h3 class="text-lg font-semibold leading-7 text-slate-900">Free</h3>
+<div class="mt-4 flex items-baseline gap-x-2">
+<span class="text-5xl font-bold tracking-tight text-slate-900">₹0</span>
+<span class="text-base font-semibold leading-7 text-slate-500">/month</span>
+</div>
+<p class="mt-4 text-sm leading-6 text-slate-600">Perfect for small collection centers just starting out.</p>
+</div>
+<button class="mt-auto block w-full rounded-lg bg-slate-100 px-3 py-3 text-center text-sm font-bold text-slate-900 hover:bg-slate-200 transition-colors">
+                            Get Started
+                        </button>
+<ul class="mt-8 space-y-4 text-sm leading-6 text-slate-600" role="list">
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Basic Milk Collection
+                            </li>
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Local Storage
+                            </li>
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Single User Access
+                            </li>
+<li class="flex gap-x-3 text-slate-400">
+<span class="material-symbols-outlined flex-shrink-0" style="font-size: 20px;">cancel</span>
+                                SMS Alerts
+                            </li>
+</ul>
+</div>
+<!-- Daily Wallet Plan (Highlighted) -->
+<div class="relative flex flex-col rounded-2xl bg-white p-8 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1 border-t-4 border-primary ring-1 ring-primary/20">
+<div class="absolute -top-4 right-8 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white shadow-sm">
+                            Most Popular
+                        </div>
+<div class="mb-6">
+<h3 class="text-lg font-semibold leading-7 text-primary">Daily Wallet</h3>
+<div class="mt-4 flex items-baseline gap-x-2">
+<span class="text-5xl font-bold tracking-tight text-slate-900">₹499</span>
+<span class="text-base font-semibold leading-7 text-slate-500">/month</span>
+</div>
+<p class="mt-4 text-sm leading-6 text-slate-600">Best for growing centers needing better management.</p>
+</div>
+<button class="mt-auto block w-full rounded-lg bg-primary px-3 py-3 text-center text-sm font-bold text-white shadow-sm hover:bg-blue-700 transition-colors">
+                            Start Free Trial
+                        </button>
+<ul class="mt-8 space-y-4 text-sm leading-6 text-slate-600" role="list">
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Cloud Sync &amp; Backup
+                            </li>
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Instant SMS Alerts
+                            </li>
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Farmer Ledger Management
+                            </li>
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Daily &amp; Weekly Reports
+                            </li>
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Up to 3 Users
+                            </li>
+</ul>
+</div>
+<!-- Premium Pro Plan -->
+<div class="relative flex flex-col rounded-2xl bg-white p-8 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 border-t-4 border-primary ring-1 ring-slate-200">
+<div class="mb-6">
+<h3 class="text-lg font-semibold leading-7 text-slate-900">Premium Pro</h3>
+<div class="mt-4 flex items-baseline gap-x-2">
+<span class="text-5xl font-bold tracking-tight text-slate-900">₹1999</span>
+<span class="text-base font-semibold leading-7 text-slate-500">/month</span>
+</div>
+<p class="mt-4 text-sm leading-6 text-slate-600">For large cooperatives needing enterprise features.</p>
+</div>
+<button class="mt-auto block w-full rounded-lg bg-slate-100 px-3 py-3 text-center text-sm font-bold text-slate-900 hover:bg-slate-200 transition-colors">
+                            Contact Sales
+                        </button>
+<ul class="mt-8 space-y-4 text-sm leading-6 text-slate-600" role="list">
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Multi-User &amp; Multi-Center
+                            </li>
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Advanced Analytics Dashboard
+                            </li>
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Unlimited SMS Notifications
+                            </li>
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                Priority 24/7 Support
+                            </li>
+<li class="flex gap-x-3">
+<span class="material-symbols-outlined text-green-600 flex-shrink-0" style="font-size: 20px;">check_circle</span>
+                                API Access for Integration
+                            </li>
+</ul>
+</div>
+</div>
+<!-- FAQ Section Preview -->
+<div class="mt-24 border-t border-slate-200 pt-16">
+<div class="mx-auto max-w-2xl text-center">
+<h2 class="text-2xl font-bold tracking-tight text-slate-900">Frequently Asked Questions</h2>
+<p class="mt-4 text-slate-600">Everything you need to know about the product and billing.</p>
+</div>
+<dl class="mx-auto mt-10 max-w-4xl space-y-6 divide-y divide-slate-100">
+<div class="pt-6">
+<dt>
+<button class="flex w-full items-start justify-between text-left text-slate-900" type="button">
+<span class="text-base font-semibold leading-7">Is there a free trial for the Daily Wallet plan?</span>
+<span class="ml-6 flex h-7 items-center">
+<span class="material-symbols-outlined">add</span>
+</span>
+</button>
+</dt>
+</div>
+<div class="pt-6">
+<dt>
+<button class="flex w-full items-start justify-between text-left text-slate-900" type="button">
+<span class="text-base font-semibold leading-7">Can I change my plan later?</span>
+<span class="ml-6 flex h-7 items-center">
+<span class="material-symbols-outlined">add</span>
+</span>
+</button>
+</dt>
+</div>
+<div class="pt-6">
+<dt>
+<button class="flex w-full items-start justify-between text-left text-slate-900" type="button">
+<span class="text-base font-semibold leading-7">What payment methods do you accept?</span>
+<span class="ml-6 flex h-7 items-center">
+<span class="material-symbols-outlined">add</span>
+</span>
+</button>
+</dt>
+</div>
+</dl>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="border-t border-slate-200 bg-white py-12">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col items-center justify-between gap-6 md:flex-row">
+<div class="flex items-center gap-2">
+<div class="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-xl">water_drop</span>
+</div>
+<span class="text-lg font-bold text-slate-900">MilkRecord</span>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-sm text-slate-500 hover:text-primary" href="#">Privacy Policy</a>
+<a class="text-sm text-slate-500 hover:text-primary" href="#">Terms of Service</a>
+<a class="text-sm text-slate-500 hover:text-primary" href="#">Help Center</a>
+</div>
+<p class="text-sm text-slate-400">© 2024 MilkRecord. All rights reserved.</p>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

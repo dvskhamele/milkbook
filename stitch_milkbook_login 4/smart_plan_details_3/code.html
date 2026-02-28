@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smart Plan: The Joy of Accuracy - MilkRecord</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "machine-bg": "#fcfcfc",
+                        "machine-border": "#e2e2e2",
+                        "machine-text": "#1a1a1a",
+                        "digital-green": "#00d95a",
+                        "trust-blue": "#0052cc",
+                        "trust-blue-dark": "#003d99",
+                        "alert-red": "#ff3b30",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    boxShadow: {
+                        "machine": "4px 4px 0px 0px rgba(0,0,0,0.1)",
+                        "machine-pressed": "inset 2px 2px 4px 0px rgba(0,0,0,0.1)",
+                        "heavy-3d": "0px 6px 0px 0px #003d99",
+                        "heavy-3d-active": "0px 2px 0px 0px #003d99",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .machine-panel {
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .digital-display {
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 5px rgba(0, 217, 90, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-machine-bg text-machine-text font-display min-h-screen flex flex-col antialiased">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<header class="sticky top-0 z-50 flex items-center justify-between border-b border-machine-border bg-white/95 backdrop-blur-sm px-6 py-4 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-trust-blue text-white rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">water_drop</span>
+</div>
+<div class="flex flex-col">
+<h2 class="text-xl font-bold leading-none tracking-tight">MilkRecord</h2>
+<span class="text-[10px] font-mono text-slate-500 uppercase tracking-widest">System v2.0</span>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<div class="hidden md:flex items-center gap-8 font-medium">
+<a class="text-slate-500 hover:text-trust-blue transition-colors text-sm" href="#">Dashboard</a>
+<a class="text-trust-blue font-bold text-sm" href="#">Plans</a>
+<a class="text-slate-500 hover:text-trust-blue transition-colors text-sm" href="#">Hardware</a>
+</div>
+<button class="font-mono text-xs font-bold border border-slate-300 rounded px-4 py-2 hover:bg-slate-50 transition-colors uppercase">
+                Operator Login
+            </button>
+</div>
+</header>
+<main class="flex-1 w-full flex justify-center">
+<div class="flex flex-col w-full max-w-[1280px] px-4 md:px-8 py-8 gap-16">
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="flex flex-col gap-6 order-2 lg:order-1">
+<div class="inline-flex items-center gap-2 border border-digital-green/30 bg-digital-green/5 px-3 py-1 rounded w-fit">
+<span class="size-2 rounded-full bg-digital-green animate-pulse"></span>
+<span class="text-xs font-mono font-bold text-green-700 uppercase">System Online</span>
+</div>
+<h1 class="text-5xl md:text-6xl font-bold tracking-tight text-slate-900 leading-[1.1]">
+                        The Joy of <span class="text-trust-blue underline decoration-4 decoration-digital-green underline-offset-4">Accuracy</span>.
+                    </h1>
+<p class="text-lg text-slate-600 max-w-[540px] leading-relaxed">
+                        Complete transparency for your VLCC. Watch Fat &amp; SNF readings sync instantly from machine to ledger. No manual errors, just pure operational flow.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4 mt-2">
+<button class="group relative flex items-center justify-center rounded-lg bg-trust-blue text-white font-bold text-lg px-8 py-4 shadow-heavy-3d hover:translate-y-[2px] hover:shadow-heavy-3d-active active:translate-y-[4px] active:shadow-none transition-all">
+<span class="mr-2">Upgrade to Smart Plan</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<div class="flex items-center gap-4 px-4 py-2">
+<div class="flex -space-x-3">
+<div class="size-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-600">JD</div>
+<div class="size-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-600">AK</div>
+<div class="size-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-600">RP</div>
+</div>
+<span class="text-sm font-medium text-slate-500">Trusted by 2,000+ Entrepreneurs</span>
+</div>
+</div>
+<div class="flex gap-6 mt-4 pt-6 border-t border-slate-100">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-trust-blue">shield_lock</span>
+<span class="text-sm font-bold text-slate-700">Data Sovereignty</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-trust-blue">support_agent</span>
+<span class="text-sm font-bold text-slate-700">No-Shame Support</span>
+</div>
+</div>
+</div>
+<div class="relative order-1 lg:order-2 h-[400px] md:h-[500px] w-full bg-white rounded-2xl border-2 border-slate-100 shadow-2xl overflow-hidden flex flex-col md:flex-row">
+<div class="w-full h-1/2 md:h-full md:w-1/2 bg-slate-100 relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDtQKGMpdGvs-XNdCrSQpU5CB49NB_7VGYKi3LhiywGBlYBDqJgAEo2yR0t0dkncjmj5uT6o12Y2VGvfnmvzX3PbLEKE3r6Xh4weDjStxm1lcxIu0xSWaiof2qZY0EI7QRGhRTc54boUfrvbgI8COi_YcpbCpoUtv_Xcnfkzq5XO6vVYtYfMjJxzWkxWn2cZbx_z1Q74Xn0M-IG4LEejeNbkyGwxuuPxDV0dzUMQg30ZcVioSlzRtlKMy3Wqj2HJxmtUpbN1RPpXw"); filter: grayscale(20%) contrast(110%);'></div>
+<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+<p class="text-white text-sm font-medium">"My ledger matches the machine. Every time."</p>
+</div>
+</div>
+<div class="w-full h-1/2 md:h-full md:w-1/2 bg-slate-50 relative p-6 flex flex-col justify-center items-center machine-panel border-b-2 md:border-b-0 md:border-r-2 border-slate-100">
+<div class="relative w-48 h-40 bg-white rounded-xl border-2 border-slate-300 shadow-lg flex flex-col items-center justify-end pb-2 mb-4">
+<div class="absolute -top-6 w-full flex justify-center">
+<div class="w-24 h-12 bg-gray-200 rounded-t-full border-2 border-b-0 border-slate-300"></div> 
+</div>
+<div class="w-32 h-16 bg-black rounded mb-2 flex items-center justify-center border-2 border-slate-600">
+<span class="digital-display text-digital-green text-xl">4.5 FAT</span>
+</div>
+<div class="w-full h-2 bg-slate-100 mt-1 border-t border-slate-200"></div>
+</div>
+<div class="h-8 w-1 bg-slate-300"></div>
+<div class="w-40 h-28 bg-white border-4 border-slate-800 rounded-lg shadow-xl flex flex-col overflow-hidden relative">
+<div class="bg-trust-blue h-4 w-full"></div>
+<div class="p-2 flex flex-col gap-1">
+<div class="h-2 w-1/2 bg-slate-200 rounded"></div>
+<div class="flex justify-between mt-2">
+<span class="text-[10px] font-bold text-slate-500">FAT</span>
+<span class="text-[10px] font-mono font-bold text-digital-green bg-black px-1 rounded">4.5</span>
+</div>
+<div class="flex justify-between">
+<span class="text-[10px] font-bold text-slate-500">SNF</span>
+<span class="text-[10px] font-mono font-bold text-digital-green bg-black px-1 rounded">8.7</span>
+</div>
+</div>
+<div class="absolute bottom-2 right-2 size-2 bg-green-500 rounded-full animate-ping"></div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-12 border-y border-dashed border-slate-300">
+<div class="text-center mb-10">
+<h2 class="text-3xl font-bold text-slate-900 mb-2">The Visual Audit</h2>
+<p class="text-slate-500">See the difference between guesswork and guarantee.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+<div class="relative group">
+<div class="absolute -top-3 -left-3 bg-alert-red text-white text-xs font-bold px-3 py-1 rounded shadow-md z-10 uppercase tracking-wide">Chori-prone</div>
+<div class="bg-[#fdfbf7] p-6 rounded-lg border border-slate-200 shadow-sm rotate-[-1deg] h-full flex flex-col items-center">
+<div class="font-handwriting text-slate-800 text-lg italic mb-4 w-full font-serif opacity-80 leading-loose" style="background-image: linear-gradient(#999 1px, transparent 1px); background-size: 100% 2rem; line-height: 2rem;">
+                                Ramu Kaka - 5.2 Lt<br/>
+<span class="line-through decoration-red-500 decoration-2">Fat: 3.2</span> 3.5??<br/>
+                                Total: <span class="bg-yellow-100 px-1">₹185</span> (check later)
+                            </div>
+<p class="text-xs text-alert-red font-medium mt-auto flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">warning</span> 
+                                Manual overwrites detected
+                            </p>
+</div>
+</div>
+<div class="relative group">
+<div class="absolute -top-3 -right-3 bg-digital-green text-white text-xs font-bold px-3 py-1 rounded shadow-md z-10 uppercase tracking-wide">Locked Record</div>
+<div class="bg-white p-0 rounded-lg border-2 border-slate-200 shadow-machine h-full flex flex-col overflow-hidden">
+<div class="bg-slate-50 border-b border-slate-100 p-3 flex justify-between items-center">
+<span class="font-mono text-xs text-slate-500">ID: #TX-9928</span>
+<span class="material-symbols-outlined text-slate-400 text-sm">lock</span>
+</div>
+<div class="p-6 font-mono text-sm space-y-3">
+<div class="flex justify-between border-b border-dashed border-slate-100 pb-2">
+<span class="text-slate-500">Farmer</span>
+<span class="font-bold">Ramu Kaka</span>
+</div>
+<div class="flex justify-between border-b border-dashed border-slate-100 pb-2">
+<span class="text-slate-500">Volume</span>
+<span class="font-bold">5.20 L</span>
+</div>
+<div class="flex justify-between border-b border-dashed border-slate-100 pb-2">
+<span class="text-slate-500">Fat/SNF</span>
+<span class="font-bold text-trust-blue">3.2 / 8.5</span>
+</div>
+<div class="flex justify-between pt-2 bg-green-50/50 -mx-6 px-6 py-2 mt-2">
+<span class="text-green-700 font-bold">Payout</span>
+<span class="font-bold text-green-700">₹168.40</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-slate-900 rounded-2xl p-8 md:p-12 text-white relative overflow-hidden shadow-2xl">
+<div class="absolute top-0 right-0 w-96 h-96 bg-trust-blue/20 rounded-full blur-[100px]"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-center gap-10">
+<div class="flex-1 space-y-6">
+<h3 class="text-3xl font-bold">Try the Kiosk Flow</h3>
+<p class="text-slate-300 text-lg">Experience the 3-second intake process. Click below to simulate a milk collection entry.</p>
+<button class="bg-digital-green hover:bg-green-400 text-black font-bold py-3 px-6 rounded shadow-[0_0_20px_rgba(0,217,90,0.4)] transition-all transform active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined">play_arrow</span>
+                            Start Simulation
+                        </button>
+</div>
+<div class="flex-1 w-full max-w-md bg-white text-slate-900 rounded-xl overflow-hidden shadow-2xl border-4 border-slate-700">
+<div class="bg-trust-blue text-white p-3 flex justify-between items-center">
+<span class="font-bold text-sm">Collection Mode</span>
+<span class="text-xs opacity-80">10:42 AM</span>
+</div>
+<div class="p-6 flex flex-col gap-4 bg-slate-50 h-[240px] justify-center items-center">
+<div class="text-center space-y-2">
+<p class="text-slate-500 text-sm uppercase font-bold tracking-widest">Pour Milk Now</p>
+<span class="material-symbols-outlined text-6xl text-slate-300 animate-bounce">move_down</span>
+</div>
+<div class="w-full bg-slate-200 rounded-full h-2 mt-4 overflow-hidden">
+<div class="bg-trust-blue h-full w-0 animate-[width_2s_ease-in-out_infinite]"></div>
+</div>
+<p class="text-xs text-slate-400 font-mono">Waiting for Scale input...</p>
+</div>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="flex flex-col gap-4 p-6 bg-white rounded-xl border border-slate-100 shadow-machine hover:shadow-lg transition-shadow">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-blue-50 text-trust-blue rounded-lg">
+<span class="material-symbols-outlined text-3xl">water_bottle</span>
+</div>
+<span class="material-symbols-outlined text-4xl text-digital-green">check_circle</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900">Bottle Management</h3>
+<p class="text-slate-600 text-sm leading-relaxed">
+                        Track every sample bottle. Auto-assign QR codes to sample bottles linking them digitally to the farmer instantly.
+                    </p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-white rounded-xl border border-slate-100 shadow-machine hover:shadow-lg transition-shadow">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-blue-50 text-trust-blue rounded-lg">
+<span class="material-symbols-outlined text-3xl">scale</span>
+</div>
+<span class="material-symbols-outlined text-4xl text-digital-green">check_circle</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900">Scale Interlock</h3>
+<p class="text-slate-600 text-sm leading-relaxed">
+                        The system refuses to save the record until the scale weight stabilizes. Zero discrepancy guarantee.
+                    </p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-white rounded-xl border border-slate-100 shadow-machine hover:shadow-lg transition-shadow">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-blue-50 text-trust-blue rounded-lg">
+<span class="material-symbols-outlined text-3xl">print</span>
+</div>
+<span class="material-symbols-outlined text-4xl text-digital-green">check_circle</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900">Instant Receipt</h3>
+<p class="text-slate-600 text-sm leading-relaxed">
+                        Thermal printers fire the second the entry is saved. Farmers walk away with a slip before the milk hits the chiller.
+                    </p>
+</div>
+</section>
+<div class="py-6">
+<div class="w-full overflow-hidden rounded-xl border-2 border-slate-200 shadow-sm">
+<div class="bg-slate-50 p-4 border-b border-slate-200 flex justify-between items-center">
+<h3 class="font-bold text-slate-700">Cost Breakdown</h3>
+<span class="bg-trust-blue text-white text-xs font-bold px-2 py-1 rounded">SMART PLAN</span>
+</div>
+<table class="w-full text-left text-sm">
+<thead class="bg-white text-slate-500 font-mono uppercase text-xs">
+<tr>
+<th class="p-4 border-b border-slate-100">Component</th>
+<th class="p-4 border-b border-slate-100 hidden sm:table-cell">Details</th>
+<th class="p-4 border-b border-slate-100 text-right">Investment (Yearly)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 bg-white">
+<tr>
+<td class="p-4 font-bold text-slate-900">Software License</td>
+<td class="p-4 text-slate-600 hidden sm:table-cell">Cloud platform + Farmer App</td>
+<td class="p-4 text-right font-mono text-slate-900">₹6,000</td>
+</tr>
+<tr>
+<td class="p-4 font-bold text-slate-900">Hardware Driver</td>
+<td class="p-4 text-slate-600 hidden sm:table-cell">Universal Connector (Essae, Prompt, etc.)</td>
+<td class="p-4 text-right font-mono text-slate-900">₹3,000</td>
+</tr>
+<tr>
+<td class="p-4 font-bold text-slate-900">On-site Config</td>
+<td class="p-4 text-slate-600 hidden sm:table-cell">2 visits/year for calibration</td>
+<td class="p-4 text-right font-mono text-slate-900">₹5,000</td>
+</tr>
+<tr class="bg-slate-50">
+<td class="p-4 font-bold text-trust-blue text-lg">Total</td>
+<td class="p-4 hidden sm:table-cell"></td>
+<td class="p-4 text-right font-bold text-trust-blue font-mono text-lg">₹14,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="mt-4 text-xs text-slate-400 text-center font-mono">
+                    * Hardware (Scales, Analyzers) sold separately. Prices excl. GST.
+                </p>
+</div>
+<div class="flex flex-col items-center justify-center gap-6 py-12 border-t border-slate-200">
+<h2 class="text-2xl font-bold text-slate-900">Ready to install?</h2>
+<button class="group relative flex items-center justify-center rounded-lg bg-trust-blue text-white font-bold text-lg px-12 py-4 shadow-heavy-3d hover:translate-y-[2px] hover:shadow-heavy-3d-active active:translate-y-[4px] active:shadow-none transition-all w-full md:w-auto">
+                    Get Smart Plan Now
+                </button>
+<p class="text-sm text-slate-500">Or call <span class="font-bold text-slate-900">+91 9900 0000</span> for sales.</p>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

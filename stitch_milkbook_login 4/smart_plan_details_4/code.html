@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smart Plan: Legacy &amp; Tech Edition - MilkRecord</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Khand:wght@300;400;500;600;700&amp;family=Hind:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#fb6c0e",
+                        "secondary": "#2B4C6F",
+                        "cream-light": "#fdfbf7",
+                        "cream-dark": "#f0ede6",
+                        "blue-soft": "#eef4f8",
+                        "accent-blue": "#3d7a9e",
+                    },
+                    fontFamily: {
+                        "display": ["Khand", "sans-serif"],
+                        "body": ["Hind", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .bg-pattern {
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .wheat-pattern {
+             background-color: #fdfbf7;
+             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e5e1d8' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-cream-light font-body text-slate-800 min-h-screen flex flex-col wheat-pattern">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-orange-100 bg-cream-light/95 backdrop-blur-md px-6 md:px-10 py-4 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="size-10 text-primary flex items-center justify-center bg-orange-50 rounded-full">
+<span class="material-symbols-outlined text-3xl">water_drop</span>
+</div>
+<h2 class="text-secondary text-2xl font-display font-bold leading-tight tracking-tight">MilkRecord</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-8">
+<a class="text-slate-600 hover:text-primary transition-colors text-base font-semibold" href="#">Home</a>
+<a class="text-primary font-bold text-base border-b-2 border-primary" href="#">Smart Plan</a>
+<a class="text-slate-600 hover:text-primary transition-colors text-base font-semibold" href="#">Hardware</a>
+<a class="text-slate-600 hover:text-primary transition-colors text-base font-semibold" href="#">Support</a>
+</div>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-white border border-slate-200 hover:border-primary hover:text-primary transition-all text-slate-700 text-sm font-bold shadow-sm">
+<span class="truncate">VLCC Login</span>
+</button>
+</div>
+</header>
+<main class="flex-1 flex justify-center w-full">
+<div class="layout-content-container flex flex-col max-w-[1280px] flex-1 px-4 md:px-8 py-8 gap-16">
+<div class="@container">
+<div class="flex flex-col-reverse lg:flex-row gap-10 items-center">
+<div class="flex flex-col gap-6 lg:w-1/2 text-left">
+<div class="inline-flex w-fit items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-1.5">
+<span class="material-symbols-outlined text-sm text-accent-blue">diversity_3</span>
+<span class="text-sm font-bold uppercase tracking-wider text-accent-blue font-display">Trusted by 5,000+ Families</span>
+</div>
+<h1 class="text-secondary text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.1] tracking-tight">
+                                    Your Legacy,<br/>
+<span class="text-primary">Secured by Technology</span>
+</h1>
+<p class="text-slate-600 text-lg md:text-xl font-medium leading-relaxed max-w-[580px]">
+                                    Empower the next generation. The Smart Plan brings precision to your dairy business, so you can focus on what matters most—passing down prosperity.
+                                </p>
+<div class="flex flex-col sm:flex-row gap-4 mt-2">
+<button class="flex w-full sm:w-auto min-w-[200px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary hover:bg-orange-600 transition-all text-white text-lg font-bold font-display shadow-lg shadow-orange-500/30 hover:scale-105 transform">
+                                        Start 30-Day Free Trial
+                                    </button>
+<button class="flex w-full sm:w-auto min-w-[200px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 border-2 border-slate-200 hover:border-secondary hover:text-secondary bg-white transition-colors text-slate-600 text-lg font-bold font-display">
+                                        View Pricing
+                                    </button>
+</div>
+<p class="text-sm text-slate-500 mt-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-green-600 text-lg">check_circle</span> No credit card required for trial
+                                </p>
+</div>
+<div class="w-full lg:w-1/2 flex justify-center relative">
+<div class="absolute inset-0 bg-orange-100 rounded-full blur-[80px] opacity-60 translate-x-10 translate-y-10"></div>
+<div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border-4 border-white transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
+<img alt="Indian youth teaching father how to use mobile app in rural setting" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA27gUcc1-MklS6r4k8NbZwpqESGlyCzS_eLU1ETwC1Cx-3sQV5WSV1bGcGNW-14i72saXuvVQ3m2tXD8rV6dl1YUtx59KlB9H-XrGIpAwzek9lQ4XpgAqCPUBGNKHm7g2UGr0DqhSJe2g2_fyU7QppZVoHc4Z7O7NNbISvdQX62gSzENYNh6REgSRHSNx75fx4ySwKuOarCwNTFwqh74Xj2DUUAeD88JWiI3_FWUZGcZK24vLf-9t8ms6XCXA1k3ouSYwmc9FHng"/>
+<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 pt-20">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-primary font-bold shadow-lg">₹</div>
+<div>
+<p class="text-white font-bold font-display text-lg">Automated Payouts</p>
+<p class="text-white/80 text-sm">Transparency in every drop</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="py-10">
+<div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
+<div>
+<h2 class="text-secondary text-4xl font-display font-bold mb-3">Hardware Spotlight</h2>
+<p class="text-slate-600 text-lg max-w-2xl">Seamlessly integrated with industry-leading milk analyzers and weighing scales. Plug, play, and pour.</p>
+</div>
+<a class="text-primary font-bold hover:underline decoration-2 underline-offset-4 flex items-center gap-1" href="#">
+                                View Full Compatibility List <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-9xl">science</span>
+</div>
+<div class="flex flex-col h-full relative z-10">
+<div class="bg-blue-50 text-secondary w-fit px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider mb-4">Analyzer Integration</div>
+<div class="flex-1 flex items-center justify-center py-6">
+<img alt="Ekomilk Analyzer Machine" class="h-48 object-contain drop-shadow-lg transform group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpje9x0Eg_OmBXsHoggQjibeWpi7OMNpjMi9gM1-lLPCejCmEQXcsfNHdS14117fugrY3NjgQzectGS-KKaFf69w6nbATT7kHV2STdMma1XINOjHQgOmWmmvyLZxQrtpxoKm6gnAuN1RQQAGy9TxhY9vfK5yh7HaG46ArV61Xj8jatie1E8ssSmz4hwa6nHSY6pyNWNnB-bZ5TyUcH7nxHns2yLP7Af5RHLPstKXGcJhCrst1WntlOjfaYd8NFrR8kUMs3jYrnSQ"/>
+</div>
+<div class="mt-4">
+<h3 class="text-2xl font-display font-bold text-slate-800">Ekomilk Ultra Pro</h3>
+<p class="text-slate-500 mt-2">Auto-captures FAT &amp; SNF in &lt; 30 seconds. Eliminate manual data entry errors instantly.</p>
+<div class="mt-4 flex gap-2">
+<span class="px-2 py-1 bg-slate-100 rounded text-xs font-semibold text-slate-600">USB Conn.</span>
+<span class="px-2 py-1 bg-slate-100 rounded text-xs font-semibold text-slate-600">Real-time Sync</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-9xl">scale</span>
+</div>
+<div class="flex flex-col h-full relative z-10">
+<div class="bg-orange-50 text-primary w-fit px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider mb-4">Weighing Integration</div>
+<div class="flex-1 flex items-center justify-center py-6">
+<img alt="Essae Weighing Scale" class="h-48 object-contain drop-shadow-lg transform group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCEdhpRSPxUAiTd8Gpo2bmyMkbtRzGMmCgEW8mX1fq2TaWIfzibMn9nEegus632lg36IfvaNZUFGqnjHZYcX1Nf0g9N_u6flMkSc3f2KoYiEuOunOje_FeUaL0wwYl2Fc9hvhp1Prqz9uB7C1pIE_nqK_zw_TYYwskFvbt0CNTuCCB9yiw-j7d3U07OXNW7UdAFMiP8GicMkTpUvbYwILwwZgcv7c7DQLFrYPgm61T_lZ0XYyE_unQ8TKAxmujHQhzK3M59BHDrw"/>
+</div>
+<div class="mt-4">
+<h3 class="text-2xl font-display font-bold text-slate-800">Essae DS-215</h3>
+<p class="text-slate-500 mt-2">Precision weighing up to 0.01kg accuracy. Rugged design built for humid dairy environments.</p>
+<div class="mt-4 flex gap-2">
+<span class="px-2 py-1 bg-slate-100 rounded text-xs font-semibold text-slate-600">RS-232</span>
+<span class="px-2 py-1 bg-slate-100 rounded text-xs font-semibold text-slate-600">Water Resistant</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-blue-soft rounded-3xl p-8 md:p-12 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+<div class="relative z-10 flex flex-col lg:flex-row items-center gap-12">
+<div class="flex-1 text-center lg:text-left">
+<h2 class="text-secondary text-4xl font-display font-bold mb-4">The Transparency Guarantee</h2>
+<p class="text-slate-600 text-lg mb-8 leading-relaxed">
+                                    In the past, trust was handshake-based. Today, it's digital. Watch every drop of milk convert instantly into rupees on the farmer's screen. No hidden calculations, no disputes.
+                                </p>
+<ul class="space-y-4 text-left inline-block">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+<span class="font-bold text-slate-700">Digital Receipts via SMS</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">history</span>
+<span class="font-bold text-slate-700">10-Year Historical Data Access</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">account_balance</span>
+<span class="font-bold text-slate-700">Direct Bank Transfer Integration</span>
+</li>
+</ul>
+</div>
+<div class="flex-1 flex justify-center items-center">
+<div class="relative w-64 h-64">
+<div class="absolute inset-0 bg-white rounded-full shadow-2xl flex items-center justify-center animate-pulse">
+<div class="text-center">
+<span class="material-symbols-outlined text-6xl text-blue-400 mb-2 block">water_drop</span>
+<span class="material-symbols-outlined text-4xl text-slate-300 block">arrow_downward</span>
+<span class="text-6xl font-bold text-primary block mt-2">₹</span>
+</div>
+</div>
+<div class="absolute inset-0 border-4 border-blue-200 rounded-full scale-110 opacity-50"></div>
+<div class="absolute inset-0 border-2 border-orange-200 rounded-full scale-125 opacity-30"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="py-6">
+<h2 class="text-secondary text-3xl font-display font-bold mb-6 text-center md:text-left">Investment Breakdown</h2>
+<div class="w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+<table class="w-full text-left text-sm">
+<thead class="bg-slate-50 text-slate-800 font-display font-bold text-base">
+<tr>
+<th class="p-5 border-b border-slate-200 w-1/3">Component</th>
+<th class="p-5 border-b border-slate-200 hidden sm:table-cell">Benefits</th>
+<th class="p-5 border-b border-slate-200 text-right">Cost (Yearly)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 text-base">
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="p-5 font-bold text-secondary">Smart License</td>
+<td class="p-5 text-slate-600 hidden sm:table-cell">Full cloud platform, Farmer App, Unlimited Users</td>
+<td class="p-5 text-right font-medium text-slate-800">₹6,000</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="p-5 font-bold text-secondary">Hardware Connector</td>
+<td class="p-5 text-slate-600 hidden sm:table-cell">Drivers for Essae/Ekomilk + Cable Kit</td>
+<td class="p-5 text-right font-medium text-slate-800">₹3,000</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="p-5 font-bold text-secondary">On-site Setup</td>
+<td class="p-5 text-slate-600 hidden sm:table-cell">Engineer visit for installation &amp; training</td>
+<td class="p-5 text-right font-medium text-slate-800">₹5,000</td>
+</tr>
+<tr class="bg-orange-50/50">
+<td class="p-5 font-bold text-primary text-lg">Total Smart Plan</td>
+<td class="p-5 hidden sm:table-cell text-primary/70 italic">Everything you need to automate</td>
+<td class="p-5 text-right font-bold text-primary text-xl">₹14,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="mt-4 text-xs text-slate-400 text-center sm:text-left italic">
+                            * Hardware machines (Scales, Analyzers) sold separately. Plan covers software &amp; integration only.
+                        </p>
+</div>
+<div class="rounded-3xl bg-secondary text-white p-10 md:p-16 relative overflow-hidden text-center">
+<div class="absolute top-0 right-0 w-96 h-96 bg-accent-blue/30 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+<div class="absolute bottom-0 left-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"></div>
+<div class="relative z-10 max-w-3xl mx-auto flex flex-col items-center gap-6">
+<span class="inline-block p-3 rounded-full bg-white/10 text-primary mb-2 border border-white/10">
+<span class="material-symbols-outlined text-4xl">touch_app</span>
+</span>
+<h2 class="text-4xl md:text-5xl font-display font-bold leading-tight">Test Drive the Future</h2>
+<p class="text-blue-100 text-lg md:text-xl leading-relaxed">
+                                Experience the speed of automated collection right now. Try our interactive full-screen demo that simulates a morning milk collection cycle.
+                            </p>
+<button class="mt-4 flex min-w-[240px] cursor-pointer items-center justify-center rounded-lg h-16 px-8 bg-primary hover:bg-orange-600 transition-all text-white text-xl font-bold font-display shadow-xl hover:shadow-2xl hover:-translate-y-1">
+                                Launch Interactive Demo
+                                <span class="material-symbols-outlined ml-2">play_arrow</span>
+</button>
+<p class="text-sm text-blue-200/60 mt-4">No download required • Works on all devices</p>
+</div>
+</div>
+</div>
+</main>
+<footer class="border-t border-slate-200 bg-white py-12 px-10 mt-12">
+<div class="layout-content-container max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3 opacity-80">
+<div class="size-8 text-slate-400 flex items-center justify-center bg-slate-100 rounded-full">
+<span class="material-symbols-outlined text-xl">water_drop</span>
+</div>
+<span class="text-slate-500 font-display font-bold text-lg">MilkRecord</span>
+</div>
+<p class="text-slate-400 text-sm">© 2024 MilkRecord Technologies Pvt Ltd. All rights reserved.</p>
+</div>
+</footer>
+</div>
+</div>
+
+</body></html>

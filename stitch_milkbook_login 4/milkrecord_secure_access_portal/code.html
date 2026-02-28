@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkRecord Secure Access Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0a63bd",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .pattern-bg {
+            background-color: #f5f7f8;
+            background-image: radial-gradient(#0a63bd 0.5px, transparent 0.5px), radial-gradient(#0a63bd 0.5px, #f5f7f8 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            opacity: 1;
+        }
+        .dark .pattern-bg {
+            background-color: #101922;
+            background-image: radial-gradient(#0a63bd 0.5px, transparent 0.5px), radial-gradient(#0a63bd 0.5px, #101922 0.5px);
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 py-4 bg-white dark:bg-slate-900 sticky top-0 z-50">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">water_drop</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">MilkRecord</h2>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-primary/10 hover:bg-primary/20 text-primary text-sm font-bold leading-normal transition-colors">
+<span class="truncate">Register your Dairy</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 pattern-bg relative flex flex-col items-center justify-center p-4 sm:p-8">
+<!-- Background Overlay for readability -->
+<div class="absolute inset-0 bg-white/50 dark:bg-slate-900/80 backdrop-blur-[2px]"></div>
+<div class="relative w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+<!-- Left Side: Hero / Context -->
+<div class="hidden lg:flex flex-col justify-center gap-6 p-8">
+<h1 class="text-5xl font-black text-slate-900 dark:text-white leading-[1.1]">
+                    Dairy management <br/>
+<span class="text-primary">simplified.</span>
+</h1>
+<p class="text-lg text-slate-600 dark:text-slate-300 max-w-md leading-relaxed">
+                    Securely access your collection data, manage farmer payouts, and track quality metrics in real-time.
+                </p>
+<div class="flex gap-4 mt-4">
+<div class="flex items-center gap-2 bg-white dark:bg-slate-800 p-3 rounded-lg shadow-sm border border-slate-100 dark:border-slate-700">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+<span class="text-sm font-medium">Secure Access</span>
+</div>
+<div class="flex items-center gap-2 bg-white dark:bg-slate-800 p-3 rounded-lg shadow-sm border border-slate-100 dark:border-slate-700">
+<span class="material-symbols-outlined text-primary">bolt</span>
+<span class="text-sm font-medium">Fast Login</span>
+</div>
+</div>
+</div>
+<!-- Right Side: Login Card -->
+<div class="w-full max-w-md mx-auto lg:mx-0 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+<div class="p-8 flex flex-col gap-8">
+<div class="text-center">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">Welcome Back</h2>
+<p class="text-slate-500 dark:text-slate-400 mt-2">Choose your preferred login method</p>
+</div>
+<!-- Option 1: WhatsApp Login -->
+<div class="flex flex-col gap-4">
+<label class="flex flex-col gap-2">
+<span class="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Login with WhatsApp</span>
+<div class="flex w-full items-stretch rounded-xl h-12 ring-1 ring-slate-200 dark:ring-slate-600 focus-within:ring-2 focus-within:ring-primary transition-shadow bg-slate-50 dark:bg-slate-900 overflow-hidden">
+<div class="flex items-center justify-center pl-4 pr-2 text-slate-400 dark:text-slate-500 border-r border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined">call</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 resize-none bg-transparent border-none text-slate-900 dark:text-white focus:ring-0 placeholder:text-slate-400 h-full px-3 text-base" placeholder="Phone number" type="tel"/>
+</div>
+</label>
+<button class="flex w-full cursor-pointer items-center justify-center rounded-xl h-12 px-6 bg-[#25D366] hover:bg-[#20bd5a] text-white text-base font-bold transition-colors gap-2 shadow-sm">
+<span class="material-symbols-outlined text-xl">chat</span>
+<span>Get OTP on WhatsApp</span>
+</button>
+</div>
+<div class="relative flex py-2 items-center">
+<div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+<span class="flex-shrink-0 mx-4 text-slate-400 text-sm font-medium">OR</span>
+<div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+</div>
+<!-- Option 2: PIN Login -->
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-center px-1">
+<span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Login with PIN</span>
+<a class="text-xs text-primary font-medium hover:underline" href="#">Forgot PIN?</a>
+</div>
+<button class="group flex w-full cursor-pointer items-center justify-between rounded-xl h-14 px-4 bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary transition-all">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">lock</span>
+</div>
+<span class="text-slate-600 dark:text-slate-300 font-medium">Enter 4-digit PIN</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="bg-slate-50 dark:bg-slate-900/50 p-4 text-center border-t border-slate-200 dark:border-slate-700">
+<p class="text-sm text-slate-500 dark:text-slate-400">
+                        Need help? <a class="text-primary font-bold hover:underline" href="#">Contact Support</a>
+</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="relative z-10 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+<div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+<div class="flex flex-col gap-1">
+<span class="text-slate-900 dark:text-white font-bold text-lg">MilkRecord</span>
+<p class="text-slate-500 dark:text-slate-400 text-sm">© 2024 MilkRecord. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary text-sm font-medium transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary text-sm font-medium transition-colors" href="#">Terms of Service</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary text-sm font-medium transition-colors" href="#">VLCC Guidelines</a>
+</div>
+</div>
+</footer>
+</body></html>

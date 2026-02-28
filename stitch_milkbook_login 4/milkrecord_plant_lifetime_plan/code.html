@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkRecord Plant Lifetime Plan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#ec6a13",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221710",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light text-[#181411] font-display min-h-screen flex flex-col antialiased">
+<!-- Navbar -->
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 bg-white/90 backdrop-blur-md px-6 py-3 lg:px-10">
+<div class="flex items-center gap-3 text-[#181411]">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined text-[32px]">local_drink</span>
+</div>
+<h2 class="text-[#181411] text-xl font-bold leading-tight tracking-tight">MilkRecord</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="hidden items-center gap-8 md:flex">
+<a class="text-slate-600 hover:text-primary text-sm font-medium transition-colors" href="#">Home</a>
+<a class="text-slate-600 hover:text-primary text-sm font-medium transition-colors" href="#">Features</a>
+<a class="text-slate-600 hover:text-primary text-sm font-medium transition-colors" href="#">Pricing</a>
+<a class="text-slate-600 hover:text-primary text-sm font-medium transition-colors" href="#">Support</a>
+<a class="text-slate-600 hover:text-primary text-sm font-medium transition-colors" href="#">Login</a>
+</nav>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-primary hover:bg-orange-700 transition-colors text-white text-sm font-bold leading-normal tracking-wide shadow-md">
+<span class="truncate">Get Lifetime Access</span>
+</button>
+</div>
+</header>
+<!-- Hero Section -->
+<div class="@container w-full">
+<div class="p-4 lg:p-6">
+<div class="relative flex min-h-[560px] flex-col gap-6 overflow-hidden rounded-2xl bg-cover bg-center bg-no-repeat items-center justify-center p-6 text-center shadow-xl" data-alt="Modern dairy plant interior with stainless steel tanks" style='background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuAZNzDBJwzXT6F3ffyOZyuSwr-I75hSjhwWYZST03vWddr0_kIbgpQg0p9-NjRHOFYmNPAv5CUECmGdl4vW0b5QSCMe-3GXhYsnUuF4UlsxpyU0pOoamjWa0zc77HPpqbg7OZn7nWXfiO9T8_Dx1MD0qqOpwRehvYmKHzutnO63AeahaewXEviK0H0iEwLGfXi8MF5TcwDzGBSR_w473YgYQAhixTPhI5bY4zRPGkvNTvJlKA7ooQrVPMr2UCiRRhUaZcnzeQPziA");'>
+<div class="absolute top-6 right-6 lg:top-10 lg:right-10 animate-pulse">
+<span class="inline-flex items-center gap-1 rounded-full bg-yellow-400 px-4 py-2 text-xs font-black uppercase tracking-wider text-black shadow-lg ring-4 ring-yellow-400/30">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+                        Limited 25 Slots
+                    </span>
+</div>
+<div class="flex max-w-3xl flex-col gap-4">
+<span class="text-yellow-400 font-bold tracking-widest uppercase text-sm">Early Adopter Offer</span>
+<h1 class="text-white text-4xl font-black leading-tight tracking-tight md:text-6xl drop-shadow-lg">
+                        LIFETIME LICENSE FOR<br/><span class="text-primary">DAIRY PLANTS</span>
+</h1>
+<h2 class="text-slate-200 text-lg font-normal leading-relaxed md:text-xl max-w-2xl mx-auto">
+                        Secure the future of your dairy plant with a one-time investment. Stop paying monthly fees and own your digital infrastructure forever.
+                    </h2>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 mt-4 w-full justify-center">
+<button class="flex w-full sm:w-auto min-w-[200px] cursor-pointer items-center justify-center rounded-xl h-12 px-8 bg-primary hover:bg-orange-600 transition-all text-white text-base font-bold shadow-lg hover:shadow-orange-500/20 transform hover:-translate-y-0.5">
+                        Get Early Access
+                    </button>
+<button class="flex w-full sm:w-auto min-w-[200px] cursor-pointer items-center justify-center rounded-xl h-12 px-8 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white text-base font-bold transition-all">
+                        View Demo
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<main class="layout-container flex flex-col items-center w-full px-4 md:px-10 pb-20">
+<div class="layout-content-container flex flex-col max-w-[1200px] w-full gap-16">
+<!-- Value Props Grid -->
+<div class="flex flex-col gap-10 pt-10">
+<div class="flex flex-col gap-4 text-center items-center">
+<h2 class="text-[#181411] tracking-tight text-3xl font-bold md:text-4xl max-w-[720px]">
+                        Why Choose MilkRecord Plant?
+                    </h2>
+<p class="text-slate-600 text-lg font-normal leading-relaxed max-w-[600px]">
+                        Designed for reliability, efficiency, and compliance. Built specifically for the modern Indian dairy industry infrastructure.
+                    </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Feature 1 -->
+<div class="group flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-8 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
+<div class="size-14 rounded-full bg-orange-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[32px]">factory</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-[#181411] text-xl font-bold">Core Software Forever</h3>
+<p class="text-slate-600 text-base leading-relaxed">One-time purchase gives you the core operational software forever without recurring monthly subscription fees.</p>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="group flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-8 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
+<div class="size-14 rounded-full bg-orange-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[32px] filled">vpn_key</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-[#181411] text-xl font-bold">Golden Key Access</h3>
+<p class="text-slate-600 text-base leading-relaxed">Own your data completely. Our 'Golden Key' license structure ensures you are never locked out of your own business data.</p>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="group flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-8 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
+<div class="size-14 rounded-full bg-orange-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[32px]">shield</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-[#181411] text-xl font-bold">Audit Ready Logs</h3>
+<p class="text-slate-600 text-base leading-relaxed">Full audit logs and automated government report formats built-in. Be ready for any inspection at any time.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Pricing Section -->
+<div class="flex flex-col gap-8">
+<div class="flex items-center justify-between border-b border-slate-200 pb-4">
+<h2 class="text-[#181411] text-2xl font-bold tracking-tight">Select Your Capacity</h2>
+<span class="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">One-time Payment</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Small Plant -->
+<div class="relative flex flex-col gap-6 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<h3 class="text-slate-900 text-lg font-bold">Small Plant</h3>
+<span class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Startup</span>
+</div>
+<div class="flex items-baseline gap-1 mt-2">
+<span class="text-[#181411] text-4xl font-black tracking-tight">₹75k</span>
+<span class="text-slate-500 text-sm font-medium">/ lifetime</span>
+</div>
+<p class="text-sm text-slate-500">Perfect for new collection centers.</p>
+</div>
+<div class="space-y-4 flex-1">
+<div class="flex items-start gap-3 text-sm text-slate-700">
+<span class="material-symbols-outlined text-green-600 text-[20px]">check_circle</span>
+<span>300 - 1,000 LPD Capacity</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700">
+<span class="material-symbols-outlined text-green-600 text-[20px]">check_circle</span>
+<span>Core Software License</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700">
+<span class="material-symbols-outlined text-green-600 text-[20px]">check_circle</span>
+<span>Basic Lab Entry Module</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700">
+<span class="material-symbols-outlined text-green-600 text-[20px]">check_circle</span>
+<span>Standard Email Support</span>
+</div>
+</div>
+<button class="w-full cursor-pointer rounded-xl h-12 bg-slate-100 hover:bg-slate-200 text-slate-900 text-sm font-bold transition-colors">
+                            Select Small
+                        </button>
+</div>
+<!-- Mid Plant -->
+<div class="relative flex flex-col gap-6 rounded-2xl border-2 border-primary bg-white p-8 shadow-xl scale-105 z-10">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wide shadow-sm">
+                            Most Popular
+                        </div>
+<div class="flex flex-col gap-2 mt-2">
+<div class="flex items-center justify-between">
+<h3 class="text-primary text-lg font-bold">Mid Plant</h3>
+</div>
+<div class="flex items-baseline gap-1 mt-2">
+<span class="text-[#181411] text-4xl font-black tracking-tight">₹1.5L</span>
+<span class="text-slate-500 text-sm font-medium">/ lifetime</span>
+</div>
+<p class="text-sm text-slate-500">For growing regional dairies.</p>
+</div>
+<div class="space-y-4 flex-1">
+<div class="flex items-start gap-3 text-sm text-slate-700 font-medium">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span>1,000 - 5,000 LPD Capacity</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700 font-medium">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span>Core Software License</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700 font-medium">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span>Lab Entry &amp; Dock Collection</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700 font-medium">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span>Govt Report Format Export</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700 font-medium">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span>Priority Phone Support</span>
+</div>
+</div>
+<button class="w-full cursor-pointer rounded-xl h-12 bg-primary hover:bg-orange-700 text-white text-sm font-bold shadow-md shadow-primary/20 transition-colors">
+                            Get Mid Plan
+                        </button>
+</div>
+<!-- Large Plant -->
+<div class="relative flex flex-col gap-6 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<h3 class="text-slate-900 text-lg font-bold">Large Plant</h3>
+<span class="bg-slate-900 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Enterprise</span>
+</div>
+<div class="flex items-baseline gap-1 mt-2">
+<span class="text-[#181411] text-4xl font-black tracking-tight">₹3.5L</span>
+<span class="text-slate-500 text-sm font-medium">/ lifetime</span>
+</div>
+<p class="text-sm text-slate-500">Full scale industrial operations.</p>
+</div>
+<div class="space-y-4 flex-1">
+<div class="flex items-start gap-3 text-sm text-slate-700">
+<span class="material-symbols-outlined text-slate-900 text-[20px]">check_circle</span>
+<span>5,000+ LPD Unlimited</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700">
+<span class="material-symbols-outlined text-slate-900 text-[20px]">check_circle</span>
+<span>Dedicated Account Manager</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700">
+<span class="material-symbols-outlined text-slate-900 text-[20px]">check_circle</span>
+<span>Custom Reporting Engine</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700">
+<span class="material-symbols-outlined text-slate-900 text-[20px]">check_circle</span>
+<span>Multi-user Access Control</span>
+</div>
+<div class="flex items-start gap-3 text-sm text-slate-700">
+<span class="material-symbols-outlined text-slate-900 text-[20px]">check_circle</span>
+<span>API Integration Access</span>
+</div>
+</div>
+<button class="w-full cursor-pointer rounded-xl h-12 bg-slate-100 hover:bg-slate-200 text-slate-900 text-sm font-bold transition-colors">
+                            Contact Sales
+                        </button>
+</div>
+</div>
+</div>
+<!-- Support Clause -->
+<div class="rounded-2xl bg-slate-900 p-8 md:p-12 text-white relative overflow-hidden">
+<div class="absolute top-0 right-0 p-8 opacity-10">
+<span class="material-symbols-outlined text-[200px]">security_update_good</span>
+</div>
+<div class="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center justify-between">
+<div class="flex flex-col gap-4 max-w-2xl">
+<div class="flex items-center gap-3 text-primary mb-2">
+<span class="material-symbols-outlined">update</span>
+<span class="text-sm font-bold uppercase tracking-wider">Peace of Mind Guarantee</span>
+</div>
+<h2 class="text-3xl font-bold">2 Years of Free Updates Included</h2>
+<p class="text-slate-300 text-lg leading-relaxed">
+                            Every lifetime license comes with a comprehensive 24-month maintenance package. This includes all security patches, new feature rollouts, and compliance updates mandated by the government, absolutely free.
+                        </p>
+<div class="flex gap-6 mt-2">
+<div class="flex items-center gap-2 text-sm text-slate-300">
+<span class="material-symbols-outlined text-primary">check</span>
+                                Bug Fixes
+                             </div>
+<div class="flex items-center gap-2 text-sm text-slate-300">
+<span class="material-symbols-outlined text-primary">check</span>
+                                Compliance Patches
+                             </div>
+<div class="flex items-center gap-2 text-sm text-slate-300">
+<span class="material-symbols-outlined text-primary">check</span>
+                                New Modules
+                             </div>
+</div>
+</div>
+<div class="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/10 min-w-[280px]">
+<h3 class="font-bold text-lg mb-4">Support Channels</h3>
+<ul class="space-y-3">
+<li class="flex items-center gap-3 text-sm">
+<div class="bg-primary/20 p-1.5 rounded-lg text-primary">
+<span class="material-symbols-outlined text-[18px]">call</span>
+</div>
+<span>+91 1800-MILK-REC</span>
+</li>
+<li class="flex items-center gap-3 text-sm">
+<div class="bg-primary/20 p-1.5 rounded-lg text-primary">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</div>
+<span>support@milkrecord.in</span>
+</li>
+<li class="flex items-center gap-3 text-sm">
+<div class="bg-primary/20 p-1.5 rounded-lg text-primary">
+<span class="material-symbols-outlined text-[18px]">forum</span>
+</div>
+<span>Live Chat (9AM - 6PM)</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- FAQ Teaser / Closing -->
+<div class="flex flex-col items-center gap-6 text-center py-10">
+<h2 class="text-[#181411] text-2xl font-bold">Frequently Asked Questions</h2>
+<div class="flex flex-wrap justify-center gap-4 text-sm text-slate-600">
+<a class="hover:text-primary underline decoration-slate-300 underline-offset-4" href="#">Can I upgrade later?</a>
+<span class="text-slate-300">•</span>
+<a class="hover:text-primary underline decoration-slate-300 underline-offset-4" href="#">Is hardware included?</a>
+<span class="text-slate-300">•</span>
+<a class="hover:text-primary underline decoration-slate-300 underline-offset-4" href="#">What happens after 2 years?</a>
+<span class="text-slate-300">•</span>
+<a class="hover:text-primary underline decoration-slate-300 underline-offset-4" href="#">Do you offer on-site training?</a>
+</div>
+<button class="mt-4 text-primary font-bold hover:text-orange-700 flex items-center gap-1 group">
+                    View Full FAQ 
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+<footer class="bg-white border-t border-slate-200 py-10 px-6">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400">local_drink</span>
+<span class="text-slate-500 font-bold">MilkRecord</span>
+</div>
+<p class="text-slate-400 text-sm">© 2023 MilkRecord Solutions Pvt. Ltd. All rights reserved.</p>
+<div class="flex gap-4">
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">social_leaderboard</span></a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">smart_display</span></a> <!-- Twitter/X alternative icon -->
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">play_circle</span></a> <!-- Youtube alternative icon -->
+</div>
+</div>
+</footer>
+</body></html>

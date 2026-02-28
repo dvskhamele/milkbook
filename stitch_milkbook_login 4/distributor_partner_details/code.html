@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkRecord - Distributor Plan</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                        body: ["Space Grotesk", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark px-10 py-4 sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight">MilkRecord</h2>
+</div>
+<div class="hidden lg:flex flex-1 justify-end gap-8 items-center">
+<nav class="flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium" href="#">Home</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium" href="#">Plans</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium" href="#">Farmers</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium" href="#">Distributors</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium" href="#">Contact</a>
+</nav>
+<div class="flex gap-3">
+<button class="flex h-10 items-center justify-center rounded-lg px-6 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                        Login
+                    </button>
+<button class="flex h-10 items-center justify-center rounded-lg px-6 bg-primary text-white text-sm font-bold hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md">
+                        Sign Up
+                    </button>
+</div>
+</div>
+<button class="lg:hidden text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<main class="flex-grow">
+<!-- Hero Section -->
+<div class="relative bg-white dark:bg-background-dark">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+<div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+<div class="flex flex-col gap-6 order-2 lg:order-1">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-primary w-fit">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="text-xs font-bold uppercase tracking-wide">Official Partner Program</span>
+</div>
+<h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white leading-[1.1] tracking-tight">
+                                DISTRIBUTOR PLAN <span class="text-primary block mt-2">Custom Pricing</span>
+</h1>
+<p class="text-lg text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed">
+                                Scale your business with MilkRecord. Exclusive partner tiers designed for high-volume distribution, territory management, and revenue growth.
+                            </p>
+<div class="flex flex-col sm:flex-row gap-4 mt-4">
+<button class="h-14 px-8 rounded-xl bg-primary hover:bg-blue-700 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                                    Become a Partner
+                                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="h-14 px-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-lg transition-colors flex items-center justify-center">
+                                    View Requirements
+                                </button>
+</div>
+<div class="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-500 mt-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-slate-200 border-2 border-white dark:border-background-dark bg-cover" data-alt="Female avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA90hg_d5aKJIfA7U6lT8kueJwv4xvNWnF_pbBKiciZJ83cmmVwaS4hvSM_6VHNaAv8M4xPISrwjQO9wCP7CpOUooloN7lM4SBQVi3kw6lz35W85_ZLb6f2PPlqFWmV_UySPjRhP0_Dm_PHg-ZLiWwyNgVyEWXe36_A2KYO9Npy9uX3gwFBLE2A6Wzkr3O32FZQWrFDBUhCtPdfw_emc-GvbrJjvO5-4SSeLGqq96eeZar5p1ft9BMQUzUu5wNZrqKqI0iJcRTdcw')"></div>
+<div class="w-8 h-8 rounded-full bg-slate-300 border-2 border-white dark:border-background-dark bg-cover" data-alt="Male avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB7b7fpHOr9yozOl46N9n5mO2NUFPNQ5TyrnOkV-tKtTW0ZDYqNJwup4CwlW9DVMVIj5-_BjjdE6Mr_U8m-VEGye8a3TV4RUKLWfc-5B8YuvjPz9beNE7KmsrPeQnteIuGMXN8fHwDvrEosgquiGx8_9LVNVfByjncwG-Nr3CWwScCIJl7aXgarboVP_jWMq7HIigUWU9p66ID01YzKDzSqn9G_qNzYnwEJZS-RwG2IbSeM0xx2o-eHsE7TywH1zdhTvw9BkgxTNg')"></div>
+<div class="w-8 h-8 rounded-full bg-slate-400 border-2 border-white dark:border-background-dark bg-cover" data-alt="Male avatar 2" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDupggEvppCcYvovebfXUPcEb_k1gW5NuD8F2TgQqgG0zGp7Gp2LBK6zmlc01GItG2cItG1NtJlj-X0d8LIVRbaeEDZxUWBPOo43ZQwkIdhTKOVsP-gUkjcO-CMMB2PNaDFGWIgbBmqsP4mczSU6pro1Y-o3x_NaKPlh0CPUERwONLhoG-QjDnNRlavmAuagm7himyLBK7wz84HR_xiFNuHpOxZLuEwczIwKV3W-YZE90mXTtdKCPuUNDfwMvfNyp-i6hfB60lBeQ')"></div>
+</div>
+<p>Joined by 200+ Distributors</p>
+</div>
+</div>
+<div class="relative order-1 lg:order-2">
+<div class="absolute inset-0 bg-gradient-to-tr from-blue-100 to-indigo-50 dark:from-blue-900/20 dark:to-slate-800 rounded-3xl transform rotate-3 scale-95 opacity-50"></div>
+<div class="relative rounded-2xl overflow-hidden shadow-2xl bg-white dark:bg-slate-800 aspect-[4/3] group">
+<div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors z-10"></div>
+<div class="h-full w-full bg-cover bg-center" data-alt="Business meeting handshake in modern office" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAhf6GK1tkj_AvzLyRD8jScgZ9qzMU9lH6RX7exMc4mZYMejKt1Yu8_Iz3zx-etjd2NcucKxZ8tPLoU1JJenPVIWfLsWgp9l-v_6fbJul0zKlMPlALtsHwsDGj4pWpUirefarlTQkRr4GmLwSy_XQlB0b07zYXzf1tw6LNfEikUfebxbmw876MRUCdVw4VFRJK1hBJ_Ys5z7zCVofDU22n8rID4Y2viL9RLtMGcuX0Y0jnNMYLNPvViVItzPOg1XflOaTzI4Rb8jQ')"></div>
+<!-- Floating Badge -->
+<div class="absolute bottom-6 left-6 right-6 p-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-xl border border-slate-100 dark:border-slate-700 shadow-lg z-20">
+<div class="flex items-center gap-4">
+<div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Average Partner Growth</p>
+<p class="text-xl font-bold text-slate-900 dark:text-white">+125% YoY</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Benefits Section -->
+<div class="py-16 bg-slate-50 dark:bg-slate-900/50">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
+<div class="max-w-2xl">
+<h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">Exclusive Partner Benefits</h2>
+<p class="text-lg text-slate-600 dark:text-slate-400">Unlock enterprise-grade tools designed to help you dominate your local market and streamline operations.</p>
+</div>
+<a class="text-primary font-bold flex items-center gap-1 hover:gap-2 transition-all" href="#">
+                            View all features <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow group">
+<div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[28px]">branding_watermark</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">White-Label Option</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Brand the entire platform as your own. Custom domain, logo replacement, and color theming to match your corporate identity.
+                            </p>
+</div>
+<!-- Card 2 -->
+<div class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow group">
+<div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[28px]">security</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Territory Protection</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Secure exclusive rights to distribute in your designated region. We prevent overlap to ensure maximum market penetration.
+                            </p>
+</div>
+<!-- Card 3 -->
+<div class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow group">
+<div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[28px]">support_agent</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Dedicated Manager</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Direct line to a dedicated partner success manager. Priority support tickets and quarterly business reviews.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Revenue Model Section -->
+<div class="py-16 bg-white dark:bg-background-dark">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="bg-slate-900 dark:bg-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+<div class="grid lg:grid-cols-5">
+<div class="lg:col-span-2 p-10 lg:p-12 flex flex-col justify-center bg-primary text-white">
+<h2 class="text-3xl font-bold mb-4">Transparent Revenue Model</h2>
+<p class="text-blue-100 mb-8 text-lg">
+                                    Our partnership model is built on shared success. The more you distribute, the higher your margins.
+                                </p>
+<ul class="space-y-4">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-200">check_circle</span>
+<span>No hidden fees</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-200">check_circle</span>
+<span>Monthly payouts</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-200">check_circle</span>
+<span>Real-time analytics</span>
+</li>
+</ul>
+</div>
+<div class="lg:col-span-3 p-10 lg:p-12 bg-white dark:bg-slate-900">
+<div class="grid md:grid-cols-2 gap-8">
+<!-- Stat 1 -->
+<div class="flex flex-col gap-2">
+<p class="text-sm font-bold uppercase tracking-wider text-slate-400">Margin Per Sale</p>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-black text-slate-900 dark:text-white">40%</span>
+<span class="text-sm text-green-600 font-bold bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">High ROI</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Direct profit on every license sold to farmers or sub-distributors.</p>
+</div>
+<!-- Stat 2 -->
+<div class="flex flex-col gap-2">
+<p class="text-sm font-bold uppercase tracking-wider text-slate-400">Bulk Key Discount</p>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-black text-slate-900 dark:text-white">Tiered</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Volume-based pricing structure. Buy more keys upfront for deeper discounts.</p>
+</div>
+<!-- Stat 3 -->
+<div class="flex flex-col gap-2">
+<p class="text-sm font-bold uppercase tracking-wider text-slate-400">Renewal Share</p>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-black text-slate-900 dark:text-white">20%</span>
+<span class="text-sm text-blue-600 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">Lifetime</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Earn recurring revenue every time your clients renew their subscription.</p>
+</div>
+<!-- Stat 4 -->
+<div class="flex flex-col gap-2">
+<p class="text-sm font-bold uppercase tracking-wider text-slate-400">Setup Fees</p>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-black text-slate-900 dark:text-white">$0</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">We waive all onboarding costs for certified Gold partners.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- CTA Section -->
+<div class="py-20 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800">
+<div class="max-w-[720px] mx-auto px-4 text-center flex flex-col items-center gap-6">
+<h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Ready to grow your network?</h2>
+<p class="text-lg text-slate-600 dark:text-slate-400">Join the fastest growing dairy tech network in the country. Apply now to secure your territory.</p>
+<div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-4">
+<button class="h-12 px-8 rounded-lg bg-primary hover:bg-blue-700 text-white font-bold text-base shadow-md transition-colors w-full sm:w-auto">
+                            Apply for Partnership
+                        </button>
+<button class="h-12 px-8 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-base transition-colors w-full sm:w-auto">
+                            Schedule a Demo
+                        </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-white dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 py-12 px-4 sm:px-6 lg:px-8">
+<div class="max-w-[1280px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+<div class="col-span-2 md:col-span-1 flex flex-col gap-4">
+<div class="flex items-center gap-2 text-primary">
+<svg class="size-6" fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+<span class="font-bold text-lg text-slate-900 dark:text-white">MilkRecord</span>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400">Digitizing dairy distribution for the modern world.</p>
+</div>
+<div class="flex flex-col gap-3">
+<h4 class="font-bold text-slate-900 dark:text-white mb-1">Platform</h4>
+<a class="text-sm text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">For Farmers</a>
+<a class="text-sm text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">For Distributors</a>
+<a class="text-sm text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">Pricing</a>
+</div>
+<div class="flex flex-col gap-3">
+<h4 class="font-bold text-slate-900 dark:text-white mb-1">Company</h4>
+<a class="text-sm text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">About Us</a>
+<a class="text-sm text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">Careers</a>
+<a class="text-sm text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">Contact</a>
+</div>
+<div class="flex flex-col gap-3">
+<h4 class="font-bold text-slate-900 dark:text-white mb-1">Legal</h4>
+<a class="text-sm text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">Privacy Policy</a>
+<a class="text-sm text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">Terms of Service</a>
+</div>
+</div>
+<div class="max-w-[1280px] mx-auto border-t border-slate-100 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-xs text-slate-400 dark:text-slate-500">© 2024 MilkRecord Inc. All rights reserved.</p>
+<div class="flex gap-4">
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">public</span></a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">mail</span></a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

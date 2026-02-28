@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smart Plan Details - MilkRecord</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#fb6d0e",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3a2f27] bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md px-10 py-3">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined text-3xl">water_drop</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">MilkRecord</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Home</a>
+<a class="text-primary font-bold text-sm leading-normal" href="#">Plans</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Hardware</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Contact</a>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-orange-600 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Login</span>
+</button>
+</div>
+</header>
+<main class="flex-1 flex justify-center w-full">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1 px-4 md:px-10 py-5">
+<!-- Hero Section -->
+<div class="@container mb-12">
+<div class="flex flex-col gap-6 py-10 @[480px]:gap-8 @[864px]:flex-row items-center">
+<div class="flex flex-col gap-6 @[480px]:min-w-[400px] @[480px]:gap-8 @[864px]:flex-1">
+<div class="flex flex-col gap-4 text-left">
+<div class="inline-flex w-fit items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1">
+<span class="material-symbols-outlined text-sm text-primary">verified</span>
+<span class="text-xs font-bold uppercase tracking-wider text-primary">Recommended for automation</span>
+</div>
+<h1 class="text-slate-900 dark:text-white text-5xl font-black leading-[1.1] tracking-[-0.033em] @[480px]:text-6xl">
+                                        SMART PLAN
+                                    </h1>
+<div class="flex flex-col gap-1">
+<p class="text-slate-500 dark:text-slate-400 text-lg font-medium">Starting at</p>
+<p class="text-primary text-3xl font-bold">₹9,000 - ₹14,000 <span class="text-lg font-medium text-slate-500 dark:text-slate-400">/ year</span></p>
+</div>
+<p class="text-slate-700 dark:text-slate-300 text-lg leading-relaxed max-w-[600px]">
+                                        Automate your dairy collection with seamless hardware integration. Eliminate manual entry errors and sync data in real-time.
+                                    </p>
+</div>
+<div class="flex gap-4 flex-wrap">
+<button class="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-primary hover:bg-orange-600 transition-colors text-white text-base font-bold shadow-lg shadow-orange-900/20">
+<span class="truncate">Upgrade to Smart</span>
+</button>
+<button class="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-white text-base font-medium">
+<span>Talk to Sales</span>
+</button>
+</div>
+</div>
+<div class="w-full @[864px]:w-1/2 flex justify-center relative">
+<div class="absolute inset-0 bg-primary/20 blur-[100px] rounded-full opacity-40"></div>
+<div class="relative w-full aspect-[4/3] bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl" data-alt="Industrial dairy automation machinery with digital interface" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDtQKGMpdGvs-XNdCrSQpU5CB49NB_7VGYKi3LhiywGBlYBDqJgAEo2yR0t0dkncjmj5uT6o12Y2VGvfnmvzX3PbLEKE3r6Xh4weDjStxm1lcxIu0xSWaiof2qZY0EI7QRGhRTc54boUfrvbgI8COi_YcpbCpoUtv_Xcnfkzq5XO6vVYtYfMjJxzWkxWn2cZbx_z1Q74Xn0M-IG4LEejeNbkyGwxuuPxDV0dzUMQg30ZcVioSlzRtlKMy3Wqj2HJxmtUpbN1RPpXw"); background-size: cover; background-position: center;'>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-white/80 text-6xl drop-shadow-lg">play_circle</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Key Features Grid -->
+<div class="flex flex-col gap-10 py-10">
+<div class="flex flex-col gap-4">
+<h2 class="text-slate-900 dark:text-white text-3xl font-bold leading-tight max-w-[720px]">
+                                Industrial-Grade Integration
+                            </h2>
+<p class="text-slate-600 dark:text-slate-400 text-base max-w-[720px]">
+                                Designed for high-volume collection centers requiring absolute precision.
+                            </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Feature 1 -->
+<div class="group flex flex-col gap-4 p-6 bg-white dark:bg-[#1e140e] border border-slate-200 dark:border-[#3a2f27] rounded-xl hover:border-primary/50 transition-colors">
+<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">scale</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Auto Weight Capture</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                                        Direct connection to industrial weighing scales. Captures weight data instantly to 0.01kg precision, preventing manual tampering.
+                                    </p>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="group flex flex-col gap-4 p-6 bg-white dark:bg-[#1e140e] border border-slate-200 dark:border-[#3a2f27] rounded-xl hover:border-primary/50 transition-colors">
+<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">science</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Analyzer Sync</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                                        Seamless integration with milk analyzers to automatically log FAT and SNF values for every batch collected.
+                                    </p>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="group flex flex-col gap-4 p-6 bg-white dark:bg-[#1e140e] border border-slate-200 dark:border-[#3a2f27] rounded-xl hover:border-primary/50 transition-colors">
+<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">receipt_long</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Instant Slip Printing</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                                        Auto-trigger receipt printing upon collection completion. Compatible with thermal printers for rugged environments.
+                                    </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Hardware Compatibility Marquee Section -->
+<div class="py-12 border-y border-slate-200 dark:border-[#3a2f27] my-8">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
+<h2 class="text-slate-900 dark:text-white text-2xl font-bold">Hardware Compatibility</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Works with top industry standard equipment</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+<!-- Logo Placeholders using styled divs for modern look -->
+<div class="h-20 bg-white dark:bg-[#2a1d15] rounded-lg border border-slate-200 dark:border-[#3a2f27] flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity">
+<span class="text-slate-400 dark:text-slate-500 font-bold text-xl">ESSAE</span>
+</div>
+<div class="h-20 bg-white dark:bg-[#2a1d15] rounded-lg border border-slate-200 dark:border-[#3a2f27] flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity">
+<span class="text-slate-400 dark:text-slate-500 font-bold text-xl">PROMPT</span>
+</div>
+<div class="h-20 bg-white dark:bg-[#2a1d15] rounded-lg border border-slate-200 dark:border-[#3a2f27] flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity">
+<span class="text-slate-400 dark:text-slate-500 font-bold text-xl">REIL</span>
+</div>
+<div class="h-20 bg-white dark:bg-[#2a1d15] rounded-lg border border-slate-200 dark:border-[#3a2f27] flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity">
+<span class="text-slate-400 dark:text-slate-500 font-bold text-xl">EKO</span>
+</div>
+<div class="h-20 bg-white dark:bg-[#2a1d15] rounded-lg border border-slate-200 dark:border-[#3a2f27] flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity col-span-2 md:col-span-1">
+<span class="text-slate-400 dark:text-slate-500 font-bold text-xl">AMUL</span>
+</div>
+</div>
+</div>
+<!-- Cost Breakdown -->
+<div class="py-10">
+<h2 class="text-slate-900 dark:text-white text-2xl font-bold mb-6">Detailed Cost Breakdown</h2>
+<div class="w-full overflow-hidden rounded-xl border border-slate-200 dark:border-[#3a2f27]">
+<table class="w-full text-left text-sm">
+<thead class="bg-slate-50 dark:bg-[#1e140e] text-slate-900 dark:text-white font-bold">
+<tr>
+<th class="p-4 border-b border-slate-200 dark:border-[#3a2f27]">Component</th>
+<th class="p-4 border-b border-slate-200 dark:border-[#3a2f27] hidden sm:table-cell">Description</th>
+<th class="p-4 border-b border-slate-200 dark:border-[#3a2f27] text-right">Cost (Yearly)</th>
+</tr>
+</thead>
+<tbody class="bg-white dark:bg-[#23170f] divide-y divide-slate-200 dark:divide-[#3a2f27]">
+<tr>
+<td class="p-4 font-medium text-slate-900 dark:text-white">Base Software License</td>
+<td class="p-4 text-slate-500 dark:text-slate-400 hidden sm:table-cell">Core platform access, cloud storage, and mobile app for farmers.</td>
+<td class="p-4 text-right text-slate-900 dark:text-white">₹6,000</td>
+</tr>
+<tr>
+<td class="p-4 font-medium text-slate-900 dark:text-white">Hardware Integration Module</td>
+<td class="p-4 text-slate-500 dark:text-slate-400 hidden sm:table-cell">Drivers and API connectors for Scales and Analyzers.</td>
+<td class="p-4 text-right text-slate-900 dark:text-white">₹3,000</td>
+</tr>
+<tr>
+<td class="p-4 font-medium text-slate-900 dark:text-white">On-site Support &amp; Maintenance</td>
+<td class="p-4 text-slate-500 dark:text-slate-400 hidden sm:table-cell">2 scheduled visits per year + remote troubleshooting.</td>
+<td class="p-4 text-right text-slate-900 dark:text-white">₹5,000</td>
+</tr>
+<tr class="bg-primary/5 dark:bg-primary/10">
+<td class="p-4 font-bold text-primary">Total Smart Plan</td>
+<td class="p-4 hidden sm:table-cell"></td>
+<td class="p-4 text-right font-bold text-primary text-lg">₹14,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="mt-4 text-xs text-slate-400 dark:text-slate-500 text-center sm:text-left">
+                            * Hardware costs (Scales, Analyzers, Printers) are not included in this plan. Plan covers software integration only.
+                        </p>
+</div>
+<!-- Call to Action Footer -->
+<div class="mt-10 rounded-2xl bg-[#1e140e] border border-[#3a2f27] p-8 md:p-12 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="text-center md:text-left">
+<h2 class="text-white text-3xl font-bold mb-2">Ready to automate?</h2>
+<p class="text-slate-400 text-lg">Join 500+ collection centers upgrading to Smart Plan this month.</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary hover:bg-orange-600 transition-transform hover:scale-105 active:scale-95 text-white text-lg font-bold shadow-lg shadow-orange-900/30">
+                                    Get Started Now
+                                </button>
+<button class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 border border-slate-600 hover:border-slate-500 hover:bg-white/5 transition-colors text-white text-lg font-medium">
+                                    Request Demo
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

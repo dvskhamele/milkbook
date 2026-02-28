@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkRecord - Operational Features</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0a63bd",
+                        secondary: "#3D9730",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101922",
+                        "surface-dark": "#182634",
+                        "border-dark": "#314d68",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased min-h-screen flex flex-col">
+<!-- Navbar -->
+<header class="sticky top-0 z-50 w-full border-b border-solid border-slate-200 dark:border-border-dark bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm">
+<div class="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+<div class="flex h-16 items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">MilkRecord</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-sm font-medium text-primary" href="#">Features</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Pricing</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Contact</a>
+</nav>
+<button class="hidden md:flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-bold text-white transition-all hover:bg-primary/90 hover:scale-[1.02]">
+                    Get Started
+                </button>
+<button class="md:hidden p-2 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 w-full mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-10">
+<!-- Hero Section -->
+<div class="@container mb-20">
+<div class="flex flex-col gap-8 lg:flex-row lg:items-center">
+<div class="flex-1 space-y-6">
+<div class="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+<span class="mr-2 h-2 w-2 rounded-full bg-secondary animate-pulse"></span>
+                        Trusted by 5,000+ VLCCs
+                    </div>
+<h1 class="text-4xl font-black leading-tight tracking-tight lg:text-6xl text-slate-900 dark:text-white">
+                        MilkRecord <span class="text-primary">Operational Features</span>
+</h1>
+<p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl">
+                        Built specifically for rural Indian VLCCs. Our offline-first technology and simple tools ensure milk collection never stops, even without internet.
+                    </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="h-12 px-8 rounded-lg bg-primary text-white font-bold hover:bg-primary/90 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined">play_circle</span>
+                            View Demo
+                        </button>
+<button class="h-12 px-8 rounded-lg border border-slate-300 dark:border-border-dark hover:bg-slate-100 dark:hover:bg-surface-dark transition-all font-medium text-slate-900 dark:text-white">
+                            Contact Sales
+                        </button>
+</div>
+</div>
+<div class="flex-1">
+<div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-slate-200 dark:border-border-dark bg-surface-dark group" data-alt="Modern dairy farm management dashboard on a tablet screen held by a farmer">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent z-10"></div>
+<img alt="Farmer using tablet" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOd0UOCALRw1JDNktgcu54QYfN_XohZTTSZ0ZE-r_YwFcDYrJ0pDkjXc_hlzUIzy1OPUwiuaqzD_LGEezXv1DCoawqOsFQr20zhv5qZJki3oZOAePxa5DAoIMGyZ2d3KrRbSQBB4egybMy01vmhyMrNrY9hwxkP7GwJEkbgBX-jHEUTegVvupjZV6XoriQAKkFwivaRRoKmJ9N7Ee45Cw3lH_Vm6eosnk-yals4W0AtD8z4c9O3M6Yg9IzJu4XoKrKlpC0RZVl3g"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Holy Trinity Section -->
+<div class="mb-24">
+<div class="mb-12 border-l-4 border-primary pl-6">
+<h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Hardware Integration</h2>
+<p class="mt-2 text-lg text-slate-600 dark:text-slate-400">The Holy Trinity of Milk Collection</p>
+</div>
+<div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+<!-- AMCU Card -->
+<div class="group relative overflow-hidden rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark p-8 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5">
+<div class="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-primary/5 transition-all group-hover:bg-primary/10"></div>
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div>
+<div class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-4xl">memory</span>
+</div>
+<h3 class="mb-3 text-2xl font-bold text-slate-900 dark:text-white">Smart AMCU</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Automated Milk Collection Unit integration that captures fat and SNF instantly without manual entry errors.
+                            </p>
+</div>
+<div class="mt-8 flex items-center text-sm font-bold text-primary">
+<span>Learn more</span>
+<span class="material-symbols-outlined ml-1 text-lg">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Scales Card -->
+<div class="group relative overflow-hidden rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark p-8 transition-all hover:border-secondary/50 hover:shadow-lg hover:shadow-secondary/5">
+<div class="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-secondary/5 transition-all group-hover:bg-secondary/10"></div>
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div>
+<div class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary/10 text-secondary">
+<span class="material-symbols-outlined text-4xl">scale</span>
+</div>
+<h3 class="mb-3 text-2xl font-bold text-slate-900 dark:text-white">Digital Scales</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                High-precision weighing integration ensures every drop is accounted for. Fair payments for every farmer.
+                            </p>
+</div>
+<div class="mt-8 flex items-center text-sm font-bold text-secondary">
+<span>View specs</span>
+<span class="material-symbols-outlined ml-1 text-lg">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Printers Card -->
+<div class="group relative overflow-hidden rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark p-8 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5">
+<div class="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-primary/5 transition-all group-hover:bg-primary/10"></div>
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div>
+<div class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-4xl">print</span>
+</div>
+<h3 class="mb-3 text-2xl font-bold text-slate-900 dark:text-white">Thermal Printers</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Instant, legible receipt printing for farmers. Supports regional languages for better transparency.
+                            </p>
+</div>
+<div class="mt-8 flex items-center text-sm font-bold text-primary">
+<span>See supported models</span>
+<span class="material-symbols-outlined ml-1 text-lg">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Rural Tools Section -->
+<div class="mb-16">
+<div class="mb-12 border-l-4 border-secondary pl-6">
+<h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Rural-Specific Tools</h2>
+<p class="mt-2 text-lg text-slate-600 dark:text-slate-400">Designed for low connectivity and high efficiency.</p>
+</div>
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+<!-- Offline First -->
+<div class="flex flex-col rounded-xl bg-gradient-to-br from-slate-100 to-white dark:from-surface-dark dark:to-background-dark p-1 border border-slate-200 dark:border-border-dark hover:border-primary/50 transition-colors">
+<div class="flex h-full flex-col justify-between rounded-lg p-6">
+<div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-inner">
+<span class="material-symbols-outlined text-3xl">cloud_off</span>
+</div>
+<div>
+<h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Offline-First Tech</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400">Works seamlessly without internet. Data syncs automatically when connection is restored.</p>
+</div>
+</div>
+</div>
+<!-- Voice Guided -->
+<div class="flex flex-col rounded-xl bg-gradient-to-br from-slate-100 to-white dark:from-surface-dark dark:to-background-dark p-1 border border-slate-200 dark:border-border-dark hover:border-secondary/50 transition-colors">
+<div class="flex h-full flex-col justify-between rounded-lg p-6">
+<div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-inner">
+<span class="material-symbols-outlined text-3xl">record_voice_over</span>
+</div>
+<div>
+<h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Voice-Guided</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400">Audio feedback in local languages helps illiterate operators work confidently.</p>
+</div>
+</div>
+</div>
+<!-- One Tap -->
+<div class="flex flex-col rounded-xl bg-gradient-to-br from-slate-100 to-white dark:from-surface-dark dark:to-background-dark p-1 border border-slate-200 dark:border-border-dark hover:border-primary/50 transition-colors">
+<div class="flex h-full flex-col justify-between rounded-lg p-6">
+<div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-inner">
+<span class="material-symbols-outlined text-3xl">chat</span>
+</div>
+<div>
+<h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Instant Receipts</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400">Send digital receipts via SMS or WhatsApp with a single tap. Save paper and build trust.</p>
+</div>
+</div>
+</div>
+<!-- MooScore -->
+<div class="flex flex-col rounded-xl bg-gradient-to-br from-slate-100 to-white dark:from-surface-dark dark:to-background-dark p-1 border border-slate-200 dark:border-border-dark hover:border-secondary/50 transition-colors">
+<div class="flex h-full flex-col justify-between rounded-lg p-6">
+<div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-inner">
+<span class="material-symbols-outlined text-3xl">trending_up</span>
+</div>
+<div>
+<h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">MooScore™</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400">Credit builder for farmers based on milk supply history. Enable access to loans.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- CTA Section -->
+<div class="relative overflow-hidden rounded-2xl bg-surface-dark px-6 py-16 text-center shadow-2xl sm:px-12 sm:py-24 border border-border-dark">
+<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
+<div class="relative z-10 max-w-2xl mx-auto">
+<h2 class="text-3xl font-black tracking-tight text-white sm:text-4xl mb-6">Ready to modernize your Milk Collection Center?</h2>
+<p class="mx-auto mb-10 max-w-xl text-lg text-slate-400">
+                    Join thousands of VLCCs across India using MilkRecord to increase transparency and efficiency.
+                </p>
+<div class="flex flex-col justify-center gap-4 sm:flex-row">
+<button class="flex h-12 w-full sm:w-auto min-w-[160px] items-center justify-center rounded-lg bg-primary px-8 text-base font-bold text-white transition-all hover:bg-primary/90 hover:scale-105">
+                        Get Started
+                    </button>
+<button class="flex h-12 w-full sm:w-auto min-w-[160px] items-center justify-center rounded-lg border border-slate-600 bg-transparent px-8 text-base font-bold text-white transition-all hover:bg-slate-800 hover:border-slate-500">
+                        Request Pricing
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Simple Footer -->
+<footer class="border-t border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark py-12 px-4 sm:px-6 lg:px-8">
+<div class="mx-auto max-w-[1280px] flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined text-sm">water_drop</span>
+</div>
+<span class="text-lg font-bold text-slate-900 dark:text-white">MilkRecord</span>
+</div>
+<div class="text-sm text-slate-500 dark:text-slate-400">
+                © 2023 MilkRecord Technologies Pvt Ltd. All rights reserved.
+            </div>
+<div class="flex gap-6">
+<a class="text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="sr-only">Facebook</span>
+<svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewbox="0 0 24 24"><path clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill-rule="evenodd"></path></svg>
+</a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="sr-only">Twitter</span>
+<svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewbox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
+</a>
+</div>
+</div>
+</footer>
+</body></html>
