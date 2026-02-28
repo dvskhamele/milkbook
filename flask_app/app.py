@@ -1,6 +1,6 @@
 """
-MilkRecord Flask Application - Production Ready
-Hardware-Integrated Dairy Management System
+MilkRecord Flask Application - Vercel + Windows EXE Compatible
+Production-ready dairy management system
 """
 
 import os
@@ -8,44 +8,71 @@ import sys
 import signal
 import logging
 from datetime import datetime
-from flask import Flask, render_template, request, jsonify, redirect, url_for, send_from_directory
-from flask_sqlalchemy import SQLAlchemy
-from dotenv import load_dotenv
+from functools import wraps
 
-# Import hardware manager
-from hardware.serial_manager import (
-    get_manager, 
-    init_default_devices, 
-    DeviceConfig, 
-    DeviceType
-)
+# Flask imports
+from flask import Flask, render_template, request, jsonify, redirect, url_for, send_from_directory, make_response
+
+# Database
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 # Load environment variables
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # dotenv not required in production
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler('logs/milkrecord.log') if os.path.exists('logs') else logging.NullHandler()
+    ]
 )
 logger = logging.getLogger(__name__)
 
-# Initialize Flask app
-app = Flask(__name__, 
-            template_folder='../apps',
-            static_folder='../apps')
+# ============================================
+# Flask App Initialization
+# ============================================
 
-# Configuration
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'milkrecord-secret-key-change-in-production')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///database/milkrecord.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['DEBUG'] = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+def create_app():
+    """Application factory for Vercel compatibility"""
+    
+    app = Flask(__name__,
+                template_folder='../apps',
+                static_folder='../apps',
+                static_url_path='/static')
+    
+    # Configuration
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'milkrecord-secret-key-change-in-production')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///database/milkrecord.db')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['DEBUG'] = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    
+    # Initialize database
+    db.init_app(app)
+    
+    # Create tables
+    with app.app_context():
+        db.create_all()
+        logger.info("Database initialized")
+    
+    # Register routes
+    register_routes(app)
+    
+    # Register error handlers
+    register_error_handlers(app)
+    
+    logger.info("Flask app created successfully")
+    
+    return app
 
 # Initialize database
-db = SQLAlchemy(app)
-
-# Initialize serial manager
-serial_mgr = get_manager()
+db = SQLAlchemy()
 
 # ============================================
 # Database Models
@@ -106,6 +133,7 @@ class Sale(db.Model):
     
     id = db.Column(db.String(50), primary_key=True)
     customer_id = db.Column(db.String(50), db.ForeignKey('customers.id'))
+    customer_name = db.Column(db.String(100))  # Denormalized for quick access
     items = db.Column(db.Text)  # JSON string of items
     total_amount = db.Column(db.Float)
     paid_amount = db.Column(db.Float)
@@ -115,251 +143,264 @@ class Sale(db.Model):
     customer = db.relationship('Customer', backref='sales')
 
 # ============================================
-# Hardware Integration Routes
+# Routes
 # ============================================
 
-@app.route('/api/hardware/devices', methods=['GET'])
-def get_devices():
-    """Get registered hardware devices"""
-    devices = []
-    for device_id, config in serial_mgr.devices.items():
-        health = serial_mgr.get_device_health(device_id)
-        devices.append({
-            'id': config.device_id,
-            'type': config.device_type.value,
-            'port': config.port,
-            'status': health.get('status', 'unknown'),
-            'last_seen': health.get('last_seen'),
-            'packets_received': health.get('packets_received', 0)
-        })
-    return jsonify({'devices': devices})
-
-@app.route('/api/hardware/ports', methods=['GET'])
-def list_ports():
-    """List available serial ports"""
-    ports = serial_mgr.list_available_ports()
-    return jsonify({'ports': ports})
-
-@app.route('/api/hardware/scale/latest', methods=['GET'])
-def get_scale_reading():
-    """Get latest weighing scale reading"""
-    reading = serial_mgr.get_latest_reading('scale_01')
-    if reading:
+def register_routes(app):
+    """Register all routes"""
+    
+    # Main Pages
+    @app.route('/')
+    def index():
+        """Main landing page"""
+        return render_template('dairy-pos-billing-software-india.html')
+    
+    @app.route('/pos')
+    def pos_billing():
+        """POS Billing page"""
+        return render_template('dairy-pos-billing-software-india.html')
+    
+    @app.route('/collection')
+    def milk_collection():
+        """Milk Collection page"""
+        return render_template('automated-milk-collection-system-village.html')
+    
+    @app.route('/farmers')
+    def farmers():
+        """Farmer management"""
+        return render_template('farmer-management-milk-collection-centers.html')
+    
+    @app.route('/customers')
+    def customers():
+        """Customer management"""
+        return render_template('customer-ledger-udhar-tracking-dairy.html')
+    
+    # API Routes - Farmers
+    @app.route('/api/farmers', methods=['GET'])
+    def get_farmers():
+        """Get all farmers"""
+        try:
+            farmers = Farmer.query.all()
+            return jsonify({'farmers': [f.to_dict() for f in farmers], 'success': True})
+        except Exception as e:
+            logger.error(f"Error getting farmers: {e}")
+            return jsonify({'error': str(e), 'success': False}), 500
+    
+    @app.route('/api/farmers', methods=['POST'])
+    def add_farmer():
+        """Add new farmer"""
+        try:
+            data = request.json
+            farmer = Farmer(
+                id=f"F{datetime.now().strftime('%Y%m%d%H%M%S')}",
+                name=data['name'],
+                phone=data.get('phone'),
+                animal_type=data.get('animal_type', 'cow')
+            )
+            db.session.add(farmer)
+            db.session.commit()
+            return jsonify({'success': True, 'farmer': farmer.to_dict()})
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Error adding farmer: {e}")
+            return jsonify({'error': str(e), 'success': False}), 500
+    
+    # API Routes - Sales
+    @app.route('/api/sales', methods=['POST'])
+    def add_sale():
+        """Add new sale"""
+        try:
+            data = request.json
+            sale = Sale(
+                id=f"S{datetime.now().strftime('%Y%m%d%H%M%S')}",
+                customer_id=data.get('customer_id'),
+                customer_name=data.get('customer_name', 'Walking Customer'),
+                items=data.get('items', '[]'),
+                total_amount=data.get('total_amount', 0.0),
+                paid_amount=data.get('paid_amount', 0.0),
+                payment_mode=data.get('payment_mode', 'cash')
+            )
+            db.session.add(sale)
+            db.session.commit()
+            
+            # Update customer balance if credit
+            if data.get('payment_mode') == 'credit' and data.get('customer_id'):
+                customer = Customer.query.get(data['customer_id'])
+                if customer:
+                    customer.balance += (data.get('total_amount', 0.0) - data.get('paid_amount', 0.0))
+                    db.session.commit()
+            
+            return jsonify({'success': True, 'sale_id': sale.id})
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Error adding sale: {e}")
+            return jsonify({'error': str(e), 'success': False}), 500
+    
+    @app.route('/api/sales', methods=['GET'])
+    def get_sales():
+        """Get sales with optional filters"""
+        try:
+            query = Sale.query.order_by(Sale.sale_date.desc())
+            
+            # Optional filters
+            customer_id = request.args.get('customer_id')
+            if customer_id:
+                query = query.filter_by(customer_id=customer_id)
+            
+            date_from = request.args.get('date_from')
+            if date_from:
+                query = query.filter(Sale.sale_date >= datetime.fromisoformat(date_from))
+            
+            sales = query.limit(100).all()
+            
+            return jsonify({
+                'sales': [{
+                    'id': s.id,
+                    'customer_name': s.customer_name,
+                    'total_amount': s.total_amount,
+                    'paid_amount': s.paid_amount,
+                    'payment_mode': s.payment_mode,
+                    'sale_date': s.sale_date.isoformat()
+                } for s in sales],
+                'success': True
+            })
+        except Exception as e:
+            logger.error(f"Error getting sales: {e}")
+            return jsonify({'error': str(e), 'success': False}), 500
+    
+    # API Routes - Customers
+    @app.route('/api/customers', methods=['GET'])
+    def get_customers():
+        """Get all customers"""
+        try:
+            customers = Customer.query.all()
+            return jsonify({
+                'customers': [{
+                    'id': c.id,
+                    'name': c.name,
+                    'phone': c.phone,
+                    'balance': c.balance
+                } for c in customers],
+                'success': True
+            })
+        except Exception as e:
+            logger.error(f"Error getting customers: {e}")
+            return jsonify({'error': str(e), 'success': False}), 500
+    
+    @app.route('/api/customers', methods=['POST'])
+    def add_customer():
+        """Add new customer"""
+        try:
+            data = request.json
+            customer = Customer(
+                id=f"C{datetime.now().strftime('%Y%m%d%H%M%S')}",
+                name=data['name'],
+                phone=data.get('phone'),
+                email=data.get('email'),
+                address=data.get('address')
+            )
+            db.session.add(customer)
+            db.session.commit()
+            return jsonify({'success': True, 'customer': {
+                'id': customer.id,
+                'name': customer.name,
+                'phone': customer.phone
+            }})
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Error adding customer: {e}")
+            return jsonify({'error': str(e), 'success': False}), 500
+    
+    # Print Routes
+    @app.route('/receipt/<sale_id>')
+    def receipt(sale_id):
+        """Print receipt for sale"""
+        try:
+            sale = Sale.query.get_or_404(sale_id)
+            return render_template('receipt.html', sale=sale)
+        except Exception as e:
+            logger.error(f"Error generating receipt: {e}")
+            return jsonify({'error': str(e)}), 500
+    
+    # Health & Status
+    @app.route('/api/health')
+    def health_check():
+        """Health check endpoint"""
         return jsonify({
-            'success': True,
-            'weight': reading.value,
-            'unit': reading.unit,
-            'is_stable': reading.is_stable,
-            'timestamp': reading.timestamp.isoformat()
+            'status': 'healthy',
+            'timestamp': datetime.now().isoformat(),
+            'version': '2.0.0'
         })
-    return jsonify({'success': False, 'message': 'No reading available'})
-
-@app.route('/api/hardware/analyzer/latest', methods=['GET'])
-def get_analyzer_reading():
-    """Get latest milk analyzer reading"""
-    reading = serial_mgr.get_latest_reading('analyzer_01')
-    if reading:
+    
+    @app.route('/api/status')
+    def system_status():
+        """System status"""
+        try:
+            # Check database
+            db.session.execute(text('SELECT 1'))
+            db_status = 'connected'
+        except:
+            db_status = 'disconnected'
+        
         return jsonify({
-            'success': True,
-            'fat': reading.fat,
-            'snf': reading.snf,
-            'temperature': reading.temperature,
-            'is_valid': reading.is_valid,
-            'timestamp': reading.timestamp.isoformat()
+            'app': 'running',
+            'database': db_status,
+            'timestamp': datetime.now().isoformat()
         })
-    return jsonify({'success': False, 'message': 'No reading available'})
-
-@app.route('/api/hardware/scale/start', methods=['POST'])
-def start_scale():
-    """Start weighing scale"""
-    data = request.json
-    port = data.get('port', '/dev/ttyUSB0')
-    
-    config = DeviceConfig(
-        device_id='scale_01',
-        device_type=DeviceType.WEIGHING_SCALE,
-        port=port,
-        baudrate=9600
-    )
-    serial_mgr.register_device(config)
-    serial_mgr.start_device('scale_01')
-    
-    return jsonify({'success': True, 'message': 'Scale started'})
-
-@app.route('/api/hardware/analyzer/start', methods=['POST'])
-def start_analyzer():
-    """Start milk analyzer"""
-    data = request.json
-    port = data.get('port', '/dev/ttyUSB1')
-    
-    config = DeviceConfig(
-        device_id='analyzer_01',
-        device_type=DeviceType.MILK_ANALYZER,
-        port=port,
-        baudrate=9600
-    )
-    serial_mgr.register_device(config)
-    serial_mgr.start_device('analyzer_01')
-    
-    return jsonify({'success': True, 'message': 'Analyzer started'})
-
-# ============================================
-# Main Application Routes
-# ============================================
-
-@app.route('/')
-def index():
-    """Main landing page - redirect to POS billing"""
-    return render_template('dairy-pos-billing-software-india.html')
-
-@app.route('/pos')
-def pos_billing():
-    """POS Billing page"""
-    return render_template('dairy-pos-billing-software-india.html')
-
-@app.route('/collection')
-def milk_collection():
-    """Milk Collection page"""
-    return render_template('automated-milk-collection-system-village.html')
-
-@app.route('/farmers')
-def farmers():
-    """Farmer management"""
-    return render_template('farmer-management-milk-collection-centers.html')
-
-@app.route('/customers')
-def customers():
-    """Customer management"""
-    return render_template('customer-ledger-udhar-tracking-dairy.html')
-
-@app.route('/api/farmers', methods=['GET'])
-def get_farmers():
-    """Get all farmers"""
-    farmers = Farmer.query.all()
-    return jsonify({'farmers': [f.to_dict() for f in farmers]})
-
-@app.route('/api/farmers', methods=['POST'])
-def add_farmer():
-    """Add new farmer"""
-    data = request.json
-    farmer = Farmer(
-        id=f"F{datetime.now().strftime('%Y%m%d%H%M%S')}",
-        name=data['name'],
-        phone=data.get('phone'),
-        animal_type=data.get('animal_type', 'cow')
-    )
-    db.session.add(farmer)
-    db.session.commit()
-    return jsonify({'success': True, 'farmer': farmer.to_dict()})
-
-@app.route('/api/collections', methods=['POST'])
-def add_collection():
-    """Add milk collection entry"""
-    data = request.json
-    
-    # Get stable weight from scale if available
-    scale_reading = serial_mgr.get_latest_reading('scale_01')
-    quantity = data.get('quantity')
-    
-    if scale_reading and scale_reading.is_stable:
-        quantity = scale_reading.value
-    
-    collection = MilkCollection(
-        id=f"C{datetime.now().strftime('%Y%m%d%H%M%S')}",
-        farmer_id=data['farmer_id'],
-        quantity=quantity,
-        fat=data.get('fat'),
-        snf=data.get('snf'),
-        rate=data.get('rate'),
-        amount=data.get('amount'),
-        shift=data.get('shift', 'morning')
-    )
-    db.session.add(collection)
-    db.session.commit()
-    
-    return jsonify({'success': True, 'collection': collection.id})
-
-# ============================================
-# Health & Status Routes
-# ============================================
-
-@app.route('/api/health')
-def health_check():
-    """Application health check"""
-    return jsonify({
-        'status': 'healthy',
-        'timestamp': datetime.now().isoformat(),
-        'version': '2.0.0'
-    })
-
-@app.route('/api/status')
-def system_status():
-    """System status including hardware"""
-    return jsonify({
-        'app': 'running',
-        'database': 'connected',
-        'hardware': {
-            'scale': serial_mgr.get_device_health('scale_01'),
-            'analyzer': serial_mgr.get_device_health('analyzer_01')
-        }
-    })
 
 # ============================================
 # Error Handlers
 # ============================================
 
-@app.errorhandler(404)
-def not_found(error):
-    return jsonify({'error': 'Not found'}), 404
-
-@app.errorhandler(500)
-def internal_error(error):
-    return jsonify({'error': 'Internal server error'}), 500
-
-# ============================================
-# Application Lifecycle
-# ============================================
-
-def cleanup():
-    """Cleanup on shutdown"""
-    logger.info("Shutting down...")
-    serial_mgr.stop_all()
-    db.session.close()
-    logger.info("Cleanup complete")
-
-def signal_handler(sig, frame):
-    """Handle shutdown signals"""
-    cleanup()
-    sys.exit(0)
-
-# Register signal handlers
-signal.signal(signal.SIGINT, signal_handler)
-signal.signal(signal.SIGTERM, signal_handler)
+def register_error_handlers(app):
+    """Register error handlers"""
+    
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({'error': 'Not found', 'success': False}), 404
+    
+    @app.errorhandler(500)
+    def internal_error(error):
+        db.session.rollback()
+        return jsonify({'error': 'Internal server error', 'success': False}), 500
 
 # ============================================
-# Main Entry Point
+# Vercel Serverless Entry Point
+# ============================================
+
+# For Vercel deployment
+app = create_app()
+
+# ============================================
+# Windows EXE Entry Point
 # ============================================
 
 if __name__ == '__main__':
-    # Initialize database
-    with app.app_context():
-        db.create_all()
-        logger.info("Database initialized")
+    # Windows EXE specific setup
+    import webbrowser
+    import threading
     
-    # Initialize default hardware devices
-    init_default_devices()
-    logger.info("Hardware manager initialized")
+    def open_browser():
+        """Open browser after server starts"""
+        webbrowser.open("http://127.0.0.1:5000")
     
-    # Start Flask app
+    # Get configuration
     port = int(os.getenv('PORT', 5000))
     debug = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    host = os.getenv('HOST', '127.0.0.1')
     
-    logger.info(f"Starting MilkRecord Flask app on port {port}")
+    logger.info(f"Starting MilkRecord on {host}:{port}")
     logger.info(f"Debug mode: {debug}")
     
+    # Open browser automatically (Windows EXE)
+    if not debug:
+        threading.Timer(1.5, open_browser).start()
+    
+    # Run Flask app
     try:
-        app.run(host='0.0.0.0', port=port, debug=debug, threaded=True)
+        app.run(host=host, port=port, debug=debug, threaded=True)
     except KeyboardInterrupt:
-        logger.info("Interrupted by user")
+        logger.info("Shutting down...")
     finally:
-        cleanup()
+        db.session.close()
+        logger.info("Database connection closed")

@@ -3,9 +3,13 @@
 
 import sys
 from PyInstaller.utils.hooks import collect_submodules, collect_data_files
+import os
 
 # App name
 app_name = 'MilkRecord'
+
+# Determine if running on Windows
+is_windows = sys.platform == 'win32'
 
 # Main script
 a = Analysis(
@@ -14,9 +18,8 @@ a = Analysis(
     binaries=[],
     datas=[
         ('../apps', 'apps'),
-        ('templates', 'templates'),
-        ('static', 'static'),
         ('database', 'database'),
+        ('logs', 'logs'),
     ] + collect_data_files('flask') + collect_data_files('serial'),
     hiddenimports=[
         'flask',
@@ -27,10 +30,16 @@ a = Analysis(
         'jinja2',
         'markupsafe',
         'dotenv',
+        'sqlite3',
     ] + collect_submodules('flask') + collect_submodules('serial'),
     hookspath=[],
     runtime_hooks=[],
-    excludes=[],
+    excludes=[
+        'tkinter',
+        'matplotlib',
+        'scipy',
+        'numpy',
+    ],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=None,
@@ -51,7 +60,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=True if not is_windows else False,  # UPX can cause issues on Windows
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,  # Set to True for debug mode
@@ -60,5 +69,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='icon.ico' if sys.platform == 'win32' else None,
+    icon='icon.ico' if is_windows else None,
 )
