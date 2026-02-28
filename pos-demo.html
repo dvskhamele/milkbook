@@ -4516,56 +4516,10 @@ function clearTodayHistory() {
     document.body.appendChild(a); // Temporary addition
     a.click(); // Trigger click to download
     document.body.removeChild(a); // Cleanup
-    
+
     showToast("Excel Exported! 📊✅");
 }
-      function addCust() {
-          const name = el("newName").value;
-          const phone = el("newPhone").value;
-          const email = el("newEmail").value;
-          const birthday = el("newBirthday").value;
-          const gst = el("newGst").value;
-          if(!name) return showToast("Name required!");
-          
-          // Update or create customer
-          let customer = customers.find(c => c.name === name);
-          if (customer) {
-            // Update existing
-            customer.phone = phone || customer.phone;
-            customer.email = email || customer.email;
-            customer.birthday = birthday || customer.birthday;
-            customer.gst = gst || customer.gst;
-          } else {
-            // Create new
-            customers.push({ 
-              name: name, 
-              phone: phone || '', 
-              email: email || '',
-              birthday: birthday || '',
-              gst: gst || '',
-              lastOrder: "New Customer", 
-              frequentBuys: [],
-              rate: 0, 
-              qty: 0, 
-              type: el("newType").value,
-              balance: 0,
-              advance: 0,
-              monthMilk: 0
-            });
-          }
-          
-          el("activeCust").innerText = name;
-          updateCustomerDisplay();
-          closeModal('addCustModal'); 
-          el("newName").value = "";
-          el("newPhone").value = "";
-          el("newEmail").value = "";
-          el("newBirthday").value = "";
-          el("newGst").value = "";
-          localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
-          showToast(name + (phone ? ` (+91${phone})` : '') + " Saved!");
-      }
-      
+
       // Update customer display in summary panel
       function updateCustomerDisplay() {
         const customerName = el("activeCust").innerText;
