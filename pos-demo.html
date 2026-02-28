@@ -6434,18 +6434,70 @@ function openCustomerRelation(customerId) {
 function loadCustomerRelationData(customer) {
   const container = document.getElementById('relationContent');
   if (!container) return;
-  
+
   // Get all entries for this customer
   const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
   const customerEntries = history.filter(h => h.customer === customer.name);
-  
+
   // Calculate totals
   const totalPurchases = customerEntries.filter(e => e.method !== 'Cash In' && e.method !== 'Cash Out').reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
   const totalPaid = customerEntries.filter(e => e.method === 'Cash' || e.method === 'UPI').reduce((sum, e) => sum + parseFloat(e.paidAmount || e.amount || 0), 0);
   const totalCredit = customerEntries.filter(e => e.method === 'Credit' || e.method === 'Udhar').reduce((sum, e) => sum + parseFloat(e.creditAmount || 0), 0);
   const cashIn = customerEntries.filter(e => e.method === 'Cash In').reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
   const cashOut = customerEntries.filter(e => e.method === 'Cash Out').reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
+
+  // Calculate purchase streak
+  let currentStreak = 0;
+  let longestStreak = 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   
+  if (customerEntries.length > 0) {
+    // Sort entries by date
+    const sortedEntries = [...customerEntries].sort((a, b) => new Date(b.createdAt || Date.now()) - new Date(a.createdAt || Date.now()));
+    
+    // Calculate current streak
+    let lastDate = new Date(sortedEntries[0].createdAt || Date.now());
+    lastDate.setHours(0, 0, 0, 0);
+    
+    const daysDiff = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
+    if (daysDiff <= 1) {
+      currentStreak = 1;
+      for (let i = 1; i < sortedEntries.length; i++) {
+        const currentDate = new Date(sortedEntries[i].createdAt || Date.now());
+        currentDate.setHours(0, 0, 0, 0);
+        const diff = Math.floor((lastDate - currentDate) / (1000 * 60 * 60 * 24));
+        if (diff === 1) {
+          currentStreak++;
+          lastDate = currentDate;
+        } else if (diff > 1) {
+          break;
+        }
+      }
+    }
+    
+    // Calculate longest streak
+    let tempStreak = 1;
+    longestStreak = 1;
+    let prevDate = new Date(sortedEntries[0].createdAt || Date.now());
+    prevDate.setHours(0, 0, 0, 0);
+    
+    for (let i = 1; i < sortedEntries.length; i++) {
+      const currentDate = new Date(sortedEntries[i].createdAt || Date.now());
+      currentDate.setHours(0, 0, 0, 0);
+      const diff = Math.floor((prevDate - currentDate) / (1000 * 60 * 60 * 24));
+      if (diff === 1) {
+        tempStreak++;
+        longestStreak = Math.max(longestStreak, tempStreak);
+      } else {
+        tempStreak = 1;
+      }
+      prevDate = currentDate;
+    }
+  }
+  
+  const streakEmoji = currentStreak >= 7 ? '🔥' : currentStreak >= 3 ? '💪' : '✨';
+
   // Generate transactions list
   let transactionsHTML = '';
   if (customerEntries.length === 0) {
@@ -6453,16 +6505,16 @@ function loadCustomerRelationData(customer) {
   } else {
     // Sort by date (newest first)
     customerEntries.sort((a, b) => new Date(b.createdAt || Date.now()) - new Date(a.createdAt || Date.now()));
-    
+
     transactionsHTML = customerEntries.map(e => {
       const date = new Date(e.createdAt || Date.now());
       const isCredit = e.method === 'Credit' || e.method === 'Udhar';
       const isCashFlow = e.method === 'Cash In' || e.method === 'Cash Out';
-      
+
       let icon = '🥛';
       let amountColor = '#dc2626';
       let amountPrefix = '-';
-      
+
       if (isCashFlow) {
         icon = e.method === 'Cash In' ? '💰' : '💸';
         amountColor = e.method === 'Cash In' ? '#16a34a' : '#f59e0b';
@@ -6470,7 +6522,7 @@ function loadCustomerRelationData(customer) {
       } else if (isCredit) {
         icon = '📒';
       }
-      
+
       return `
         <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #f1f5f9;">
           <div style="flex:1;">
@@ -6490,7 +6542,7 @@ function loadCustomerRelationData(customer) {
       `;
     }).join('');
   }
-  
+
   container.innerHTML = `
     <!-- Customer Info Card -->
     <div style="background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding:16px; border-radius:12px; margin-bottom:16px; border:2px solid #0284c7;">
@@ -6516,15 +6568,35 @@ function loadCustomerRelationData(customer) {
         </div>
       </div>
     </div>
-    
+
+    <!-- Purchase Streak -->
+    <div style="background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding:16px; border-radius:12px; margin-bottom:16px; border:2px solid #f59e0b;">
+      <div style="display:flex; justify-content:space-around; align-items:center;">
+        <div>
+          <div style="font-size:32px; font-weight:900; color:#dc2626;">${streakEmoji} ${currentStreak}</div>
+          <div style="font-size:10px; color:#92400e; font-weight:700;">CURRENT STREAK</div>
+        </div>
+        <div style="border-left:2px solid #f59e0b; height:40px;"></div>
+        <div>
+          <div style="font-size:32px; font-weight:900; color:#f59e0b;">🏆 ${longestStreak}</div>
+          <div style="font-size:10px; color:#92400e; font-weight:700;">LONGEST STREAK</div>
+        </div>
+      </div>
+      ${currentStreak >= 7 ? '<div style="margin-top:12px; font-size:11px; color:#dc2626; font-weight:700; text-align:center;">🎉 Amazing! Keep it up!</div>' : ''}
+    </div>
+
     <!-- Quick Actions -->
+    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:16px;">
+      <button onclick="sendWishesCustomer('${customer.name}', '${customer.phone || ''}')" style="padding:12px; background:#ec4899; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">💐 Send Wishes</button>
+      <button onclick="copyCustomerDetails('${customer.id || customer.name}')" style="padding:12px; background:#e0f2fe; color:#0369a1; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">📋 Copy Details</button>
+    </div>
     <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:16px;">
       <button onclick="quickCashInFromRelation('${customer.name}')" style="padding:12px; background:#dcfce7; color:#166534; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">💰 Cash In</button>
       <button onclick="quickCashOutFromRelation('${customer.name}')" style="padding:12px; background:#fef3c7; color:#92400e; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">💸 Cash Out</button>
       <button onclick="openAdvanceLedger('${customer.id || customer.name}')" style="padding:12px; background:#ede9fe; color:#7c3aed; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">📒 Advance/Udhari</button>
-      <button onclick="copyCustomerDetails('${customer.id || customer.name}')" style="padding:12px; background:#e0f2fe; color:#0369a1; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">📋 Copy Details</button>
+      <button onclick="sendWhatsAppSummary('${customer.name}', '${customer.phone || ''}')" style="padding:12px; background:#25d366; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">💬 WhatsApp</button>
     </div>
-    
+
     <!-- Transactions Header -->
     <div style="background:#f8fafc; padding:12px; border-radius:8px; margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -6532,7 +6604,7 @@ function loadCustomerRelationData(customer) {
         <div style="font-size:12px; color:#64748b;">All Time</div>
       </div>
     </div>
-    
+
     <!-- Transactions List -->
     <div style="max-height:400px; overflow-y:auto; background:white; border-radius:8px; border:1px solid #e2e8f0;">
       ${transactionsHTML}
@@ -6716,6 +6788,59 @@ function copyCustomerDetails(customerId) {
   }).catch(() => {
     showToast('⚠️ Copy failed');
   });
+}
+
+// Send wishes to customer
+function sendWishesCustomer(customerName, phone) {
+  if (!phone) {
+    showToast('⚠️ No phone number!');
+    return;
+  }
+  
+  const today = new Date();
+  const day = today.toLocaleDateString('en-IN', { weekday: 'long' });
+  const date = today.toLocaleDateString('en-IN', { day: 'numeric', month: 'long' });
+  
+  const wishes = [
+    `🌅 Good Morning ${customerName}!\n\nHave a wonderful ${day} ahead! May your day be filled with happiness and prosperity.\n\n🙏 Gopal Dairy Shop`,
+    `🎉 Happy ${date}!\n\nDear ${customerName}, wishing you a day full of joy and success. Thank you for being a valued customer!\n\n🙏 Gopal Dairy Shop`,
+    `💐 Best Wishes!\n\nDear ${customerName}, may success and happiness always be yours. Thank you for your continued trust in us!\n\n🙏 Gopal Dairy Shop`
+  ];
+  
+  const wish = wishes[Math.floor(Math.random() * wishes.length)];
+  const wpUrl = `https://wa.me/91${phone.replace(/\D/g, '')}?text=${encodeURIComponent(wish)}`;
+  window.open(wpUrl, '_blank');
+  showToast('💐 Wishes sent!');
+}
+
+// Send WhatsApp summary to customer
+function sendWhatsAppSummary(customerName, phone) {
+  if (!phone) {
+    showToast('⚠️ No phone number!');
+    return;
+  }
+  
+  const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+  const customerEntries = history.filter(h => h.customer === customerName);
+  
+  const totalPurchases = customerEntries.filter(e => e.method !== 'Cash In' && e.method !== 'Cash Out').reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
+  const totalPaid = customerEntries.filter(e => e.method === 'Cash' || e.method === 'UPI').reduce((sum, e) => sum + parseFloat(e.paidAmount || e.amount || 0), 0);
+  
+  const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy Shop';
+  
+  let msg = `*${shopName}*\n`;
+  msg += `📊 *Account Summary*\n\n`;
+  msg += `━━━━━━━━━━━━━━━━━━\n\n`;
+  msg += `*Customer:* ${customerName}\n`;
+  msg += `*Total Purchases:* ${formatINR(totalPurchases)}\n`;
+  msg += `*Total Paid:* ${formatINR(totalPaid)}\n`;
+  msg += `*Transactions:* ${customerEntries.length}\n`;
+  msg += `\n━━━━━━━━━━━━━━━━━━\n`;
+  msg += `🙏 Thank you for your business!`;
+  
+  const wpUrl = `https://wa.me/91${phone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
+  window.open(wpUrl, '_blank');
+  showToast('💬 WhatsApp opened!');
 }
 
 // ========== ADVANCE/UDHARI LEDGER FUNCTIONS ==========
