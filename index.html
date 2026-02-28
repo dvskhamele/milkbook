@@ -444,10 +444,10 @@
       }
       .farmerGrid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 6px;
 
-        max-height: 200px;
+        max-height: 240px;
         overflow-y: auto;
         padding-right: 6px;
 
@@ -2730,12 +2730,13 @@
               </select>
             </div>
             
-            <!-- Payment Details Section -->
+            <!-- Payment Details Section (Private - Toggle to View) -->
             <div style="grid-column: 1 / -1; padding: 16px 8px 8px; margin-top: 16px; border-top: 3px dashed #3b82f6; background: #eff6ff; border-radius: 8px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <label style="font-size: 12px; color: #1e40af; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block;">💳 Payment Details (For UPI/Account Payments)</label>
-                <button onclick="copyFarmerPaymentDetails()" style="padding: 4px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; font-size: 10px;" title="Copy all payment details">📋 Copy</button>
+                <label style="font-size: 12px; color: #1e40af; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block;">🔒 Private: Payment Details</label>
+                <button onclick="toggleFarmerPaymentDetails()" id="togglePaymentBtn" style="padding: 4px 10px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 10px;" title="Show/Hide payment details">👁️ Show</button>
               </div>
+              <div id="farmerPaymentFields" style="display: none;">
             </div>
             <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📱 UPI ID / VPA</label>
@@ -2772,6 +2773,9 @@
                 <button onclick="copyToClipboard('fAccountName')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
               </div>
             </div>
+              <div style="padding: 8px; background: #dbeafe; border-radius: 6px; border-left: 3px solid #3b82f6; margin-top: 8px;">
+                <p style="font-size: 11px; color: #1e40af; margin: 0; font-weight: 600;">💡 These details are private. Click 👁️ to show/hide.</p>
+              </div>
           </div>
         </div>
 
@@ -3301,6 +3305,22 @@ function playSuccessSound() {
           });
         } else {
           showToast('⚠️ No details to copy');
+        }
+      }
+
+      // Toggle farmer payment details visibility
+      function toggleFarmerPaymentDetails() {
+        const fieldsDiv = document.getElementById('farmerPaymentFields');
+        const toggleBtn = document.getElementById('togglePaymentBtn');
+        
+        if (fieldsDiv.style.display === 'none') {
+          fieldsDiv.style.display = 'block';
+          toggleBtn.textContent = '🙈 Hide';
+          showToast('🔓 Payment details shown');
+        } else {
+          fieldsDiv.style.display = 'none';
+          toggleBtn.textContent = '👁️ Show';
+          showToast('🔒 Payment details hidden');
         }
       }
 
