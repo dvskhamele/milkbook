@@ -35,3 +35,8 @@ lerna-debug.log*
 
 # OS
 Thumbs.db
+
+# Environment files
+.env
+*.env
+flask_app/.env
