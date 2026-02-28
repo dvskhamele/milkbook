@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributor Plan - MilkRecord | Partner Program</title>
+    <meta name="description" content="Distributor plan for hardware partners. White-label, territory distribution, bulk licensing. Custom pricing for dealers.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        .back-link { display: inline-block; color: white; text-decoration: none; margin-bottom: 30px; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .card { background: white; border-radius: 24px; padding: 50px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .plan-header { text-align: center; margin-bottom: 40px; padding-bottom: 40px; border-bottom: 3px solid #f1f5f9; }
+        .plan-name { font-size: 42px; font-weight: 900; color: #1e293b; margin-bottom: 15px; }
+        .plan-price { font-size: 72px; font-weight: 900; color: #667eea; margin: 20px 0; }
+        .plan-price span { font-size: 24px; color: #64748b; font-weight: 400; }
+        .plan-tagline { font-size: 18px; color: #64748b; }
+        
+        .section { margin-bottom: 40px; }
+        .section h2 { font-size: 28px; color: #1e293b; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+        
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .feature-item { background: #fef3c7; padding: 16px; border-radius: 12px; border-left: 4px solid #f59e0b; }
+        .feature-item h3 { color: #92400e; font-size: 16px; margin-bottom: 8px; }
+        .feature-item p { color: #78350f; font-size: 14px; }
+        
+        .revenue-models { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 16px; margin-bottom: 30px; }
+        .revenue-models h3 { font-size: 24px; margin-bottom: 20px; }
+        .revenue-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .revenue-item { background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; }
+        .revenue-item strong { display: block; font-size: 16px; margin-bottom: 5px; }
+        .revenue-item span { font-size: 13px; opacity: 0.9; }
+        
+        .ideal-for { background: #eff6ff; padding: 24px; border-radius: 12px; margin-bottom: 30px; border-left: 4px solid #3b82f6; }
+        .ideal-for h3 { color: #1e40af; font-size: 20px; margin-bottom: 15px; }
+        .ideal-for ul { list-style: none; }
+        .ideal-for li { padding: 8px 0; color: #1e3a8a; display: flex; align-items: center; gap: 10px; }
+        .ideal-for li::before { content: '🤝'; font-size: 16px; }
+        
+        .support-box { background: #f0fdf4; padding: 24px; border-radius: 12px; margin-bottom: 30px; border-left: 4px solid #10b981; }
+        .support-box h3 { color: #166534; font-size: 20px; margin-bottom: 15px; }
+        .support-box ul { list-style: none; }
+        .support-box li { padding: 8px 0; color: #166534; display: flex; align-items: center; gap: 10px; }
+        .support-box li::before { content: '✅'; font-size: 16px; }
+        
+        .data-policy { background: #f8fafc; padding: 24px; border-radius: 12px; margin-bottom: 30px; }
+        .data-policy h3 { color: #1e293b; font-size: 20px; margin-bottom: 15px; }
+        .data-policy ul { list-style: none; }
+        .data-policy li { padding: 8px 0; color: #64748b; display: flex; align-items: center; gap: 10px; }
+        .data-policy li::before { content: '🔒'; font-size: 16px; }
+        
+        .btn { display: block; width: 100%; padding: 20px; border-radius: 12px; font-weight: 900; font-size: 20px; cursor: pointer; border: none; text-align: center; text-decoration: none; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
+        
+        @media (max-width: 768px) {
+            .card { padding: 30px; }
+            .plan-name { font-size: 32px; }
+            .plan-price { font-size: 48px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="pricing.html" class="back-link">← Back to Pricing</a>
+        
+        <div class="card">
+            <div class="plan-header">
+                <h1 class="plan-name">🤝 Distributor Plan</h1>
+                <div class="plan-price">Custom<span> pricing</span></div>
+                <p class="plan-tagline">For weighing scale dealers & analyzer distributors</p>
+            </div>
+
+            <div class="section">
+                <h2>🎁 What You Get</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <h3>White-Label Option</h3>
+                        <p>Your branding on the software</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Your Logo</h3>
+                        <p>Custom branding throughout</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Territory Distribution</h3>
+                        <p>Exclusive area rights</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Backend Control</h3>
+                        <p>Managed by MilkRecord</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Technical Support</h3>
+                        <p>Direct from our team</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Bulk Activation</h3>
+                        <p>Multiple license keys</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Dealer Margin</h3>
+                        <p>Profitable revenue model</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Revenue Sharing</h3>
+                        <p>Ongoing commission</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="revenue-models">
+                <h3>💰 Revenue Model Options</h3>
+                <div class="revenue-grid">
+                    <div class="revenue-item">
+                        <strong>Per Activation</strong>
+                        <span>License-based pricing</span>
+                    </div>
+                    <div class="revenue-item">
+                        <strong>Subscription Share</strong>
+                        <span>Annual revenue split</span>
+                    </div>
+                    <div class="revenue-item">
+                        <strong>Territory Exclusive</strong>
+                        <span>Area-based model</span>
+                    </div>
+                    <div class="revenue-item">
+                        <strong>Tech Partner</strong>
+                        <span>Branding model</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ideal-for">
+                <h3>🎯 Ideal For:</h3>
+                <ul>
+                    <li>Weighing machine dealers</li>
+                    <li>Analyzer distributors</li>
+                    <li>Regional hardware suppliers</li>
+                    <li>Milk equipment vendors</li>
+                </ul>
+            </div>
+
+            <div class="support-box">
+                <h3>📞 Support Model</h3>
+                <ul>
+                    <li>Backend managed by MilkRecord</li>
+                    <li>Remote installation assistance</li>
+                    <li>Dealer training provided</li>
+                    <li>Technical documentation</li>
+                    <li>Marketing materials support</li>
+                </ul>
+            </div>
+
+            <div class="data-policy">
+                <h3>🔒 Data Policy</h3>
+                <ul>
+                    <li>Offline safe storage</li>
+                    <li>Secure local database</li>
+                    <li>WhatsApp backup sharing</li>
+                    <li>GST/PAN support (optional)</li>
+                    <li>Data privacy guaranteed</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>🚀 Why Partner With MilkRecord?</h2>
+                <p style="font-size: 16px; color: #64748b; padding: 20px; background: #f8fafc; border-radius: 12px; line-height: 1.8;">
+                    ✔ Designed for Indian Dairy Shops<br>
+                    ✔ No complex accounting<br>
+                    ✔ Simple UI for farmers<br>
+                    ✔ Hindi / English Support<br>
+                    ✔ Affordable Pricing<br>
+                    ✔ 30-Day Risk-Free Trial<br>
+                    ✔ Growing brand recognition
+                </p>
+            </div>
+
+            <a href="login.html" class="btn btn-primary">Contact Sales Team</a>
+            <p style="text-align: center; margin-top: 15px; color: #64748b; font-size: 14px;">Custom pricing based on territory & volume</p>
+        </div>
+    </div>
+</body>
+</html>

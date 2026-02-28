@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Plan - MilkRecord | ₹2,000/Year</title>
+    <meta name="description" content="Basic Plan for manual dairy shops. Milk collection, ledger, billing, WhatsApp summaries. ₹2,000/year.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        .back-link { display: inline-block; color: white; text-decoration: none; margin-bottom: 30px; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .card { background: white; border-radius: 24px; padding: 50px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .plan-header { text-align: center; margin-bottom: 40px; padding-bottom: 40px; border-bottom: 3px solid #f1f5f9; }
+        .plan-name { font-size: 42px; font-weight: 900; color: #1e293b; margin-bottom: 15px; }
+        .plan-price { font-size: 72px; font-weight: 900; color: #667eea; margin: 20px 0; }
+        .plan-price span { font-size: 24px; color: #64748b; font-weight: 400; }
+        .plan-tagline { font-size: 18px; color: #64748b; }
+        
+        .section { margin-bottom: 40px; }
+        .section h2 { font-size: 28px; color: #1e293b; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+        
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .feature-item { background: #f0fdf4; padding: 16px; border-radius: 12px; border-left: 4px solid #10b981; }
+        .feature-item h3 { color: #166534; font-size: 16px; margin-bottom: 8px; }
+        .feature-item p { color: #64748b; font-size: 14px; }
+        
+        .not-included { background: #fef2f2; padding: 20px; border-radius: 12px; border-left: 4px solid #ef4444; }
+        .not-included h3 { color: #991b1b; font-size: 18px; margin-bottom: 15px; }
+        .not-included ul { list-style: none; }
+        .not-included li { padding: 8px 0; color: #7f1d1d; display: flex; align-items: center; gap: 10px; }
+        .not-included li::before { content: '🚫'; font-size: 16px; }
+        
+        .perfect-for { background: #eff6ff; padding: 24px; border-radius: 12px; margin-bottom: 30px; }
+        .perfect-for h3 { color: #1e40af; font-size: 20px; margin-bottom: 15px; }
+        .perfect-for ul { list-style: none; }
+        .perfect-for li { padding: 8px 0; color: #1e3a8a; display: flex; align-items: center; gap: 10px; }
+        .perfect-for li::before { content: '🎯'; font-size: 16px; }
+        
+        .payment-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 16px; text-align: center; margin-bottom: 30px; }
+        .payment-box h3 { font-size: 24px; margin-bottom: 15px; }
+        .payment-box .price { font-size: 48px; font-weight: 900; margin: 20px 0; }
+        .payment-box p { opacity: 0.9; }
+        
+        .btn { display: block; width: 100%; padding: 20px; border-radius: 12px; font-weight: 900; font-size: 20px; cursor: pointer; border: none; text-align: center; text-decoration: none; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6); }
+        
+        @media (max-width: 768px) {
+            .card { padding: 30px; }
+            .plan-name { font-size: 32px; }
+            .plan-price { font-size: 48px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="pricing.html" class="back-link">← Back to Pricing</a>
+        
+        <div class="card">
+            <div class="plan-header">
+                <h1 class="plan-name">🥛 Basic Plan</h1>
+                <div class="plan-price">₹2,000<span>/year</span></div>
+                <p class="plan-tagline">Designed for small dairy shops collecting 300–1000 liters per day</p>
+            </div>
+
+            <div class="section">
+                <h2>✅ Included Features</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <h3>Milk Intake Entry</h3>
+                        <p>Manual entry system for daily milk collection</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Farmer Ledger</h3>
+                        <p>Complete farmer management & tracking</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Advance/Udhar</h3>
+                        <p>Track advances and credit payments</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>FAT/SNF Entry</h3>
+                        <p>Manual fat and SNF recording</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Rate Formula</h3>
+                        <p>Custom rate calculation builder</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>POS Billing</h3>
+                        <p>Professional billing system</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>WhatsApp Summary</h3>
+                        <p>Auto-send summaries to farmers</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>History & Export</h3>
+                        <p>Daily/weekly reports + Excel export</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Offline Mode</h3>
+                        <p>Works without internet</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>1 Device Login</h3>
+                        <p>Single device access</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="perfect-for">
+                <h3>🎯 Perfect For:</h3>
+                <ul>
+                    <li>Shops without analyzer</li>
+                    <li>Manual weighing machine users</li>
+                    <li>50–300 farmers</li>
+                    <li>5–15 dairy products</li>
+                </ul>
+            </div>
+
+            <div class="not-included">
+                <h3>🚫 Not Included</h3>
+                <ul>
+                    <li>Auto weight capture</li>
+                    <li>Analyzer integration</li>
+                    <li>Printer automation</li>
+                    <li>Multi-user login</li>
+                </ul>
+            </div>
+
+            <div class="payment-box">
+                <h3>💳 Payment Terms</h3>
+                <div class="price">₹2,000/year</div>
+                <p>🆓 30 days free trial</p>
+                <p style="margin-top: 10px;">After trial: Only last 3 days visible</p>
+                <p style="margin-top: 10px;">Renew anytime to unlock full data</p>
+            </div>
+
+            <div class="section">
+                <h2>📞 Support</h2>
+                <p style="font-size: 16px; color: #64748b; padding: 20px; background: #f8fafc; border-radius: 12px;">
+                    ✅ WhatsApp Support Included<br>
+                    ✅ Remote Support Available<br>
+                    ✅ Setup Assistance Provided
+                </p>
+            </div>
+
+            <a href="login-pos.html" class="btn btn-primary">Start 30-Day Free Trial</a>
+            <p style="text-align: center; margin-top: 15px; color: #64748b; font-size: 14px;">No credit card required</p>
+        </div>
+    </div>
+</body>
+</html>

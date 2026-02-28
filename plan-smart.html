@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Plan - MilkRecord | Hardware Integration</title>
+    <meta name="description" content="Smart Plan with auto scale and analyzer integration. Automatic weight capture, FAT/SNF reading. ₹9,000-14,000 first year.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        .back-link { display: inline-block; color: white; text-decoration: none; margin-bottom: 30px; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .card { background: white; border-radius: 24px; padding: 50px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .plan-header { text-align: center; margin-bottom: 40px; padding-bottom: 40px; border-bottom: 3px solid #f1f5f9; }
+        .plan-name { font-size: 42px; font-weight: 900; color: #1e293b; margin-bottom: 15px; }
+        .plan-price { font-size: 72px; font-weight: 900; color: #667eea; margin: 20px 0; }
+        .plan-price span { font-size: 24px; color: #64748b; font-weight: 400; }
+        .plan-tagline { font-size: 18px; color: #64748b; }
+        
+        .section { margin-bottom: 40px; }
+        .section h2 { font-size: 28px; color: #1e293b; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+        
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .feature-item { background: #eff6ff; padding: 16px; border-radius: 12px; border-left: 4px solid #3b82f6; }
+        .feature-item h3 { color: #1e40af; font-size: 16px; margin-bottom: 8px; }
+        .feature-item p { color: #64748b; font-size: 14px; }
+        
+        .hardware-box { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 30px; border-radius: 16px; margin-bottom: 30px; }
+        .hardware-box h3 { font-size: 24px; margin-bottom: 20px; }
+        .hardware-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .hardware-item { background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; text-align: center; }
+        .hardware-item strong { display: block; font-size: 16px; margin-bottom: 5px; }
+        .hardware-item span { font-size: 13px; opacity: 0.9; }
+        
+        .pricing-breakdown { background: #fef3c7; padding: 24px; border-radius: 12px; margin-bottom: 30px; border-left: 4px solid #f59e0b; }
+        .pricing-breakdown h3 { color: #92400e; font-size: 20px; margin-bottom: 15px; }
+        .pricing-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #fcd34d; }
+        .pricing-item:last-child { border-bottom: none; font-weight: 700; color: #92400e; }
+        
+        .ideal-for { background: #f0fdf4; padding: 24px; border-radius: 12px; margin-bottom: 30px; border-left: 4px solid #10b981; }
+        .ideal-for h3 { color: #166534; font-size: 20px; margin-bottom: 15px; }
+        .ideal-for ul { list-style: none; }
+        .ideal-for li { padding: 8px 0; color: #166534; display: flex; align-items: center; gap: 10px; }
+        .ideal-for li::before { content: '✅'; font-size: 16px; }
+        
+        .btn { display: block; width: 100%; padding: 20px; border-radius: 12px; font-weight: 900; font-size: 20px; cursor: pointer; border: none; text-align: center; text-decoration: none; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6); }
+        
+        @media (max-width: 768px) {
+            .card { padding: 30px; }
+            .plan-name { font-size: 32px; }
+            .plan-price { font-size: 48px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="pricing.html" class="back-link">← Back to Pricing</a>
+        
+        <div class="card">
+            <div class="plan-header">
+                <h1 class="plan-name">⚙ Smart Plan</h1>
+                <div class="plan-price">₹9K-14K<span> first year</span></div>
+                <p class="plan-tagline">For dairy shops using digital weighing scale and analyzer (500-2000 liters/day)</p>
+            </div>
+
+            <div class="section">
+                <h2>✅ Everything in Basic PLUS:</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <h3>Auto Weight Capture</h3>
+                        <p>Automatic weight from digital scale</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Analyzer Integration</h3>
+                        <p>Auto FAT/SNF reading capture</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Auto Rate Calculation</h3>
+                        <p>Automatic rate based on parameters</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Printer Integration</h3>
+                        <p>Thermal printer automation</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Driver Installation</h3>
+                        <p>Complete setup support</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Hardware Binding</h3>
+                        <p>Device configuration & setup</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Remote Configuration</h3>
+                        <p>Remote setup assistance</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Priority Support</h3>
+                        <p>Fast-track support channel</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hardware-box">
+                <h3>🛠 Compatible Hardware</h3>
+                <div class="hardware-grid">
+                    <div class="hardware-item">
+                        <strong>Essea</strong>
+                        <span>Weighing Scale</span>
+                    </div>
+                    <div class="hardware-item">
+                        <strong>Prompt</strong>
+                        <span>Milk Analyzer</span>
+                    </div>
+                    <div class="hardware-item">
+                        <strong>REIL</strong>
+                        <span>Testing Equipment</span>
+                    </div>
+                    <div class="hardware-item">
+                        <strong>Everest</strong>
+                        <span>Weighing Scale</span>
+                    </div>
+                    <div class="hardware-item">
+                        <strong>Eco Milk</strong>
+                        <span>Analyzer System</span>
+                    </div>
+                    <div class="hardware-item">
+                        <strong>Wicom</strong>
+                        <span>Select Models</span>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; text-align: center; opacity: 0.9; font-size: 14px;">Hardware cost separate • Driver installation included</p>
+            </div>
+
+            <div class="pricing-breakdown">
+                <h3>💰 Pricing Structure</h3>
+                <div class="pricing-item">
+                    <span>One-Time Integration Setup</span>
+                    <span>₹7,000 – ₹12,000</span>
+                </div>
+                <div class="pricing-item">
+                    <span>Annual Software</span>
+                    <span>₹2,000</span>
+                </div>
+                <div class="pricing-item">
+                    <span>Optional AMC</span>
+                    <span>₹2,000/year</span>
+                </div>
+                <div class="pricing-item">
+                    <span>🔄 Renewal (Software + Support)</span>
+                    <span>₹4,000/year</span>
+                </div>
+            </div>
+
+            <div class="ideal-for">
+                <h3>🎯 Ideal For:</h3>
+                <ul>
+                    <li>500–2000 liters per day</li>
+                    <li>Automated milk intake</li>
+                    <li>Professional billing requirements</li>
+                    <li>Competing with collection centers</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>📞 Support & Setup</h2>
+                <p style="font-size: 16px; color: #64748b; padding: 20px; background: #f8fafc; border-radius: 12px;">
+                    ✅ Remote Installation Support<br>
+                    ✅ Hardware Configuration<br>
+                    ✅ Driver Installation<br>
+                    ✅ WhatsApp & Phone Support<br>
+                    ✅ Training Provided
+                </p>
+            </div>
+
+            <a href="login-pos.html" class="btn btn-primary">Start 30-Day Free Trial</a>
+            <p style="text-align: center; margin-top: 15px; color: #64748b; font-size: 14px;">Hardware cost separate • Installation included</p>
+        </div>
+    </div>
+</body>
+</html>

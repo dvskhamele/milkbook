@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MilkRecord - Operational Features</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0a63bd",
+                        "background-light": "#ffffff",
+                        "background-dark": "#101922", 
+                        "surface-light": "#f8fafc",
+                        "border-light": "#e2e8f0",
+                        "text-main": "#0f172a",
+                        "text-sub": "#475569"
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        lg: "1rem",
+                        xl: "1.5rem",
+                        full: "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light text-text-main font-display antialiased min-h-screen flex flex-col">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-border-light bg-white px-10 py-4 sticky top-0 z-50">
+<div class="flex items-center gap-4 text-text-main">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-text-main text-xl font-bold leading-tight tracking-[-0.015em]">MilkRecord</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-text-sub hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-text-sub hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Collection</a>
+<a class="text-text-sub hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Payments</a>
+<a class="text-text-sub hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Reports</a>
+<a class="text-text-main text-sm font-medium leading-normal border-b-2 border-primary" href="#">Features</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-primary hover:bg-primary/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Log Out</span>
+</button>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-border-light" data-alt="User profile avatar placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAeTUzK-0r-NYPBLz9iydH7JUq0WeKOlLSFM35VZkLM5K6RqjtymjZYokC9ozC6yMivupabPaKTN-X1XaEVgBSXLAwB6bUEr6A5UeofN9a4ArDrO00NZTrW-RGyoOWevHU11q3DHK7lbCl03XJwgwnJifQJBS-msamT7JWO9SnrUMUrZk8lUv7HE0yWfdwSiYQ5jJ3dIlIwMxJ3GHiCNPE8GO2a0y2IM8i3U26yfpUS16U7VTzVzLGVx0ApAIxQqANPynB8zHYm2A");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex justify-center w-full px-4 py-8 md:px-10 lg:px-20 bg-background-light">
+<div class="max-w-[1200px] w-full flex flex-col gap-12">
+<!-- Hero Section -->
+<div class="flex flex-col md:flex-row justify-between gap-8 items-start md:items-end pb-8 border-b border-border-light">
+<div class="flex flex-col gap-4 max-w-2xl">
+<span class="text-primary font-bold tracking-wider uppercase text-sm">Operational Excellence</span>
+<h1 class="text-text-main text-4xl md:text-5xl font-black leading-tight tracking-[-0.033em]">
+                                Operational Features
+                            </h1>
+<p class="text-text-sub text-lg md:text-xl font-normal leading-relaxed max-w-[600px]">
+                                Efficient tools designed specifically for daily milk collection and management in rural centers. Clean, fast, and reliable.
+                            </p>
+</div>
+<div class="hidden md:block">
+<button class="flex items-center gap-2 text-primary font-bold hover:underline">
+<span>View Documentation</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Features Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+<!-- Card 1 -->
+<div class="group flex flex-col gap-6 rounded-xl border border-border-light bg-white p-8 hover:border-primary/30 hover:shadow-sm transition-all duration-300">
+<div class="size-14 rounded-full bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">scale</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-text-main text-2xl font-bold leading-tight">Digital Weighing Integration</h3>
+<p class="text-text-sub text-base leading-relaxed">
+                                    Connects seamlessly with Bluetooth-enabled digital scales. Capture precise milk weight automatically to eliminate manual entry errors and speed up the collection process.
+                                </p>
+</div>
+<div class="mt-auto pt-4 flex items-center text-sm font-medium text-primary">
+<span class="group-hover:translate-x-1 transition-transform">Learn more →</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col gap-6 rounded-xl border border-border-light bg-white p-8 hover:border-primary/30 hover:shadow-sm transition-all duration-300">
+<div class="size-14 rounded-full bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">science</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-text-main text-2xl font-bold leading-tight">Quality Testing (FAT/SNF)</h3>
+<p class="text-text-sub text-base leading-relaxed">
+                                    Record FAT and SNF values instantly. The system automatically calculates fair pricing based on quality parameters, ensuring transparency for every farmer.
+                                </p>
+</div>
+<div class="mt-auto pt-4 flex items-center text-sm font-medium text-primary">
+<span class="group-hover:translate-x-1 transition-transform">Learn more →</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group flex flex-col gap-6 rounded-xl border border-border-light bg-white p-8 hover:border-primary/30 hover:shadow-sm transition-all duration-300">
+<div class="size-14 rounded-full bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">sms</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-text-main text-2xl font-bold leading-tight">Instant SMS Receipts</h3>
+<p class="text-text-sub text-base leading-relaxed">
+                                    Trigger automated SMS notifications to farmers immediately after collection. Includes weight, quality, and estimated payment details for full accountability.
+                                </p>
+</div>
+<div class="mt-auto pt-4 flex items-center text-sm font-medium text-primary">
+<span class="group-hover:translate-x-1 transition-transform">Learn more →</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group flex flex-col gap-6 rounded-xl border border-border-light bg-white p-8 hover:border-primary/30 hover:shadow-sm transition-all duration-300">
+<div class="size-14 rounded-full bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">cloud_sync</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-text-main text-2xl font-bold leading-tight">Real-time Cloud Sync</h3>
+<p class="text-text-sub text-base leading-relaxed">
+                                    Data is securely synchronized to the cloud instantly. Access reports and analytics from anywhere, ensuring your center's data is safe and always up-to-date.
+                                </p>
+</div>
+<div class="mt-auto pt-4 flex items-center text-sm font-medium text-primary">
+<span class="group-hover:translate-x-1 transition-transform">Learn more →</span>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="group flex flex-col gap-6 rounded-xl border border-border-light bg-white p-8 hover:border-primary/30 hover:shadow-sm transition-all duration-300">
+<div class="size-14 rounded-full bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">payments</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-text-main text-2xl font-bold leading-tight">Automated Payment Cycles</h3>
+<p class="text-text-sub text-base leading-relaxed">
+                                    Generate payment sheets for weekly or bi-weekly cycles with a single click. Manage deductions, bonuses, and direct bank transfers efficiently.
+                                </p>
+</div>
+<div class="mt-auto pt-4 flex items-center text-sm font-medium text-primary">
+<span class="group-hover:translate-x-1 transition-transform">Learn more →</span>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="group flex flex-col gap-6 rounded-xl border border-border-light bg-white p-8 hover:border-primary/30 hover:shadow-sm transition-all duration-300">
+<div class="size-14 rounded-full bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">groups</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-text-main text-2xl font-bold leading-tight">Farmer Management</h3>
+<p class="text-text-sub text-base leading-relaxed">
+                                    Maintain comprehensive profiles for all registered farmers. Track cattle details, historical supply data, and banking information in one secure digital ledger.
+                                </p>
+</div>
+<div class="mt-auto pt-4 flex items-center text-sm font-medium text-primary">
+<span class="group-hover:translate-x-1 transition-transform">Learn more →</span>
+</div>
+</div>
+</div>
+<!-- Bottom CTA -->
+<div class="w-full bg-surface-light rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-border-light mt-4">
+<div class="flex flex-col gap-2 max-w-xl">
+<h2 class="text-2xl md:text-3xl font-bold text-text-main">Ready to modernize your collection center?</h2>
+<p class="text-text-sub">Get started with MilkRecord today and experience seamless operations.</p>
+</div>
+<div class="flex gap-4">
+<button class="bg-white border border-border-light text-text-main px-6 py-3 rounded-lg font-bold hover:bg-gray-50 transition-colors">Contact Sales</button>
+<button class="bg-primary text-white px-6 py-3 rounded-lg font-bold hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">Get Started</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="flex flex-col gap-6 px-10 py-10 border-t border-border-light bg-white text-center mt-auto">
+<div class="flex flex-wrap items-center justify-center gap-8">
+<a class="text-text-sub hover:text-primary transition-colors text-sm font-medium" href="#">Privacy Policy</a>
+<a class="text-text-sub hover:text-primary transition-colors text-sm font-medium" href="#">Terms of Service</a>
+<a class="text-text-sub hover:text-primary transition-colors text-sm font-medium" href="#">Help Center</a>
+<a class="text-text-sub hover:text-primary transition-colors text-sm font-medium" href="#">Contact Support</a>
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-text-sub/70 text-sm">© 2024 MilkRecord Systems. All rights reserved.</p>
+<p class="text-xs text-text-sub/50">Designed for reliability in rural connectivity.</p>
+</div>
+</footer>
+</div>
+</div>
+</body></html>
