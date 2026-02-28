@@ -4255,6 +4255,12 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
 
           // Update badges for items in cart
           cart.forEach(item => {
+            // Skip invalid items
+            if (!item || !item.name) {
+              console.warn('⚠️ Skipping invalid cart item:', item);
+              return;
+            }
+            
             // Find card by ID based on product name
             let cardId = null;
             if (item.name === 'Cow 1L') cardId = 'prod-cow-1l';
@@ -4265,7 +4271,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
             else if (item.name === 'Paneer') cardId = 'prod-paneer';
             else if (item.name === 'Ghee') cardId = 'prod-ghee';
             else if (item.name === 'Milk Cake') cardId = 'prod-milkcake';
-            
+
             if (cardId) {
               const card = document.getElementById(cardId);
               if (card) {
@@ -7938,15 +7944,32 @@ function switchCustomerLedgerView() {
 function filterCustomerLedger() {
   const content = document.getElementById('customerLedgerContent');
   if (!content) return;
-  
+
   const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
-  const custData = JSON.parse(localStorage.getItem('mr_pos_customers') || '[]');
+  let custData = localStorage.getItem('mr_pos_customers');
+  
+  // Handle custData - ensure it's an array
+  if (!custData) {
+    custData = [];
+  } else {
+    try {
+      custData = JSON.parse(custData);
+      if (!Array.isArray(custData)) {
+        console.error('❌ custData is not an array, using empty array');
+        custData = [];
+      }
+    } catch(e) {
+      console.error('❌ Failed to parse custData:', e);
+      custData = [];
+    }
+  }
+  
   const searchTerm = document.getElementById('ledgerSearch').value.toLowerCase();
   const fromDate = document.getElementById('ledgerFromDate').value;
   const toDate = document.getElementById('ledgerToDate').value;
-  
+
   let filteredHistory = history;
-  
+
   // Filter by date range
   if (fromDate) {
     const from = new Date(fromDate);
@@ -7963,17 +7986,17 @@ function filterCustomerLedger() {
       return hDate <= to;
     });
   }
-  
+
   // Filter by search term
   if (searchTerm) {
-    filteredHistory = filteredHistory.filter(h => 
+    filteredHistory = filteredHistory.filter(h =>
       h.customer.toLowerCase().includes(searchTerm) ||
       (h.phone && h.phone.includes(searchTerm))
     );
   }
-  
+
   let html = '';
-  
+
   if (customerLedgerView === 'all') {
     // Show all customers with their summary
     html += '<h3 style="font-size:14px; font-weight:700; color:#1e293b; margin-bottom:12px;">📋 All Customers Master List</h3>';
@@ -8253,30 +8276,70 @@ function renderRateListProducts() {
     }
   });
 
-  // Generate HTML - Simple grid without category headers
-  let html = '';
+  // Group products by category based on keywords in name
+  const categories = {
+    '🥛 Milk & Dairy': ['milk', 'cow', 'buff', 'curd', 'dahi', 'lassi', 'paneer', 'cheese'],
+    '🧈 Ghee & Butter': ['ghee', 'butter', 'makhan'],
+    '🍬 Sweets': ['sweet', 'mithai', 'cake', 'barfi', 'ladoo', 'jalebi', 'rasgulla', 'peda', 'kalakand', 'milk cake'],
+    '🥐 Bakery': ['bakery', 'bread', 'bun', 'pav', 'toast', 'rusk', 'biscuit', 'cookie', 'khari'],
+    '📦 Others': []
+  };
 
-  html += `
-    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
-  `;
-
-  Object.values(uniqueProducts).forEach(p => {
-    const safeUnit = p.unit || 'unit';
-    html += `
-      <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
-        <div style="font-size:32px;">${p.emoji}</div>
-        <div style="flex:1;">
-          <div style="font-weight:700; color:#1e293b; font-size:14px;">${p.name}</div>
-          <div style="font-size:12px; color:#64748b;">Per ${safeUnit}</div>
-        </div>
-        <div style="font-weight:900; color:#16a34a; font-size:16px;">${formatINR(p.price)}</div>
-      </div>
-    `;
+  const categorizedProducts = {};
+  Object.keys(categories).forEach(cat => {
+    categorizedProducts[cat] = [];
   });
 
-  html += `
-    </div>
-  `;
+  Object.values(uniqueProducts).forEach(p => {
+    const nameLower = p.name.toLowerCase();
+    let assigned = false;
+    
+    for (const [category, keywords] of Object.entries(categories)) {
+      if (category === '📦 Others') continue;
+      
+      if (keywords.some(kw => nameLower.includes(kw))) {
+        categorizedProducts[category].push(p);
+        assigned = true;
+        break;
+      }
+    }
+    
+    if (!assigned) {
+      categorizedProducts['📦 Others'].push(p);
+    }
+  });
+
+  // Generate HTML with category headers
+  let html = '';
+
+  for (const [category, products] of Object.entries(categorizedProducts)) {
+    if (products.length === 0) continue;
+    
+    html += `
+      <div style="margin-bottom:20px;">
+        <h3 style="font-size:16px; font-weight:700; color:#1e293b; margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid #e2e8f0;">${category}</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
+    `;
+
+    products.forEach(p => {
+      const safeUnit = p.unit || 'unit';
+      html += `
+        <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
+          <div style="font-size:32px;">${p.emoji}</div>
+          <div style="flex:1;">
+            <div style="font-weight:700; color:#1e293b; font-size:14px;">${p.name}</div>
+            <div style="font-size:12px; color:#64748b;">Per ${safeUnit}</div>
+          </div>
+          <div style="font-weight:900; color:#16a34a; font-size:16px;">${formatINR(p.price)}</div>
+        </div>
+      `;
+    });
+
+    html += `
+        </div>
+      </div>
+    `;
+  }
 
   container.innerHTML = html;
 }
