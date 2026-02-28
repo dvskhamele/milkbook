@@ -835,7 +835,7 @@
 
     <div class="overlay" id="addCustModal">
         <div class="modal" style="width:450px; height:auto;">
-            <div class="panelHeader"><span>👤 Add/Edit Customer</span> <button onclick="closeModal('addCustModal')">✖</button></div>
+            <div class="panelHeader"><span>✏️ Add/Edit Customer</span> <button onclick="closeModal('addCustModal')">✖</button></div>
             <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
                 <!-- Customer ID (Auto-generated, Editable) -->
                 <div style="display:grid; grid-template-columns: 1fr 2fr; gap:8px;">
@@ -2666,7 +2666,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
           const activeCustEl = el("activeCust");
           if (activeCustEl) activeCustEl.innerText = name;
 
-          showToast("Customer: " + name);
+          showToast("Customer: " + name + " ✏️");
 
           // Auto-fill from customer memory (previous orders)
           loadCustomerMemory(name);
@@ -2884,7 +2884,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         document.getElementById('newUnit').value = 'L';
         
         const modalTitle = document.querySelector('#addCustModal .panelHeader span');
-        if (modalTitle) modalTitle.textContent = '👤 Add/Edit Customer';
+        if (modalTitle) modalTitle.textContent = '✏️ Add/Edit Customer';
         
         const addBtn = document.querySelector('#addCustModal .add-btn');
         if (addBtn) {
