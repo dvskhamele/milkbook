@@ -108,19 +108,17 @@
       .payment-section {
         position: fixed;
         bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
+        left: 0;
+        right: 0;
         background: var(--panel);
         border-top: 3px solid #16a34a;
         padding: 12px 15px;
         z-index: 99;
         box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
         width: 100%;
-        min-width: 100%;
-        max-width: 100%;
         border-radius: 16px 16px 0 0;
       }
-      
+
       /* Ensure emojis render properly on all systems */
       .payment-section, .p-card, .cardRow, .modal, body, .p-card .emoji, #cartItems td span {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif !important;
@@ -130,14 +128,14 @@
         display: inline-block !important;
         line-height: 1 !important;
       }
-      
+
       /* Cart items scrollable with fixed height */
       #cartItems { max-height: 200px; overflow-y: auto; }
       #cartItems::-webkit-scrollbar { width: 6px; }
       #cartItems::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
       
-      /* Add padding to right panel to prevent content hiding behind fixed payment */
-      .right-panel { padding-bottom: 180px; }
+      /* Panels height synced with payment section */
+      .left-panel, .right-panel { max-height: calc(100vh - 180px); }
 
       /* Tablet (768px - 1024px): Side by side with adjusted heights */
       @media (min-width: 768px) and (max-width: 1024px) {
