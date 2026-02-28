@@ -1,0 +1,47 @@
+<!-- GLOBAL NAVIGATION BAR - Add to ALL pages -->
+<!-- Paste this right after <body> tag or at top of main content -->
+
+<nav style="position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 20px; z-index: 9999; box-shadow: 0 2px 12px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; font-family: system-ui, -apple-system, sans-serif;">
+  <div style="display: flex; align-items: center; gap: 20px;">
+    <a href="stitch_milkbook_login 2/milkrecord_landing_page_3/code.html" style="color: white; text-decoration: none; font-weight: 900; font-size: 18px;">🥛 MilkBook</a>
+    <div style="display: flex; gap: 15px; font-size: 14px; font-weight: 600; flex-wrap: wrap;">
+      <a href="index.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">📊 Collection</a>
+      <a href="pos-demo.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">🛒 POS</a>
+      <a href="farmers.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">👨‍🌾 Farmers</a>
+      <a href="ledger.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">📒 Ledger</a>
+      <a href="inventory.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">📦 Inventory</a>
+      <a href="reports.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">📈 Reports</a>
+      <a href="dashboard.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">📊 Dashboard</a>
+      <a href="settings.html" style="color: rgba(255,255,255,0.9); text-decoration: none;">⚙️ Settings</a>
+    </div>
+  </div>
+  <div style="display: flex; gap: 15px; font-size: 14px; font-weight: 600;">
+    <a href="pricing.html" style="color: white; text-decoration: none; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 8px;">💰 Pricing</a>
+    <a href="login.html" style="color: white; text-decoration: none; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 8px;">🔐 Login</a>
+  </div>
+</nav>
+
+<!-- Add padding to body content to account for fixed nav -->
+<style>
+  body {
+    padding-top: 70px !important;
+  }
+  /* Mobile responsive */
+  @media (max-width: 1024px) {
+    nav > div:last-child {
+      display: none;
+    }
+  }
+  @media (max-width: 768px) {
+    nav {
+      padding: 10px;
+      flex-wrap: wrap;
+    }
+    nav > div:first-child > div:last-child {
+      display: none;
+    }
+    body {
+      padding-top: 120px !important;
+    }
+  }
+</style>
