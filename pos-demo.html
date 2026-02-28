@@ -1524,6 +1524,10 @@
                         <label style="font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:5px;">Shop Phone (for invoice & WhatsApp) *</label>
                         <input type="tel" id="shopPhoneInput" placeholder="e.g., 9876543210" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px;" inputmode="tel" />
                     </div>
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:5px;">📧 Email (for account & login)</label>
+                        <input type="email" id="shopEmailInput" placeholder="e.g., shop@example.com" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); font-weight:700; font-size:13px;" />
+                    </div>
                 </div>
 
                 <!-- Address Section -->
@@ -6988,8 +6992,144 @@ function updateBooth() {
   showToast(`Booth: ${boothNames[booth]}`);
 }
 
-// Save shop settings
-function saveShopSettings() {
+// Check if account exists with email/phone
+async function checkAccountExists(email, phone) {
+  try {
+    // Check local storage first
+    const existingEmail = localStorage.getItem('MilkRecord_account_email');
+    const existingPhone = localStorage.getItem('MilkRecord_account_phone');
+    
+    if (existingEmail && email && existingEmail.toLowerCase() === email.toLowerCase()) {
+      return { exists: true, type: 'email', message: 'Account with this email already exists' };
+    }
+    
+    if (existingPhone && phone && existingPhone === phone) {
+      return { exists: true, type: 'phone', message: 'Account with this phone already exists' };
+    }
+    
+    // If Supabase is available, check there too
+    if (typeof supabase !== 'undefined') {
+      const { data, error } = await supabase
+        .from('dairy_shops')
+        .select('id')
+        .or(`email.eq.${email},phone.eq.${phone}`)
+        .limit(1);
+      
+      if (data && data.length > 0) {
+        return { exists: true, type: 'supabase', message: 'Account already exists in cloud' };
+      }
+    }
+    
+    return { exists: false };
+  } catch (error) {
+    console.error('Error checking account:', error);
+    return { exists: false, error: error.message };
+  }
+}
+
+// Create account with shop details
+async function createAccount(shopData) {
+  try {
+    // Create account object
+    const account = {
+      email: shopData.email,
+      phone: shopData.phone,
+      shopName: shopData.shopName,
+      createdAt: new Date().toISOString(),
+      verified: false
+    };
+    
+    // Save to local storage
+    localStorage.setItem('MilkRecord_account_email', shopData.email || '');
+    localStorage.setItem('MilkRecord_account_phone', shopData.phone || '');
+    localStorage.setItem('MilkRecord_session', JSON.stringify({
+      email: shopData.email,
+      phone: shopData.phone,
+      shop_name: shopData.shopName,
+      created_at: account.createdAt
+    }));
+    
+    // Try to sync with Supabase if available
+    if (typeof supabase !== 'undefined') {
+      const { data, error } = await supabase
+        .from('dairy_shops')
+        .insert([{
+          email: shopData.email,
+          phone: shopData.phone,
+          shop_name: shopData.shopName,
+          shop_phone: shopData.shopPhone,
+          shop_address: shopData.shopAddress,
+          shop_city: shopData.shopCity,
+          shop_pincode: shopData.shopPincode,
+          created_at: new Date().toISOString()
+        }]);
+      
+      if (error) {
+        console.warn('Supabase sync failed:', error.message);
+      } else {
+        console.log('✅ Account synced with Supabase');
+      }
+    }
+    
+    return { success: true, account };
+  } catch (error) {
+    console.error('Error creating account:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Sync all data with Supabase
+async function syncAllData() {
+  try {
+    if (typeof supabase === 'undefined') {
+      console.log('⚠️ Supabase not available, using local storage only');
+      return { success: true, type: 'local' };
+    }
+    
+    const session = localStorage.getItem('MilkRecord_session');
+    if (!session) {
+      return { success: false, error: 'No session found' };
+    }
+    
+    const sessionData = JSON.parse(session);
+    
+    // Sync customers
+    const customers = JSON.parse(localStorage.getItem('mr_pos_customers') || '[]');
+    if (customers.length > 0) {
+      const { error: customerError } = await supabase
+        .from('customers')
+        .upsert(customers.map(c => ({ ...c, shop_email: sessionData.email })));
+      if (customerError) console.warn('Customer sync failed:', customerError.message);
+    }
+    
+    // Sync products
+    const products = JSON.parse(localStorage.getItem('mr_pos_custom_products') || '[]');
+    if (products.length > 0) {
+      const { error: productError } = await supabase
+        .from('products')
+        .upsert(products.map(p => ({ ...p, shop_email: sessionData.email })));
+      if (productError) console.warn('Product sync failed:', productError.message);
+    }
+    
+    // Sync history
+    const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+    if (history.length > 0) {
+      const { error: historyError } = await supabase
+        .from('sales_history')
+        .upsert(history.map(h => ({ ...h, shop_email: sessionData.email })));
+      if (historyError) console.warn('History sync failed:', historyError.message);
+    }
+    
+    console.log('✅ All data synced with Supabase');
+    return { success: true, type: 'supabase' };
+  } catch (error) {
+    console.error('Sync error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Save shop settings with account creation and sync
+async function saveShopSettings() {
   // Capitalize first letter of each word for names
   const capitalizeName = (str) => {
     return str.replace(/\b\w/g, c => c.toUpperCase());
@@ -7003,47 +7143,94 @@ function saveShopSettings() {
   const shopPincode = el("shopPincodeInput").value.trim();
   const shopGst = el("shopGstInput").value.trim().toUpperCase();
   const shopPan = el("shopPanInput").value.trim().toUpperCase();
-  
+
   // Shop payment details
   const shopUpi = el("shopUpiInput") ? el("shopUpiInput").value.trim().toLowerCase() : '';
   const shopBank = el("shopBankInput") ? el("shopBankInput").value.trim() : '';
   const shopAccount = el("shopAccountInput") ? el("shopAccountInput").value.trim() : '';
   const shopIfsc = el("shopIfscInput") ? el("shopIfscInput").value.trim().toUpperCase() : '';
   const shopAccountName = el("shopAccountNameInput") ? el("shopAccountNameInput").value.trim() : '';
+  
+  // Get email if provided (for account creation)
+  const shopEmail = el("shopEmailInput") ? el("shopEmailInput").value.trim().toLowerCase() : '';
 
-  if (shopName) {
-    localStorage.setItem('MilkRecord_shop_name', shopName);
+  if (!shopName) {
+    showToast('⚠️ Shop name required!');
+    return;
   }
-  if (shopPhone) {
-    localStorage.setItem('MilkRecord_shop_phone', shopPhone);
+  
+  if (!shopPhone) {
+    showToast('⚠️ Shop phone required!');
+    return;
   }
-  if (shopProprietor) {
-    localStorage.setItem('MilkRecord_shop_proprietor', shopProprietor);
+
+  // Check if account already exists (only if email or phone changed)
+  const existingEmail = localStorage.getItem('MilkRecord_account_email');
+  const existingPhone = localStorage.getItem('MilkRecord_account_phone');
+  
+  if ((shopEmail && shopEmail !== existingEmail) || (shopPhone && shopPhone !== existingPhone)) {
+    const checkResult = await checkAccountExists(shopEmail, shopPhone);
+    if (checkResult.exists) {
+      if (!confirm(`⚠️ ${checkResult.message}\n\nDo you want to update existing account instead?`)) {
+        return;
+      }
+    }
   }
-  if (shopAddress) {
-    localStorage.setItem('MilkRecord_shop_address', shopAddress);
-  }
-  if (shopCity) {
-    localStorage.setItem('MilkRecord_shop_city', shopCity);
-  }
-  if (shopPincode) {
-    localStorage.setItem('MilkRecord_shop_pincode', shopPincode);
-  }
-  if (shopGst) {
-    localStorage.setItem('MilkRecord_shop_gst', shopGst);
-  }
-  if (shopPan) {
-    localStorage.setItem('MilkRecord_shop_pan', shopPan);
-  }
+
+  // Save all shop settings to localStorage
+  localStorage.setItem('MilkRecord_shop_name', shopName);
+  localStorage.setItem('MilkRecord_shop_phone', shopPhone);
+  if (shopProprietor) localStorage.setItem('MilkRecord_shop_proprietor', shopProprietor);
+  if (shopAddress) localStorage.setItem('MilkRecord_shop_address', shopAddress);
+  if (shopCity) localStorage.setItem('MilkRecord_shop_city', shopCity);
+  if (shopPincode) localStorage.setItem('MilkRecord_shop_pincode', shopPincode);
+  if (shopGst) localStorage.setItem('MilkRecord_shop_gst', shopGst);
+  if (shopPan) localStorage.setItem('MilkRecord_shop_pan', shopPan);
+  
   // Save shop payment details
   if (shopUpi) localStorage.setItem('MilkRecord_shop_upi', shopUpi);
   if (shopBank) localStorage.setItem('MilkRecord_shop_bank', shopBank);
   if (shopAccount) localStorage.setItem('MilkRecord_shop_account', shopAccount);
   if (shopIfsc) localStorage.setItem('MilkRecord_shop_ifsc', shopIfsc);
   if (shopAccountName) localStorage.setItem('MilkRecord_shop_account_name', shopAccountName);
+  if (shopEmail) localStorage.setItem('MilkRecord_shop_email', shopEmail);
+
+  // Create account if this is first time setup
+  const hasAccount = localStorage.getItem('MilkRecord_account_email') || localStorage.getItem('MilkRecord_account_phone');
+  if (!hasAccount || (shopEmail && shopEmail !== existingEmail)) {
+    showToast('⏳ Creating account...');
+    const createResult = await createAccount({
+      email: shopEmail,
+      phone: shopPhone,
+      shopName: shopName,
+      shopPhone: shopPhone,
+      shopAddress: shopAddress,
+      shopCity: shopCity,
+      shopPincode: shopPincode
+    });
+    
+    if (createResult.success) {
+      console.log('✅ Account created successfully');
+    } else {
+      console.error('❌ Account creation failed:', createResult.error);
+    }
+  }
+
+  // Sync all data with Supabase
+  showToast('🔄 Syncing data...');
+  const syncResult = await syncAllData();
+  if (syncResult.success) {
+    console.log('✅ Data synced:', syncResult.type);
+  }
 
   closeModal('settingsModal');
-  showToast('Shop settings saved! ✅');
+  showToast('✅ Settings saved & synced!');
+  
+  // Refresh UI to show updated shop name
+  const shopTitleEl = document.getElementById('shopTitle');
+  if (shopTitleEl) {
+    shopTitleEl.textContent = shopName + (shopTitleEl.id === 'shopTitle' ? ' POS' : '');
+  }
 }
 
 // Copy to clipboard utility
