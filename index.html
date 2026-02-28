@@ -396,10 +396,10 @@
       .farmerPick {
         display: flex;
         flex-direction: column;
-        gap: 6px;
-        flex: 0 0 260px;
-        min-height: 260px;
-        max-height: 260px;
+        gap: 4px;
+        flex: 0 0 200px;
+        min-height: 200px;
+        max-height: 200px;
       }
 
       .searchBox {
@@ -448,21 +448,21 @@
       .farmerGrid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 3px;
+        gap: 2px;
 
-        max-height: 260px;
+        max-height: 200px;
         overflow-y: auto;
-        padding-right: 4px;
+        padding-right: 3px;
 
         position: relative;
         flex: 1 1 auto;
-        min-height: 260px;
+        min-height: 200px;
       }
 
       .fcard {
         height: auto;
-        min-height: 28px;
-        border-radius: 4px;
+        min-height: 16px;
+        border-radius: 3px;
         border: 1px solid var(--line);
         background: #fff;
         display: flex;
@@ -477,16 +477,16 @@
         transform: translateY(1px);
       }
       .fimg {
-        width: 22px;
-        height: 22px;
-        border-radius: 4px;
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
         background: #f1f5f9;
         border: 1px solid var(--line);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 10px;
-        flex: 0 0 22px;
+        font-size: 8px;
+        flex: 0 0 14px;
         overflow: hidden;
       }
       .fimg img {
@@ -496,19 +496,19 @@
       }
       .fname {
         font-weight: 900;
-        font-size: 9px;
+        font-size: 11px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 100%;
-        line-height: 1.2;
+        line-height: 1.1;
         flex: 1 1 auto;
         min-width: 0;
       }
       .fsub {
         color: var(--muted);
         font-weight: 900;
-        font-size: 7px;
+        font-size: 8px;
         margin-top: 1px;
         white-space: nowrap;
         overflow: hidden;
@@ -534,15 +534,15 @@
       }
       .badge {
         position: absolute;
-        right: 4px;
-        top: 4px;
-        padding: 3px 5px;
-        border-radius: 8px;
+        right: 3px;
+        top: 3px;
+        padding: 2px 4px;
+        border-radius: 6px;
         background: rgba(22, 163, 74, 0.12);
         border: 1px solid rgba(22, 163, 74, 0.25);
         font-weight: 1000;
         color: #166534;
-        font-size: 7px;
+        font-size: 6px;
       }
       
       /* Mobile Optimization for Farmer Cards */
@@ -3747,7 +3747,7 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
                     <div style="display: flex; justify-content: space-between; align-items: center; gap: 2px;">
                         <div class="fname" title="${escapeHtml(f.name || "")}" style="flex: 1;">${escapeHtml(f.name || "")}</div>
                         ${animalIcon ? `<span style="font-size: 10px;">${animalIcon}</span>` : ''}
-                        ${f.serial ? `<span style="font-size: 7px; font-weight: 700; color: #3b82f6; background: #dbeafe; padding: 1px 4px; border-radius: 3px;">#${escapeHtml(f.serial)}</span>` : ''}
+                        ${f.serial ? `<span style="font-size: 7px; font-weight: 700; color: #3b82f6; background: #dbeafe; padding: 1px 3px; border-radius: 2px;">#${escapeHtml(f.serial)}</span>` : ''}
                     </div>
                     <div class="fsub">${f.phone || ""} • ${formatAmount(f.balance || 0)}</div>
                 </div>
