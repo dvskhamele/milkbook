@@ -1578,6 +1578,7 @@
         <div class="balCard" style="background:#fef3c7; color:#92400e; padding: 12px;">
           <div style="font-size:11px; font-weight: 700;">💰 CURRENT BALANCE</div>
           <div style="font-size: 24px; font-weight: 900;" id="detailBalance">₹0.00</div>
+          <div style="font-size: 9px; font-weight: 700; margin-top: 4px; color: #64748b;" id="detailBalanceLabel">—</div>
         </div>
         <div class="balCard balOld" style="background:#fff7ed; color:#9a3412; padding: 12px;">
           <div style="font-size:11px; font-weight: 700;">📒 ADVANCE</div>
@@ -6390,7 +6391,23 @@ function openFarmerDetail(fId) {
     el("detailSerial").textContent = f.serial || '—';
     el("detailAnimal").textContent = f.animalType === 'cow' ? '🐄 Cow' : f.animalType === 'buffalo' ? '🐃 Buffalo' : '🔄 Both';
     el("detailAddress").textContent = f.address || f.city || '—';
-    el("detailBalance").textContent = formatAmount(f.balance || 0);
+    
+    // Balance with clear label - Hinglish for clarity
+    const balance = f.balance || 0;
+    el("detailBalance").textContent = formatAmount(balance);
+    el("detailBalance").style.color = balance < 0 ? '#16a34a' : '#dc2626'; // Green if we owe, Red if they owe
+    const balanceLabel = el("detailBalanceLabel");
+    if (balance < 0) {
+        balanceLabel.textContent = '⬇️ Humko farmer ko dene hai';
+        balanceLabel.style.color = '#16a34a';
+    } else if (balance > 0) {
+        balanceLabel.textContent = '⬆️ Farmer se lena hai';
+        balanceLabel.style.color = '#dc2626';
+    } else {
+        balanceLabel.textContent = '✅ Settled / Barabar';
+        balanceLabel.style.color = '#16a34a';
+    }
+    
     el("detailAdvance").textContent = formatAmount(f.advance || 0);
     
     // Monthly milk
