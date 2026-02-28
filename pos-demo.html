@@ -150,9 +150,9 @@
       /* Product grid responsive with proper scrolling */
       .product-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
-        gap: 6px;
-        padding: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+        gap: 8px;
+        padding: 12px;
         outline: none;
         align-content: start;
         overflow-y: auto !important;
@@ -167,19 +167,23 @@
       
       /* Ultra compact cards when many products */
       .p-card.compact {
-        min-height: 60px;
-        padding: 4px 3px;
+        min-height: 75px;
+        padding: 6px 5px;
       }
       .p-card.compact .emoji {
-        font-size: 10px;  /* Shrink emoji dramatically */
-        max-height: 10px;
+        font-size: 14px;
+        max-height: 14px;
+        margin-bottom: 3px;
       }
       .p-card.compact > div:nth-child(2) {
-        font-size: 8px;
-        min-height: 20px;
+        font-size: 9px;
+        min-height: 24px;
+        margin-top: 4px;
       }
       .p-card.compact .price-tag {
-        font-size: 7px;  /* Smaller price in compact mode */
+        font-size: 8px;
+        padding: 4px 6px;
+        margin-top: 4px;
       }
       
       /* No price mode for ultra compact */
@@ -187,74 +191,79 @@
         display: none;
       }
       
-      /* Smaller product cards when many products */
+      /* Beautiful product cards */
       .p-card {
-        min-height: 85px;
-        padding: 6px 4px;
+        min-height: 100px;
+        padding: 8px 6px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        transition: all 0.2s;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
       }
       .p-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
         border-color: #3b82f6;
+        background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
       }
       .p-card .emoji {
-        font-size: 32px;
-        flex-shrink: 0;  /* Don't shrink emoji when space available */
-        min-width: 32px;
-        transition: all 0.2s;
-        max-height: 32px;
-        margin-bottom: 4px;
+        font-size: 40px;
+        flex-shrink: 0;
+        min-width: 40px;
+        transition: all 0.3s;
+        max-height: 40px;
+        margin-bottom: 6px;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
       }
       /* Hide emoji first when space is tight */
       .p-card.compact .emoji {
-        font-size: 10px;  /* Shrink more in compact */
-        margin-bottom: 2px;
+        font-size: 14px;
+        margin-bottom: 3px;
+        filter: none;
       }
       .p-card.no-emoji .emoji {
-        display: none;  /* Hide completely */
+        display: none;
       }
       .p-card > div:nth-child(2) {
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 900;
-        line-height: 1.3;
+        line-height: 1.4;
         overflow: visible !important;
         text-overflow: clip !important;
         white-space: normal !important;
         word-break: break-word !important;
         text-align: center;
-        margin-top: 3px;
+        margin-top: 4px;
         flex-grow: 1;
-        min-height: 28px;
+        min-height: 32px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        flex-shrink: 0;  /* Name NEVER shrinks */
+        flex-shrink: 0;
         color: #1e293b;
+        text-shadow: 0 1px 2px rgba(255,255,255,0.8);
       }
       .p-card .price-tag {
-        font-size: 9px;
-        padding: 3px 6px;
-        flex-shrink: 1;  /* Price can shrink */
+        font-size: 10px;
+        padding: 4px 8px;
+        flex-shrink: 1;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         max-width: 100%;
-        background: #f0fdf4;
-        border: 1px solid #86efac;
-        border-radius: 4px;
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border: 2px solid #86efac;
+        border-radius: 6px;
         color: #166534;
-        font-weight: 700;
-        margin-top: 3px;
+        font-weight: 800;
+        margin-top: 5px;
+        box-shadow: 0 1px 3px rgba(134, 239, 172, 0.3);
       }
 
       /* Customer search max width */
