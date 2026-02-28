@@ -1,0 +1,56 @@
+# Vercel ignore file
+# Files to exclude from deployment
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Database (don't deploy local SQLite)
+database/*.db
+*.db
+
+# Environment files (use Vercel dashboard instead)
+.env
+.env.local
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Test files
+test_*.py
+*_test.py
+tests/
+
+# Documentation (optional - can deploy if you want)
+*.md
+!README.md
+
+# Desktop-only files
+build_exe.py
+pos_server.py
+
+# Hardware dependencies (desktop only)
+# pyserial
