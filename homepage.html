@@ -260,6 +260,137 @@
         </div>
     </section>
 
+    <!-- App Directory - All Pages -->
+    <section class="features" style="background: #f8fafc;">
+        <h2>📱 All MilkRecord Apps & Pages</h2>
+        <p style="text-align: center; font-size: 18px; color: #64748b; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">
+            All pages are client-facing and accessible without login. Start using immediately!
+        </p>
+        
+        <div class="feature-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+            <!-- Core Apps -->
+            <div class="feature-card" style="border-top: 4px solid #3b82f6;">
+                <div class="feature-icon">🛒</div>
+                <h3>POS System</h3>
+                <p>Customer billing and sales management</p>
+                <ul>
+                    <li><a href="pos-demo.html" style="color: #3b82f6; text-decoration: none; font-weight: 700;">→ Open POS</a></li>
+                    <li>Quick customer billing</li>
+                    <li>Cash/UPI/Credit payments</li>
+                    <li>Invoice generation</li>
+                </ul>
+            </div>
+
+            <div class="feature-card" style="border-top: 4px solid #16a34a;">
+                <div class="feature-icon">📊</div>
+                <h3>Milk Collection</h3>
+                <p>Farmer milk collection and rate management</p>
+                <ul>
+                    <li><a href="index.html" style="color: #16a34a; text-decoration: none; font-weight: 700;">→ Open Collection</a></li>
+                    <li>Auto rate calculation</li>
+                    <li>Fat/SNF based pricing</li>
+                    <li>Farmer ledger management</li>
+                </ul>
+            </div>
+
+            <div class="feature-card" style="border-top: 4px solid #f59e0b;">
+                <div class="feature-icon">📒</div>
+                <h3>Customer Ledger</h3>
+                <p>Track customer advances and credit</p>
+                <ul>
+                    <li><a href="pos-demo.html" onclick="openCustomerLedger(); return false;" style="color: #f59e0b; text-decoration: none; font-weight: 700;">→ Open Ledger</a></li>
+                    <li>Advance deposits</li>
+                    <li>Credit tracking</li>
+                    <li>Payment history</li>
+                </ul>
+            </div>
+
+            <!-- Management Pages -->
+            <div class="feature-card" style="border-top: 4px solid #8b5cf6;">
+                <div class="feature-icon">📦</div>
+                <h3>Inventory</h3>
+                <p>Product and stock management</p>
+                <ul>
+                    <li><a href="inventory.html" style="color: #8b5cf6; text-decoration: none; font-weight: 700;">→ Open Inventory</a></li>
+                    <li>Product management</li>
+                    <li>Stock tracking</li>
+                    <li>Conversion tracking</li>
+                </ul>
+            </div>
+
+            <div class="feature-card" style="border-top: 4px solid #ec4899;">
+                <div class="feature-icon">📈</div>
+                <h3>Reports</h3>
+                <p>Daily, weekly, and monthly reports</p>
+                <ul>
+                    <li><a href="reports.html" style="color: #ec4899; text-decoration: none; font-weight: 700;">→ View Reports</a></li>
+                    <li>Sales reports</li>
+                    <li>Collection reports</li>
+                    <li>Profit analysis</li>
+                </ul>
+            </div>
+
+            <div class="feature-card" style="border-top: 4px solid #06b6d4;">
+                <div class="feature-icon">📊</div>
+                <h3>Dashboard</h3>
+                <p>Overview of your dairy business</p>
+                <ul>
+                    <li><a href="dashboard.html" style="color: #06b6d4; text-decoration: none; font-weight: 700;">→ Open Dashboard</a></li>
+                    <li>Today's summary</li>
+                    <li>Key metrics</li>
+                    <li>Quick insights</li>
+                </ul>
+            </div>
+
+            <!-- Utility Pages -->
+            <div class="feature-card" style="border-top: 4px solid #64748b;">
+                <div class="feature-icon">⚙️</div>
+                <h3>Settings</h3>
+                <p>Configure your shop settings</p>
+                <ul>
+                    <li><a href="pos-demo.html" onclick="openModal('settingsModal'); return false;" style="color: #64748b; text-decoration: none; font-weight: 700;">→ Open Settings</a></li>
+                    <li>Shop details</li>
+                    <li>Rate configuration</li>
+                    <li>Payment setup</li>
+                </ul>
+            </div>
+
+            <div class="feature-card" style="border-top: 4px solid #14b8a6;">
+                <div class="feature-icon">👨‍🌾</div>
+                <h3>Farmers</h3>
+                <p>Manage farmer database</p>
+                <ul>
+                    <li><a href="farmers.html" style="color: #14b8a6; text-decoration: none; font-weight: 700;">→ Manage Farmers</a></li>
+                    <li>Add/edit farmers</li>
+                    <li>Farmer details</li>
+                    <li>Transaction history</li>
+                </ul>
+            </div>
+
+            <div class="feature-card" style="border-top: 4px solid #f97316;">
+                <div class="feature-icon">💳</div>
+                <h3>Payments</h3>
+                <p>Payment tracking and settlement</p>
+                <ul>
+                    <li><a href="payments.html" style="color: #f97316; text-decoration: none; font-weight: 700;">→ View Payments</a></li>
+                    <li>Cash tracking</li>
+                    <li>UPI payments</li>
+                    <li>Settlement history</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Quick Access Buttons -->
+        <div style="text-align: center; margin-top: 50px; padding: 30px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <h3 style="font-size: 24px; margin-bottom: 20px; color: #1e293b;">🚀 Quick Start</h3>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <a href="pos-demo.html" class="btn btn-primary" style="background: #3b82f6; color: white;">🛒 Start POS Billing</a>
+                <a href="index.html" class="btn btn-primary" style="background: #16a34a; color: white;">📊 Start Milk Collection</a>
+                <a href="homepage_landing_recovered.html" class="btn btn-secondary" style="background: #f59e0b; color: white; border: 2px solid #f59e0b;">🏠 View Landing Page</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer>
         <div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
