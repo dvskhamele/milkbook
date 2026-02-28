@@ -150,16 +150,15 @@
       /* Product grid responsive with proper scrolling */
       .product-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-        gap: 3px;
-        padding: 6px;
+        grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+        gap: 4px;
+        padding: 8px;
         outline: none;
         align-content: start;
         overflow-y: auto !important;
-        overflow-x: scroll !important;
+        overflow-x: auto !important;
         max-height: calc(100vh - 260px);
         width: 100%;
-        min-width: max-content;
       }
       .product-grid::-webkit-scrollbar { width: 8px; height: 8px; }
       .product-grid::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
@@ -565,7 +564,7 @@
       </div>
 
       <div class="core">
-        <div class="panel" style="overflow: auto;">
+        <div class="panel" style="overflow: hidden; display: flex; flex-direction: column;">
           <!-- Product search field with actions -->
           <div style="padding: 8px 12px; background: #f8fafc; border-bottom: 1px solid var(--line); display: flex; gap: 8px; flex-shrink: 0;">
             <input type="text" id="productSearch" placeholder="🔍 Search products..." oninput="filterProducts(this.value)" style="flex: 1; padding: 8px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; font-weight: 600;" onclick="event.stopPropagation()" />
@@ -573,7 +572,7 @@
             <button onclick="openEditInventory()" style="padding: 8px 12px; background: #f59e0b; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; white-space: nowrap;" title="Edit Products">✏️ Edit</button>
           </div>
 
-          <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" style="overflow-x: scroll !important;">
+          <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
             <!-- Products loaded dynamically from localStorage -->
             <!-- Add & Edit Buttons -->
             <div class="p-card" style="border: 2px dashed #3b82f6; background: #eff6ff; min-height: 100px !important;" onclick="event.stopPropagation(); openModal('addProductModal')" title="Create new products to your inventory">
