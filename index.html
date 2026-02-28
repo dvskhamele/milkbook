@@ -2397,27 +2397,45 @@
               
               <!-- Shop Payment Details Section -->
               <div class="field full" style="padding: 10px; background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; margin: 16px 0 8px;">
-                <label style="font-size: 13px; font-weight: 800; color: #1e40af; display: block; margin-bottom: 8px;">💳 Shop Payment Details (For Invoices & WhatsApp)</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <label style="font-size: 13px; font-weight: 800; color: #1e40af; display: block;">💳 Shop Payment Details (For Invoices & WhatsApp)</label>
+                  <button onclick="copyShopPaymentDetails()" style="padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px;" title="Copy all payment details">📋 Copy All</button>
+                </div>
               </div>
-              <div class="field full">
+              <div class="field full" style="position: relative;">
                 <label>📱 Shop UPI ID / VPA</label>
-                <input id="setShopUPI" type="text" placeholder="e.g., 9876543210@paytm or mobile@upi" style="font-weight: 700;" />
+                <div style="display: flex; gap: 6px;">
+                  <input id="setShopUPI" type="text" placeholder="e.g., 9876543210@paytm or mobile@upi" style="font-weight: 700; flex: 1;" />
+                  <button onclick="copyToClipboard('setShopUPI')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
+                </div>
               </div>
-              <div class="field full">
+              <div class="field full" style="position: relative;">
                 <label>🏦 Shop Bank Name</label>
-                <input id="setShopBank" type="text" placeholder="e.g., State Bank of India" style="font-weight: 700;" />
+                <div style="display: flex; gap: 6px;">
+                  <input id="setShopBank" type="text" placeholder="e.g., State Bank of India" style="font-weight: 700; flex: 1;" />
+                  <button onclick="copyToClipboard('setShopBank')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
+                </div>
               </div>
-              <div class="field">
+              <div class="field" style="position: relative;">
                 <label>🔢 Shop Account Number</label>
-                <input id="setShopAccount" type="text" placeholder="Account number" style="font-weight: 700;" />
+                <div style="display: flex; gap: 6px;">
+                  <input id="setShopAccount" type="text" placeholder="Account number" style="font-weight: 700; flex: 1;" />
+                  <button onclick="copyToClipboard('setShopAccount')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
+                </div>
               </div>
-              <div class="field">
+              <div class="field" style="position: relative;">
                 <label>🔑 Shop IFSC Code</label>
-                <input id="setShopIFSC" type="text" placeholder="e.g., SBIN0001234" style="font-weight: 700; text-transform: uppercase;" />
+                <div style="display: flex; gap: 6px;">
+                  <input id="setShopIFSC" type="text" placeholder="e.g., SBIN0001234" style="font-weight: 700; text-transform: uppercase; flex: 1;" />
+                  <button onclick="copyToClipboard('setShopIFSC')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
+                </div>
               </div>
-              <div class="field full">
+              <div class="field full" style="position: relative;">
                 <label>👤 Shop Account Holder Name</label>
-                <input id="setShopAccountName" type="text" placeholder="Name as per bank records" style="font-weight: 700;" />
+                <div style="display: flex; gap: 6px;">
+                  <input id="setShopAccountName" type="text" placeholder="Name as per bank records" style="font-weight: 700; flex: 1;" />
+                  <button onclick="copyToClipboard('setShopAccountName')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
+                </div>
               </div>
               <div class="field full" style="padding: 8px; background: #dbeafe; border-radius: 6px; border-left: 3px solid #3b82f6;">
                 <p style="font-size: 11px; color: #1e40af; margin: 0; font-weight: 600;">💡 These payment details will appear on all invoices and WhatsApp messages for easy customer payments</p>
@@ -2714,27 +2732,45 @@
             
             <!-- Payment Details Section -->
             <div style="grid-column: 1 / -1; padding: 16px 8px 8px; margin-top: 16px; border-top: 3px dashed #3b82f6; background: #eff6ff; border-radius: 8px;">
-              <label style="font-size: 12px; color: #1e40af; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px;">💳 Payment Details (For UPI/Account Payments)</label>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <label style="font-size: 12px; color: #1e40af; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block;">💳 Payment Details (For UPI/Account Payments)</label>
+                <button onclick="copyFarmerPaymentDetails()" style="padding: 4px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; font-size: 10px;" title="Copy all payment details">📋 Copy</button>
+              </div>
             </div>
             <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">📱 UPI ID / VPA</label>
-              <input id="fUPI" type="text" autocomplete="off" placeholder="e.g., 9876543210@paytm or mobile@upi" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box;" />
+              <div style="display: flex; gap: 6px;">
+                <input id="fUPI" type="text" autocomplete="off" placeholder="e.g., 9876543210@paytm or mobile@upi" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; flex: 1;" />
+                <button onclick="copyToClipboard('fUPI')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
+              </div>
             </div>
             <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🏦 Bank Name</label>
-              <input id="fBankName" type="text" autocomplete="off" placeholder="e.g., State Bank of India" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box;" />
+              <div style="display: flex; gap: 6px;">
+                <input id="fBankName" type="text" autocomplete="off" placeholder="e.g., State Bank of India" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; flex: 1;" />
+                <button onclick="copyToClipboard('fBankName')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
+              </div>
             </div>
             <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🔢 Account Number</label>
-              <input id="fAccountNo" type="text" inputmode="numeric" autocomplete="off" placeholder="Account number" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box;" />
+              <div style="display: flex; gap: 6px;">
+                <input id="fAccountNo" type="text" inputmode="numeric" autocomplete="off" placeholder="Account number" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; flex: 1;" />
+                <button onclick="copyToClipboard('fAccountNo')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
+              </div>
             </div>
             <div class="field" style="padding: 8px;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">🔑 IFSC Code</label>
-              <input id="fIFSC" type="text" inputmode="text" autocomplete="off" placeholder="e.g., SBIN0001234" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; text-transform: uppercase;" />
+              <div style="display: flex; gap: 6px;">
+                <input id="fIFSC" type="text" inputmode="text" autocomplete="off" placeholder="e.g., SBIN0001234" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; text-transform: uppercase; flex: 1;" />
+                <button onclick="copyToClipboard('fIFSC')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
+              </div>
             </div>
             <div class="field full" style="padding: 8px; grid-column: 1 / -1;">
               <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">👤 Account Holder Name</label>
-              <input id="fAccountName" type="text" autocomplete="name" placeholder="Name as per bank records" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box;" />
+              <div style="display: flex; gap: 6px;">
+                <input id="fAccountName" type="text" autocomplete="name" placeholder="Name as per bank records" style="font-size: 15px; padding: 14px 12px; width: 100%; border: 2px solid #3b82f6; border-radius: 10px; box-sizing: border-box; flex: 1;" />
+                <button onclick="copyToClipboard('fAccountName')" style="padding: 8px 12px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" title="Copy">📋</button>
+              </div>
             </div>
           </div>
         </div>
@@ -3195,6 +3231,77 @@ function playSuccessSound() {
         toast.classList.add("show");
         clearTimeout(toastT);
         toastT = setTimeout(() => toast.classList.remove("show"), 1200);
+      }
+
+      // Copy to clipboard utility function
+      function copyToClipboard(elementId) {
+        const el = document.getElementById(elementId);
+        if (el && el.value) {
+          navigator.clipboard.writeText(el.value).then(() => {
+            showToast('📋 Copied!');
+          }).catch(() => {
+            // Fallback for older browsers
+            el.select();
+            document.execCommand('copy');
+            showToast('📋 Copied!');
+          });
+        } else {
+          showToast('⚠️ Nothing to copy');
+        }
+      }
+
+      // Copy all shop payment details
+      function copyShopPaymentDetails() {
+        const upi = document.getElementById('setShopUPI')?.value || '';
+        const bank = document.getElementById('setShopBank')?.value || '';
+        const account = document.getElementById('setShopAccount')?.value || '';
+        const ifsc = document.getElementById('setShopIFSC')?.value || '';
+        const accountName = document.getElementById('setShopAccountName')?.value || '';
+        
+        let details = '💳 Shop Payment Details\n';
+        details += '━━━━━━━━━━━━━━━━━━━━\n';
+        if (upi) details += `📱 UPI: ${upi}\n`;
+        if (bank) details += `🏦 Bank: ${bank}\n`;
+        if (account) details += `🔢 Account: ${account}\n`;
+        if (ifsc) details += `🔑 IFSC: ${ifsc}\n`;
+        if (accountName) details += `👤 Name: ${accountName}\n`;
+        
+        if (details.split('\n').length > 2) {
+          navigator.clipboard.writeText(details).then(() => {
+            showToast('📋 All details copied!');
+          }).catch(() => {
+            showToast('⚠️ Copy failed');
+          });
+        } else {
+          showToast('⚠️ No details to copy');
+        }
+      }
+
+      // Copy all farmer payment details
+      function copyFarmerPaymentDetails() {
+        const upi = document.getElementById('fUPI')?.value || '';
+        const bank = document.getElementById('fBankName')?.value || '';
+        const account = document.getElementById('fAccountNo')?.value || '';
+        const ifsc = document.getElementById('fIFSC')?.value || '';
+        const accountName = document.getElementById('fAccountName')?.value || '';
+        
+        let details = '💳 Farmer Payment Details\n';
+        details += '━━━━━━━━━━━━━━━━━━━━\n';
+        if (upi) details += `📱 UPI: ${upi}\n`;
+        if (bank) details += `🏦 Bank: ${bank}\n`;
+        if (account) details += `🔢 Account: ${account}\n`;
+        if (ifsc) details += `🔑 IFSC: ${ifsc}\n`;
+        if (accountName) details += `👤 Name: ${accountName}\n`;
+        
+        if (details.split('\n').length > 2) {
+          navigator.clipboard.writeText(details).then(() => {
+            showToast('📋 All details copied!');
+          }).catch(() => {
+            showToast('⚠️ Copy failed');
+          });
+        } else {
+          showToast('⚠️ No details to copy');
+        }
       }
 
       /***********************

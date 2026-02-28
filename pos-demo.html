@@ -6224,7 +6224,7 @@ function editCustomerFromRelation(customerId) {
   document.getElementById('newPhone').value = customer.phone || '';
   document.getElementById('newEmail').value = customer.email || '';
   document.getElementById('newAddress').value = customer.address || '';
-  document.getElementById('newUnit').value = customer.unit || 'L';
+  document.getElementById('newUnit').value = 'L'; // Default unit for new products
   
   // Change modal to edit mode
   const modalTitle = document.querySelector('#addCustModal .panelHeader span');
