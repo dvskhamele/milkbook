@@ -894,9 +894,9 @@
                     <!-- Action Buttons Row -->
                     <div style="display: flex; gap: 4px;">
                       <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="flex: 1; padding: 5px; font-size: 9px; font-weight: 700;">📒 LIKH LO</button>
-                      <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 5px 6px; background:#fef3c7; border:2px solid #f59e0b; border-radius:4px; font-weight:700; color:#92400e; cursor:pointer; font-size: 8px; white-space: nowrap;">📒</button>
-                      <button onclick="toggleAdvanceOrder()" id="advanceOrderBtn" style="padding: 5px 6px; background:#f5f3ff; border:2px solid #7c3aed; border-radius:4px; font-weight:700; color:#7c3aed; cursor:pointer; font-size: 8px; white-space: nowrap;">📅</button>
-                      <button onclick="openCustomerRelation(activeCust)" id="btnCustomerRelation" style="padding: 5px 6px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border:2px solid #7c3aed; border-radius:4px; font-weight:700; color:#fff; cursor:pointer; font-size: 8px; white-space: nowrap;">🤝</button>
+                      <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 5px 6px; background:#fef3c7; border:2px solid #f59e0b; border-radius:4px; font-weight:700; color:#92400e; cursor:pointer; font-size: 8px; white-space: nowrap;" title="Advance / Udhar">📒</button>
+                      <button onclick="toggleAdvanceOrder()" id="advanceOrderBtn" style="padding: 5px 6px; background:#f5f3ff; border:2px solid #7c3aed; border-radius:4px; font-weight:700; color:#7c3aed; cursor:pointer; font-size: 8px; white-space: nowrap;" title="Advance Order">📅</button>
+                      <button onclick="openCustomerRelation()" id="btnCustomerRelation" style="padding: 5px 6px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border:2px solid #7c3aed; border-radius:4px; font-weight:700; color:#fff; cursor:pointer; font-size: 8px; white-space: nowrap;" title="Customer Relations">🤝</button>
                     </div>
                   </div>
                 </div>
@@ -7270,22 +7270,31 @@ function openRateListModal() {
 // Open customer relation modal
 function openCustomerRelation(customerId) {
   const modal = document.getElementById('customerRelationModal');
-  if (!modal) return;
-
-  // Get customer name from activeCust if no ID provided
-  if (!customerId || customerId === 'Walking Customer') {
-    customerId = document.getElementById('activeCust').innerText.trim();
+  if (!modal) {
+    console.error('❌ customerRelationModal not found!');
+    return;
   }
 
-  if (!customerId || customerId === 'Walking Customer') {
+  // Get customer name from activeCust if no ID provided
+  const activeCustEl = document.getElementById('activeCust');
+  if (!customerId || customerId === 'Walking Customer' || !customerId) {
+    if (activeCustEl) {
+      customerId = activeCustEl.innerText.trim();
+    } else {
+      console.error('❌ activeCust element not found!');
+      return showToast('⚠️ Customer element not found!');
+    }
+  }
+
+  if (!customerId || customerId === '' || customerId === 'Walking Customer') {
     return showToast('⚠️ Select a customer first!');
   }
 
   console.log('🔍 Looking for customer:', customerId, 'Available:', customers.map(c => c.name));
 
   // Find customer by name (case-insensitive) or ID
-  let customer = customers.find(c => 
-    c.id === customerId || 
+  let customer = customers.find(c =>
+    c.id === customerId ||
     c.name.toLowerCase() === customerId.toLowerCase() ||
     c.name.toLowerCase().includes(customerId.toLowerCase())
   );
@@ -7303,7 +7312,10 @@ function openCustomerRelation(customerId) {
   console.log('✅ Customer found:', customer.name);
 
   // Set customer name
-  document.getElementById('relationCustomerName').textContent = customer.name + (customer.serial ? ` (#${customer.serial})` : '');
+  const relationCustomerNameEl = document.getElementById('relationCustomerName');
+  if (relationCustomerNameEl) {
+    relationCustomerNameEl.textContent = customer.name + (customer.serial ? ` (#${customer.serial})` : '');
+  }
 
   // Load customer details
   loadCustomerRelationData(customer);
