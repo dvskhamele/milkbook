@@ -1588,6 +1588,7 @@
       <button onclick="showDetailTab('transactions')" id="tabTransactions" style="flex: 1; padding: 12px; background: #f1f5f9; border: none; border-bottom: 3px solid #3b82f6; font-weight: 700; font-size: 13px; cursor: pointer; color: #1e293b;">📋 Transactions</button>
       <button onclick="showDetailTab('edit')" id="tabEdit" style="flex: 1; padding: 12px; background: white; border: none; border-bottom: 3px solid transparent; font-weight: 600; font-size: 13px; cursor: pointer; color: #64748b;">✏️ Edit Details</button>
       <button onclick="showDetailTab('advance')" id="tabAdvance" style="flex: 1; padding: 12px; background: white; border: none; border-bottom: 3px solid transparent; font-weight: 600; font-size: 13px; cursor: pointer; color: #64748b;">💰 Advance Mgmt</button>
+      <button onclick="showDetailTab('relations')" id="tabRelations" style="flex: 1; padding: 12px; background: white; border: none; border-bottom: 3px solid transparent; font-weight: 600; font-size: 13px; cursor: pointer; color: #64748b;">💝 Relations</button>
     </div>
     
     <!-- Tab Content -->
@@ -1695,6 +1696,30 @@
             📒 Advance Ledger (किसान द्वारा लिया गया advance और कटौती)
           </h3>
           <div id="advanceHistoryList"></div>
+        </div>
+      </div>
+
+      <!-- Customer Relations Tab -->
+      <div id="detailRelations" style="padding: 16px; display: none;">
+        <!-- Quick Actions -->
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">💝 Quick Actions</h3>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+            <button onclick="sendOfferMessage()" style="padding: 12px; background: #8b5cf6; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px;">🎁 Send Offer</button>
+            <button onclick="sendWishes()" style="padding: 12px; background: #ec4899; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px;">💐 Send Wishes</button>
+          </div>
+        </div>
+
+        <!-- Purchase History -->
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">📊 Last 5 Purchases</h3>
+          <div id="last5Purchases" style="background: #f8fafc; border-radius: 8px; padding: 12px;"></div>
+        </div>
+
+        <!-- Frequent Purchase Pattern -->
+        <div>
+          <h3 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">📈 Purchase Pattern</h3>
+          <div id="purchasePattern" style="background: #f0f9ff; border-radius: 8px; padding: 12px; font-size: 13px;"></div>
         </div>
       </div>
     </div>
@@ -4811,13 +4836,45 @@ function playSuccessSound() {
 
     updateDailySummaryButton();
     updateTodayCollection(); // Update Kitna Collection
-    
-    // Print bill/receipt after save
+
+    // Print bill/receipt after save (MANDATORY)
     printCollectionBill(entry);
-    
+
+    // Send WhatsApp after save (MANDATORY for paid entries)
+    if (selectedPayMode === 'Cash' || selectedPayMode === 'UPI' || selectedPayMode === 'Account') {
+        setTimeout(() => {
+            sendEntryWhatsApp(entry);
+        }, 500);
+    }
+
     showToast(`Entry Saved: ${formatAmount(a)} (${selectedPayMode === 'Cash' ? 'नकद' : 'उधार'}) ✅`);
 
     isSaving = false; // Unlock save
+}
+
+// Send entry via WhatsApp
+function sendEntryWhatsApp(entry) {
+    const f = getFarmerById(entry.farmerId);
+    if (!f || !f.phone) return;
+    
+    let msg = `*🥛 Milk Collection Receipt*\n`;
+    msg += `━━━━━━━━━━━━━━━━━━\n`;
+    msg += `Farmer: ${entry.farmerName}\n`;
+    if (f.serial) msg += `Serial: #${f.serial}\n`;
+    if (entry.id) msg += `Entry ID: #${entry.id.slice(-6).toUpperCase()}\n`;
+    if (f.phone) msg += `Phone: ${f.phone}\n`;
+    msg += `━━━━━━━━━━━━━━━━━━\n`;
+    msg += `Qty: ${entry.qty}L | Fat: ${entry.fat}%\n`;
+    if (entry.snf) msg += `SNF: ${entry.snf}\n`;
+    msg += `Rate: ${formatAmount(entry.rateSnapshot)}/L\n`;
+    msg += `*Amount: ${formatAmount(entry.amount)}*\n`;
+    msg += `Payment: ${entry.paymentMode === 'Cash' ? '💵 Cash' : entry.paymentMode === 'UPI' ? '📱 UPI' : entry.paymentMode === 'Account' ? '🏦 Account' : '📒 Credit'}\n`;
+    msg += `━━━━━━━━━━━━━━━━━━\n`;
+    msg += `Date: ${new Date(entry.createdAt).toLocaleString()}\n`;
+    msg += `🙏 Thank you!\nGopal Dairy Shop`;
+    
+    const wpUrl = `https://wa.me/91${f.phone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
+    window.open(wpUrl, '_blank');
 }
 
 // Save entry as CREDIT (उधार) - for Likh Lo button
@@ -4997,6 +5054,7 @@ function printCollectionBill(entry) {
             <span class="bold">${farmer.name}</span>
         </div>
         ${farmer.serial ? `<div class="row"><span>Serial:</span><span class="bold">#${farmer.serial}</span></div>` : ''}
+        ${entry.id ? `<div class="row"><span>Entry ID:</span><span class="bold">#${entry.id.slice(-6).toUpperCase()}</span></div>` : ''}
         ${farmer.phone ? `<div class="row"><span>Phone:</span><span class="bold">${farmer.phone}</span></div>` : ''}
         ${farmer.address ? `<div class="row"><span>Address:</span><span class="bold">${farmer.address}</span></div>` : ''}
         ${farmer.city ? `<div class="row"><span>City:</span><span class="bold">${farmer.city}${farmer.pincode ? ' - ' + farmer.pincode : ''}</span></div>` : ''}
@@ -6323,11 +6381,11 @@ function openFarmerDetail(fId) {
 // Tab switching
 function showDetailTab(tabName) {
     // Hide all tabs
-    ['transactions', 'edit', 'advance'].forEach(name => {
+    ['transactions', 'edit', 'advance', 'relations'].forEach(name => {
         let contentId = 'detail' + name.charAt(0).toUpperCase() + name.slice(1);
         // Special case for advance tab (ID conflict fix)
         if (name === 'advance') contentId = 'detailAdvanceTab';
-        
+
         const content = document.getElementById(contentId);
         const tab = document.getElementById('tab' + name.charAt(0).toUpperCase() + name.slice(1));
         if (content) content.style.display = 'none';
@@ -6342,7 +6400,7 @@ function showDetailTab(tabName) {
     // Show selected tab
     let selectedContentId = 'detail' + tabName.charAt(0).toUpperCase() + tabName.slice(1);
     if (tabName === 'advance') selectedContentId = 'detailAdvanceTab';
-    
+
     const selectedContent = document.getElementById(selectedContentId);
     const selectedTab = document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
     if (selectedContent) selectedContent.style.display = 'block';
@@ -6351,6 +6409,12 @@ function showDetailTab(tabName) {
         selectedTab.style.borderBottomColor = '#3b82f6';
         selectedTab.style.color = '#1e293b';
         selectedTab.style.fontWeight = '700';
+    }
+    
+    // Load data for relations tab
+    if (tabName === 'relations') {
+        loadLast5Purchases();
+        loadPurchasePattern();
     }
 }
 
@@ -6441,6 +6505,137 @@ function saveFarmerDetails() {
 
     // Refresh modal
     openFarmerDetail(selectedFarmerId);
+}
+
+// Send offer message
+function sendOfferMessage() {
+    const f = getFarmerById(selectedFarmerId);
+    if (!f || !f.phone) {
+        showToast('⚠️ Phone number not available');
+        return;
+    }
+    
+    const offers = [
+        `🎉 Special Offer for ${f.name}!\n\nGet ₹5 bonus on every 100L milk collection this month!\n\n📞 Call us for more details.\nGopal Dairy Shop`,
+        `💝 Loyalty Bonus!\n\nDear ${f.name}, you've collected ${formatAmount(500)} cashback this month. Continue collecting to unlock more rewards!\n\nGopal Dairy Shop`,
+        `🌟 Refer & Earn!\n\nDear ${f.name}, refer a new farmer and get ₹100 bonus on their first collection!\n\nGopal Dairy Shop`
+    ];
+    
+    const offer = offers[Math.floor(Math.random() * offers.length)];
+    const wpUrl = `https://wa.me/91${f.phone.replace(/\D/g, '')}?text=${encodeURIComponent(offer)}`;
+    window.open(wpUrl, '_blank');
+    showToast('🎁 Offer sent!');
+}
+
+// Send wishes
+function sendWishes() {
+    const f = getFarmerById(selectedFarmerId);
+    if (!f || !f.phone) {
+        showToast('⚠️ Phone number not available');
+        return;
+    }
+    
+    const today = new Date();
+    const day = today.toLocaleDateString('en-IN', { weekday: 'long' });
+    const date = today.toLocaleDateString('en-IN', { day: 'numeric', month: 'long' });
+    
+    const wishes = [
+        `🌅 Good Morning ${f.name}!\n\nHave a wonderful ${day} ahead! May your day be filled with happiness and prosperity.\n\n🙏 Gopal Dairy Shop`,
+        `🎉 Happy ${date}!\n\nDear ${f.name}, wishing you a day full of joy and success. Thank you for being a valued customer!\n\n🙏 Gopal Dairy Shop`,
+        `💐 Best Wishes!\n\nDear ${f.name}, may success and happiness always be yours. Thank you for your continued trust in us!\n\n🙏 Gopal Dairy Shop`
+    ];
+    
+    const wish = wishes[Math.floor(Math.random() * wishes.length)];
+    const wpUrl = `https://wa.me/91${f.phone.replace(/\D/g, '')}?text=${encodeURIComponent(wish)}`;
+    window.open(wpUrl, '_blank');
+    showToast('💐 Wishes sent!');
+}
+
+// Load last 5 purchases
+function loadLast5Purchases() {
+    const f = getFarmerById(selectedFarmerId);
+    if (!f) return;
+    
+    const allEntries = entries.filter(e => e.farmerId === f.id);
+    const last5 = allEntries.sort((a, b) => b.createdAt - a.createdAt).slice(0, 5);
+    
+    const container = document.getElementById('last5Purchases');
+    if (!container) return;
+    
+    if (last5.length === 0) {
+        container.innerHTML = '<div style="color: #64748b; text-align: center; padding: 20px;">No purchases yet</div>';
+        return;
+    }
+    
+    let html = '';
+    last5.forEach((e, i) => {
+        html += `
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; ${i < last5.length - 1 ? 'border-bottom: 1px solid #e2e8f0' : ''}">
+            <div>
+                <div style="font-weight: 700; font-size: 12px;">${new Date(e.createdAt).toLocaleDateString()}</div>
+                <div style="font-size: 11px; color: #64748b;">${e.qty}L @ ${formatAmount(e.rateSnapshot)}/L</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-weight: 700; font-size: 12px;">${formatAmount(e.amount)}</div>
+                <div style="font-size: 10px; color: ${e.paymentMode === 'Credit' ? '#dc2626' : '#16a34a'};">${e.paymentMode === 'Credit' ? '📒 Credit' : '💵 Paid'}</div>
+            </div>
+        </div>`;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Load purchase pattern
+function loadPurchasePattern() {
+    const f = getFarmerById(selectedFarmerId);
+    if (!f) return;
+    
+    const allEntries = entries.filter(e => e.farmerId === f.id);
+    
+    const container = document.getElementById('purchasePattern');
+    if (!container) return;
+    
+    if (allEntries.length === 0) {
+        container.innerHTML = '<div style="color: #64748b; text-align: center; padding: 20px;">No purchase data</div>';
+        return;
+    }
+    
+    // Calculate average
+    const totalMilk = allEntries.reduce((sum, e) => sum + (e.qty || 0), 0);
+    const totalAmt = allEntries.reduce((sum, e) => sum + (e.amount || 0), 0);
+    const avgPerVisit = totalMilk / allEntries.length;
+    
+    // Find most frequent day
+    const dayCount = {};
+    allEntries.forEach(e => {
+        const day = new Date(e.createdAt).toLocaleDateString('en-IN', { weekday: 'long' });
+        dayCount[day] = (dayCount[day] || 0) + 1;
+    });
+    const mostFrequentDay = Object.keys(dayCount).reduce((a, b) => dayCount[a] > dayCount[b] ? a : b);
+    
+    container.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+            <div style="background: white; padding: 12px; border-radius: 6px;">
+                <div style="font-size: 11px; color: #64748b;">Total Visits</div>
+                <div style="font-size: 18px; font-weight: 900; color: #1e293b;">${allEntries.length}</div>
+            </div>
+            <div style="background: white; padding: 12px; border-radius: 6px;">
+                <div style="font-size: 11px; color: #64748b;">Avg per Visit</div>
+                <div style="font-size: 18px; font-weight: 900; color: #1e293b;">${avgPerVisit.toFixed(1)}L</div>
+            </div>
+            <div style="background: white; padding: 12px; border-radius: 6px;">
+                <div style="font-size: 11px; color: #64748b;">Total Milk</div>
+                <div style="font-size: 18px; font-weight: 900; color: #1e293b;">${totalMilk.toFixed(1)}L</div>
+            </div>
+            <div style="background: white; padding: 12px; border-radius: 6px;">
+                <div style="font-size: 11px; color: #64748b;">Total Spent</div>
+                <div style="font-size: 18px; font-weight: 900; color: #16a34a;">${formatAmount(totalAmt)}</div>
+            </div>
+        </div>
+        <div style="margin-top: 12px; padding: 10px; background: #fef3c7; border-radius: 6px; font-size: 12px;">
+            <strong>📅 Most Frequent Day:</strong> ${mostFrequentDay} (${dayCount[mostFrequentDay]} visits)
+        </div>
+    `;
 }
 
 // Update farmer advance - WITH COMPLETE LEDGER TRACKING
