@@ -476,41 +476,26 @@
       .p-card.cow { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
       .p-card.buff { background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%); }
       
-      /* Card sizing based on step RANK (not absolute value) - using !important for specificity */
+      /* Card sizing based on step RANK - emoji sizes vary, fonts stay uniform */
       /* Rank 1 (smallest step) - EXTRA SMALL */
       .p-card[data-rank="1"] { min-height: 65px !important; padding: 4px 2px !important; }
       .p-card[data-rank="1"] .emoji { font-size: 32px !important; }
-      .p-card[data-rank="1"] div { font-size: 13px !important; font-weight: 900 !important; }
-      .p-card[data-rank="1"] small { font-size: 11px !important; font-weight: 700 !important; }
-      .p-card[data-rank="1"] .price-tag { font-size: 12px !important; padding: 4px 6px !important; }
 
       /* Rank 2 - SMALL */
       .p-card[data-rank="2"] { min-height: 75px !important; padding: 5px 3px !important; }
       .p-card[data-rank="2"] .emoji { font-size: 36px !important; }
-      .p-card[data-rank="2"] div { font-size: 14px !important; font-weight: 900 !important; }
-      .p-card[data-rank="2"] small { font-size: 12px !important; font-weight: 700 !important; }
-      .p-card[data-rank="2"] .price-tag { font-size: 13px !important; padding: 5px 7px !important; }
 
       /* Rank 3 - MEDIUM (Default) */
       .p-card[data-rank="3"] { min-height: 90px !important; padding: 6px 4px !important; }
-      .p-card[data-rank="3"] .emoji { font-size: 42px !important; }
-      .p-card[data-rank="3"] div { font-size: 16px !important; font-weight: 900 !important; }
-      .p-card[data-rank="3"] small { font-size: 13px !important; font-weight: 700 !important; }
-      .p-card[data-rank="3"] .price-tag { font-size: 14px !important; padding: 6px 8px !important; }
+      .p-card[data-rank="3"] .emoji { font-size: 40px !important; }
 
       /* Rank 4 - LARGE */
       .p-card[data-rank="4"] { min-height: 105px !important; padding: 8px 5px !important; }
-      .p-card[data-rank="4"] .emoji { font-size: 48px !important; }
-      .p-card[data-rank="4"] div { font-size: 18px !important; font-weight: 900 !important; }
-      .p-card[data-rank="4"] small { font-size: 14px !important; font-weight: 700 !important; }
-      .p-card[data-rank="4"] .price-tag { font-size: 15px !important; padding: 7px 9px !important; }
+      .p-card[data-rank="4"] .emoji { font-size: 44px !important; }
 
       /* Rank 5 (largest step) - EXTRA LARGE */
       .p-card[data-rank="5"] { min-height: 120px !important; padding: 10px 6px !important; }
-      .p-card[data-rank="5"] .emoji { font-size: 54px !important; }
-      .p-card[data-rank="5"] div { font-size: 20px !important; font-weight: 900 !important; }
-      .p-card[data-rank="5"] small { font-size: 15px !important; font-weight: 700 !important; }
-      .p-card[data-rank="5"] .price-tag { font-size: 16px !important; padding: 8px 10px !important; }
+      .p-card[data-rank="5"] .emoji { font-size: 48px !important; }
 
       .qty-bar { display: flex; gap: 10px; padding: 12px 15px; background: #f8fafc; border-top: 1px solid var(--line); }
       .qty-btn { flex: 1; height: 45px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-weight: 1000; cursor: pointer; }
