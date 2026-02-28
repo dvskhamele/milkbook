@@ -2048,8 +2048,8 @@
                 <div class="animalCard" style="display: flex; flex-direction: column; gap: 4px;">
                   <label style="font-weight: 900; font-size: 14px;">5. Animal Type <span style="font-size: 10px; color: var(--muted);">(Click or Tab+Enter)</span></label>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-                    <button type="button" id="animalCow" onclick="selectAnimal('cow'); setTimeout(() => { const manualRate = document.getElementById('manualRateInput'); if(manualRate) { manualRate.focus(); manualRate.select(); } }, 100);" onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault(); this.click();}" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐄 Cow</button>
-                    <button type="button" id="animalBuffalo" onclick="selectAnimal('buffalo'); setTimeout(() => { const manualRate = document.getElementById('manualRateInput'); if(manualRate) { manualRate.focus(); manualRate.select(); } }, 100);" onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault(); this.click();}" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐃 Buffalo</button>
+                    <button type="button" id="animalCow" onclick="selectAnimal('cow'); setTimeout(() => { const likhloBtn = document.getElementById('btnLikhlo'); if(likhloBtn) { likhloBtn.focus(); } }, 100);" onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault(); this.click();}" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐄 Cow</button>
+                    <button type="button" id="animalBuffalo" onclick="selectAnimal('buffalo'); setTimeout(() => { const likhloBtn = document.getElementById('btnLikhlo'); if(likhloBtn) { likhloBtn.focus(); } }, 100);" onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault(); this.click();}" style="padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 900; font-size: 13px; transition: all 0.2s;" tabindex="0">🐃 Buffalo</button>
                   </div>
                   <input type="hidden" id="animalSelect" value="cow" />
                 </div>
@@ -2164,11 +2164,11 @@
         </div>
 
         <!-- Payment Buttons: LIKH LO First, Then CASH, Then Relations -->
-        <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff; flex: 1;" onclick="saveEntryAsCredit()">
+        <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff; flex: 1;">
           📒 LIKHLO <span class="subnote">udhar</span>
         </button>
 
-        <button class="panicBtn save" id="btnSaveCash" style="background: linear-gradient(135deg, #16a34a, #059669); flex: 1;" onclick="saveWithPaymentMode('Cash')">
+        <button class="panicBtn save" id="btnSaveCash" style="background: linear-gradient(135deg, #16a34a, #059669); flex: 1;" onclick="saveWithPaymentMode('Cash')" onkeydown="if(event.key==='Enter'){event.preventDefault(); this.click();}">
           💵 CASH
         </button>
 
@@ -5628,6 +5628,13 @@ function showAuditProof(entryId) {
 
             paymentMode = "Credit"; // Set to Credit for Likhlo
             saveEntryAsCredit();
+          };
+          // Add Enter key support - when focused, Enter triggers click
+          btnLikhlo.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              btnLikhlo.click();
+            }
           };
           console.log('✅ Likh Lo button initialized');
         } else {
