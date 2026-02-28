@@ -5249,14 +5249,15 @@ function addNewProductFromModal() {
     newCard.ondragstart = handleDragStart;
     newCard.onclick = function() { tapAdd(name, price, qty, emoji); };
 
-    // Format quantity display - show exact quantity with unit
-    const qtyDisplay = `${qty}${unit}`;
+    // Format quantity display - show exact quantity with unit (with fallback)
+    const safeUnit = unit || 'unit';
+    const qtyDisplay = `${qty}${safeUnit}`;
     const nameDisplay = `${name} (${qtyDisplay})`;
 
     newCard.innerHTML = `
       <span class="emoji">${emoji}</span>
       <div style="font-weight: 900; margin-top: 2px;">${nameDisplay}</div>
-      <span class="price-tag">₹${price}/${unit}</span>
+      <span class="price-tag">₹${price}/${safeUnit}</span>
       <button class="edit-prod-btn" onclick="event.stopPropagation(); editProductCard(this)" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
       <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
     `;
@@ -5267,7 +5268,7 @@ function addNewProductFromModal() {
   // Save to localStorage
   qtys.forEach(qty => {
     if (qty !== 0) {
-      customProducts.push({name, price, unit, emoji, qty});
+      customProducts.push({name, price, unit: unit || 'unit', emoji, qty});
     }
   });
 
@@ -7135,12 +7136,13 @@ function renderRateListProducts() {
   `;
 
   Object.values(uniqueProducts).forEach(p => {
+    const safeUnit = p.unit || 'unit';
     html += `
       <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
         <div style="font-size:32px;">${p.emoji}</div>
         <div style="flex:1;">
           <div style="font-weight:700; color:#1e293b; font-size:14px;">${p.name}</div>
-          <div style="font-size:12px; color:#64748b;">Per ${p.unit}</div>
+          <div style="font-size:12px; color:#64748b;">Per ${safeUnit}</div>
         </div>
         <div style="font-weight:900; color:#16a34a; font-size:16px;">${formatINR(p.price)}</div>
       </div>
@@ -7238,10 +7240,11 @@ function printRateList() {
 
   const productList = Object.values(uniqueProducts);
   productList.forEach((p, index) => {
+    const safeUnit = p.unit || 'unit';
     productsHTML += `
       <tr style="${index % 2 === 0 ? 'background:#f8fafc' : 'background:white'}">
         <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px;">${p.emoji} ${p.name}</td>
-        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px;">Per ${p.unit}</td>
+        <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px;">Per ${safeUnit}</td>
         <td style="padding:10px; border:1px solid #e2e8f0; font-size:13px; text-align:right; font-weight:bold; color:#16a34a;">${formatINR(p.price)}</td>
       </tr>
     `;
