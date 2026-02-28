@@ -209,8 +209,8 @@
       }
       .p-card .emoji {
         font-size: 32px;
-        flex-shrink: 10;  /* Shrink emoji FIRST (high priority) */
-        min-width: 0;     /* Allow complete shrink */
+        flex-shrink: 0;  /* Don't shrink emoji when space available */
+        min-width: 32px;
         transition: all 0.2s;
         max-height: 32px;
         margin-bottom: 4px;
@@ -541,7 +541,7 @@
     <div class="app">
       <div class="topbar">
         <div class="brand">
-          <a href="stitch_MilkRecord_login 2/milkrecord_landing_page_3/code.html" style="text-decoration:none; color:inherit;">
+          <a href="homepage.html" style="text-decoration:none; color:inherit;">
             <div class="logo-box">
               <img src="logo.jpg" alt="MilkRecord" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;" onerror="this.style.display='none'; this.parentElement.innerHTML='🥛'" />
             </div>
