@@ -1,253 +1,315 @@
 """
-MilkRecord Core - Pure Business Logic
-Shared between Desktop and Cloud deployments
-NO hardware, NO database, NO framework dependencies
+Core Services - Unified Business Logic
+Single source of truth for all operations
+Works with both SQLite (desktop) and Supabase (cloud)
 """
 
-from dataclasses import dataclass, asdict
+import os
+import sys
+import requests
 from datetime import datetime
-from typing import List, Dict, Optional
-from enum import Enum
-import json
+from typing import Dict, List, Optional
+
+# Import adapters
+from adapters import db_local, db_supabase
+
+# ============================================
+# Runtime Detection
+# ============================================
+
+def is_desktop() -> bool:
+    """Check if running as desktop EXE or local Flask"""
+    return getattr(sys, 'frozen', False) or os.getenv('RUNTIME') == 'desktop'
+
+
+def is_vercel() -> bool:
+    """Check if running on Vercel"""
+    return os.getenv('VERCEL') == '1'
+
+
+def internet_available() -> bool:
+    """Check if internet connection is available"""
+    try:
+        requests.get("https://google.com", timeout=3)
+        return True
+    except:
+        return False
+
+
+# Runtime flags
+IS_DESKTOP = is_desktop()
+IS_VERCEL = is_vercel()
+
+print(f"🔧 Runtime: Desktop={IS_DESKTOP}, Vercel={IS_VERCEL}")
 
 
 # ============================================
-# Domain Models
+# Unified Save Functions
 # ============================================
 
-@dataclass
-class Farmer:
-    """Farmer domain model"""
-    id: str
-    name: str
-    phone: str
-    animal_type: str  # cow, buffalo, both
-    balance: float = 0.0
-    
-    def to_dict(self):
-        return asdict(self)
-
-
-@dataclass
-class MilkCollection:
-    """Milk collection domain model"""
-    id: str
-    farmer_id: str
-    quantity: float
-    fat: float
-    snf: float
-    rate: float
-    amount: float
-    shift: str  # morning, evening
-    collection_date: str
-    
-    def to_dict(self):
-        return asdict(self)
-
-
-@dataclass
-class Customer:
-    """Customer domain model"""
-    id: str
-    name: str
-    phone: str
-    email: str = ''
-    address: str = ''
-    balance: float = 0.0
-    
-    def to_dict(self):
-        return asdict(self)
-
-
-@dataclass
-class SaleItem:
-    """Sale item domain model"""
-    name: str
-    quantity: float
-    rate: float
-    amount: float
-
-
-@dataclass
-class Sale:
-    """Sale domain model"""
-    id: str
-    customer_id: str
-    customer_name: str
-    items: List[SaleItem]
-    total_amount: float
-    paid_amount: float
-    payment_mode: str  # cash, upi, credit
-    sale_date: str
-    
-    def to_dict(self):
-        data = asdict(self)
-        data['items'] = [asdict(item) for item in self.items]
-        return data
-
-
-# ============================================
-# Rate Calculation Service
-# ============================================
-
-class RateCalculator:
+def save_farmer(data: Dict) -> Dict:
     """
-    Milk rate calculation based on Fat and SNF
-    Pure function - no side effects
+    Save farmer with unified logic
+    Desktop: Save to SQLite + try sync to Supabase
+    Vercel: Save directly to Supabase
     """
+    result = {'success': False, 'farmer': None, 'message': ''}
     
-    @staticmethod
-    def calculate_rate(fat: float, snf: float, base_rate: float = 30.0, 
-                      fat_factor: float = 6.0, snf_factor: float = 3.0) -> float:
-        """
-        Calculate milk rate per liter
-        Formula: base_rate + (fat × fat_factor) + (snf × snf_factor)
-        """
-        rate = base_rate + (fat * fat_factor) + (snf * snf_factor)
-        return round(rate, 2)
-    
-    @staticmethod
-    def calculate_amount(quantity: float, rate: float) -> float:
-        """Calculate total amount"""
-        return round(quantity * rate, 2)
-    
-    @staticmethod
-    def calculate_collection(farmer_id: str, quantity: float, fat: float, 
-                           snf: float, shift: str, base_rate: float = 30.0) -> MilkCollection:
-        """
-        Complete milk collection calculation
-        Returns MilkCollection domain object
-        """
-        rate = RateCalculator.calculate_rate(fat, snf, base_rate)
-        amount = RateCalculator.calculate_amount(quantity, rate)
-        
-        return MilkCollection(
-            id=f"C{datetime.now().strftime('%Y%m%d%H%M%S')}",
-            farmer_id=farmer_id,
-            quantity=quantity,
-            fat=fat,
-            snf=snf,
-            rate=rate,
-            amount=amount,
-            shift=shift,
-            collection_date=datetime.now().strftime('%Y-%m-%d')
-        )
-
-
-# ============================================
-# Validation Services
-# ============================================
-
-class ValidationService:
-    """Input validation - pure functions"""
-    
-    @staticmethod
-    def validate_phone(phone: str) -> bool:
-        """Validate Indian phone number"""
-        if not phone:
-            return False
-        # Remove spaces and special chars
-        clean = ''.join(c for c in phone if c.isdigit())
-        return len(clean) == 10 and clean.startswith(('6', '7', '8', '9'))
-    
-    @staticmethod
-    def validate_fat(fat: float) -> bool:
-        """Validate fat percentage (2-10%)"""
-        return 2.0 <= fat <= 10.0
-    
-    @staticmethod
-    def validate_snf(snf: float) -> bool:
-        """Validate SNF percentage (7-10%)"""
-        return 7.0 <= snf <= 10.0
-    
-    @staticmethod
-    def validate_quantity(quantity: float) -> bool:
-        """Validate quantity (0.1-1000 liters)"""
-        return 0.1 <= quantity <= 1000.0
-
-
-# ============================================
-# ID Generation Service
-# ============================================
-
-class IDGenerator:
-    """Generate unique IDs - pure functions"""
-    
-    @staticmethod
-    def generate_farmer_id() -> str:
-        """Generate farmer ID: F + timestamp"""
-        return f"F{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    
-    @staticmethod
-    def generate_customer_id() -> str:
-        """Generate customer ID: C + timestamp"""
-        return f"C{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    
-    @staticmethod
-    def generate_sale_id() -> str:
-        """Generate sale ID: S + timestamp"""
-        return f"S{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    
-    @staticmethod
-    def generate_collection_id() -> str:
-        """Generate collection ID: COL + timestamp"""
-        return f"COL{datetime.now().strftime('%Y%m%d%H%M%S')}"
-
-
-# ============================================
-# Reporting Service
-# ============================================
-
-class ReportService:
-    """Generate reports from data - pure functions"""
-    
-    @staticmethod
-    def daily_summary(collections: List[MilkCollection]) -> Dict:
-        """Generate daily summary report"""
-        if not collections:
-            return {
-                'total_quantity': 0.0,
-                'total_amount': 0.0,
-                'average_fat': 0.0,
-                'average_snf': 0.0,
-                'total_collections': 0
-            }
-        
-        total_qty = sum(c.quantity for c in collections)
-        total_amt = sum(c.amount for c in collections)
-        avg_fat = sum(c.fat for c in collections) / len(collections)
-        avg_snf = sum(c.snf for c in collections) / len(collections)
-        
-        return {
-            'total_quantity': round(total_qty, 2),
-            'total_amount': round(total_amt, 2),
-            'average_fat': round(avg_fat, 2),
-            'average_snf': round(avg_snf, 2),
-            'total_collections': len(collections)
-        }
-    
-    @staticmethod
-    def farmer_statement(collections: List[MilkCollection]) -> Dict:
-        """Generate farmer-wise statement"""
-        statement = {}
-        
-        for collection in collections:
-            fid = collection.farmer_id
-            if fid not in statement:
-                statement[fid] = {
-                    'farmer_id': fid,
-                    'total_quantity': 0.0,
-                    'total_amount': 0.0,
-                    'collections': []
-                }
+    try:
+        if IS_DESKTOP:
+            # Save to SQLite first (offline-first)
+            data['sync_status'] = 'pending'
+            success = db_local.farmer_save(data)
             
-            statement[fid]['total_quantity'] += collection.quantity
-            statement[fid]['total_amount'] += collection.amount
-            statement[fid]['collections'].append(collection.to_dict())
+            if success:
+                result['success'] = True
+                result['farmer'] = data
+                result['message'] = 'Saved locally'
+                
+                # Try to sync to Supabase if internet available
+                if internet_available():
+                    try:
+                        # Remove sync fields for Supabase
+                        supabase_data = {k: v for k, v in data.items() if k not in ['sync_status']}
+                        supabase_data['sync_status'] = 'synced'
+                        
+                        if db_supabase.farmer_save(supabase_data):
+                            db_local.farmer_mark_synced(data['id'])
+                            result['message'] = 'Saved and synced to cloud'
+                    except Exception as e:
+                        print(f"Sync failed, will retry later: {e}")
+                        db_local.log_sync(
+                            data.get('device_id', 'unknown'),
+                            'farmers',
+                            data['id'],
+                            'INSERT',
+                            'failed',
+                            str(e)
+                        )
+            else:
+                result['message'] = 'Failed to save locally'
         
-        # Round totals
-        for fid in statement:
-            statement[fid]['total_quantity'] = round(statement[fid]['total_quantity'], 2)
-            statement[fid]['total_amount'] = round(statement[fid]['total_amount'], 2)
+        else:
+            # Vercel: Save directly to Supabase
+            data['sync_status'] = 'synced'
+            success = db_supabase.farmer_save(data)
+            
+            if success:
+                result['success'] = True
+                result['farmer'] = data
+                result['message'] = 'Saved to cloud'
+            else:
+                result['message'] = 'Failed to save to cloud'
+    
+    except Exception as e:
+        result['message'] = f'Error: {str(e)}'
+        print(f"Error in save_farmer: {e}")
+    
+    return result
+
+
+def save_sale(data: Dict) -> Dict:
+    """
+    Save sale with unified logic
+    Desktop: Save to SQLite + try sync to Supabase
+    Vercel: Save directly to Supabase
+    """
+    result = {'success': False, 'sale_id': None, 'message': ''}
+    
+    try:
+        if IS_DESKTOP:
+            # Save to SQLite first (offline-first)
+            data['sync_status'] = 'pending'
+            success = db_local.sale_save(data)
+            
+            if success:
+                result['success'] = True
+                result['sale_id'] = data['id']
+                result['message'] = 'Saved locally'
+                
+                # Try to sync to Supabase if internet available
+                if internet_available():
+                    try:
+                        supabase_data = {k: v for k, v in data.items() if k not in ['sync_status']}
+                        supabase_data['sync_status'] = 'synced'
+                        
+                        if db_supabase.sale_save(supabase_data):
+                            db_local.sale_mark_synced(data['id'])
+                            result['message'] = 'Saved and synced to cloud'
+                    except Exception as e:
+                        print(f"Sync failed, will retry later: {e}")
+                        db_local.log_sync(
+                            data.get('device_id', 'unknown'),
+                            'sales',
+                            data['id'],
+                            'INSERT',
+                            'failed',
+                            str(e)
+                        )
+            else:
+                result['message'] = 'Failed to save locally'
         
-        return statement
+        else:
+            # Vercel: Save directly to Supabase
+            data['sync_status'] = 'synced'
+            success = db_supabase.sale_save(data)
+            
+            if success:
+                result['success'] = True
+                result['sale_id'] = data['id']
+                result['message'] = 'Saved to cloud'
+            else:
+                result['message'] = 'Failed to save to cloud'
+    
+    except Exception as e:
+        result['message'] = f'Error: {str(e)}'
+        print(f"Error in save_sale: {e}")
+    
+    return result
+
+
+def save_customer(data: Dict) -> Dict:
+    """
+    Save customer with unified logic
+    """
+    result = {'success': False, 'customer': None, 'message': ''}
+    
+    try:
+        if IS_DESKTOP:
+            data['sync_status'] = 'pending'
+            success = db_local.customer_save(data)
+            
+            if success:
+                result['success'] = True
+                result['customer'] = data
+                result['message'] = 'Saved locally'
+                
+                if internet_available():
+                    try:
+                        supabase_data = {k: v for k, v in data.items() if k not in ['sync_status']}
+                        supabase_data['sync_status'] = 'synced'
+                        
+                        if db_supabase.customer_save(supabase_data):
+                            result['message'] = 'Saved and synced to cloud'
+                    except Exception as e:
+                        print(f"Sync failed: {e}")
+            else:
+                result['message'] = 'Failed to save locally'
+        
+        else:
+            data['sync_status'] = 'synced'
+            success = db_supabase.customer_save(data)
+            
+            if success:
+                result['success'] = True
+                result['customer'] = data
+                result['message'] = 'Saved to cloud'
+            else:
+                result['message'] = 'Failed to save to cloud'
+    
+    except Exception as e:
+        result['message'] = f'Error: {str(e)}'
+    
+    return result
+
+
+def save_product(data: Dict) -> Dict:
+    """
+    Save product with unified logic
+    """
+    result = {'success': False, 'product': None, 'message': ''}
+    
+    try:
+        if IS_DESKTOP:
+            data['sync_status'] = 'pending'
+            success = db_local.product_save(data)
+            
+            if success:
+                result['success'] = True
+                result['product'] = data
+                result['message'] = 'Saved locally'
+                
+                if internet_available():
+                    try:
+                        supabase_data = {k: v for k, v in data.items() if k not in ['sync_status']}
+                        supabase_data['sync_status'] = 'synced'
+                        
+                        if db_supabase.product_save(supabase_data):
+                            result['message'] = 'Saved and synced to cloud'
+                    except Exception as e:
+                        print(f"Sync failed: {e}")
+            else:
+                result['message'] = 'Failed to save locally'
+        
+        else:
+            data['sync_status'] = 'synced'
+            success = db_supabase.product_save(data)
+            
+            if success:
+                result['success'] = True
+                result['product'] = data
+                result['message'] = 'Saved to cloud'
+            else:
+                result['message'] = 'Failed to save to cloud'
+    
+    except Exception as e:
+        result['message'] = f'Error: {str(e)}'
+    
+    return result
+
+
+# ============================================
+# Get Functions (Read)
+# ============================================
+
+def get_farmers() -> List[Dict]:
+    """Get farmers - prefer Supabase if available, fallback to SQLite"""
+    try:
+        if IS_VERCEL or (IS_DESKTOP and internet_available()):
+            farmers = db_supabase.farmer_get_all()
+            if farmers:
+                return farmers
+        
+        # Fallback to SQLite
+        return db_local.farmer_get_all()
+    except:
+        return db_local.farmer_get_all() if IS_DESKTOP else []
+
+
+def get_customers() -> List[Dict]:
+    """Get customers"""
+    try:
+        if IS_VERCEL or (IS_DESKTOP and internet_available()):
+            customers = db_supabase.customer_get_all()
+            if customers:
+                return customers
+        
+        return db_local.customer_get_all() if IS_DESKTOP else []
+    except:
+        return db_local.customer_get_all() if IS_DESKTOP else []
+
+
+def get_products() -> List[Dict]:
+    """Get products"""
+    try:
+        if IS_VERCEL or (IS_DESKTOP and internet_available()):
+            products = db_supabase.product_get_all()
+            if products:
+                return products
+        
+        return db_local.product_get_all() if IS_DESKTOP else []
+    except:
+        return db_local.product_get_all() if IS_DESKTOP else []
+
+
+def get_sales(limit: int = 100) -> List[Dict]:
+    """Get sales"""
+    try:
+        if IS_VERCEL or (IS_DESKTOP and internet_available()):
+            sales = db_supabase.sale_get_all(limit)
+            if sales:
+                return sales
+        
+        return db_local.sale_get_all(limit) if IS_DESKTOP else []
+    except:
+        return db_local.sale_get_all(limit) if IS_DESKTOP else []

@@ -624,7 +624,13 @@
 <!-- Scripts -->
 <script src="../hardware/hardware-integration.js"></script>
 <script src="../compliance/audit-trail.js"></script>
+<!-- Socket.IO for real-time updates -->
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script>
+// Configuration
+const API_BASE = 'http://localhost:5000/api';
+const SOCKET_URL = 'http://localhost:5000';
+
 // Global state
 let cart = [];
 let products = [];
@@ -632,13 +638,17 @@ let customers = [];
 let currentCustomer = null;
 let hardware = null;
 let totalAmount = 0;
+let currentUser = null;
+let currentShift = null;
+let socket = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    // Load data
-    loadProducts();
-    loadCustomers();
-    loadShift();
+    // Connect to backend
+    connectToBackend();
+    
+    // Load user from localStorage
+    currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
     
     // Initialize hardware
     hardware = new HardwareIntegration();
@@ -650,8 +660,75 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check devices
     checkDeviceStatus();
     
-    console.log('✅ MilkRecord POS Enhanced - Ready');
+    console.log('✅ MilkRecord POS Enhanced - Connected to Backend');
 });
+
+// Connect to backend server
+function connectToBackend() {
+    try {
+        socket = io(SOCKET_URL, {
+            transports: ['websocket', 'polling'],
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000
+        });
+        
+        socket.on('connect', () => {
+            console.log('✅ Connected to backend server');
+            updateConnectionStatus(true);
+            
+            // Load data from backend
+            loadProductsFromBackend();
+            loadCustomersFromBackend();
+            loadCurrentShift();
+        });
+        
+        socket.on('disconnect', () => {
+            console.log('❌ Disconnected from backend');
+            updateConnectionStatus(false);
+        });
+        
+        socket.on('connect_error', (error) => {
+            console.error('Connection error:', error);
+            showToast('⚠️  Backend disconnected - Working offline');
+        });
+        
+        // Listen for real-time updates
+        socket.on('sale_created', (data) => {
+            console.log('💰 New sale:', data);
+            showToast(`✅ Sale completed: ₹${data.total.toFixed(2)}`);
+        });
+        
+        socket.on('product_created', (data) => {
+            console.log('📦 New product:', data);
+            loadProductsFromBackend();
+        });
+        
+        socket.on('audit_log', (data) => {
+            console.log('🔒 Audit log:', data);
+        });
+        
+    } catch (error) {
+        console.error('Failed to connect to backend:', error);
+        // Fallback to localStorage
+        loadProducts();
+        loadCustomers();
+        loadShift();
+    }
+}
+
+function updateConnectionStatus(connected) {
+    const internetStatus = document.getElementById('internetStatus');
+    if (connected) {
+        internetStatus.classList.add('active');
+        internetStatus.classList.remove('inactive');
+        internetStatus.innerHTML = '<span>🌐</span> <span>Online</span>';
+    } else {
+        internetStatus.classList.add('inactive');
+        internetStatus.classList.remove('active');
+        internetStatus.innerHTML = '<span>⚠️</span> <span>Offline</span>';
+    }
+}
 
 // Load products from localStorage
 function loadProducts() {
