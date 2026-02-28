@@ -97,9 +97,9 @@
       /* --- CORE LAYOUT --- */
       .core { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1; min-height: 0; }
       .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
-      .left-panel { overflow: hidden; display: flex; flex-direction: column; }
+      .left-panel { overflow-y: auto; display: flex; flex-direction: column; }
       .right-panel { overflow-y: auto; display: flex; flex-direction: column; }
-      
+
       /* Left panel scrollable for customer search */
       .left-panel .panelHeader { flex-shrink: 0; }
       .left-panel #searchDropdown { max-height: 300px; overflow-y: auto; position: absolute; z-index: 1000; }
@@ -113,7 +113,7 @@
         background: var(--panel);
         border-top: 3px solid #16a34a;
         padding: 12px 15px;
-        z-index: 99;
+        z-index: 100;
         box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
         width: 100%;
         border-radius: 16px 16px 0 0;
@@ -130,12 +130,52 @@
       }
 
       /* Cart items scrollable with fixed height */
-      #cartItems { max-height: 200px; overflow-y: auto; }
+      #cartItems { max-height: 180px; overflow-y: auto; }
       #cartItems::-webkit-scrollbar { width: 6px; }
       #cartItems::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
       
       /* Panels height synced with payment section */
-      .left-panel, .right-panel { max-height: calc(100vh - 180px); }
+      .left-panel, .right-panel { max-height: calc(100vh - 200px); }
+      
+      /* Product grid responsive */
+      .product-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); 
+        gap: 4px; 
+        padding: 8px; 
+        overflow-y: auto; 
+        flex: 1; 
+        outline: none; 
+        align-content: start; 
+      }
+      
+      /* Smaller product cards when many products */
+      .p-card {
+        min-height: 70px;
+        padding: 4px 2px;
+      }
+      .p-card .emoji {
+        font-size: 28px;
+      }
+      .p-card div {
+        font-size: 9px;
+        line-height: 1.1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .p-card small {
+        font-size: 8px;
+      }
+      .p-card .price-tag {
+        font-size: 9px;
+        padding: 2px 4px;
+      }
+
+      /* Customer search max width */
+      .left-panel #custSearch {
+        max-width: 100%;
+      }
 
       /* Tablet (768px - 1024px): Side by side with adjusted heights */
       @media (min-width: 768px) and (max-width: 1024px) {
@@ -157,11 +197,11 @@
         .panel { max-height: none !important; height: auto; border-radius: 12px; }
         .left-panel { order: 1; }
         .right-panel { order: 2; }
-        .product-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 4px; }
-        .p-card { padding: 4px 2px; }
-        .p-card .emoji { font-size: 32px; }
-        .p-card div { font-size: 9px; }
-        .p-card small { font-size: 8px; }
+        .product-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)) !important; gap: 3px; }
+        .p-card { padding: 3px 1px; min-height: 60px; }
+        .p-card .emoji { font-size: 24px; }
+        .p-card div { font-size: 8px; }
+        .p-card small { font-size: 7px; }
         .summary-box { margin: 6px; padding: 12px; }
         .summary-box .amt { font-size: 28px; }
         /* Cart items scrollable on mobile */
@@ -173,15 +213,15 @@
         .payment-section {
           position: fixed;
           bottom: 0;
-          left: 50%;
-          transform: translateX(-50%);
+          left: 0;
+          right: 0;
           background: white;
           border-top: 3px solid #16a34a;
           padding: 12px 15px;
-          z-index: 99;
+          z-index: 100;
           box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
           border-radius: 16px 16px 0 0;
-          width: min(900px, 100vw - 20px) !important;
+          width: 100% !important;
         }
         /* Maintain left column layout on mobile */
         .payment-section > div:first-child {
@@ -189,49 +229,50 @@
           gap: 12px !important;
         }
         .payment-section > div:first-child > div:first-child {
-          min-width: 300px !important;
+          min-width: 200px !important;
         }
         .payment-section #totalPayableDisplay {
-          font-size: 48px !important;
+          font-size: 42px !important;
           color: #16a34a !important;
         }
         .payment-section #paymentAmount {
-          font-size: 18px !important;
-          padding: 14px !important;
+          font-size: 16px !important;
+          padding: 12px !important;
         }
         .payment-section #roundupInput {
-          font-size: 14px !important;
-          padding: 14px !important;
+          font-size: 12px !important;
+          padding: 12px !important;
         }
         .payment-section #roundupLabel {
-          font-size: 11px !important;
+          font-size: 10px !important;
         }
         .payment-section #creditDisplay {
-          font-size: 13px !important;
+          font-size: 12px !important;
         }
         .payment-section .pay-btn {
+          padding: 10px !important;
+          font-size: 11px !important;
+        }
+        .payment-section #btnCredit {
           padding: 12px !important;
           font-size: 12px !important;
         }
-        .payment-section #btnCredit {
-          padding: 14px !important;
-          font-size: 14px !important;
-        }
         .payment-section #advanceToggleBtn {
-          padding: 14px 16px !important;
-          font-size: 13px !important;
+          padding: 12px 14px !important;
+          font-size: 11px !important;
         }
         /* Advance form on mobile */
         .payment-section #monthMilk,
         .payment-section #currentAdvance {
-          font-size: 22px !important;
+          font-size: 20px !important;
         }
         .payment-section #advanceAmount {
-          font-size: 16px !important;
-          padding: 14px !important;
+          font-size: 14px !important;
+          padding: 12px !important;
         }
         /* Add padding to right panel to prevent content hiding behind fixed payment */
-        .right-panel { padding-bottom: 260px; }
+        .right-panel { padding-bottom: 240px; }
+        .left-panel { padding-bottom: 0; }
       }
 
       @media (max-width: 480px) {
