@@ -99,6 +99,10 @@
       .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
       .left-panel { overflow: hidden; display: flex; flex-direction: column; }
       .right-panel { overflow-y: auto; display: flex; flex-direction: column; }
+      
+      /* Left panel scrollable for customer search */
+      .left-panel .panelHeader { flex-shrink: 0; }
+      .left-panel #searchDropdown { max-height: 300px; overflow-y: auto; position: absolute; z-index: 1000; }
 
       /* Fixed Payment Section at Bottom - Always Visible */
       .payment-section {
@@ -111,9 +115,9 @@
         padding: 12px 15px;
         z-index: 99;
         box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
-        width: fit-content;
-        min-width: min(900px, 95vw);
-        max-width: min(1100px, 98vw);
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
         border-radius: 16px 16px 0 0;
       }
       
@@ -126,9 +130,14 @@
         display: inline-block !important;
         line-height: 1 !important;
       }
-
+      
+      /* Cart items scrollable with fixed height */
+      #cartItems { max-height: 200px; overflow-y: auto; }
+      #cartItems::-webkit-scrollbar { width: 6px; }
+      #cartItems::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+      
       /* Add padding to right panel to prevent content hiding behind fixed payment */
-      .right-panel { padding-bottom: 220px; }
+      .right-panel { padding-bottom: 180px; }
 
       /* Tablet (768px - 1024px): Side by side with adjusted heights */
       @media (min-width: 768px) and (max-width: 1024px) {
