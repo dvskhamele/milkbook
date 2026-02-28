@@ -1583,34 +1583,6 @@
       </div>
     </div>
 
-    <!-- UPI Payment Section (Prominent Display) -->
-    <div style="padding: 16px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-bottom: 2px solid #3b82f6; flex-shrink: 0;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <div style="font-size: 14px; font-weight: 800; color: #1e40af;">📱 UPI Payment Details</div>
-        <button onclick="copyFarmerUPI()" style="padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px;" title="Copy UPI ID">📋 Copy UPI</button>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-        <div style="background: white; padding: 12px; border-radius: 8px; border: 2px solid #3b82f6;">
-          <div style="font-size: 10px; color: #64748b; font-weight: 700; margin-bottom: 4px;">📱 UPI ID</div>
-          <div style="font-size: 16px; font-weight: 900; color: #1e40af;" id="detailUPI">—</div>
-          <div style="font-size: 9px; color: #64748b; margin-top: 4px;">Scan QR or use UPI app</div>
-        </div>
-        <div style="background: white; padding: 12px; border-radius: 8px; border: 2px solid #3b82f6;">
-          <div style="font-size: 10px; color: #64748b; font-weight: 700; margin-bottom: 4px;">🏦 Bank Details</div>
-          <div style="font-size: 12px; font-weight: 700; color: #1e40af;" id="detailBank">—</div>
-          <div style="font-size: 10px; color: #64748b;" id="detailAccountInfo">—</div>
-        </div>
-      </div>
-      <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; border: 2px dashed #3b82f6;">
-        <div style="font-size: 11px; color: #1e40af; font-weight: 700; margin-bottom: 8px;">💰 Quick UPI Payment</div>
-        <div style="display: flex; gap: 8px; align-items: center;">
-          <input type="number" id="upiPaymentAmount" placeholder="Amount (₹)" style="flex: 1; padding: 10px; border: 2px solid #3b82f6; border-radius: 6px; font-weight: 700; font-size: 14px;" />
-          <button onclick="recordUPIPayment()" style="padding: 10px 20px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px;">✅ Record UPI Payment</button>
-        </div>
-        <div style="font-size: 9px; color: #64748b; margin-top: 4px;">Pay any amount from outstanding balance via UPI</div>
-      </div>
-    </div>
-
     <!-- Tabs -->
     <div style="display: flex; border-bottom: 2px solid #e2e8f0; flex-shrink: 0;">
       <button onclick="showDetailTab('transactions')" id="tabTransactions" style="flex: 1; padding: 12px; background: #f1f5f9; border: none; border-bottom: 3px solid #3b82f6; font-weight: 700; font-size: 13px; cursor: pointer; color: #1e293b;">📋 Transactions</button>
@@ -6318,17 +6290,6 @@ function openFarmerDetail(fId) {
     el("detailAddress").textContent = f.address || f.city || '—';
     el("detailBalance").textContent = formatAmount(f.balance || 0);
     el("detailAdvance").textContent = formatAmount(f.advance || 0);
-    
-    // UPI Payment Details
-    if (el("detailUPI")) el("detailUPI").textContent = f.upi || 'Not set (Edit to add)';
-    if (el("detailBank")) el("detailBank").textContent = f.bankName || '—';
-    if (el("detailAccountInfo")) {
-        const accountInfo = [];
-        if (f.accountNo) accountInfo.push(`A/c: ${f.accountNo}`);
-        if (f.ifsc) accountInfo.push(`IFSC: ${f.ifsc}`);
-        if (f.accountName) accountInfo.push(f.accountName);
-        el("detailAccountInfo").textContent = accountInfo.join(' • ') || '—';
-    }
     
     // Monthly milk
     const now = new Date();
