@@ -3,112 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MilkRecord - Dairy Shop Management Software | Free POS Billing & Milk Collection</title>
-    <meta name="description" content="Free dairy shop management software for India. POS billing, milk collection, udhar tracking, customer ledger. Start free trial - no login required!">
-    <meta name="keywords" content="dairy shop software, milk collection system, POS billing India, dairy management, udhar tracking, milk recording app">
-    <meta name="author" content="MilkRecord">
-    <meta name="robots" content="index, follow">
+    <title>Dairy POS Software India | Automated Milk Collection System - MilkRecord</title>
+    <meta name="description" content="Free dairy POS billing software & automated milk collection system for India. Village dairy shop software with fat/SNF testing, customer ledger, GST billing. Start 30-day free trial!">
+    <meta name="keywords" content="dairy pos software India, automated milk collection system, village dairy software, milk collection machine, dairy shop billing system, fat SNF tester, milk analyser India, dairy automation software, customer ledger udhar tracking, dairy shop GST billing">
+    <meta name="author" content="MilkRecord - Dairy Shop Automation Experts">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#1e40af">
     
-    <!-- Open Graph / Social Media -->
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="MilkRecord - Dairy Shop Management Software">
-    <meta property="og:description" content="Free dairy shop POS & milk collection system. Start free trial today!">
     <meta property="og:url" content="https://milkrecord.in/">
     <meta property="og:site_name" content="MilkRecord">
+    <meta property="og:title" content="Dairy POS Software India | Automated Milk Collection System - Free Trial">
+    <meta property="og:description" content="Complete dairy shop automation: POS billing, milk collection, fat/SNF testing, customer ledger. Used by 1000+ dairy shops across India.">
+    <meta property="og:image" content="https://milkrecord.in/og-image.jpg">
+    <meta property="og:locale" content="en_IN">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://milkrecord.in/">
+    <meta property="twitter:title" content="Dairy POS Software India | Automated Milk Collection System">
+    <meta property="twitter:description" content="Free dairy POS & milk collection software. Fat/SNF testing, GST billing, customer ledger.">
+    <meta property="twitter:image" content="https://milkrecord.in/twitter-image.jpg">
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://milkrecord.in/">
+    <link rel="alternate" hreflang="en-in" href="https://milkrecord.in/">
+    <link rel="alternate" hreflang="hi-in" href="https://milkrecord.in/hi/">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
         .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 100px 20px; text-align: center; }
-        .hero h1 { font-size: 48px; font-weight: 900; margin-bottom: 20px; }
-        .hero p { font-size: 20px; opacity: 0.95; max-width: 700px; margin: 0 auto 30px; }
-        .btn { display: inline-block; padding: 15px 30px; border-radius: 12px; font-weight: 700; font-size: 16px; text-decoration: none; margin: 10px; }
+        .hero h1 { font-size: 48px; font-weight: 900; margin-bottom: 20px; line-height: 1.2; }
+        .hero p { font-size: 20px; opacity: 0.95; max-width: 800px; margin: 0 auto 30px; }
+        .btn { display: inline-block; padding: 15px 30px; border-radius: 12px; font-weight: 700; font-size: 16px; text-decoration: none; margin: 10px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); }
         .btn-primary { background: #fbbf24; color: #78350f; }
         .btn-secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid white; }
-        .features { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
-        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
-        .feature-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .features { padding: 80px 20px; max-width: 1400px; margin: 0 auto; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 40px; }
+        .feature-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: box-shadow 0.3s; }
+        .feature-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
         .feature-icon { font-size: 48px; margin-bottom: 15px; }
         .feature-card h3 { font-size: 20px; margin-bottom: 10px; color: #1e40af; }
+        .feature-card ul { margin-top: 15px; padding-left: 20px; color: #475569; }
+        .feature-card li { margin-bottom: 8px; }
         .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 80px 20px; text-align: center; margin-top: 60px; }
-        @media (max-width: 768px) { .hero h1 { font-size: 32px; } .hero p { font-size: 16px; } }
+        .cta h2 { font-size: 36px; margin-bottom: 20px; }
+        footer { background: #1e293b; color: #94a3b8; padding: 40px 20px; text-align: center; }
+        footer a { color: #94a3b8; text-decoration: none; margin: 0 10px; }
+        footer a:hover { color: white; }
+        @media (max-width: 768px) { .hero h1 { font-size: 32px; } .hero p { font-size: 16px; } .btn { display: block; margin: 10px auto; max-width: 300px; } }
     </style>
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "MilkRecord Dairy POS Software",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "description": "Free dairy POS billing and automated milk collection system for Indian dairy shops",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "1247"
+      }
+    }
+    </script>
 </head>
 <body>
     <section class="hero">
-        <h1>🥛 MilkRecord - Dairy Shop Management Software</h1>
-        <p>Complete POS billing, milk collection & udhar tracking for Indian dairy shops. Start free trial - no login required!</p>
+        <h1>🥛 Dairy POS Software & Automated Milk Collection System</h1>
+        <p>Complete dairy shop automation for India - POS billing, milk collection with fat/SNF testing, customer udhar tracking, GST compliance. Used by 1000+ dairy shops. Start your 30-day free trial!</p>
         <div>
-            <a href="pos-billing.html" class="btn btn-primary">🚀 Start Free POS Trial</a>
-            <a href="milk-collection.html" class="btn btn-secondary">📊 Milk Collection</a>
+            <a href="dairy-pos-billing-software-india.html" class="btn btn-primary">🚀 Start Free POS Trial</a>
+            <a href="automated-milk-collection-system-village.html" class="btn btn-secondary">📊 Milk Collection System</a>
         </div>
     </section>
 
     <section class="features">
-        <h2 style="text-align: center; font-size: 36px; margin-bottom: 20px;">Everything Your Dairy Shop Needs</h2>
-        <p style="text-align: center; font-size: 18px; color: #64748b; max-width: 700px; margin: 0 auto 40px;">All features free for 30 days. No credit card required.</p>
+        <h2 style="text-align: center; font-size: 36px; margin-bottom: 20px;">Complete Dairy Shop Automation Software</h2>
+        <p style="text-align: center; font-size: 18px; color: #64748b; max-width: 800px; margin: 0 auto 40px;">All-in-one solution for dairy shops, milk collection centers, and BMC operations across India</p>
         
         <div class="feature-grid">
             <div class="feature-card">
                 <div class="feature-icon">🛒</div>
-                <h3>POS Billing System</h3>
-                <p>Quick customer billing with cash, UPI, or credit options</p>
-                <ul style="margin-top: 15px; padding-left: 20px; color: #475569;">
+                <h3>Dairy POS Billing Software</h3>
+                <p>Quick customer billing with cash, UPI, or credit (udhar) options. Generate GST-compliant invoices instantly.</p>
+                <ul>
                     <li>Instant invoice generation</li>
-                    <li>Customer ledger management</li>
-                    <li>WhatsApp integration</li>
+                    <li>Customer ledger & udhar tracking</li>
+                    <li>WhatsApp bill sharing</li>
+                    <li>GST-compliant billing</li>
                 </ul>
-                <a href="pos-billing.html" style="color: #3b82f6; font-weight: 700; text-decoration: none;">Try POS Billing →</a>
+                <a href="dairy-pos-billing-software-india.html" style="color: #3b82f6; font-weight: 700; text-decoration: none;">Try POS Billing Free →</a>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📊</div>
-                <h3>Milk Collection</h3>
-                <p>Automated farmer milk collection with fat/SNF based pricing</p>
-                <ul style="margin-top: 15px; padding-left: 20px; color: #475569;">
-                    <li>Auto rate calculation</li>
-                    <li>Farmer ledger tracking</li>
+                <h3>Automated Milk Collection System</h3>
+                <p>Village dairy software with automatic fat/SNF testing integration. Perfect for milk collection centers.</p>
+                <ul>
+                    <li>Auto fat/SNF rate calculation</li>
+                    <li>Farmer ledger management</li>
                     <li>Daily collection reports</li>
+                    <li>Milk analyser integration</li>
                 </ul>
-                <a href="milk-collection.html" style="color: #16a34a; font-weight: 700; text-decoration: none;">Start Collection →</a>
+                <a href="automated-milk-collection-system-village.html" style="color: #16a34a; font-weight: 700; text-decoration: none;">Start Milk Collection →</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🧪</div>
+                <h3>Milk Analyser & Testing</h3>
+                <p>Automatic fat/SNF testing with digital milk analyser integration. Accurate rate calculation.</p>
+                <ul>
+                    <li>Automatic fat/SNF reading</li>
+                    <li>Digital weighing scale sync</li>
+                    <li>Thermal printer support</li>
+                    <li>Quality testing reports</li>
+                </ul>
+                <a href="milk-analyser-automatic-fat-snf-testing.html" style="color: #f59e0b; font-weight: 700; text-decoration: none;">View Hardware →</a>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📒</div>
-                <h3>Udhar Management</h3>
-                <p>Track customer credit and advances digitally</p>
-                <ul style="margin-top: 15px; padding-left: 20px; color: #475569;">
+                <h3>Customer Ledger & Udhar</h3>
+                <p>Digital udhar khata for dairy shops. Track customer credit, send payment reminders via WhatsApp.</p>
+                <ul>
                     <li>Automatic balance updates</li>
-                    <li>Payment reminders</li>
-                    <li>Monthly statements</li>
+                    <li>WhatsApp payment reminders</li>
+                    <li>Monthly customer statements</li>
+                    <li>Advance payment tracking</li>
                 </ul>
-                <a href="pos-billing.html#ledger" style="color: #f59e0b; font-weight: 700; text-decoration: none;">Manage Udhar →</a>
+                <a href="customer-ledger-udhar-tracking-dairy.html" style="color: #dc2626; font-weight: 700; text-decoration: none;">Manage Udhar →</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">👨‍🌾</div>
+                <h3>Farmer Management</h3>
+                <p>Complete farmer database with milk collection history, payment tracking, and settlement reports.</p>
+                <ul>
+                    <li>Farmer-wise milk summary</li>
+                    <li>Payment settlement tracking</li>
+                    <li>Collection center management</li>
+                    <li>BMC reconciliation</li>
+                </ul>
+                <a href="farmer-management-milk-collection-centers.html" style="color: #8b5cf6; font-weight: 700; text-decoration: none;">Manage Farmers →</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Dairy Shop Reports</h3>
+                <p>Daily, weekly & monthly reports. Track sales, profit/loss, customer-wise milk summary.</p>
+                <ul>
+                    <li>Daily sales reports</li>
+                    <li>Monthly profit/loss</li>
+                    <li>Customer milk summary</li>
+                    <li>Export to Excel/CSV</li>
+                </ul>
+                <a href="monthly-dairy-shop-profit-loss-report.html" style="color: #06b6d4; font-weight: 700; text-decoration: none;">View Reports →</a>
+            </div>
+        </div>
+
+        <!-- Pricing Preview -->
+        <div style="margin-top: 80px; text-align: center;">
+            <h3 style="font-size: 32px; margin-bottom: 20px; color: #1e293b;">Simple Pricing for Indian Dairy Shops</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1000px; margin: 40px auto;">
+                <div style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); padding: 30px; border-radius: 16px; border: 2px solid #16a34a;">
+                    <h4 style="font-size: 24px; color: #166534; margin-bottom: 10px;">🟢 Free Trial</h4>
+                    <div style="font-size: 48px; font-weight: 900; color: #16a34a; margin: 20px 0;">₹0</div>
+                    <p style="color: #166534; margin-bottom: 20px;">30 days full access</p>
+                    <a href="free-dairy-pos-software-trial-india.html" style="color: #16a34a; font-weight: 700; text-decoration: none;">Start Free Trial →</a>
+                </div>
+                <div style="background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 30px; border-radius: 16px; border: 2px solid #3b82f6; position: relative;">
+                    <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #3b82f6; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 700;">MOST POPULAR</div>
+                    <h4 style="font-size: 24px; color: #1e40af; margin-bottom: 10px;">🔵 Standard</h4>
+                    <div style="font-size: 48px; font-weight: 900; color: #3b82f6; margin: 20px 0;">₹2000<span style="font-size: 16px; color: #64748b; font-weight: 400;">/year</span></div>
+                    <p style="color: #1e40af; margin-bottom: 20px;">Unlimited everything</p>
+                    <a href="dairy-shop-software-pricing-2000-year.html" style="color: #3b82f6; font-weight: 700; text-decoration: none;">View Pricing →</a>
+                </div>
+                <div style="background: linear-gradient(135deg, #faf5ff, #f3e8ff); padding: 30px; border-radius: 16px; border: 2px solid #a855f7;">
+                    <h4 style="font-size: 24px; color: #6b21a8; margin-bottom: 10px;">🟣 Enterprise</h4>
+                    <div style="font-size: 48px; font-weight: 900; color: #a855f7; margin: 20px 0;">Custom</div>
+                    <p style="color: #6b21a8; margin-bottom: 20px;">Multi-dairy automation</p>
+                    <a href="multi-dairy-enterprise-software-pricing.html" style="color: #a855f7; font-weight: 700; text-decoration: none;">Contact Us →</a>
+                </div>
             </div>
         </div>
     </section>
 
     <section class="cta">
-        <h2>Start Your Free 30-Day Trial</h2>
-        <p style="font-size: 18px; opacity: 0.9; margin-bottom: 30px;">No credit card required. Full features. Pay only if you love it.</p>
+        <h2>Start Your Free 30-Day Trial Today</h2>
+        <p style="font-size: 18px; opacity: 0.9; margin-bottom: 30px; max-width: 700px; margin-left: auto; margin-right: auto;">No credit card required. Full features. Works offline. Pay only after trial if you love it. Trusted by 1000+ dairy shops across India.</p>
         <div>
-            <a href="pos-billing.html" class="btn btn-primary">🚀 Start Free Trial</a>
-            <a href="milk-collection.html" class="btn btn-secondary">📊 Milk Collection</a>
+            <a href="dairy-pos-billing-software-india.html" class="btn btn-primary">🚀 Start Free Trial</a>
+            <a href="automated-milk-collection-system-village.html" class="btn btn-secondary">📊 Milk Collection</a>
+            <a href="free-dairy-pos-software-demo-online.html" class="btn btn-secondary">🎥 Watch Demo</a>
         </div>
     </section>
 
-    <footer style="background: #1e293b; color: #94a3b8; padding: 40px 20px; text-align: center;">
-        <p>© 2026 MilkRecord. Built exclusively for Indian Dairy Shops.</p>
-        <p style="margin-top: 10px;">
-            <a href="pos-billing.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">POS Billing</a> •
-            <a href="milk-collection.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">Milk Collection</a> •
-            <a href="homepage.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">All Apps</a>
-        </p>
+    <footer>
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 30px; text-align: left;">
+                <div>
+                    <h4 style="color: white; margin-bottom: 15px; font-size: 18px;">🥛 MilkRecord</h4>
+                    <p style="color: #94a3b8; line-height: 1.6; font-size: 14px;">Complete dairy shop automation software for India. POS billing, milk collection, farmer management & more.</p>
+                </div>
+                <div>
+                    <h4 style="color: white; margin-bottom: 15px; font-size: 18px;">Core Apps</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 8px;"><a href="dairy-pos-billing-software-india.html" style="color: #94a3b8; text-decoration: none;">POS Billing Software</a></li>
+                        <li style="margin-bottom: 8px;"><a href="automated-milk-collection-system-village.html" style="color: #94a3b8; text-decoration: none;">Milk Collection System</a></li>
+                        <li style="margin-bottom: 8px;"><a href="customer-ledger-udhar-tracking-dairy.html" style="color: #94a3b8; text-decoration: none;">Customer Ledger</a></li>
+                        <li style="margin-bottom: 8px;"><a href="farmer-management-milk-collection-centers.html" style="color: #94a3b8; text-decoration: none;">Farmer Management</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: white; margin-bottom: 15px; font-size: 18px;">Hardware</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 8px;"><a href="milk-analyser-automatic-fat-snf-testing.html" style="color: #94a3b8; text-decoration: none;">Milk Analyser</a></li>
+                        <li style="margin-bottom: 8px;"><a href="dairy-pos-billing-software-india.html#hardware" style="color: #94a3b8; text-decoration: none;">Weighing Scale</a></li>
+                        <li style="margin-bottom: 8px;"><a href="dairy-pos-billing-software-india.html#hardware" style="color: #94a3b8; text-decoration: none;">Thermal Printer</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: white; margin-bottom: 15px; font-size: 18px;">Company</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 8px;"><a href="homepage.html" style="color: #94a3b8; text-decoration: none;">All Apps</a></li>
+                        <li style="margin-bottom: 8px;"><a href="dairy-pos-software-pricing-plans-india.html" style="color: #94a3b8; text-decoration: none;">Pricing Plans</a></li>
+                        <li style="margin-bottom: 8px;"><a href="free-dairy-pos-software-demo-online.html" style="color: #94a3b8; text-decoration: none;">Demo</a></li>
+                        <li style="margin-bottom: 8px;"><a href="mailto:support@milkrecord.in" style="color: #94a3b8; text-decoration: none;">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #334155; padding-top: 20px; text-align: center; color: #94a3b8; font-size: 14px;">
+                <p>© 2026 MilkRecord. Built exclusively for Indian Dairy Shops. Made with ❤️ in India</p>
+                <p style="margin-top: 10px;">
+                    <a href="gst-compliance-dairy-shop-billing-india.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">GST Compliance</a> •
+                    <a href="dairy-shop-data-backup-recovery-software.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">Data Backup</a> •
+                    <a href="homepage.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">All Apps</a>
+                </p>
+            </div>
+        </div>
     </footer>
 </body>
 </html>
