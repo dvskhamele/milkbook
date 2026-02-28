@@ -3885,6 +3885,16 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
     if (dummyCtx.state === 'suspended') dummyCtx.resume();
     // ----------------------------
 
+                // Reset inputs and globals BEFORE loading farmer memory
+                qty = 0;
+                fat = 0;
+                snf = 0;
+                clr = 0;
+                if (qtyInput) qtyInput.value = '';
+                if (fatInput) fatInput.value = '';
+                if (snfInput) snfInput.value = '';
+                if (densityInput) densityInput.value = '';
+                
                 // Auto-fill from previous entry for this farmer
                 loadFarmerMemory(f.id);
 
