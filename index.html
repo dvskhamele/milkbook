@@ -2144,11 +2144,18 @@
 
       <!-- FOOTER -->
       <div class="bottom">
+        <!-- Advance Management Section -->
+        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+          <input type="number" id="footerAdvanceAmount" placeholder="Amount (₹)" style="flex: 1; padding: 8px; border: 2px solid #f59e0b; border-radius: 6px; font-weight: 700; font-size: 13px;" />
+          <button onclick="updateFooterAdvance('give')" style="padding: 8px 12px; background: #22c55e; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; white-space: nowrap;">➕ Give Advance</button>
+          <button onclick="updateFooterAdvance('cut')" style="padding: 8px 12px; background: #dc2626; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; white-space: nowrap;">➖ Cut Advance</button>
+        </div>
+        
         <!-- Payment Mode: CASH ONLY (UPI via farmer double-click) -->
         <button class="panicBtn save" id="btnSaveCash" style="background: linear-gradient(135deg, #16a34a, #059669); flex: 1;" onclick="saveWithPaymentMode('Cash')">
           💵 CASH
         </button>
-        
+
         <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff; min-width: 120px;">
           📒 LIKHLO <span class="subnote">udhari</span>
         </button>
@@ -6731,6 +6738,71 @@ function loadPurchaseStreak() {
         </div>
         ${currentStreak >= 7 ? '<div style="margin-top: 12px; font-size: 12px; color: #dc2626; font-weight: 700;">🎉 Amazing! Keep it up!</div>' : ''}
     `;
+}
+
+// Update footer advance (quick advance management)
+function updateFooterAdvance(action) {
+    const amt = Number(document.getElementById('footerAdvanceAmount').value);
+    if (!amt || amt <= 0) {
+        showToast("❌ Enter valid amount");
+        return;
+    }
+
+    const f = getFarmerById(selectedFarmerId);
+    if (!f) {
+        showToast("⚠️ Select farmer first");
+        return;
+    }
+
+    // Initialize advance history if not exists
+    if (!f.advanceHistory) {
+        f.advanceHistory = [];
+    }
+
+    if (action === 'give') {
+        // GIVE ADVANCE
+        f.advance = (f.advance || 0) + amt;
+        f.balance = (f.balance || 0) - amt;
+
+        // Record in advance ledger
+        f.advanceHistory.push({
+            id: 'adv_' + Date.now(),
+            type: 'give',
+            amount: amt,
+            date: new Date().toISOString(),
+            note: 'Advance given',
+            balance: f.advance
+        });
+
+        saveFarmers(farmers);
+        document.getElementById('footerAdvanceAmount').value = '';
+        showToast(`${formatAmount(amt)} advance given ✅`);
+        renderAll();
+    } else {
+        // CUT ADVANCE
+        if (f.advance < amt) {
+            showToast(`⚠️ Insufficient advance! Current: ${formatAmount(f.advance)}`);
+            return;
+        }
+
+        f.advance = (f.advance || 0) - amt;
+        f.balance = (f.balance || 0) + amt;
+
+        // Record in advance ledger
+        f.advanceHistory.push({
+            id: 'cut_' + Date.now(),
+            type: 'cut',
+            amount: amt,
+            date: new Date().toISOString(),
+            note: 'Advance cut from milk payment',
+            balance: f.advance
+        });
+
+        saveFarmers(farmers);
+        document.getElementById('footerAdvanceAmount').value = '';
+        showToast(`${formatAmount(amt)} advance cut ✅`);
+        renderAll();
+    }
 }
 
 // Update farmer advance - WITH COMPLETE LEDGER TRACKING
