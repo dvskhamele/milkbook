@@ -172,14 +172,14 @@
         padding: 2px 1px;
       }
       .p-card.compact .emoji {
-        font-size: 20px;
+        font-size: 16px;  /* Smaller emoji in compact mode */
       }
       .p-card.compact > div:nth-child(2) {
         font-size: 8px;
         min-height: 20px;
       }
       .p-card.compact .price-tag {
-        display: none; /* Hide price in compact mode */
+        font-size: 7px;  /* Smaller price in compact mode */
       }
       
       /* No price mode for ultra compact */
@@ -198,7 +198,14 @@
       }
       .p-card .emoji {
         font-size: 28px;
-        flex-shrink: 0;
+        flex-shrink: 1;  /* Can shrink when needed */
+        min-width: 20px;
+        transition: all 0.2s;
+      }
+      /* Hide emoji first when space is tight */
+      .p-card.compact .emoji,
+      .p-card.no-emoji .emoji {
+        display: none;
       }
       .p-card > div:nth-child(2) {
         font-size: 10px;
@@ -5787,9 +5794,10 @@ function loadCustomProducts() {
   // Count total product cards
   const totalCards = products.reduce((sum, p) => sum + (p.qtys?.length || 0), 0);
   
-  // Auto-enable compact mode if many products
+  // Auto-enable features based on product count
   const enableCompact = totalCards > 30;
   const hidePrices = totalCards > 50;
+  const hideEmoji = totalCards > 40;  // Hide emoji before prices
 
   // Calculate quantity ranks (1-5 based on relative quantity sizes) - SAFETY CHECK
   const allQtys = Array.isArray(customProducts)
@@ -5812,9 +5820,10 @@ function loadCustomProducts() {
         const newCard = document.createElement('div');
         newCard.className = 'p-card';
         
-        // Add compact/no-price classes if needed
+        // Add classes based on product count (emoji hides first!)
         if (enableCompact) newCard.classList.add('compact');
-        if (hidePrices) newCard.classList.add('no-price');
+        if (hideEmoji) newCard.classList.add('no-emoji');  // Hide emoji first
+        if (hidePrices) newCard.classList.add('no-price');  // Then hide prices
         
         newCard.setAttribute('data-qty', '1');
         newCard.setAttribute('data-qty-val', safeQty);
@@ -5841,6 +5850,7 @@ function loadCustomProducts() {
   
   // Log mode
   if (enableCompact) console.log('📦 Compact mode enabled (' + totalCards + ' products)');
+  if (hideEmoji) console.log('🎭 Emoji hidden (' + totalCards + ' products)');
   if (hidePrices) console.log('💰 Prices hidden (' + totalCards + ' products)');
 }
 
