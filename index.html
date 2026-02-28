@@ -4735,7 +4735,11 @@ function playSuccessSound() {
         // 🎯 SNAPSHOT LOGIC: Rate ko value ki tarah chipka do
         rateSnapshot: round2(currentRate),
         amount: round2(currentAmount),
-        
+
+        // Cash entries are settled (milk + cash received)
+        // Mark as cancelled/settled for clarity
+        isSettled: selectedPayMode === 'Cash',
+
         // Discount/Adjustment if rounded amount differs
         adjustment: difference !== 0 ? round2(difference) : undefined,
 
@@ -4748,8 +4752,13 @@ function playSuccessSound() {
         deviceId: navigator.userAgent.slice(0, 40)
     };
     // --- DATA SAVING ---
-    // Use the ROUNDED (final accepted) balance - NO carry forward of difference
-    farmer.balance = after;
+    // Only update balance for Credit/Udhar entries
+    // Cash entries: Milk received + Cash received = Settled (no balance change)
+    // Credit entries: Milk received + Payment pending = Balance updated
+    if (selectedPayMode === 'Credit') {
+        farmer.balance = after; // Update balance for credit
+    }
+    // For Cash: Don't update balance (transaction complete)
     saveFarmers(farmers);
 
     entries.push(entry);
@@ -5567,7 +5576,17 @@ function showAuditProof(entryId) {
 
         // Manual rate override
         const manualRateApply = el("manualRateApply");
-        if (manualRateApply) manualRateApply.onclick = () => { manualRate = Number(manualRateInput.value) || 0; renderTrust(); };
+        if (manualRateApply) {
+          manualRateApply.onclick = () => {
+            manualRate = Number(manualRateInput.value) || 0;
+            renderTrust();
+            // Focus on LIKH LO button after applying rate
+            const likhloBtn = el("btnLikhlo");
+            if (likhloBtn) {
+              likhloBtn.focus();
+            }
+          };
+        }
 
         // Save with Payment Mode function
         window.saveWithPaymentMode = function(mode) {
@@ -6495,14 +6514,17 @@ function loadFarmerTransactions(fId) {
     
     allEntries.forEach(e => {
         const rate = e.rateSnapshot || e.ratePerL || 0;
-        const paymentDisplay = e.paymentMode === 'Cash' ? '💵 Cash' : e.paymentMode === 'UPI' ? '📱 UPI' : e.paymentMode === 'Account' ? '🏦 Account' : '📒 Credit';
+        // Cash entries are settled (milk + cash received = no balance update)
+        const isSettled = e.isSettled || e.paymentMode === 'Cash';
+        const paymentDisplay = isSettled ? '✅ Settled' : (e.paymentMode === 'Credit' ? '📒 Udhar' : e.paymentMode);
         transactions.push({
             date: new Date(e.createdAt),
-            type: e.paymentMode === 'Credit' ? 'credit' : 'payment',
+            type: isSettled ? 'settled' : (e.paymentMode === 'Credit' ? 'credit' : 'payment'),
             description: `${e.qty}L @ ${formatAmount(rate)}/L (Fat: ${e.fat}%)`,
             paymentMode: paymentDisplay,
             amount: Number(e.amount),
-            entryId: e.id
+            entryId: e.id,
+            isSettled: isSettled
         });
     });
     
@@ -6526,10 +6548,10 @@ function loadFarmerTransactions(fId) {
         transList.innerHTML = '<div style="padding: 40px; text-align: center; color: #94a3b8;">No transactions yet</div>';
     } else {
         transList.innerHTML = transactions.map((t, i) => `
-          <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e2e8f0; ${i === 0 ? 'background: #fef3c7;' : ''}" onclick="showAuditProof('${t.entryId}')">
+          <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e2e8f0; ${t.isSettled ? 'background: #f0fdf4; opacity: 0.7;' : (i === 0 ? 'background: #fef3c7;' : '')}" onclick="showAuditProof('${t.entryId}')">
             <div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                <span style="font-size: 16px;">${t.type === 'credit' ? '📒' : '💵'}</span>
+                <span style="font-size: 16px;">${t.type === 'credit' ? '📒' : t.isSettled ? '✅' : '💵'}</span>
                 <div style="font-weight: 700; font-size: 13px;">${t.description}</div>
               </div>
               <div style="font-size: 11px; color: #64748b;">
@@ -6537,7 +6559,7 @@ function loadFarmerTransactions(fId) {
               </div>
             </div>
             <div style="text-align: right;">
-              <div style="font-weight: 700; color: #dc2626; font-size: 14px;">-${formatAmount(t.amount)}</div>
+              <div style="font-weight: 700; color: ${t.isSettled ? '#16a34a' : '#dc2626'}; font-size: 14px;">${t.isSettled ? 'Settled' : '-'+formatAmount(t.amount)}</div>
               <div style="color: #64748b; font-size: 11px;">Bal: ${formatAmount(t.balance)}</div>
               ${i === 0 ? '<div style="color: #f59e0b; font-size: 10px; font-weight: 700;">⬅️ LATEST</div>' : ''}
             </div>
