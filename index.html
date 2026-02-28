@@ -1865,11 +1865,6 @@
           </div>
         </div>
         <div class="hdr-actions" style="flex: 1; justify-content: flex-end; display: flex; align-items: center; gap: 8px;">
-          <!-- Rate Pill -->
-          <div id="ratePill" onclick="openRateTable()" style="background: #e3f2fd; color: #1565c0; padding: 8px 12px; border-radius: 999px; font-weight: 700; cursor: pointer; border: 2px solid #bbdefb; font-size: 12px; display: flex; align-items: center; gap: 6px; margin-right: 3px;">
-            <span id="rateDisplay">Rate: ₹64.00</span>
-            <span style="font-size: 14px; opacity: 0.6;">📋</span>
-          </div>
           <!-- Switch to POS -->
           <button class="pillbtn primary" onclick="location.href='pos-demo.html'" style="background:#2563eb; border-color:#2563eb; font-size:14px; padding:10px 16px; font-weight:700; cursor: pointer; border: 2px solid #1e40af;">
             🛒 POS
@@ -2080,9 +2075,10 @@
         <!-- RIGHT -->
         <div class="panel">
           <div class="panelHeader">
-            <!-- Summary Info Row - ALL in ONE row: Calc | Cow/Buff | OLD | NEW -->
+            <!-- Summary Info Row - ALL in ONE row: Calc | Rate Btn | Cow/Buff | OLD | NEW -->
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; white-space: nowrap;">
               <div id="summaryCalcText" style="color: #64748b; font-weight: 800; font-size: 12px;">0.0L×₹0.00/L(F:0.0%)</div>
+              <button onclick="openRateTable()" style="padding: 4px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; white-space: nowrap;" title="View Rate List">Rate: ₹30.00 📋</button>
               <div style="display: flex; gap: 6px; color: #64748b; font-weight: 800; font-size: 12px;">
                 <span style="color: #16a34a;">🐄<span id="cowQtyInline">0.0</span></span>
                 <span style="color: #dc2626;">🐃<span id="buffQtyInline">0.0</span></span>

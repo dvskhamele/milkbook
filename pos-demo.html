@@ -608,6 +608,16 @@
           </div>
 
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+            <!-- Product Category Filters -->
+            <div style="grid-column: 1/-1; display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; padding: 8px; background: #f8fafc; border-radius: 8px;">
+              <button onclick="filterProductsByCategory('all')" class="category-btn" style="padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">📦 All</button>
+              <button onclick="filterProductsByCategory('milk')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🥛 Milk</button>
+              <button onclick="filterProductsByCategory('paneer')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🧀 Paneer</button>
+              <button onclick="filterProductsByCategory('ghee')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🧈 Ghee</button>
+              <button onclick="filterProductsByCategory('curd')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🥣 Curd</button>
+              <button onclick="filterProductsByCategory('sweets')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🍬 Sweets</button>
+              <button onclick="filterProductsByCategory('bakery')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🥐 Bakery</button>
+            </div>
             <!-- Products loaded dynamically from localStorage -->
             <!-- Add & Edit Buttons -->
             <div class="p-card" style="border: 2px dashed #3b82f6; background: #eff6ff; min-height: 100px !important;" onclick="event.stopPropagation(); openModal('addProductModal')" title="Create new products to your inventory">
@@ -715,11 +725,12 @@
                   <div id="creditDisplay" style="font-size: 11px; font-weight: 700; color: #166534; min-width: 70px; text-align: center;">सही!</div>
                 </div>
 
-                <!-- Row 3: Credit + Advance + Relations Buttons -->
-                <div style="display: flex; gap: 6px;">
-                  <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="flex: 1; padding: 8px; font-size: 11px; font-weight: 700;">📒 LIKH LO</button>
-                  <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 8px 12px; background:#fef3c7; border:2px solid #f59e0b; border-radius:6px; font-weight:700; color:#92400e; cursor:pointer; font-size: 10px; white-space: nowrap;">📒 Udhar</button>
-                  <button onclick="openCustomerRelation(activeCust)" id="btnCustomerRelation" style="padding: 8px 12px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border:2px solid #7c3aed; border-radius:6px; font-weight:700; color:#fff; cursor:pointer; font-size: 10px; white-space: nowrap;">🤝 Relations</button>
+                <!-- Row 3: Credit + Advance + Advance Order + Relations Buttons -->
+                <div style="display: flex; gap: 4px;">
+                  <button class="pay-btn credit" id="btnCredit" onclick="saveEntry('Credit')" style="flex: 1; padding: 6px; font-size: 10px; font-weight: 700;">📒 LIKH LO</button>
+                  <button onclick="toggleAdvance()" id="advanceToggleBtn" style="padding: 6px 8px; background:#fef3c7; border:2px solid #f59e0b; border-radius:6px; font-weight:700; color:#92400e; cursor:pointer; font-size: 9px; white-space: nowrap;">📒 Udhar</button>
+                  <button onclick="toggleAdvanceOrder()" id="advanceOrderBtn" style="padding: 6px 8px; background:#f5f3ff; border:2px solid #7c3aed; border-radius:6px; font-weight:700; color:#7c3aed; cursor:pointer; font-size: 9px; white-space: nowrap;">📅 Order</button>
+                  <button onclick="openCustomerRelation(activeCust)" id="btnCustomerRelation" style="padding: 6px 8px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border:2px solid #7c3aed; border-radius:6px; font-weight:700; color:#fff; cursor:pointer; font-size: 9px; white-space: nowrap;">🤝 Relations</button>
                 </div>
               </div>
               
@@ -6064,7 +6075,7 @@ function filterProducts(query) {
   const search = query.toLowerCase().trim();
   const grid = document.getElementById("productGrid");
   const cards = grid.querySelectorAll('.p-card');
-  
+
   let visibleCount = 0;
   let hasAddCard = grid.querySelector('.p-card.add-new-product');
 
@@ -6073,7 +6084,7 @@ function filterProducts(query) {
     if (card.classList.contains('add-new-product')) {
       return;
     }
-    
+
     const text = card.textContent.toLowerCase();
     if (search === '' || text.includes(search)) {
       card.style.display = 'flex';
@@ -6103,7 +6114,7 @@ function filterProducts(query) {
           el("newProdPrice").focus();
         }, 300);
       };
-      
+
       // Insert before the regular "Add" button
       const regularAddBtn = grid.querySelector('.p-card[onclick*="addProductModal"]');
       if (regularAddBtn) {
@@ -6116,6 +6127,52 @@ function filterProducts(query) {
   } else if (hasAddCard) {
     hasAddCard.style.display = 'none';
   }
+}
+
+// Filter products by category
+let currentCategory = 'all';
+function filterProductsByCategory(category) {
+  currentCategory = category;
+  const grid = document.getElementById("productGrid");
+  const cards = grid.querySelectorAll('.p-card:not(.add-new-product)');
+  const buttons = document.querySelectorAll('.category-btn');
+  
+  // Update button styles
+  buttons.forEach(btn => {
+    if (btn.onclick.toString().includes(`'${category}'`)) {
+      btn.style.background = '#3b82f6';
+      btn.style.color = 'white';
+    } else {
+      btn.style.background = 'white';
+      btn.style.color = '#475569';
+    }
+  });
+  
+  // Category keywords mapping
+  const categoryKeywords = {
+    'all': [],
+    'milk': ['milk', 'doodh', 'cow', 'buff', 'cream', 'lact'],
+    'paneer': ['paneer', 'cheese', 'chhena'],
+    'ghee': ['ghee', 'clarified butter', 'ghrit'],
+    'curd': ['curd', 'dahi', 'yogurt', 'lassi'],
+    'sweets': ['sweet', 'mithai', 'cake', 'barfi', 'ladoo', 'jalebi', 'rasgulla', 'peda', 'kalakand'],
+    'bakery': ['bakery', 'bread', 'bun', 'pav', 'toast', 'rusk', 'biscuit', 'cookie', 'khari']
+  };
+  
+  const keywords = categoryKeywords[category] || [];
+  
+  cards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    const name = card.getAttribute('data-name') || '';
+    
+    if (category === 'all' || keywords.some(kw => text.includes(kw) || name.toLowerCase().includes(kw))) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+  
+  showToast(`📦 Showing ${category === 'all' ? 'All Products' : category.charAt(0).toUpperCase() + category.slice(1)} category`);
 }
 
 // Close customer search dropdown
