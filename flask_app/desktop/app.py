@@ -146,6 +146,25 @@ def register_routes(app):
         sales = db_local.sale_get_all(limit=100)
         return jsonify({'sales': sales, 'success': True})
     
+    # API - Products
+    @app.route('/api/products', methods=['GET'])
+    def get_products():
+        # For now, return sample products
+        # In production, this would query a products table
+        sample_products = [
+            {'id': 'p1', 'name': 'Cow Milk', 'price': 64.0, 'category': 'milk', 'emoji': '🥛'},
+            {'id': 'p2', 'name': 'Buffalo Milk', 'price': 72.0, 'category': 'milk', 'emoji': '🥛'},
+            {'id': 'p3', 'name': 'Paneer', 'price': 400.0, 'category': 'paneer', 'emoji': '🧀'},
+            {'id': 'p4', 'name': 'Ghee', 'price': 600.0, 'category': 'ghee', 'emoji': '🧈'},
+            {'id': 'p5', 'name': 'Curd', 'price': 80.0, 'category': 'curd', 'emoji': '🥣'},
+            {'id': 'p6', 'name': 'Lassi', 'price': 60.0, 'category': 'curd', 'emoji': '🥣'},
+            {'id': 'p7', 'name': 'Barfi', 'price': 300.0, 'category': 'sweets', 'emoji': '🍬'},
+            {'id': 'p8', 'name': 'Jalebi', 'price': 200.0, 'category': 'sweets', 'emoji': '🍬'},
+            {'id': 'p9', 'name': 'Bread', 'price': 40.0, 'category': 'bakery', 'emoji': '🥐'},
+            {'id': 'p10', 'name': 'Biscuits', 'price': 30.0, 'category': 'bakery', 'emoji': '🥐'},
+        ]
+        return jsonify({'products': sample_products, 'success': True})
+    
     # API - Customers
     @app.route('/api/customers', methods=['GET'])
     def get_customers():

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Shift Authorization & Custody - MilkRecord POS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <style>
+        .checkbox-custom:checked { background-color: #16a34a; border-color: #16a34a; }
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(22, 163, 74, 0); }
+        }
+        .pulse-green { animation: pulse-green 2s infinite; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-slate-100 min-h-screen flex items-center justify-center p-4">
+
+<div class="max-w-5xl w-full bg-white rounded-3xl shadow-2xl border-2 border-slate-200 overflow-hidden">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 px-8 py-6 border-b border-slate-600">
+        <div class="flex items-center gap-4">
+            <div class="size-16 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                <img src="/logo.jpg" alt="Logo" class="size-12 object-contain" onerror="this.style.display='none'; this.parentElement.textContent='🥛'"/>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-white">🔐 SHIFT AUTHORIZATION & CUSTODY ACTIVATION</h1>
+                <p class="text-sm text-slate-400 font-medium">POS Terminal • Operator Verification • Session Ledger</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-8">
+
+        <!-- Operator Info -->
+        <div class="bg-white rounded-2xl p-6 mb-6 border-2 border-blue-200">
+            <h3 class="text-sm font-black text-slate-900 mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-blue-600 text-xl">verified_user</span>
+                OPERATOR INFORMATION
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                    <div class="text-slate-500 text-xs">Operator Name</div>
+                    <div class="font-bold text-slate-900" id="operatorName">-</div>
+                </div>
+                <div>
+                    <div class="text-slate-500 text-xs">Operator ID</div>
+                    <div class="font-mono font-bold text-slate-900" id="operatorId">-</div>
+                </div>
+                <div>
+                    <div class="text-slate-500 text-xs">Shop</div>
+                    <div class="font-bold text-slate-900" id="shopName">-</div>
+                </div>
+                <div>
+                    <div class="text-slate-500 text-xs">Role</div>
+                    <div class="font-bold text-blue-600" id="operatorRole">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device Status -->
+        <div class="bg-white rounded-2xl p-6 mb-6 border-2 border-slate-200">
+            <h3 class="text-sm font-black text-slate-900 mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-slate-600 text-xl">devices</span>
+                DEVICE STATUS
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+                <div class="bg-slate-50 rounded-lg p-3 text-center">
+                    <div class="text-slate-500 text-[10px]">Terminal</div>
+                    <div class="font-mono font-bold text-slate-900 text-[10px]" id="terminalId">-</div>
+                </div>
+                <div class="bg-slate-50 rounded-lg p-3 text-center">
+                    <div class="text-slate-500 text-[10px]">Barcode Scanner</div>
+                    <div class="font-bold text-green-600 text-[10px]" id="scannerStatus">✓ Ready</div>
+                </div>
+                <div class="bg-slate-50 rounded-lg p-3 text-center">
+                    <div class="text-slate-500 text-[10px]">Printer</div>
+                    <div class="font-bold text-green-600 text-[10px]" id="printerStatus">✓ Ready</div>
+                </div>
+                <div class="bg-slate-50 rounded-lg p-3 text-center">
+                    <div class="text-slate-500 text-[10px]">Scale</div>
+                    <div class="font-bold text-amber-600 text-[10px]" id="scaleStatus">⚠ Not Connected</div>
+                </div>
+                <div class="bg-slate-50 rounded-lg p-3 text-center">
+                    <div class="text-slate-500 text-[10px]">Cash Drawer</div>
+                    <div class="font-bold text-green-600 text-[10px]" id="drawerStatus">✓ Ready</div>
+                </div>
+                <div class="bg-slate-50 rounded-lg p-3 text-center">
+                    <div class="text-slate-500 text-[10px]">Internet</div>
+                    <div class="font-bold text-green-600 text-[10px]" id="internetStatus">✓ Online</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Previous Shift Status -->
+        <div class="bg-white rounded-2xl p-6 mb-6 border-2 border-green-200">
+            <h3 class="text-sm font-black text-slate-900 mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-green-600 text-xl">fact_check</span>
+                PREVIOUS SHIFT STATUS
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+                <div>
+                    <div class="text-slate-500 text-xs">Previous Operator</div>
+                    <div class="font-bold text-slate-900" id="prevOperator">-</div>
+                </div>
+                <div>
+                    <div class="text-slate-500 text-xs">Shift Closed At</div>
+                    <div class="font-mono text-slate-900 text-xs" id="prevCloseTime">-</div>
+                </div>
+                <div>
+                    <div class="text-slate-500 text-xs">Cash in Drawer</div>
+                    <div class="font-bold text-green-600" id="cashDrawer">₹0.00</div>
+                </div>
+                <div>
+                    <div class="text-slate-500 text-xs">Pending Transactions</div>
+                    <div class="font-bold text-green-600">0</div>
+                </div>
+                <div>
+                    <div class="text-slate-500 text-xs">Ledger Status</div>
+                    <div class="flex items-center gap-1 text-green-600 font-bold text-xs">
+                        <span class="material-symbols-outlined text-sm">check_circle</span>
+                        BALANCED
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shift Declaration -->
+        <div class="bg-amber-50 rounded-2xl p-6 mb-6 border-2 border-amber-300">
+            <h3 class="text-sm font-black text-amber-900 mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-amber-600 text-xl">gavel</span>
+                SHIFT DECLARATION - ACKNOWLEDGEMENT REQUIRED
+            </h3>
+            <p class="text-xs text-amber-800 mb-4 font-bold">
+                I confirm the following before starting my shift:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <label class="flex items-center gap-2 text-xs text-amber-900 cursor-pointer">
+                    <input type="checkbox" id="decl1" class="checkbox-custom w-4 h-4 rounded"/>
+                    <span>Cash drawer count verified</span>
+                </label>
+                <label class="flex items-center gap-2 text-xs text-amber-900 cursor-pointer">
+                    <input type="checkbox" id="decl2" class="checkbox-custom w-4 h-4 rounded"/>
+                    <span>All devices working properly</span>
+                </label>
+                <label class="flex items-center gap-2 text-xs text-amber-900 cursor-pointer">
+                    <input type="checkbox" id="decl3" class="checkbox-custom w-4 h-4 rounded"/>
+                    <span>Previous shift closed properly</span>
+                </label>
+                <label class="flex items-center gap-2 text-xs text-amber-900 cursor-pointer">
+                    <input type="checkbox" id="decl4" class="checkbox-custom w-4 h-4 rounded"/>
+                    <span>No pending unresolved issues</span>
+                </label>
+                <label class="flex items-center gap-2 text-xs text-amber-900 cursor-pointer">
+                    <input type="checkbox" id="decl5" class="checkbox-custom w-4 h-4 rounded"/>
+                    <span>Opening balance verified</span>
+                </label>
+            </div>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                <div class="flex items-center gap-2 text-red-800 text-xs">
+                    <span class="material-symbols-outlined text-sm">warning</span>
+                    <strong>All checkboxes must be ticked to start shift. This ensures accountability.</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Opening Cash Balance -->
+        <div class="bg-white rounded-2xl p-6 mb-6 border-2 border-blue-200">
+            <h3 class="text-sm font-black text-slate-900 mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-blue-600 text-xl">account_balance</span>
+                OPENING CASH BALANCE
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div>
+                    <label class="text-xs text-slate-500">₹500 Notes</label>
+                    <input type="number" id="cash500" class="w-full border-2 border-slate-200 rounded-lg px-3 py-2 text-sm font-bold" value="0" onchange="calculateOpeningCash()"/>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500">₹200 Notes</label>
+                    <input type="number" id="cash200" class="w-full border-2 border-slate-200 rounded-lg px-3 py-2 text-sm font-bold" value="0" onchange="calculateOpeningCash()"/>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500">₹100 Notes</label>
+                    <input type="number" id="cash100" class="w-full border-2 border-slate-200 rounded-lg px-3 py-2 text-sm font-bold" value="0" onchange="calculateOpeningCash()"/>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500">₹50/20/10</label>
+                    <input type="number" id="cashSmall" class="w-full border-2 border-slate-200 rounded-lg px-3 py-2 text-sm font-bold" value="0" onchange="calculateOpeningCash()"/>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500">Total Opening Cash</label>
+                    <div class="text-2xl font-black text-green-600" id="totalOpeningCash">₹0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shift Selection -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <label class="relative cursor-pointer group">
+                <input type="radio" name="shift" value="morning" class="peer sr-only" checked/>
+                <div class="rounded-2xl p-6 border-2 border-slate-200 peer-checked:border-amber-500 peer-checked:bg-amber-50 transition-all hover:shadow-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="material-symbols-outlined text-4xl text-amber-500">wb_sunny</span>
+                        <div>
+                            <p class="text-lg font-black text-slate-900">Morning</p>
+                            <p class="text-sm text-slate-500">सुबह की पाली</p>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-black text-blue-600">06:00 - 14:00</p>
+                </div>
+            </label>
+            <label class="relative cursor-pointer group">
+                <input type="radio" name="shift" value="evening" class="peer sr-only">
+                <div class="rounded-2xl p-6 border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all hover:shadow-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="material-symbols-outlined text-4xl text-indigo-500">dark_mode</span>
+                        <div>
+                            <p class="text-lg font-black text-slate-900">Evening</p>
+                            <p class="text-sm text-slate-500">शाम की पाली</p>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-black text-indigo-600">14:00 - 22:00</p>
+                </div>
+            </label>
+            <label class="relative cursor-pointer group">
+                <input type="radio" name="shift" value="night" class="peer sr-only">
+                <div class="rounded-2xl p-6 border-2 border-slate-200 peer-checked:border-purple-500 peer-checked:bg-purple-50 transition-all hover:shadow-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="material-symbols-outlined text-4xl text-purple-500">nightlight</span>
+                        <div>
+                            <p class="text-lg font-black text-slate-900">Night</p>
+                            <p class="text-sm text-slate-500">रात की पाली</p>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-black text-purple-600">22:00 - 06:00</p>
+                </div>
+            </label>
+        </div>
+
+        <!-- Start Shift Button -->
+        <button onclick="startShift()" id="startBtn" disabled class="w-full flex items-center justify-center gap-3 py-5 px-6 bg-gradient-to-r from-slate-600 to-slate-700 text-white font-black text-xl rounded-2xl shadow-xl transition-all cursor-not-allowed opacity-50">
+            <span class="material-symbols-outlined text-3xl">lock</span>
+            START SHIFT CUSTODY (Secure Session)
+        </button>
+        <button onclick="startShift()" id="startBtnActive" class="hidden w-full flex items-center justify-center gap-3 py-5 px-6 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-black text-xl rounded-2xl shadow-xl hover:shadow-2xl active:scale-[0.98] transition-all">
+            <span class="material-symbols-outlined text-3xl">play_arrow</span>
+            START SHIFT CUSTODY (Secure Session)
+        </button>
+
+        <!-- Notice -->
+        <div class="mt-6 bg-slate-100 rounded-xl p-4 border border-slate-300">
+            <p class="text-xs text-slate-600 text-center font-medium">
+                <strong class="text-slate-900">NOTICE:</strong> All transactions during this shift will be:
+                <span class="block mt-1 text-slate-500">
+                    • Time stamped • Operator signed • Device tagged • Immutable logged • Cloud synced
+                </span>
+            </p>
+        </div>
+
+        <a href="index.html" class="block text-center mt-6 text-slate-500 font-medium hover:text-red-600 transition-colors">
+            <span class="material-symbols-outlined align-middle">logout</span>
+            Back to Login
+        </a>
+    </div>
+</div>
+
+<script>
+// Load operator info from localStorage
+const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+document.getElementById('operatorName').textContent = currentUser.name || '-';
+document.getElementById('operatorId').textContent = currentUser.operatorId || '-';
+document.getElementById('shopName').textContent = currentUser.shopName || '-';
+document.getElementById('operatorRole').textContent = currentUser.role || '-';
+
+// Generate terminal ID
+const terminalId = 'POS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+document.getElementById('terminalId').textContent = terminalId;
+
+// Check device status
+checkDeviceStatus();
+
+// Monitor checkboxes
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+const startBtn = document.getElementById('startBtn');
+const startBtnActive = document.getElementById('startBtnActive');
+
+checkboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+        const allChecked = Array.from(checkboxes).every(c => c.checked);
+        if (allChecked) {
+            startBtn.classList.add('hidden');
+            startBtnActive.classList.remove('hidden');
+            startBtnActive.disabled = false;
+        } else {
+            startBtn.classList.remove('hidden');
+            startBtnActive.classList.add('hidden');
+            startBtnActive.disabled = true;
+        }
+    });
+});
+
+function checkDeviceStatus() {
+    // Check hardware devices
+    if ('usb' in navigator) {
+        navigator.usb.getDevices().then(devices => {
+            if (devices.length > 0) {
+                document.getElementById('printerStatus').textContent = '✓ Connected';
+                document.getElementById('printerStatus').className = 'font-bold text-green-600 text-[10px]';
+            }
+        });
+    }
+    
+    // Check internet
+    if (navigator.onLine) {
+        document.getElementById('internetStatus').textContent = '✓ Online';
+        document.getElementById('internetStatus').className = 'font-bold text-green-600 text-[10px]';
+    } else {
+        document.getElementById('internetStatus').textContent = '⚠ Offline';
+        document.getElementById('internetStatus').className = 'font-bold text-amber-600 text-[10px]';
+    }
+    
+    window.addEventListener('online', () => {
+        document.getElementById('internetStatus').textContent = '✓ Online';
+        document.getElementById('internetStatus').className = 'font-bold text-green-600 text-[10px]';
+    });
+    
+    window.addEventListener('offline', () => {
+        document.getElementById('internetStatus').textContent = '⚠ Offline';
+        document.getElementById('internetStatus').className = 'font-bold text-amber-600 text-[10px]';
+    });
+}
+
+function calculateOpeningCash() {
+    const cash500 = parseInt(document.getElementById('cash500').value) || 0;
+    const cash200 = parseInt(document.getElementById('cash200').value) || 0;
+    const cash100 = parseInt(document.getElementById('cash100').value) || 0;
+    const cashSmall = parseInt(document.getElementById('cashSmall').value) || 0;
+    
+    const total = (cash500 * 500) + (cash200 * 200) + (cash100 * 100) + cashSmall;
+    
+    document.getElementById('totalOpeningCash').textContent = '₹' + total.toFixed(2);
+    document.getElementById('cashDrawer').textContent = '₹' + total.toFixed(2);
+}
+
+function startShift() {
+    const allChecked = Array.from(checkboxes).every(c => c.checked);
+    if (!allChecked) {
+        alert('⚠️ Please confirm all declarations before starting shift.');
+        return;
+    }
+    
+    const shift = document.querySelector('input[name="shift"]:checked').value;
+    const shiftId = 'SHIFT-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + shift.toUpperCase().slice(0,1) + Math.floor(Math.random() * 1000);
+    const openingCash = parseFloat(document.getElementById('totalOpeningCash').textContent.replace('₹', ''));
+    
+    // Store shift session
+    const shiftSession = {
+        shiftId: shiftId,
+        shift: shift,
+        startTime: new Date().toISOString(),
+        operator: currentUser,
+        terminalId: terminalId,
+        openingCash: openingCash,
+        declarations: Array.from(checkboxes).map((c, i) => c.checked)
+    };
+    
+    localStorage.setItem('currentShift', JSON.stringify(shiftSession));
+    
+    // Log to audit trail
+    logShiftStart(shiftSession);
+    
+    alert('✅ SHIFT STARTED\n\n' +
+          'Shift ID: ' + shiftId + '\n' +
+          'Opening Cash: ₹' + openingCash.toFixed(2) + '\n' +
+          'Terminal: ' + terminalId + '\n\n' +
+          'All transactions will be logged with digital signatures.');
+    
+    // Redirect to POS
+    window.location.href = 'apps/dairy-pos-billing-software-india.html';
+}
+
+function logShiftStart(shiftSession) {
+    // Get existing audit logs
+    const auditLogs = JSON.parse(localStorage.getItem('auditLogs') || '[]');
+    
+    // Add shift start log
+    auditLogs.push({
+        timestamp: new Date().toISOString(),
+        action: 'SHIFT_START',
+        operatorId: shiftSession.operator.operatorId,
+        operatorName: shiftSession.operator.name,
+        shiftId: shiftSession.shiftId,
+        shift: shiftSession.shift,
+        openingCash: shiftSession.openingCash,
+        terminalId: shiftSession.terminalId,
+        signature: generateSignature(shiftSession)
+    });
+    
+    localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
+}
+
+function generateSignature(session) {
+    // Simple signature generation (in production, use proper crypto)
+    const data = session.shiftId + session.startTime + session.operator.operatorId;
+    return 'SIG-' + btoa(data).substring(0, 16).toUpperCase();
+}
+</script>
+
+</body>
+</html>

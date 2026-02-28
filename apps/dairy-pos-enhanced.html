@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🥛 MilkRecord POS - Enhanced with Hardware & Audit</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --bg: #f4f7fb;
+            --panel: #ffffff;
+            --text: #0f172a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .shop-info h1 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+        .shop-info p {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        /* Main Layout */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 16px;
+            height: calc(100vh - 80px);
+        }
+        
+        /* Panels */
+        .panel {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .panel-header {
+            padding: 16px;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 800;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            padding: 16px;
+            overflow-y: auto;
+            max-height: calc(100vh - 300px);
+        }
+        .product-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+        }
+        .product-card.selected {
+            border-color: var(--primary);
+            background: #eff6ff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .product-emoji {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+        .product-name {
+            font-size: 11px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        .product-price {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--success);
+            background: #f0fdf4;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 2px solid #86efac;
+        }
+        
+        /* Cart */
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .cart-table th {
+            text-align: left;
+            padding: 12px;
+            background: #f8fafc;
+            font-size: 12px;
+            font-weight: 700;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .cart-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .cart-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        /* Payment Section */
+        .payment-section {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-top: 4px solid var(--success);
+            padding: 16px 24px;
+            box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
+            border-radius: 16px 16px 0 0;
+            width: min(900px, 95vw);
+            z-index: 100;
+        }
+        .payment-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 16px;
+            align-items: center;
+        }
+        .total-display {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 4px solid var(--success);
+            border-radius: 12px;
+            padding: 16px 24px;
+            text-align: center;
+            min-width: 280px;
+        }
+        .total-label {
+            font-size: 13px;
+            color: #166534;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .total-amount {
+            font-size: 48px;
+            color: var(--success);
+            font-weight: 900;
+            line-height: 1.1;
+        }
+        .payment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .payment-inputs {
+            display: flex;
+            gap: 8px;
+        }
+        .payment-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .payment-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .pay-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        /* Search */
+        .search-box {
+            position: relative;
+            flex: 1;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+        }
+        
+        /* Status Bar */
+        .status-bar {
+            background: #f8fafc;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .device-status {
+            display: flex;
+            gap: 12px;
+        }
+        .device-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .device-indicator.active {
+            color: var(--success);
+        }
+        .device-indicator.inactive {
+            color: var(--danger);
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-footer {
+            padding: 20px;
+            border-top: 2px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0f172a;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .payment-section {
+                width: 100%;
+                border-radius: 12px 12px 0 0;
+            }
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+            .total-display {
+                min-width: 100%;
+            }
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Status Bar -->
+<div class="status-bar">
+    <div>
+        <span id="currentShift">-</span> | 
+        <span id="currentOperator">-</span> | 
+        <span id="currentTime">--:--:--</span>
+    </div>
+    <div class="device-status">
+        <div class="device-indicator active" id="scannerStatus" title="Barcode Scanner">
+            <span>📷</span> <span>Scanner</span>
+        </div>
+        <div class="device-indicator active" id="printerStatus" title="Printer">
+            <span>🖨️</span> <span>Printer</span>
+        </div>
+        <div class="device-indicator inactive" id="scaleStatus" title="Scale">
+            <span>⚖️</span> <span>Scale</span>
+        </div>
+        <div class="device-indicator active" id="internetStatus" title="Internet">
+            <span>🌐</span> <span>Online</span>
+        </div>
+    </div>
+</div>
+
+<!-- Header -->
+<div class="header">
+    <div class="brand">
+        <div class="logo">🥛</div>
+        <div class="shop-info">
+            <h1 id="shopNameDisplay">Gopal Dairy</h1>
+            <p>MilkRecord POS • Hardware Enabled</p>
+        </div>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-primary" onclick="openCustomerLedger()">
+            📒 Customer Ledger
+        </button>
+        <button class="btn btn-primary" onclick="openRateList()">
+            📋 Rate List
+        </button>
+        <button class="btn btn-success" onclick="openCollection()">
+            📊 Collection
+        </button>
+        <button class="btn btn-warning" onclick="endShift()">
+            🔄 End Shift
+        </button>
+        <button class="btn btn-danger" onclick="logout()">
+            🚪 Logout
+        </button>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="main-container">
+    <!-- Left Panel: Products -->
+    <div class="panel">
+        <div class="panel-header">
+            <span>📦 Products</span>
+            <div style="display: flex; gap: 8px;">
+                <div class="search-box" style="max-width: 200px;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="productSearch" placeholder="Search products..." oninput="filterProducts()">
+                </div>
+                <button class="btn btn-primary" onclick="openAddProduct()">➕ Add</button>
+                <button class="btn btn-warning" onclick="openEditProducts()">✏️ Edit</button>
+            </div>
+        </div>
+        <div class="panel-body" style="padding: 0;">
+            <div class="product-grid" id="productGrid">
+                <!-- Products loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel: Cart & Customer -->
+    <div class="panel">
+        <div class="panel-header">
+            <span>🛒 Current Sale</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <div class="search-box" style="max-width: 250px;">
+                    <span class="search-icon">👤</span>
+                    <input type="text" class="search-input" id="customerSearch" placeholder="Search customer..." oninput="searchCustomer()">
+                </div>
+                <button class="btn btn-success" onclick="addCustomer()">➕ Add</button>
+            </div>
+        </div>
+        <div class="panel-body" style="display: flex; flex-direction: column;">
+            <div style="padding: 12px; background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">Selected Customer</div>
+                <div style="font-size: 16px; font-weight: 800; color: #1e293b;" id="selectedCustomer">Walking Customer</div>
+                <div style="font-size: 12px; color: #64748b;" id="customerBalance">Balance: ₹0.00</div>
+            </div>
+            <div style="flex: 1; overflow-y: auto;">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartItems">
+                        <!-- Cart items loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Section -->
+<div class="payment-section">
+    <div class="payment-grid">
+        <div class="total-display">
+            <div class="total-label">Net Payable</div>
+            <div class="total-amount" id="totalAmount">₹0.00</div>
+        </div>
+        <div class="payment-form">
+            <div class="payment-inputs">
+                <input type="number" class="payment-input" id="paymentAmount" placeholder="Amount Received (₹)" oninput="calculateChange()">
+                <input type="number" class="payment-input" id="roundupInput" placeholder="Round" style="width: 80px;" oninput="applyRoundup()">
+            </div>
+            <div style="display: flex; justify-content: center; gap: 12px; font-size: 13px; font-weight: 700; color: #166534;" id="changeDisplay">
+                सही राशि!
+            </div>
+            <div class="payment-buttons">
+                <button class="pay-btn" style="background: #dcfce7; color: #166534;" onclick="completeSale('CASH')">💵 CASH</button>
+                <button class="pay-btn" style="background: #eff6ff; color: #1e40af;" onclick="completeSale('UPI')">📱 UPI</button>
+                <button class="pay-btn" style="background: #fef3c7; color: #92400e;" onclick="completeSale('CARD')">💳 CARD</button>
+                <button class="pay-btn" style="background: #f3e8ff; color: #6b21a8;" onclick="completeSale('CREDIT')">📒 CREDIT</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Modals -->
+<div class="modal-overlay" id="customerLedgerModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">📒 Customer Ledger</div>
+            <button class="modal-close" onclick="closeModal('customerLedgerModal')">×</button>
+        </div>
+        <div class="modal-body" id="customerLedgerContent">
+            <!-- Customer ledger content -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="exportLedger()">📊 Export</button>
+            <button class="btn btn-secondary" onclick="closeModal('customerLedgerModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="addProductModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">📦 Add New Product</div>
+            <button class="modal-close" onclick="closeModal('addProductModal')">×</button>
+        </div>
+        <div class="modal-body">
+            <div style="display: grid; gap: 16px;">
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px;">Product Name</label>
+                    <input type="text" id="newProductName" class="payment-input" placeholder="e.g., Amul Milk 500ml">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px;">Price (₹)</label>
+                    <input type="number" id="newProductPrice" class="payment-input" placeholder="e.g., 60">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px;">Category</label>
+                    <select id="newProductCategory" class="payment-input">
+                        <option value="milk">🥛 Milk</option>
+                        <option value="paneer">🧀 Paneer</option>
+                        <option value="ghee">🧈 Ghee</option>
+                        <option value="curd">🥣 Curd</option>
+                        <option value="sweets">🍬 Sweets</option>
+                        <option value="bakery">🥐 Bakery</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px;">Barcode (Optional)</label>
+                    <input type="text" id="newProductBarcode" class="payment-input" placeholder="Scan or enter barcode">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('addProductModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveProduct()">✅ Create Product</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="../hardware/hardware-integration.js"></script>
+<script src="../compliance/audit-trail.js"></script>
+<script>
+// Global state
+let cart = [];
+let products = [];
+let customers = [];
+let currentCustomer = null;
+let hardware = null;
+let totalAmount = 0;
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    // Load data
+    loadProducts();
+    loadCustomers();
+    loadShift();
+    
+    // Initialize hardware
+    hardware = new HardwareIntegration();
+    
+    // Update time
+    setInterval(updateTime, 1000);
+    updateTime();
+    
+    // Check devices
+    checkDeviceStatus();
+    
+    console.log('✅ MilkRecord POS Enhanced - Ready');
+});
+
+// Load products from localStorage
+function loadProducts() {
+    products = JSON.parse(localStorage.getItem('products') || '[]');
+    
+    // Default products if none exist
+    if (products.length === 0) {
+        products = [
+            {id: 1, name: 'Amul Milk 500ml', price: 30, category: 'milk', emoji: '🥛', barcode: '8901234567890'},
+            {id: 2, name: 'Paneer 200g', price: 100, category: 'paneer', emoji: '🧀', barcode: '8901234567891'},
+            {id: 3, name: 'Ghee 500ml', price: 324, category: 'ghee', emoji: '🧈', barcode: '8901234567892'},
+            {id: 4, name: 'Curd 500g', price: 60, category: 'curd', emoji: '🥣', barcode: '8901234567893'},
+            {id: 5, name: 'Lassi', price: 40, category: 'sweets', emoji: '🍬', barcode: '8901234567894'},
+            {id: 6, name: 'Bread', price: 30, category: 'bakery', emoji: '🥐', barcode: '8901234567895'}
+        ];
+        localStorage.setItem('products', JSON.stringify(products));
+    }
+    
+    renderProducts();
+}
+
+// Render products
+function renderProducts(filter = '') {
+    const grid = document.getElementById('productGrid');
+    const filtered = filter ? products.filter(p => 
+        p.name.toLowerCase().includes(filter.toLowerCase()) ||
+        p.category.toLowerCase().includes(filter.toLowerCase())
+    ) : products;
+    
+    grid.innerHTML = filtered.map(p => `
+        <div class="product-card" onclick="addToCart(${p.id})">
+            <div class="product-emoji">${p.emoji || '📦'}</div>
+            <div class="product-name">${p.name}</div>
+            <div class="product-price">₹${p.price.toFixed(2)}</div>
+        </div>
+    `).join('');
+}
+
+// Filter products
+function filterProducts() {
+    const query = document.getElementById('productSearch').value;
+    renderProducts(query);
+}
+
+// Add to cart
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    const existing = cart.find(item => item.id === productId);
+    if (existing) {
+        existing.qty++;
+    } else {
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            qty: 1,
+            emoji: product.emoji
+        });
+    }
+    
+    renderCart();
+    playBeep();
+    showToast(`✅ ${product.name} added`);
+}
+
+// Render cart
+function renderCart() {
+    const tbody = document.getElementById('cartItems');
+    
+    if (cart.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">Cart is empty</td></tr>';
+        totalAmount = 0;
+    } else {
+        tbody.innerHTML = cart.map((item, index) => `
+            <tr>
+                <td>${item.emoji || '📦'} ${item.name}</td>
+                <td>
+                    <input type="number" value="${item.qty}" min="1" 
+                           style="width: 60px; padding: 4px; border: 2px solid #e2e8f0; border-radius: 4px;"
+                           onchange="updateQty(${index}, this.value)">
+                </td>
+                <td>₹${item.price.toFixed(2)}</td>
+                <td>₹${(item.price * item.qty).toFixed(2)}</td>
+                <td>
+                    <button onclick="removeFromCart(${index})" 
+                            style="background: #fecaca; color: #7f1d1d; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: 700;">
+                        🗑️
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    document.getElementById('totalAmount').textContent = '₹' + totalAmount.toFixed(2);
+}
+
+// Update quantity
+function updateQty(index, qty) {
+    cart[index].qty = parseInt(qty) || 1;
+    renderCart();
+}
+
+// Remove from cart
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    renderCart();
+}
+
+// Complete sale
+function completeSale(paymentMode) {
+    if (cart.length === 0) {
+        showToast('❌ Cart is empty!');
+        return;
+    }
+    
+    const amountPaid = parseFloat(document.getElementById('paymentAmount').value) || totalAmount;
+    const change = amountPaid - totalAmount;
+    
+    if (paymentMode === 'CASH' && change < 0) {
+        showToast('❌ Insufficient amount!');
+        return;
+    }
+    
+    // Generate invoice number
+    const invoiceNumber = 'INV-' + Date.now();
+    
+    // Create invoice data
+    const invoiceData = {
+        invoiceNumber: invoiceNumber,
+        date: new Date().toLocaleString(),
+        customerName: currentCustomer?.name || 'Walking Customer',
+        items: [...cart],
+        total: totalAmount,
+        paymentMode: paymentMode,
+        amountPaid: amountPaid,
+        change: change
+    };
+    
+    // Save to localStorage
+    const invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+    invoices.push(invoiceData);
+    localStorage.setItem('invoices', JSON.stringify(invoices));
+    
+    // Print receipt
+    if (hardware && hardware.devices.printer?.connected) {
+        hardware.printReceipt({
+            shopName: document.getElementById('shopNameDisplay').textContent,
+            ...invoiceData
+        });
+    }
+    
+    // Log to audit trail
+    AuditTrail.sale(invoiceData);
+    
+    // Show success
+    showToast(`✅ Sale Complete! ${paymentMode} ₹${totalAmount.toFixed(2)}`);
+    
+    // Clear cart
+    cart = [];
+    renderCart();
+    document.getElementById('paymentAmount').value = '';
+}
+
+// Search customer
+function searchCustomer() {
+    const query = document.getElementById('customerSearch').value;
+    // Implement customer search
+}
+
+// Load customers
+function loadCustomers() {
+    customers = JSON.parse(localStorage.getItem('customers') || '[]');
+}
+
+// Load shift
+function loadShift() {
+    const shift = JSON.parse(localStorage.getItem('currentShift') || 'null');
+    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    
+    if (shift) {
+        document.getElementById('currentShift').textContent = `Shift: ${shift.shiftId}`;
+    }
+    if (user) {
+        document.getElementById('currentOperator').textContent = `Operator: ${user.name}`;
+        document.getElementById('shopNameDisplay').textContent = user.shopName || 'Gopal Dairy';
+    }
+}
+
+// Update time
+function updateTime() {
+    const now = new Date();
+    document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+}
+
+// Check device status
+function checkDeviceStatus() {
+    // Update device indicators
+    const status = hardware?.getStatus() || {};
+    
+    updateDeviceIndicator('scannerStatus', status.barcodeScanner);
+    updateDeviceIndicator('printerStatus', status.printer);
+    updateDeviceIndicator('scaleStatus', status.scale);
+    updateDeviceIndicator('internetStatus', navigator.onLine);
+}
+
+function updateDeviceIndicator(elementId, isActive) {
+    const el = document.getElementById(elementId);
+    if (isActive) {
+        el.classList.add('active');
+        el.classList.remove('inactive');
+    } else {
+        el.classList.add('inactive');
+        el.classList.remove('active');
+    }
+}
+
+// Play beep
+function playBeep() {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 1000;
+    gainNode.gain.value = 0.1;
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.1);
+}
+
+// Show toast
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2000);
+}
+
+// Modal functions
+function openCustomerLedger() {
+    document.getElementById('customerLedgerModal').classList.add('active');
+}
+
+function openRateList() {
+    window.open('products-conversion.html', '_blank');
+}
+
+function openCollection() {
+    window.open('collection.html', '_blank');
+}
+
+function openAddProduct() {
+    document.getElementById('addProductModal').classList.add('active');
+}
+
+function openEditProducts() {
+    window.open('products-conversion.html', '_blank');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+function saveProduct() {
+    const name = document.getElementById('newProductName').value;
+    const price = parseFloat(document.getElementById('newProductPrice').value);
+    const category = document.getElementById('newProductCategory').value;
+    const barcode = document.getElementById('newProductBarcode').value;
+    
+    if (!name || !price) {
+        showToast('❌ Name and price required!');
+        return;
+    }
+    
+    const product = {
+        id: Date.now(),
+        name: name,
+        price: price,
+        category: category,
+        barcode: barcode,
+        emoji: getEmojiForCategory(category)
+    };
+    
+    products.push(product);
+    localStorage.setItem('products', JSON.stringify(products));
+    
+    // Log to audit
+    AuditTrail.productCreate(product);
+    
+    renderProducts();
+    closeModal('addProductModal');
+    showToast('✅ Product created!');
+    
+    // Clear form
+    document.getElementById('newProductName').value = '';
+    document.getElementById('newProductPrice').value = '';
+    document.getElementById('newProductBarcode').value = '';
+}
+
+function getEmojiForCategory(category) {
+    const emojis = {
+        milk: '🥛',
+        paneer: '🧀',
+        ghee: '🧈',
+        curd: '🥣',
+        sweets: '🍬',
+        bakery: '🥐'
+    };
+    return emojis[category] || '📦';
+}
+
+function endShift() {
+    if (confirm('End current shift?')) {
+        // Calculate shift summary
+        const invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+        const today = new Date().toDateString();
+        const todaySales = invoices.filter(inv => new Date(inv.date).toDateString() === today);
+        const totalSales = todaySales.reduce((sum, inv) => sum + inv.total, 0);
+        
+        // Log shift end
+        const shift = JSON.parse(localStorage.getItem('currentShift') || '{}');
+        AuditTrail.shiftEnd({
+            shiftId: shift.shiftId,
+            shift: shift.shift,
+            closingCash: totalSales,
+            salesCount: todaySales.length,
+            totalSales: totalSales,
+            variance: 0
+        });
+        
+        // Clear shift
+        localStorage.removeItem('currentShift');
+        
+        showToast('✅ Shift ended!');
+        setTimeout(() => {
+            window.location.href = 'auth/shift-authorization.html';
+        }, 1000);
+    }
+}
+
+function logout() {
+    if (confirm('Logout from POS?')) {
+        AuditTrail.logout(JSON.parse(localStorage.getItem('currentUser') || '{}'));
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentShift');
+        window.location.href = '../index.html';
+    }
+}
+
+function calculateChange() {
+    const amountPaid = parseFloat(document.getElementById('paymentAmount').value) || 0;
+    const change = amountPaid - totalAmount;
+    const display = document.getElementById('changeDisplay');
+    
+    if (change < 0) {
+        display.textContent = `⚠️ Short by ₹${Math.abs(change).toFixed(2)}`;
+        display.style.color = '#dc2626';
+    } else if (change > 0) {
+        display.textContent = `Return: ₹${change.toFixed(2)}`;
+        display.style.color = '#166534';
+    } else {
+        display.textContent = 'सही राशि!';
+        display.style.color = '#166534';
+    }
+}
+
+function applyRoundup() {
+    const roundup = parseInt(document.getElementById('roundupInput').value) || 0;
+    const roundedTotal = Math.ceil(totalAmount / roundup) * roundup;
+    document.getElementById('totalAmount').textContent = '₹' + roundedTotal.toFixed(2);
+}
+
+// Online/Offline status
+window.addEventListener('online', checkDeviceStatus);
+window.addEventListener('offline', checkDeviceStatus);
+</script>
+
+</body>
+</html>
