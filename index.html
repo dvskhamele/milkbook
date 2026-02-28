@@ -1582,7 +1582,35 @@
         </div>
       </div>
     </div>
-    
+
+    <!-- UPI Payment Section (Prominent Display) -->
+    <div style="padding: 16px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-bottom: 2px solid #3b82f6; flex-shrink: 0;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="font-size: 14px; font-weight: 800; color: #1e40af;">📱 UPI Payment Details</div>
+        <button onclick="copyFarmerUPI()" style="padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px;" title="Copy UPI ID">📋 Copy UPI</button>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+        <div style="background: white; padding: 12px; border-radius: 8px; border: 2px solid #3b82f6;">
+          <div style="font-size: 10px; color: #64748b; font-weight: 700; margin-bottom: 4px;">📱 UPI ID</div>
+          <div style="font-size: 16px; font-weight: 900; color: #1e40af;" id="detailUPI">—</div>
+          <div style="font-size: 9px; color: #64748b; margin-top: 4px;">Scan QR or use UPI app</div>
+        </div>
+        <div style="background: white; padding: 12px; border-radius: 8px; border: 2px solid #3b82f6;">
+          <div style="font-size: 10px; color: #64748b; font-weight: 700; margin-bottom: 4px;">🏦 Bank Details</div>
+          <div style="font-size: 12px; font-weight: 700; color: #1e40af;" id="detailBank">—</div>
+          <div style="font-size: 10px; color: #64748b;" id="detailAccountInfo">—</div>
+        </div>
+      </div>
+      <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; border: 2px dashed #3b82f6;">
+        <div style="font-size: 11px; color: #1e40af; font-weight: 700; margin-bottom: 8px;">💰 Quick UPI Payment</div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <input type="number" id="upiPaymentAmount" placeholder="Amount (₹)" style="flex: 1; padding: 10px; border: 2px solid #3b82f6; border-radius: 6px; font-weight: 700; font-size: 14px;" />
+          <button onclick="recordUPIPayment()" style="padding: 10px 20px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px;">✅ Record UPI Payment</button>
+        </div>
+        <div style="font-size: 9px; color: #64748b; margin-top: 4px;">Pay any amount from outstanding balance via UPI</div>
+      </div>
+    </div>
+
     <!-- Tabs -->
     <div style="display: flex; border-bottom: 2px solid #e2e8f0; flex-shrink: 0;">
       <button onclick="showDetailTab('transactions')" id="tabTransactions" style="flex: 1; padding: 12px; background: #f1f5f9; border: none; border-bottom: 3px solid #3b82f6; font-weight: 700; font-size: 13px; cursor: pointer; color: #1e293b;">📋 Transactions</button>
@@ -2118,18 +2146,10 @@
           🟡 HOLD <span class="subnote">pause</span>
         </button>
         
-        <!-- Payment Mode Selection -->
-        <div style="display: flex; gap: 4px; flex: 1;">
-          <button class="panicBtn save" id="btnSaveCash" style="background: linear-gradient(135deg, #16a34a, #059669); flex: 1;" onclick="saveWithPaymentMode('Cash')">
-            💵 CASH
-          </button>
-          <button class="panicBtn save" id="btnSaveUPI" style="background: linear-gradient(135deg, #3b82f6, #2563eb); flex: 1;" onclick="saveWithPaymentMode('UPI')">
-            📱 UPI
-          </button>
-          <button class="panicBtn save" id="btnSaveAccount" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); flex: 1;" onclick="saveWithPaymentMode('Account')">
-            🏦 ACCOUNT
-          </button>
-        </div>
+        <!-- Payment Mode: CASH ONLY (UPI via farmer double-click) -->
+        <button class="panicBtn save" id="btnSaveCash" style="background: linear-gradient(135deg, #16a34a, #059669); flex: 1;" onclick="saveWithPaymentMode('Cash')">
+          💵 CASH
+        </button>
         
         <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff; min-width: 120px;">
           📒 LIKHLO <span class="subnote">udhari</span>
@@ -4842,6 +4862,17 @@ function saveEntryAsCredit() {
         return;
     }
 
+    // Check if farmer has advance to cut from
+    const hasAdvance = farmer.advance && farmer.advance > 0;
+    
+    // Show choice dialog
+    let choice = 'credit'; // Default to credit
+    
+    if (hasAdvance) {
+        const userChoice = confirm(`📒 LIKH LO - Choose Option:\n\n✅ OK = Add as Udhar/Credit (Balance: ${formatAmount(farmer.balance || 0)} → ${formatAmount((farmer.balance || 0) + getAmount())})\n\n❌ Cancel = Cut from Advance (Advance: ${formatAmount(farmer.advance)} → ${formatAmount(farmer.advance - getAmount())})\n\nFarmer has ${formatAmount(farmer.advance)} advance. Click OK for Udhar or Cancel to cut from advance.`);
+        choice = userChoice ? 'credit' : 'cut_advance';
+    }
+
     const before = farmerBalanceBefore(farmer);
     const ratePerL = getRatePerLiter();
     const amount = getAmount();
@@ -4853,12 +4884,12 @@ function saveEntryAsCredit() {
         qty: round2(qty),
         fat: round2(fat),
         snf: round2(snf),
-        paymentMode: 'Credit', // Always credit for Likh Lo
+        paymentMode: choice === 'credit' ? 'Credit' : 'Cash',
 
         // 🎯 SNAPSHOT LOGIC: Rate ko value ki tarah chipka do
         rateSnapshot: round2(ratePerL),
         amount: round2(amount),
-        creditAmount: round2(amount), // Full amount is credit
+        creditAmount: choice === 'credit' ? round2(amount) : 0,
 
         // Audit Metadata
         rateMode: rateMode,
@@ -4869,8 +4900,24 @@ function saveEntryAsCredit() {
         deviceId: navigator.userAgent.slice(0, 40)
     };
 
-    // Update farmer balance
-    farmer.balance = round2(before + amount);
+    // Update farmer balance based on choice
+    if (choice === 'credit') {
+        // Add to balance as udhar
+        farmer.balance = round2(before + amount);
+    } else if (choice === 'cut_advance') {
+        // Cut from advance
+        if (farmer.advance >= amount) {
+            farmer.advance = round2(farmer.advance - amount);
+            // Also reduce balance if positive
+            if (farmer.balance > 0) {
+                farmer.balance = round2(Math.max(0, farmer.balance - amount));
+            }
+        } else {
+            showToast("⚠️ Not enough advance!");
+            return;
+        }
+    }
+    
     saveFarmers(farmers);
 
     entries.push(entry);
@@ -4885,9 +4932,9 @@ function saveEntryAsCredit() {
         customer: farmer.name,
         products: `${entry.qty}L Milk (Fat: ${entry.fat}%)`,
         amount: entry.amount.toString(),
-        paidAmount: '0.00',
-        creditAmount: entry.creditAmount.toString(),
-        method: 'Credit',
+        paidAmount: choice === 'cut_advance' ? entry.amount.toString() : '0.00',
+        creditAmount: choice === 'credit' ? entry.creditAmount.toString() : '0.00',
+        method: choice === 'credit' ? 'Credit' : 'Cash (Advance Cut)',
         cartItems: [{name: 'Milk', qty: entry.qty, rate: entry.rateSnapshot}],
         createdAt: entry.createdAt
     };
@@ -4923,7 +4970,11 @@ function saveEntryAsCredit() {
     // Print bill/receipt after save
     printCollectionBill(entry);
 
-    showToast(`Entry Saved: ${formatAmount(amount)} (उधार/Credit) 📒`);
+    if (choice === 'credit') {
+        showToast(`Entry Saved: ${formatAmount(amount)} (उधार/Credit) 📒`);
+    } else {
+        showToast(`Entry Saved: ${formatAmount(amount)} (Cut from Advance) ✅`);
+    }
 }
 
 // Print collection bill/receipt - NON-BLOCKING for uninterrupted workflow
@@ -6268,6 +6319,17 @@ function openFarmerDetail(fId) {
     el("detailBalance").textContent = formatAmount(f.balance || 0);
     el("detailAdvance").textContent = formatAmount(f.advance || 0);
     
+    // UPI Payment Details
+    if (el("detailUPI")) el("detailUPI").textContent = f.upi || 'Not set (Edit to add)';
+    if (el("detailBank")) el("detailBank").textContent = f.bankName || '—';
+    if (el("detailAccountInfo")) {
+        const accountInfo = [];
+        if (f.accountNo) accountInfo.push(`A/c: ${f.accountNo}`);
+        if (f.ifsc) accountInfo.push(`IFSC: ${f.ifsc}`);
+        if (f.accountName) accountInfo.push(f.accountName);
+        el("detailAccountInfo").textContent = accountInfo.join(' • ') || '—';
+    }
+    
     // Monthly milk
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -6627,6 +6689,70 @@ function sendFarmerWhatsAppSummary() {
     
     const wpUrl = `https://wa.me/91${f.phone}?text=${encodeURIComponent(msg)}`;
     window.open(wpUrl, '_blank');
+}
+
+// Copy farmer UPI ID
+function copyFarmerUPI() {
+    const f = getFarmerById(selectedFarmerId);
+    if (!f || !f.upi) {
+        showToast('⚠️ UPI ID not set! Edit farmer to add.');
+        return;
+    }
+    
+    navigator.clipboard.writeText(f.upi).then(() => {
+        showToast('📋 UPI ID copied!');
+    }).catch(() => {
+        showToast('⚠️ Copy failed');
+    });
+}
+
+// Record UPI payment
+function recordUPIPayment() {
+    const f = getFarmerById(selectedFarmerId);
+    const amountInput = document.getElementById('upiPaymentAmount');
+    const amount = parseFloat(amountInput.value);
+    
+    if (!f) {
+        showToast('⚠️ No farmer selected');
+        return;
+    }
+    
+    if (!amount || amount <= 0) {
+        showToast('⚠️ Enter valid amount');
+        return;
+    }
+    
+    if (f.balance < amount) {
+        showToast('⚠️ Amount exceeds balance!');
+        return;
+    }
+    
+    // Reduce balance
+    f.balance = round2(f.balance - amount);
+    saveFarmers(farmers);
+    
+    // Record in history
+    const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+    history.push({
+        id: 'upi_' + Date.now(),
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+        customer: f.name,
+        products: 'UPI Payment',
+        amount: amount.toString(),
+        paidAmount: amount.toString(),
+        creditAmount: '0.00',
+        method: 'UPI',
+        cartItems: [],
+        createdAt: Date.now()
+    });
+    localStorage.setItem('mr_sales_history', JSON.stringify(history));
+    
+    amountInput.value = '';
+    showToast(`✅ UPI Payment ${formatAmount(amount)} recorded!`);
+    
+    // Refresh modal
+    openFarmerDetail(selectedFarmerId);
 }
 
 // Print farmer statement
