@@ -1,5 +1,5 @@
 # MilkRecord Flask Application
-# Compatible with Vercel + Windows EXE
+# Core dependencies for both Desktop and Vercel
 
 # Core Framework
 Flask==3.0.0
@@ -11,15 +11,18 @@ Flask-SQLAlchemy==3.1.1
 # Environment Variables
 python-dotenv==1.0.0
 
-# Serial Communication (Optional - for hardware)
-# Uncomment if using hardware
-# pyserial==3.5
-# pyserial-asyncio==0.6
+# PostgreSQL (Vercel/Cloud)
+# Uncomment for cloud deployment
+# psycopg2-binary==2.9.9
 
-# Windows EXE Build (Optional)
+# Serial Communication (Desktop/Hardware)
+# Uncomment for desktop with hardware
+# pyserial==3.5
+
+# Windows EXE Build (Desktop only)
 # Uncomment for building EXE
 # pyinstaller==6.3.0
 
-# Production (Optional)
-# gunicorn==21.2.0  # For Linux/Mac deployment
-# psycopg2-binary==2.9.9  # For PostgreSQL
+# Production Server (Linux/Mac)
+# Uncomment for production deployment
+# gunicorn==21.2.0
