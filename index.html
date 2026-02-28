@@ -4461,6 +4461,9 @@ function refreshRatePill() {
         const farmerEntries = entries.filter(e => e.farmerId === farmerId && e.day === today).sort((a, b) => b.createdAt - a.createdAt);
         const lastEntry = farmerEntries.length > 0 ? farmerEntries[0] : null;
 
+        // Get last 3 entries for this farmer to calculate average
+        const recentEntries = entries.filter(e => e.farmerId === farmerId).sort((a, b) => b.createdAt - a.createdAt).slice(0, 3);
+
         if (farmerMemory) {
           // Only restore if inputs are empty/zero (user hasn't typed yet)
           const qtyEmpty = !qtyInput.value || qtyInput.value === '0' || qtyInput.value === '';
@@ -4474,21 +4477,44 @@ function refreshRatePill() {
             console.log('✅ Auto-filled liters from last entry:', qty);
           }
 
-          // Auto-fill previous values ONLY if fields are empty
-          if (farmerMemory.animal && qtyEmpty) animal = farmerMemory.animal;
+          // Auto-fill animal type from last entry
+          if (lastEntry && lastEntry.animal) {
+            animal = lastEntry.animal;
+            selectFarmerAnimal(lastEntry.animal);
+            console.log('✅ Auto-filled animal from last entry:', lastEntry.animal);
+          }
 
-          if (farmerMemory.fat && fatEmpty) {
+          // Auto-fill previous values ONLY if fields are empty
+          if (farmerMemory.animal && qtyEmpty && !lastEntry) animal = farmerMemory.animal;
+
+          if (lastEntry && lastEntry.fat && fatEmpty) {
+            fat = lastEntry.fat;
+            if (fatInput) fatInput.value = fat.toFixed(1);
+            console.log('✅ Auto-filled fat from last entry:', fat);
+          } else if (farmerMemory.fat && fatEmpty) {
             fat = farmerMemory.fat;
             if (fatInput) fatInput.value = fat.toFixed(1);
           }
 
-          if (farmerMemory.snf && snfEmpty) {
+          if (lastEntry && lastEntry.snf && snfEmpty) {
+            snf = lastEntry.snf;
+            if (snfInput) snfInput.value = snf.toFixed(1);
+            console.log('✅ Auto-filled SNF from last entry:', snf);
+          } else if (farmerMemory.snf && snfEmpty) {
             snf = farmerMemory.snf;
             if (snfInput) snfInput.value = snf.toFixed(1);
           }
 
-          if (farmerMemory.rate && manualRateInput && !manualRateInput.value) {
+          // Auto-fill rate from last entry or memory
+          if (lastEntry && lastEntry.rateSnapshot) {
+            if (manualRateInput) {
+              manualRateInput.value = lastEntry.rateSnapshot;
+              manualRate = lastEntry.rateSnapshot;
+              console.log('✅ Auto-filled rate from last entry:', lastEntry.rateSnapshot);
+            }
+          } else if (farmerMemory.rate && manualRateInput && !manualRateInput.value) {
             manualRateInput.value = farmerMemory.rate;
+            manualRate = farmerMemory.rate;
           }
 
           console.log('✅ Loaded farmer memory:', farmerMemory, '(only if fields were empty)');

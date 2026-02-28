@@ -2988,6 +2988,9 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
           // Auto-fill from customer memory (previous orders)
           loadCustomerMemory(name);
 
+          // Load last 6 items bought from history as frequently bought
+          loadLastBoughtItems(name);
+
           // Auto-fill frequent buys / last invoice from memory
           const customer = customers.find(c => c.name === name);
           if (customer && customer.frequentBuys && customer.frequentBuys.length > 0) {
@@ -3008,6 +3011,51 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
 
           // Show advance toggle for this customer
           showAdvanceSection(name);
+      }
+
+      // Load last 6 items bought from history
+      function loadLastBoughtItems(customerName) {
+        if (!customerName || customerName === 'Walking Customer') return;
+
+        const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+        const customerHistory = history.filter(h => h.customer === customerName).sort((a, b) => b.createdAt - a.createdAt).slice(0, 6);
+
+        if (customerHistory.length > 0) {
+          // Extract unique items from last 6 purchases
+          const itemMap = new Map();
+          customerHistory.forEach(order => {
+            if (order.cartItems && Array.isArray(order.cartItems)) {
+              order.cartItems.forEach(item => {
+                if (!itemMap.has(item.name)) {
+                  itemMap.set(item.name, {
+                    name: item.name,
+                    rate: item.rate,
+                    qty: item.qty,
+                    emoji: item.emoji || '📦',
+                    lastBought: order.createdAt
+                  });
+                }
+              });
+            }
+          });
+
+          const lastBoughtItems = Array.from(itemMap.values());
+
+          if (lastBoughtItems.length > 0 && cart.length === 0) {
+            // Add last bought items to cart
+            lastBoughtItems.forEach(item => {
+              cart.push({
+                name: item.name,
+                rate: item.rate,
+                qty: item.qty,
+                emoji: item.emoji,
+                id: Date.now() + Math.random()
+              });
+            });
+            updateUI();
+            showToast(`Loaded ${lastBoughtItems.length} last bought items ✅`);
+          }
+        }
       }
       
       // Show advance/cut ledger - ONLY if customer has credit history
