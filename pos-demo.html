@@ -181,8 +181,9 @@
         margin-top: 4px;
       }
       .p-card.compact .price-tag {
-        font-size: 7px;
-        padding: 3px 5px;
+        font-size: 8px !important;
+        padding: 3px 6px !important;
+        min-height: 16px !important;
         margin-top: 4px;
       }
       
@@ -256,13 +257,15 @@
       }
       /* Uniform small font for all prices - FORCE with !important */
       .p-card .price-tag {
-        font-size: 8px !important;
-        padding: 3px 6px !important;
-        flex-shrink: 1 !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
+        font-size: 9px !important;
+        padding: 4px 8px !important;
+        flex-shrink: 0 !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
         white-space: nowrap !important;
         max-width: 100% !important;
+        min-height: 18px !important;
+        line-height: 1.4 !important;
         background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%) !important;
         border: 2px solid #86efac !important;
         border-radius: 6px !important;
@@ -270,6 +273,8 @@
         font-weight: 800 !important;
         margin-top: 4px !important;
         box-shadow: 0 1px 3px rgba(134, 239, 172, 0.3) !important;
+        display: inline-block !important;
+        text-align: center !important;
       }
 
       /* Customer search max width */
@@ -300,9 +305,9 @@
         .product-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)) !important; gap: 3px; }
         .p-card { padding: 3px 1px !important; min-height: 60px !important; }
         .p-card .emoji { font-size: 24px !important; }
-        /* Keep uniform fonts on mobile too */
+        /* Keep uniform fonts on mobile too - but ensure prices visible */
         .p-card > div:nth-child(2) { font-size: 9px !important; }
-        .p-card .price-tag { font-size: 7px !important; }
+        .p-card .price-tag { font-size: 8px !important; min-height: 16px !important; padding: 3px 5px !important; }
         .summary-box { margin: 6px; padding: 12px; }
         .summary-box .amt { font-size: 28px; }
         /* Cart items scrollable on mobile */
