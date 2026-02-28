@@ -4413,11 +4413,13 @@ function refreshRatePill() {
       console.error('❌❌❌ amountView element NOT FOUND in DOM!');
     }
 
-    // Update summary calculation text
+    // Update summary calculation text with full formula breakdown
     const summaryCalcText = el("summaryCalcText");
     if (summaryCalcText) {
-      const calcText = `${round2(qty).toFixed(1)}L × ${formatAmount(r)}/L (F: ${fat.toFixed(1)}%)`;
+      // Show: Qty × Rate (F: X% | S: Y%) = Amount
+      const calcText = `${round2(qty).toFixed(1)}L × ${formatAmount(r)}/L (F: ${fat.toFixed(1)}% | S: ${snf.toFixed(1)}%)`;
       summaryCalcText.textContent = calcText;
+      summaryCalcText.title = `Formula: ${settings.cowBase} + (${settings.cowFactor}×${fat.toFixed(1)}) + (${settings.cowSnfFactor}×${snf.toFixed(1)}) = ${formatAmount(r)}/L`;
       console.log('✅ summaryCalcText updated:', calcText);
     } else {
       console.error('❌ summaryCalcText element not found!');
