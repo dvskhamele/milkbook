@@ -7278,19 +7278,18 @@ function loadCustomerRelationData(customer) {
 function editCustomerFromRelation(customerId) {
   const customer = customers.find(c => c.id === customerId || c.name === customerId);
   if (!customer) return;
-  
+
   // Fill in the add customer modal
   document.getElementById('newCustId').value = customer.id || '';
   document.getElementById('newName').value = customer.name;
   document.getElementById('newPhone').value = customer.phone || '';
   document.getElementById('newEmail').value = customer.email || '';
   document.getElementById('newAddress').value = customer.address || '';
-  document.getElementById('newUnit').value = 'L'; // Default unit for new products
-  
+
   // Change modal to edit mode
   const modalTitle = document.querySelector('#addCustModal .panelHeader span');
   if (modalTitle) modalTitle.textContent = '✏️ Edit Customer';
-  
+
   const addBtn = document.querySelector('#addCustModal .add-btn');
   if (addBtn) {
     addBtn.textContent = '💾 Update Customer';
@@ -7298,7 +7297,7 @@ function editCustomerFromRelation(customerId) {
       updateCustomerFromRelation(customer.id || customer.name);
     };
   }
-  
+
   closeModal('customerRelationModal');
   openModal('addCustModal');
 }
