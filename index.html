@@ -2084,11 +2084,22 @@
         <button class="panicBtn hold" id="btnHold">
           🟡 HOLD <span class="subnote">pause</span>
         </button>
-        <button class="panicBtn save" id="btnSave">
-          🟢 SAVE ENTRY
-        </button>
-        <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff;">
-          📒 LIKHLO (Credit)
+        
+        <!-- Payment Mode Selection -->
+        <div style="display: flex; gap: 4px; flex: 1;">
+          <button class="panicBtn save" id="btnSaveCash" style="background: linear-gradient(135deg, #16a34a, #059669); flex: 1;" onclick="saveWithPaymentMode('Cash')">
+            💵 CASH
+          </button>
+          <button class="panicBtn save" id="btnSaveUPI" style="background: linear-gradient(135deg, #3b82f6, #2563eb); flex: 1;" onclick="saveWithPaymentMode('UPI')">
+            📱 UPI
+          </button>
+          <button class="panicBtn save" id="btnSaveAccount" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); flex: 1;" onclick="saveWithPaymentMode('Account')">
+            🏦 ACCOUNT
+          </button>
+        </div>
+        
+        <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff; min-width: 120px;">
+          📒 LIKHLO <span class="subnote">udhari</span>
         </button>
       </div>
     </div>
@@ -4707,7 +4718,9 @@ function printCollectionBill(entry) {
 
         <div class="row">
             <span>Payment:</span>
-            <span class="bold">${entry.paymentMode === 'Cash' ? '💵 Cash' : '📒 Credit'}</span>
+            <span class="bold">
+${entry.paymentMode === 'Cash' ? '💵 Cash' : entry.paymentMode === 'UPI' ? '📱 UPI' : entry.paymentMode === 'Account' ? '🏦 Account' : '📒 Credit'}
+</span>
         </div>
         <div class="row">
             <span>Previous Balance:</span>
@@ -5167,18 +5180,22 @@ function showAuditProof(entryId) {
         const manualRateApply = el("manualRateApply");
         if (manualRateApply) manualRateApply.onclick = () => { manualRate = Number(manualRateInput.value) || 0; renderTrust(); };
 
-        // Save / Hold / Likhlo (Credit)
-        const btnSave = el("btnSave");
-        if (btnSave) {
-          btnSave.onclick = () => {
-            paymentMode = "Cash"; // Set to Cash for normal save
-            saveEntry();
-          };
-          console.log('✅ Save button initialized');
-        } else {
-          console.error('❌ Save button not found!');
-        }
+        // Save with Payment Mode function
+        window.saveWithPaymentMode = function(mode) {
+          if (!canSave()) {
+            showToast("Need: Farmer + Qty + Fat");
+            return;
+          }
+          const farmer = getFarmerById(selectedFarmerId);
+          if (!farmer) {
+            showToast("Select farmer");
+            return;
+          }
+          paymentMode = mode; // Set payment mode
+          saveEntry();
+        };
 
+        // Hold button
         const btnHold = el("btnHold");
         if (btnHold) {
           btnHold.onclick = holdCurrent;
@@ -5971,12 +5988,12 @@ function loadFarmerTransactions(fId) {
     
     allEntries.forEach(e => {
         const rate = e.rateSnapshot || e.ratePerL || 0;
-        const isCredit = e.paymentMode === 'Credit';
+        const paymentDisplay = e.paymentMode === 'Cash' ? '💵 Cash' : e.paymentMode === 'UPI' ? '📱 UPI' : e.paymentMode === 'Account' ? '🏦 Account' : '📒 Credit';
         transactions.push({
             date: new Date(e.createdAt),
-            type: isCredit ? 'credit' : 'cash',
+            type: e.paymentMode === 'Credit' ? 'credit' : 'payment',
             description: `${e.qty}L @ ${formatAmount(rate)}/L (Fat: ${e.fat}%)`,
-            paymentMode: isCredit ? '📒 Credit' : '💵 Cash',
+            paymentMode: paymentDisplay,
             amount: Number(e.amount),
             entryId: e.id
         });
@@ -6280,7 +6297,7 @@ function printFarmerStatement() {
       total += Number(e.amount || 0);
       html += `<tr>
         <td>${new Date(e.createdAt).toLocaleDateString()}</td>
-        <td>${e.paymentMode === 'Credit' ? '📒 Credit' : '💵 Cash'}</td>
+        <td>${e.paymentMode === 'Cash' ? '💵 Cash' : e.paymentMode === 'UPI' ? '📱 UPI' : e.paymentMode === 'Account' ? '🏦 Account' : '📒 Credit'}</td>
         <td>${e.qty}L</td>
         <td>₹${e.rateSnapshot || e.ratePerL || 0}/L</td>
         <td>₹${e.amount}</td>
@@ -6553,7 +6570,7 @@ function loadTodayCollection() {
         html += `<td style="padding: 12px; border: 1px solid #e2e8f0;">${e.fat}%</td>`;
         html += `<td style="padding: 12px; text-align: right; border: 1px solid #e2e8f0;">₹${e.rateSnapshot || e.ratePerL || 0}/L</td>`;
         html += `<td style="padding: 12px; text-align: right; border: 1px solid #e2e8f0; font-weight: 700;">${formatAmount(e.amount)}</td>`;
-        html += `<td style="padding: 12px; text-align: center; border: 1px solid #e2e8f0;">${e.paymentMode === 'Credit' ? '📒 Credit' : '💵 Cash'}</td>`;
+        html += `<td style="padding: 12px; text-align: center; border: 1px solid #e2e8f0;">${e.paymentMode === 'Cash' ? '💵 Cash' : e.paymentMode === 'UPI' ? '📱 UPI' : e.paymentMode === 'Account' ? '🏦 Account' : '📒 Credit'}</td>`;
         html += `</tr>`;
     });
     
