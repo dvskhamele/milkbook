@@ -1,0 +1,35 @@
+# MilkRecord Flask Hardware Integration
+# Production Requirements
+
+# Core Framework
+Flask==3.0.0
+Werkzeug==3.0.1
+
+# Serial Communication
+pyserial==3.5
+pyserial-asyncio==0.6
+
+# Database
+Flask-SQLAlchemy==3.1.1
+SQLite
+
+# Async Support
+asyncio==3.4.3
+aiohttp==3.9.1
+
+# System
+python-dotenv==1.0.0
+click==8.1.7
+
+# Windows EXE Build
+pyinstaller==6.3.0
+
+# Utilities
+requests==2.31.0
+python-dateutil==2.8.2
+
+# Logging
+colorlog==6.8.0
+
+# Testing (optional)
+pytest==7.4.3
