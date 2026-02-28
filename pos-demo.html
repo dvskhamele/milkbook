@@ -2380,19 +2380,25 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       function handleSearch(val) {
           const drop = el("searchDropdown");
           const searchVal = val.trim();
+          
+          console.log('🔍 Search:', searchVal, 'Customers loaded:', customers.length);
 
           // Show ALL customers when search is focused (even if empty)
           // Search in: ID, Name, Phone, Email, Address
           const searchLower = searchVal.toLowerCase();
           const filtered = !searchVal
             ? customers
-            : customers.filter(c => 
-                (c.id && c.id.toLowerCase().includes(searchLower)) ||
+            : customers.filter(c => {
+                const match = (c.id && c.id.toLowerCase().includes(searchLower)) ||
                 c.name.toLowerCase().includes(searchLower) ||
                 (c.phone && c.phone.includes(searchVal)) ||
                 (c.email && c.email.toLowerCase().includes(searchLower)) ||
-                (c.address && c.address.toLowerCase().includes(searchLower))
-              );
+                (c.address && c.address.toLowerCase().includes(searchLower));
+                console.log('  Checking:', c.name, 'Match:', match);
+                return match;
+              });
+
+          console.log('✅ Filtered results:', filtered.length);
 
           // Always show dropdown when there's input or focus
           if (searchVal || document.activeElement === el("custSearch")) {
