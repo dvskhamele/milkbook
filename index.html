@@ -1773,7 +1773,7 @@
         <!-- Summary Cards -->
         <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
           <div style="background: white; padding: 12px; border-radius: 8px; border: 2px solid #e2e8f0;">
-            <div style="font-size: 11px; color: #64748b; font-weight: 700;">👥 TOTAL FARMERS</div>
+            <div style="font-size: 11px; color: #64748b; font-weight: 700;">🤝 TOTAL FARMERS</div>
             <div style="font-size: 20px; font-weight: 900; color: #1e293b;" id="sumTotalFarmers">0</div>
           </div>
           <div style="background: #eff6ff; padding: 12px; border-radius: 8px; border: 2px solid #3b82f6;">
@@ -2139,10 +2139,6 @@
 
       <!-- FOOTER -->
       <div class="bottom">
-        <button class="panicBtn hold" id="btnHold">
-          💳 ADVANCE <span class="subnote">manage</span>
-        </button>
-        
         <!-- Payment Mode: CASH ONLY (UPI via farmer double-click) -->
         <button class="panicBtn save" id="btnSaveCash" style="background: linear-gradient(135deg, #16a34a, #059669); flex: 1;" onclick="saveWithPaymentMode('Cash')">
           💵 CASH
@@ -5191,7 +5187,7 @@ function showAuditProof(entryId) {
         msg += `Amount: ${formatAmount(e.amount)}\n`;
         msg += `Time: ${new Date(e.createdAt).toLocaleString()}\n`;
         msg += `Source: ${e.entrySource}\n`;
-        
+
         // Add farmer payment details for WhatsApp only
         if (f && (f.upi || f.bankName)) {
             msg += `\n━━━━━━━━━━━━━━━━━━\n`;
@@ -5202,9 +5198,15 @@ function showAuditProof(entryId) {
             if (f.ifsc) msg += `🔑 IFSC: ${f.ifsc}\n`;
             if (f.accountName) msg += `👤 Name: ${f.accountName}\n`;
         }
-        
+
         msg += `\nGopal Dairy Shop`;
-        window.open(`https://wa.me/${f.phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        
+        const phone = f.phone ? f.phone.replace(/\D/g, '') : '';
+        if (phone) {
+            window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        } else {
+            showToast('⚠️ Phone number not available');
+        }
     };
 
     openOverlay("overlayEntryDetail");

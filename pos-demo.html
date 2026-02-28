@@ -290,7 +290,7 @@
 
       .add-btn { height: 40px; padding: 0 15px; border-radius: 10px; border: none; background: var(--blue); color: #fff; font-weight: 1000; cursor: pointer; }
 
-      .product-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px; overflow-y: auto; flex: 1; outline: none; align-content: start; }
+      .product-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px; overflow-y: auto; overflow-x: hidden; flex: 1; outline: none; align-content: start; }
       .p-card {
         background: #fff;
         border: none;
@@ -796,7 +796,7 @@
     <div class="overlay" id="customerRelationModal">
       <div class="modal" style="width:min(800px, 95vw); height:min(85vh, 90vh); display:flex; flex-direction:column;">
         <div class="panelHeader" style="flex-shrink:0;">
-          <span>👥 Customer Relation - <span id="relationCustomerName"></span></span>
+          <span>🤝 Customer Relation - <span id="relationCustomerName"></span></span>
           <button onclick="closeModal('customerRelationModal')" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b;">✖</button>
         </div>
 
@@ -1030,7 +1030,7 @@
           <!-- Summary Cards -->
           <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px;">
             <div style="background:white; padding:8px; border-radius:6px; border:2px solid #e2e8f0;">
-              <div style="font-size:9px; color:#64748b; font-weight:700;">👥 CUSTOMERS</div>
+              <div style="font-size:9px; color:#64748b; font-weight:700;">🤝 CUSTOMERS</div>
               <div style="font-size:16px; font-weight:900; color:#1e293b;" id="sumTotalCustomers">0</div>
             </div>
             <div style="background:#eff6ff; padding:8px; border-radius:6px; border:2px solid #3b82f6;">
@@ -2452,7 +2452,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
                       <div style="text-align:right; display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
                         ${c.balance > 0 ? `<div style="font-size:11px; color:#dc2626; font-weight:700;">📕 ${formatINR(c.balance)}</div>` : ''}
                         <div style="font-size:11px; color:var(--muted);">Bal: ${formatINR(c.balance || 0)}</div>
-                        <button onclick="event.stopPropagation(); openCustomerRelation('${c.id || c.name}')" style="font-size:9px; padding:2px 6px; background:#7c3aed; color:white; border:none; border-radius:4px; font-weight:700; cursor:pointer;">👥 Relation</button>
+                        <button onclick="event.stopPropagation(); openCustomerRelation('${c.id || c.name}')" style="font-size:9px; padding:2px 6px; background:#7c3aed; color:white; border:none; border-radius:4px; font-weight:700; cursor:pointer;">🤝 Relation</button>
                       </div>
                     </div>
                   `}).join('');
