@@ -113,15 +113,19 @@
       .payment-section {
         position: fixed;
         bottom: 0;
-        left: 0;
-        right: 0;
+        left: 50%;
+        transform: translateX(-50%);
         background: var(--panel);
         border-top: 3px solid #16a34a;
         padding: 12px 15px;
         z-index: 100;
         box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
-        width: 100%;
+        width: min(800px, 95vw);
         border-radius: 16px 16px 0 0;
+        transition: all 0.3s;
+      }
+      .payment-section.wide {
+        width: 100%;
       }
 
       /* Ensure emojis render properly on all systems */
@@ -142,7 +146,7 @@
       /* Panels height synced with payment section */
       .left-panel, .right-panel { max-height: calc(100vh - 200px); }
       
-      /* Product grid responsive */
+      /* Product grid responsive with proper scrolling */
       .product-grid { 
         display: grid; 
         grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); 
@@ -151,9 +155,12 @@
         outline: none; 
         align-content: start; 
         overflow-y: auto;
+        overflow-x: auto;
+        max-height: calc(100vh - 300px);
       }
-      .product-grid::-webkit-scrollbar { width: 6px; }
+      .product-grid::-webkit-scrollbar { width: 6px; height: 6px; }
       .product-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+      .product-grid::-webkit-scrollbar-track { background: #f1f5f9; }
       
       /* Smaller product cards when many products */
       .p-card {
@@ -5743,23 +5750,27 @@ function loadCustomProducts() {
     if (Array.isArray(p.qtys)) {
       p.qtys.forEach(qty => {
         const rank = qtyToRank[qty] || 3;
+        const safeUnit = p.unit || 'unit';
+        const safeQty = qty || 1;
+        const safePrice = p.price || 0;
+        
         const newCard = document.createElement('div');
         newCard.className = 'p-card';
         newCard.setAttribute('data-qty', '1');
-        newCard.setAttribute('data-qty-val', qty || 1);
+        newCard.setAttribute('data-qty-val', safeQty);
         newCard.setAttribute('data-rank', rank);
         newCard.setAttribute('draggable', 'true');
         newCard.ondragstart = handleDragStart;
         newCard.ondragend = handleDragEnd;
-        newCard.onclick = function() { tapAdd(p.name, p.price, qty || 1); };
+        newCard.onclick = function() { tapAdd(p.name, safePrice, safeQty); };
 
-        const qtyDisplay = `${qty}${p.unit || 'unit'}`;
+        const qtyDisplay = `${safeQty}${safeUnit}`;
         const nameDisplay = `${p.name} (${qtyDisplay})`;
 
         newCard.innerHTML = `
           <span class="emoji">${p.emoji || '📦'}</span>
           <div style="font-weight: 900; margin-top: 2px;">${nameDisplay}</div>
-          <span class="price-tag">₹${p.price}/${p.unit || 'unit'}</span>
+          <span class="price-tag">₹${safePrice}/${safeUnit}</span>
           <button class="edit-prod-btn" onclick="event.stopPropagation(); editProductCard(this)" title="Edit Product" style="position: absolute; top: 4px; left: 4px; background: rgba(255,255,255,0.9); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; padding: 2px; opacity: 0; transition: opacity 0.2s;">✏️</button>
           <div class="qty-badge" style="position: absolute; top: 4px; right: 4px; background: #dc2626; color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;">0</div>
         `;
@@ -5772,14 +5783,28 @@ function loadCustomProducts() {
 // Create default products on first-time setup
 function createDefaultProducts() {
   const defaultProducts = [
-    { name: 'Cow 1L', emoji: '🐄', price: 64, unit: 'L', qty: 1 },
-    { name: 'Cow 0.5L', emoji: '🐄', price: 32, unit: 'L', qty: 0.5 },
-    { name: 'Buff 2L', emoji: '🐃', price: 200, unit: 'L', qty: 2 },
-    { name: 'Buff 1L', emoji: '🐃', price: 100, unit: 'L', qty: 1 },
-    { name: 'Buff 0.5L', emoji: '🐃', price: 50, unit: 'L', qty: 0.5 },
+    // Cow Milk - Step wise quantities
+    { name: 'Cow Milk', emoji: '🐄', price: 64, unit: 'L', qty: 0.5 },
+    { name: 'Cow Milk', emoji: '🐄', price: 64, unit: 'L', qty: 1 },
+    { name: 'Cow Milk', emoji: '🐄', price: 64, unit: 'L', qty: 2 },
+    // Buffalo Milk - Step wise quantities
+    { name: 'Buff Milk', emoji: '🐃', price: 100, unit: 'L', qty: 0.5 },
+    { name: 'Buff Milk', emoji: '🐃', price: 100, unit: 'L', qty: 1 },
+    { name: 'Buff Milk', emoji: '🐃', price: 100, unit: 'L', qty: 2 },
+    // Paneer - Step wise quantities
+    { name: 'Paneer', emoji: '🧀', price: 320, unit: 'kg', qty: 0.25 },
+    { name: 'Paneer', emoji: '🧀', price: 320, unit: 'kg', qty: 0.5 },
     { name: 'Paneer', emoji: '🧀', price: 320, unit: 'kg', qty: 1 },
-    { name: 'Ghee', emoji: '🍯', price: 180, unit: 'g', qty: 0.25 },
-    { name: 'Milk Cake', emoji: '🍰', price: 300, unit: 'kg', qty: 1 }
+    // Ghee - Step wise quantities
+    { name: 'Ghee', emoji: '🧈', price: 800, unit: 'kg', qty: 0.25 },
+    { name: 'Ghee', emoji: '🧈', price: 800, unit: 'kg', qty: 0.5 },
+    { name: 'Ghee', emoji: '🧈', price: 800, unit: 'kg', qty: 1 },
+    // Milk Cake - Step wise quantities
+    { name: 'Milk Cake', emoji: '🍰', price: 400, unit: 'kg', qty: 0.5 },
+    { name: 'Milk Cake', emoji: '🍰', price: 400, unit: 'kg', qty: 1 },
+    // Curd - Step wise quantities
+    { name: 'Curd', emoji: '🥣', price: 120, unit: 'kg', qty: 0.5 },
+    { name: 'Curd', emoji: '🥣', price: 120, unit: 'kg', qty: 1 },
   ];
 
   try {

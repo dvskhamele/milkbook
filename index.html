@@ -5819,9 +5819,14 @@ function showAuditProof(entryId) {
           console.error('❌ Create Farmer button NOT found!');
         }
 
-        // Demo Farmers button
+        // Demo Farmers button - Hide if 3+ farmers already exist
         const demoBtn = el("btnDemoFarmers");
         if (demoBtn) {
+          // Hide button if already have 3+ farmers
+          if (farmers.length >= 3) {
+            demoBtn.style.display = 'none';
+          }
+          
           demoBtn.onclick = () => {
             const demoFarmers = [
               { id: "f1", name: "Raj Kumar", phone: "9876543210", address: "Vadgaon", balance: 0, active: true, animalType: "cow" },
@@ -5843,6 +5848,10 @@ function showAuditProof(entryId) {
               saveFarmers(farmers);
               showToast(`Added ${added} demo farmers ✅`);
               renderAll();
+              // Hide button after adding farmers
+              if (farmers.length >= 3) {
+                demoBtn.style.display = 'none';
+              }
             } else {
               showToast("Demo farmers already exist");
             }
