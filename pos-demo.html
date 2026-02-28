@@ -181,8 +181,8 @@
         margin-top: 4px;
       }
       .p-card.compact .price-tag {
-        font-size: 8px;
-        padding: 4px 6px;
+        font-size: 7px;
+        padding: 3px 5px;
         margin-top: 4px;
       }
       
@@ -212,28 +212,33 @@
         border-color: #3b82f6;
         background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
       }
+      /* Emoji sizes based on rank/quantity */
       .p-card .emoji {
-        font-size: 40px;
         flex-shrink: 0;
         min-width: 40px;
         transition: all 0.3s;
-        max-height: 40px;
         margin-bottom: 6px;
         filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
       }
+      .p-card[data-rank="1"] .emoji { font-size: 32px; }
+      .p-card[data-rank="2"] .emoji { font-size: 36px; }
+      .p-card[data-rank="3"] .emoji { font-size: 40px; }
+      .p-card[data-rank="4"] .emoji { font-size: 44px; }
+      .p-card[data-rank="5"] .emoji { font-size: 48px; }
       /* Hide emoji first when space is tight */
       .p-card.compact .emoji {
-        font-size: 14px;
+        font-size: 14px !important;
         margin-bottom: 3px;
         filter: none;
       }
       .p-card.no-emoji .emoji {
         display: none;
       }
+      /* Uniform small font for all names */
       .p-card > div:nth-child(2) {
-        font-size: 12px;
+        font-size: 10px;
         font-weight: 900;
-        line-height: 1.4;
+        line-height: 1.3;
         overflow: visible !important;
         text-overflow: clip !important;
         white-space: normal !important;
@@ -241,7 +246,7 @@
         text-align: center;
         margin-top: 4px;
         flex-grow: 1;
-        min-height: 32px;
+        min-height: 28px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -249,9 +254,10 @@
         color: #1e293b;
         text-shadow: 0 1px 2px rgba(255,255,255,0.8);
       }
+      /* Uniform small font for all prices */
       .p-card .price-tag {
-        font-size: 10px;
-        padding: 4px 8px;
+        font-size: 8px;
+        padding: 3px 6px;
         flex-shrink: 1;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -262,7 +268,7 @@
         border-radius: 6px;
         color: #166534;
         font-weight: 800;
-        margin-top: 5px;
+        margin-top: 4px;
         box-shadow: 0 1px 3px rgba(134, 239, 172, 0.3);
       }
 
