@@ -550,6 +550,16 @@
   <body>
     <div class="app">
       <div class="topbar">
+        <!-- Product Category Filters (Left of Logo) -->
+        <div style="display: flex; gap: 4px; align-items: center; padding: 4px 8px; background: #f8fafc; border-radius: 8px; margin-right: 8px;">
+          <button onclick="filterProductsByCategory('all')" class="category-btn" style="padding: 4px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;">📦</button>
+          <button onclick="filterProductsByCategory('milk')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Milk">🥛</button>
+          <button onclick="filterProductsByCategory('paneer')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Paneer">🧀</button>
+          <button onclick="filterProductsByCategory('ghee')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Ghee">🧈</button>
+          <button onclick="filterProductsByCategory('curd')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Curd">🥣</button>
+          <button onclick="filterProductsByCategory('sweets')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Sweets">🍬</button>
+          <button onclick="filterProductsByCategory('bakery')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Bakery">🥐</button>
+        </div>
         <div class="brand">
           <a href="homepage.html" style="text-decoration:none; color:inherit;">
             <div class="logo-box">
@@ -608,16 +618,6 @@
           </div>
 
           <div class="product-grid" id="productGrid" onclick="closeSearchDropdown()" tabindex="0" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
-            <!-- Product Category Filters -->
-            <div style="grid-column: 1/-1; display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; padding: 8px; background: #f8fafc; border-radius: 8px;">
-              <button onclick="filterProductsByCategory('all')" class="category-btn" style="padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">📦 All</button>
-              <button onclick="filterProductsByCategory('milk')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🥛 Milk</button>
-              <button onclick="filterProductsByCategory('paneer')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🧀 Paneer</button>
-              <button onclick="filterProductsByCategory('ghee')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🧈 Ghee</button>
-              <button onclick="filterProductsByCategory('curd')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🥣 Curd</button>
-              <button onclick="filterProductsByCategory('sweets')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🍬 Sweets</button>
-              <button onclick="filterProductsByCategory('bakery')" class="category-btn" style="padding: 6px 12px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer;">🥐 Bakery</button>
-            </div>
             <!-- Products loaded dynamically from localStorage -->
             <!-- Add & Edit Buttons -->
             <div class="p-card" style="border: 2px dashed #3b82f6; background: #eff6ff; min-height: 100px !important;" onclick="event.stopPropagation(); openModal('addProductModal')" title="Create new products to your inventory">
@@ -4484,23 +4484,26 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
           // 7. Auto-print invoice (silent, no user interaction)
           generateInvoice(custName, paymentAmount, mode, creditAmount);
 
-          // 8. Show success message
+          // 8. Play success sound
+          playSuccessSound();
+
+          // 9. Show success message with clear feedback
           if (creditAmount > 0) {
-            showToast(`Saved! ${formatINR(creditAmount)} added to Udhar ✅`);
+            showToast(`📒 Udhar: ${formatINR(creditAmount)} added to ledger! ✅`);
           } else {
-            showToast(`Saved ✅`);
+            showToast(`💵 Paid: ${formatINR(paymentAmount)} received! ✅`);
           }
 
-          // 9. Reset cart and prepare for next customer
+          // 10. Reset cart and prepare for next customer
           resetCart();
 
-          // 10. If customer has phone and it's credit mode, offer WhatsApp
+          // 11. If customer has phone and it's credit mode, offer WhatsApp
           if (creditAmount > 0 && customerPhone && customerPhone.length >= 10) {
             setTimeout(() => {
               if (confirm(`Send WhatsApp reminder to ${custName}?`)) {
                 sendWhatsAppReminder(custName, customerPhone, creditAmount, total);
               }
-            }, 500);
+            }, 1000);
           }
 
         } catch (error) {
@@ -5168,6 +5171,25 @@ function clearTodayHistory() {
       // });
 
       function showToast(msg) { const t = el("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1500); }
+
+      // Play success sound
+      function playSuccessSound() {
+        try {
+          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          oscillator.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          oscillator.type = 'sine';
+          oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+          gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+          oscillator.start(audioCtx.currentTime);
+          oscillator.stop(audioCtx.currentTime + 0.1);
+        } catch(e) {
+          console.log('Sound not played:', e);
+        }
+      }
 
       // Drag and Drop for Product Cards
       let draggedCard = null;
@@ -7019,19 +7041,33 @@ function openCustomerRelation(customerId) {
 
   // Get customer name from activeCust if no ID provided
   if (!customerId || customerId === 'Walking Customer') {
-    customerId = document.getElementById('activeCust').innerText;
+    customerId = document.getElementById('activeCust').innerText.trim();
   }
 
   if (!customerId || customerId === 'Walking Customer') {
     return showToast('⚠️ Select a customer first!');
   }
 
-  // Find customer by name or ID
-  const customer = customers.find(c => c.id === customerId || c.name === customerId);
+  console.log('🔍 Looking for customer:', customerId, 'Available:', customers.map(c => c.name));
+
+  // Find customer by name (case-insensitive) or ID
+  let customer = customers.find(c => 
+    c.id === customerId || 
+    c.name.toLowerCase() === customerId.toLowerCase() ||
+    c.name.toLowerCase().includes(customerId.toLowerCase())
+  );
+
+  if (!customer) {
+    // Try to find by partial match
+    customer = customers.find(c => customerId.toLowerCase().includes(c.name.toLowerCase()));
+  }
+
   if (!customer) {
     console.error('❌ Customer not found:', customerId, 'Available:', customers.map(c => c.name));
-    return showToast('❌ Customer not found! Try selecting from search.');
+    return showToast('❌ Customer not found! Select from search dropdown.');
   }
+
+  console.log('✅ Customer found:', customer.name);
 
   // Set customer name
   document.getElementById('relationCustomerName').textContent = customer.name + (customer.serial ? ` (#${customer.serial})` : '');

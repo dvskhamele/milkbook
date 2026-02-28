@@ -2075,19 +2075,20 @@
         <!-- RIGHT -->
         <div class="panel">
           <div class="panelHeader">
-            <!-- Summary Info Row - ALL in ONE row: Calc | Rate Btn | Cow/Buff | OLD | NEW -->
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; white-space: nowrap;">
-              <div id="summaryCalcText" style="color: #64748b; font-weight: 800; font-size: 12px;">0.0L×₹0.00/L(F:0.0%)</div>
-              <button onclick="openRateTable()" style="padding: 4px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; white-space: nowrap;" title="View Rate List">Rate: ₹30.00 📋</button>
-              <div style="display: flex; gap: 6px; color: #64748b; font-weight: 800; font-size: 12px;">
+            <!-- Summary Info Row - ALL in ONE row: Calc | Settings Btn | Rate Btn | Cow/Buff | OLD | NEW -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; white-space: nowrap;">
+              <div id="summaryCalcText" style="color: #64748b; font-weight: 800; font-size: 11px;">0.0L×₹0.00/L(F:0.0%)</div>
+              <button onclick="openOverlay('overlaySettings')" style="padding: 3px 6px; background: #f59e0b; color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 9px; cursor: pointer; white-space: nowrap;" title="Rate Formula Settings">⚙️</button>
+              <button onclick="openRateTable()" style="padding: 3px 6px; background: #3b82f6; color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 9px; cursor: pointer; white-space: nowrap;" title="View Rate List">📋</button>
+              <div style="display: flex; gap: 4px; color: #64748b; font-weight: 800; font-size: 11px;">
                 <span style="color: #16a34a;">🐄<span id="cowQtyInline">0.0</span></span>
                 <span style="color: #dc2626;">🐃<span id="buffQtyInline">0.0</span></span>
               </div>
-              <div style="display: flex; gap: 6px;">
-                <span style="color: #64748b; font-weight: 800; font-size: 11px;">OLD:</span>
-                <span id="balBefore" style="font-weight: 900; color: #0f172a; font-size: 12px;"></span>
-                <span style="color: #64748b; font-weight: 800; font-size: 11px; margin-left: 6px;">NEW:</span>
-                <span id="balAfter" style="font-weight: 900; color: #16a34a; font-size: 12px;"></span>
+              <div style="display: flex; gap: 4px;">
+                <span style="color: #64748b; font-weight: 800; font-size: 9px;">OLD:</span>
+                <span id="balBefore" style="font-weight: 900; color: #0f172a; font-size: 11px;"></span>
+                <span style="color: #64748b; font-weight: 800; font-size: 9px; margin-left: 4px;">NEW:</span>
+                <span id="balAfter" style="font-weight: 900; color: #16a34a; font-size: 11px;"></span>
               </div>
             </div>
           </div>
@@ -3826,9 +3827,9 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
     if (prevBtn) prevBtn.disabled = farmerPage <= 0;
     if (nextBtn) nextBtn.disabled = farmerPage >= maxPage;
 
-    // Update farmer count display
+    // Update farmer count display - Make clickable to cycle pages
     if (farmerCountEl) {
-      farmerCountEl.textContent = `${list.length} 👤 Page ${farmerPage + 1}/${maxPage + 1}`;
+      farmerCountEl.innerHTML = `${list.length} 👤 <span style="cursor:pointer; background:#3b82f6; color:white; padding:2px 8px; border-radius:4px; font-weight:700;" onclick="cycleFarmerPage()" title="Click to go to next page">Page ${farmerPage + 1}/${maxPage + 1}</span>`;
     }
 
     const start = farmerPage * FARMERS_PER_PAGE;
@@ -5801,6 +5802,18 @@ function showAuditProof(entryId) {
             }
           };
         }
+
+        // Cycle farmer page (click on page counter)
+        window.cycleFarmerPage = function() {
+          const list = filterFarmers();
+          const maxPage = Math.max(0, Math.ceil(list.length / FARMERS_PER_PAGE) - 1);
+          if (farmerPage < maxPage) {
+            farmerPage++;
+          } else {
+            farmerPage = 0; // Go to first page
+          }
+          renderFarmers();
+        };
 
         // Save with Payment Mode function
         window.saveWithPaymentMode = function(mode) {
