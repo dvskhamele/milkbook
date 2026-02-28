@@ -97,12 +97,17 @@
       /* --- CORE LAYOUT --- */
       .core { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1; min-height: 0; }
       .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
-      .left-panel { overflow-y: auto; display: flex; flex-direction: column; }
+      .left-panel { display: flex; flex-direction: column; overflow: hidden; }
       .right-panel { overflow-y: auto; display: flex; flex-direction: column; }
 
-      /* Left panel scrollable for customer search */
+      /* Left panel scrollable for customer search and products */
       .left-panel .panelHeader { flex-shrink: 0; }
       .left-panel #searchDropdown { max-height: 300px; overflow-y: auto; position: absolute; z-index: 1000; }
+      .left-panel .product-grid { 
+        overflow-y: auto; 
+        flex: 1; 
+        min-height: 0;
+      }
 
       /* Fixed Payment Section at Bottom - Always Visible */
       .payment-section {
@@ -143,11 +148,12 @@
         grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); 
         gap: 4px; 
         padding: 8px; 
-        overflow-y: auto; 
-        flex: 1; 
         outline: none; 
         align-content: start; 
+        overflow-y: auto;
       }
+      .product-grid::-webkit-scrollbar { width: 6px; }
+      .product-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
       
       /* Smaller product cards when many products */
       .p-card {
