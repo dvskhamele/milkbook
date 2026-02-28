@@ -4840,7 +4840,14 @@ function playSuccessSound() {
         }, 500);
     }
 
-    showToast(`Entry Saved: ${formatAmount(a)} (${selectedPayMode === 'Cash' ? 'नकद' : 'उधार'}) ✅`);
+    // Show feedback toast based on payment mode
+    if (selectedPayMode === 'Cash') {
+        showToast(`💵 Cash ₹${formatAmount(a)} mil gaya! Settled ✅`);
+    } else if (selectedPayMode === 'Credit') {
+        showToast(`📒 Udhar ₹${formatAmount(a)} likh lia! Balance: ₹${formatAmount(after)}`);
+    } else {
+        showToast(`Entry Saved: ${formatAmount(a)} (${selectedPayMode === 'Cash' ? 'नकद' : 'उधार'}) ✅`);
+    }
 
     isSaving = false; // Unlock save
 }
@@ -4964,12 +4971,6 @@ function saveEntryAsCredit() {
 
     // Print bill/receipt after save
     printCollectionBill(entry);
-
-    if (choice === 'credit') {
-        showToast(`Entry Saved: ${formatAmount(amount)} (उधार/Credit) 📒`);
-    } else {
-        showToast(`Entry Saved: ${formatAmount(amount)} (Cut from Advance) ✅`);
-    }
 }
 
 // Print collection bill/receipt - NON-BLOCKING for uninterrupted workflow
