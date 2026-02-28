@@ -784,7 +784,8 @@
         </div>
 
         <!-- Action Buttons -->
-        <div style="padding:16px; border-top:1px solid #e2e8f0; flex-shrink:0; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <div style="padding:16px; border-top:1px solid #e2e8f0; flex-shrink:0; display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+          <button onclick="copyRateList()" style="padding:12px; background:#e0f2fe; color:#0369a1; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">📋 Copy</button>
           <button onclick="sendRateListWhatsApp()" style="padding:12px; background:#25d366; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">📱 Send via WhatsApp</button>
           <button onclick="printRateList()" style="padding:12px; background:#3b82f6; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">🖨️ Print Rate List</button>
         </div>
@@ -2817,7 +2818,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       // Open edit customer modal for advance order
       function openEditCustomerForAdvanceOrder(customer) {
         if (!customer) return;
-        
+
         // Fill in the add customer modal with existing data
         document.getElementById('newCustId').value = customer.id || '';
         document.getElementById('newName').value = customer.name || '';
@@ -2825,19 +2826,77 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         document.getElementById('newEmail').value = customer.email || '';
         document.getElementById('newAddress').value = customer.address || '';
         document.getElementById('newUnit').value = customer.unit || 'L';
-        
+
         // Change modal title
         const modalTitle = document.querySelector('#addCustModal .panelHeader span');
         if (modalTitle) modalTitle.textContent = '✏️ Edit Customer';
-        
+
         // Change button text
         const addBtn = document.querySelector('#addCustModal .add-btn');
         if (addBtn) {
           addBtn.textContent = '💾 Update Customer';
           addBtn.onclick = () => updateCustomerFromAdvanceOrder(customer.id);
         }
-        
+
         openModal('addCustModal');
+      }
+
+      // Open add customer modal for advance order (NEW CUSTOMER)
+      function openAddCustomerFromAdvanceOrder() {
+        // Clear the add customer modal
+        document.getElementById('newCustId').value = '';
+        document.getElementById('newName').value = '';
+        document.getElementById('newPhone').value = '';
+        document.getElementById('newEmail').value = '';
+        document.getElementById('newAddress').value = '';
+        document.getElementById('newUnit').value = 'L';
+
+        // Change modal title
+        const modalTitle = document.querySelector('#addCustModal .panelHeader span');
+        if (modalTitle) modalTitle.textContent = '➕ Add New Customer';
+
+        // Change button text
+        const addBtn = document.querySelector('#addCustModal .add-btn');
+        if (addBtn) {
+          addBtn.textContent = '➕ Add Customer';
+          addBtn.onclick = () => addNewCustomerFromAdvanceOrder();
+        }
+
+        openModal('addCustModal');
+      }
+
+      // Add new customer from advance order context
+      function addNewCustomerFromAdvanceOrder() {
+        const custId = document.getElementById('newCustId').value.trim() || 'cust_' + Date.now();
+        const name = document.getElementById('newName').value.trim();
+        const phone = document.getElementById('newPhone').value.trim();
+        const email = document.getElementById('newEmail').value.trim();
+        const address = document.getElementById('newAddress').value.trim();
+        const unit = document.getElementById('newUnit').value.trim() || 'L';
+
+        if (!name) return showToast('Name required!');
+        if (!phone) return showToast('Mobile number required for advance orders!');
+
+        // Create new customer
+        const newCustomer = {
+          id: custId,
+          name: name,
+          phone: phone,
+          email: email || '',
+          address: address || '',
+          unit: unit,
+          balance: 0,
+          advance: 0
+        };
+
+        customers.push(newCustomer);
+        localStorage.setItem('mr_pos_customers', JSON.stringify(customers));
+
+        closeModal('addCustModal');
+        showToast(`✅ ${name} added!`);
+
+        // Refresh customer dropdown if it exists
+        populateAdvanceOrderCustomers(true);
       }
 
       // Update customer from advance order context
@@ -6192,10 +6251,11 @@ function loadCustomerRelationData(customer) {
     </div>
     
     <!-- Quick Actions -->
-    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:16px;">
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:16px;">
       <button onclick="quickCashInFromRelation('${customer.name}')" style="padding:12px; background:#dcfce7; color:#166534; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">💰 Cash In</button>
       <button onclick="quickCashOutFromRelation('${customer.name}')" style="padding:12px; background:#fef3c7; color:#92400e; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">💸 Cash Out</button>
       <button onclick="openAdvanceLedger('${customer.id || customer.name}')" style="padding:12px; background:#ede9fe; color:#7c3aed; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">📒 Advance/Udhari</button>
+      <button onclick="copyCustomerDetails('${customer.id || customer.name}')" style="padding:12px; background:#e0f2fe; color:#0369a1; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px;">📋 Copy Details</button>
     </div>
     
     <!-- Transactions Header -->
@@ -6348,6 +6408,47 @@ function quickCashOutFromRelation(customerName) {
   setTimeout(() => {
     openCustomerRelation(customerName);
   }, 300);
+}
+
+// Copy customer details to clipboard
+function copyCustomerDetails(customerId) {
+  const customer = customers.find(c => c.id === customerId || c.name === customerId);
+  if (!customer) return showToast('⚠️ Customer not found');
+
+  const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
+  const customerEntries = history.filter(h => h.customer === customer.name);
+
+  // Calculate totals
+  const totalPurchases = customerEntries.filter(e => e.method !== 'Cash In' && e.method !== 'Cash Out').reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
+  const totalPaid = customerEntries.filter(e => e.method === 'Cash' || e.method === 'UPI').reduce((sum, e) => sum + parseFloat(e.paidAmount || e.amount || 0), 0);
+  const cashIn = customerEntries.filter(e => e.method === 'Cash In').reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
+  const cashOut = customerEntries.filter(e => e.method === 'Cash Out').reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
+
+  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+
+  let details = `*${shopName}*\n`;
+  details += `👤 *Customer Details*\n\n`;
+  details += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  details += `*Name:* ${customer.name}\n`;
+  if (customer.phone) details += `*Phone:* ${customer.phone}\n`;
+  if (customer.address) details += `*Address:* ${customer.address}\n`;
+  details += `\n`;
+  details += `*💰 Financial Summary*\n`;
+  details += `━━━━━━━━━━━━━━━━━━━━\n`;
+  details += `*Total Purchases:* ${formatINR(totalPurchases)}\n`;
+  details += `*Total Paid:* ${formatINR(totalPaid + cashIn)}\n`;
+  details += `*Cash In:* ${formatINR(cashIn)}\n`;
+  details += `*Cash Out:* ${formatINR(cashOut)}\n`;
+  details += `*Current Balance:* ${formatINR(customer.balance || 0)}\n`;
+  details += `*Transactions:* ${customerEntries.length}\n`;
+  details += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  details += `🙏 Thank you!`;
+
+  navigator.clipboard.writeText(details).then(() => {
+    showToast('📋 Customer details copied!');
+  }).catch(() => {
+    showToast('⚠️ Copy failed');
+  });
 }
 
 // ========== ADVANCE/UDHARI LEDGER FUNCTIONS ==========
@@ -7175,6 +7276,50 @@ function sendRateListWhatsApp() {
   window.open(whatsappUrl, '_blank');
 
   showToast('📱 Opening WhatsApp...');
+}
+
+// Copy rate list to clipboard
+function copyRateList() {
+  const customProducts = loadData('mr_pos_custom_products', []);
+
+  if (!Array.isArray(customProducts) || customProducts.length === 0) {
+    return showToast('📋 No products to copy!');
+  }
+
+  // Get unique products only
+  const uniqueProducts = {};
+  customProducts.forEach(p => {
+    if (!uniqueProducts[p.name]) {
+      uniqueProducts[p.name] = {
+        name: p.name,
+        emoji: p.emoji || '📦',
+        price: parseFloat(p.price) || 0,
+        unit: p.unit || 'unit'
+      };
+    }
+  });
+
+  const shopName = localStorage.getItem('milkbook_shop_name') || 'Gopal Dairy Shop';
+  const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  let message = `*${shopName}*\n`;
+  message += `📋 *Product Rate List*\n`;
+  message += `📅 ${date}\n\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  Object.values(uniqueProducts).forEach(p => {
+    message += `${p.emoji} ${p.name} - ${formatINR(p.price)}/${p.unit}\n`;
+  });
+
+  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `📞 Contact us for orders!\n`;
+  message += `🙏 Thank you!`;
+
+  navigator.clipboard.writeText(message).then(() => {
+    showToast('📋 Rate list copied!');
+  }).catch(() => {
+    showToast('⚠️ Copy failed');
+  });
 }
 
 // Print rate list
