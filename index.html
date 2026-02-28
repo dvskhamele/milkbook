@@ -2144,11 +2144,13 @@
 
       <!-- FOOTER -->
       <div class="bottom">
-        <!-- Advance Management Section -->
-        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-          <input type="number" id="footerAdvanceAmount" placeholder="Amount (₹)" style="flex: 1; padding: 8px; border: 2px solid #f59e0b; border-radius: 6px; font-weight: 700; font-size: 13px;" />
-          <button onclick="updateFooterAdvance('give')" style="padding: 8px 12px; background: #22c55e; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; white-space: nowrap;">➕ Give Advance</button>
-          <button onclick="updateFooterAdvance('cut')" style="padding: 8px 12px; background: #dc2626; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; white-space: nowrap;">➖ Cut Advance</button>
+        <!-- Advance Management Section (Collapsible) -->
+        <div id="footerAdvanceSection" style="display: none; margin-bottom: 6px;">
+          <div style="display: flex; gap: 6px;">
+            <input type="number" id="footerAdvanceAmount" placeholder="Amount (₹)" style="flex: 1; padding: 8px; border: 2px solid #f59e0b; border-radius: 6px; font-weight: 700; font-size: 13px;" />
+            <button onclick="updateFooterAdvance('give')" style="padding: 8px 12px; background: #22c55e; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; white-space: nowrap;">➕ Give</button>
+            <button onclick="updateFooterAdvance('cut')" style="padding: 8px 12px; background: #dc2626; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; white-space: nowrap;">➖ Cut</button>
+          </div>
         </div>
         
         <!-- Payment Mode: CASH ONLY (UPI via farmer double-click) -->
@@ -2156,7 +2158,7 @@
           💵 CASH
         </button>
 
-        <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff; min-width: 120px;">
+        <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff; min-width: 120px;" onclick="toggleFooterAdvance()">
           📒 LIKHLO <span class="subnote">udhari</span>
         </button>
       </div>
@@ -4864,7 +4866,7 @@ function playSuccessSound() {
 function sendEntryWhatsApp(entry) {
     const f = getFarmerById(entry.farmerId);
     if (!f || !f.phone) return;
-    
+
     let msg = `*🥛 Milk Collection Receipt*\n`;
     msg += `━━━━━━━━━━━━━━━━━━\n`;
     msg += `Farmer: ${entry.farmerName}\n`;
@@ -4879,8 +4881,14 @@ function sendEntryWhatsApp(entry) {
     msg += `Payment: ${entry.paymentMode === 'Cash' ? '💵 Cash' : entry.paymentMode === 'UPI' ? '📱 UPI' : entry.paymentMode === 'Account' ? '🏦 Account' : '📒 Credit'}\n`;
     msg += `━━━━━━━━━━━━━━━━━━\n`;
     msg += `Date: ${new Date(entry.createdAt).toLocaleString()}\n`;
-    msg += `🙏 Thank you!\nGopal Dairy Shop`;
     
+    // Add transaction ID request for paid entries
+    if (entry.paymentMode === 'Cash' || entry.paymentMode === 'UPI' || entry.paymentMode === 'Account') {
+        msg += `\n📱 *Please send txn ID / pic of txn received*\n`;
+    }
+    
+    msg += `\n🙏 Thank you!\nGopal Dairy Shop`;
+
     const wpUrl = `https://wa.me/91${f.phone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
     window.open(wpUrl, '_blank');
 }
@@ -6802,6 +6810,17 @@ function updateFooterAdvance(action) {
         document.getElementById('footerAdvanceAmount').value = '';
         showToast(`${formatAmount(amt)} advance cut ✅`);
         renderAll();
+    }
+}
+
+// Toggle footer advance section visibility
+function toggleFooterAdvance() {
+    const section = document.getElementById('footerAdvanceSection');
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+        document.getElementById('footerAdvanceAmount').focus();
+    } else {
+        section.style.display = 'none';
     }
 }
 
