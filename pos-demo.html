@@ -2488,10 +2488,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
                         <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
                           ${idDisplay}
                           <div style="font-weight:700;">${c.name}</div>
-                          ${phoneWarning}
-                        </div>
-                        <div style="font-size:10px; color:var(--muted);">
-                          ${c.phone || 'No phone'}${c.address ? ' • ' + c.address : ''}
+                          ${c.phone || c.address ? `<span style="font-size:9px; color:#64748b;">(${c.phone || 'No phone'}${c.address ? ' • ' + c.address : ''})</span>` : ''}
                         </div>
                         ${buysHtml}
                       </div>
@@ -2810,11 +2807,15 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
         // Clear existing options
         select.innerHTML = '<option value="">-- Select Customer --</option>';
         
-        // Add all customers
+        // Add all customers with details in brackets
         customers.forEach(c => {
           const option = document.createElement('option');
           option.value = c.name;
-          option.textContent = c.name + (c.phone ? ` (${c.phone})` : '');
+          // Show phone and address in brackets
+          const details = [];
+          if (c.phone) details.push(c.phone);
+          if (c.address) details.push(c.address);
+          option.textContent = c.name + (details.length > 0 ? ` (${details.join(' • ')})` : '');
           select.appendChild(option);
         });
         
