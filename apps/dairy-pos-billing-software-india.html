@@ -7289,6 +7289,53 @@ function loadCustomProducts() {
   if (enableCompact) console.log('📦 Compact mode enabled (' + totalCards + ' products)');
   if (hideEmoji) console.log('🎭 Emoji hidden (' + totalCards + ' products)');
   if (hidePrices) console.log('💰 Prices hidden (' + totalCards + ' products)');
+  
+  // Always move action buttons to last row
+  moveActionButtonsToLastRow();
+}
+
+// Move action buttons (Create, Edit, Convert) to always be in the last row
+function moveActionButtonsToLastRow() {
+  const grid = document.getElementById('productGrid');
+  if (!grid) return;
+  
+  // Find action button cards
+  const createActionCard = grid.querySelector('.p-card[onclick*="addProductModal"]');
+  const editActionCard = grid.querySelector('.p-card[onclick*="openEditInventory"]');
+  const convertActionCard = grid.querySelector('.p-card[onclick*="convertModal"]');
+  
+  if (!createActionCard || !editActionCard || !convertActionCard) return;
+  
+  // Get all product cards (excluding action buttons)
+  const productCards = Array.from(grid.querySelectorAll('.p-card:not([onclick*="addProductModal"]):not([onclick*="openEditInventory"]):not([onclick*="convertModal"])'));
+  
+  if (productCards.length === 0) return;
+  
+  // Calculate how many cards fit per row (based on grid-template-columns)
+  const gridStyle = window.getComputedStyle(grid);
+  const templateColumns = gridStyle.gridTemplateColumns;
+  const cardsPerRow = templateColumns.split(' ').length || 4;
+  
+  // Calculate how many cards needed to fill second-to-last row
+  const remainingCards = productCards.length % cardsPerRow;
+  const cardsNeeded = remainingCards === 0 ? 0 : cardsPerRow - remainingCards;
+  
+  // Move action buttons to end
+  if (cardsNeeded > 0) {
+    // Add spacer cards if needed to fill second-to-last row
+    for (let i = 0; i < cardsNeeded; i++) {
+      const spacer = document.createElement('div');
+      spacer.className = 'p-card';
+      spacer.style.visibility = 'hidden';
+      spacer.style.pointerEvents = 'none';
+      grid.insertBefore(spacer, createActionCard);
+    }
+  }
+  
+  // Ensure action buttons are at the end
+  grid.appendChild(createActionCard);
+  grid.appendChild(editActionCard);
+  grid.appendChild(convertActionCard);
 }
 
 // Create default products on first-time setup
