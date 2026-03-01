@@ -4460,9 +4460,17 @@ function selectAnimal(type) {
     selectedBtn.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.2)';
     selectedBtn.classList.add('selected');
   }
-  
+
   // Re-render to update calculations
   renderTrust();
+  
+  // Focus on LIKH LO button after selection
+  setTimeout(() => {
+    const likhloBtn = el("btnLikhlo");
+    if (likhloBtn) {
+      likhloBtn.focus();
+    }
+  }, 50);
 }
 
 // Farmer Form Animal Type Toggle - Keyboard optimized with VISUAL SELECTION
