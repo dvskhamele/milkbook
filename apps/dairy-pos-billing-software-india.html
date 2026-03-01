@@ -796,7 +796,25 @@
     </style>
   </head>
   <body>
+    <!-- Mobile POS Stepped Interface CSS -->
+    <link rel="stylesheet" href="pos-mobile-stepped.css" />
+    
     <div class="app">
+      <!-- Mobile Steps Indicator -->
+      <div class="pos-steps-indicator mobile-only" id="posStepsIndicator">
+        <div style="flex:1;text-align:center;">
+          <div class="pos-step-dot active" id="step1Dot"></div>
+          <div class="pos-step-label">1️⃣ Products</div>
+        </div>
+        <div style="flex:1;text-align:center;">
+          <div class="pos-step-dot" id="step2Dot"></div>
+          <div class="pos-step-label">2️⃣ Customer</div>
+        </div>
+        <div style="flex:1;text-align:center;">
+          <div class="pos-step-dot" id="step3Dot"></div>
+          <div class="pos-step-label">3️⃣ Payment</div>
+        </div>
+      </div>
       <div class="topbar">
         <!-- Product Category Filters (Left of Logo) -->
         <div style="display: flex; gap: 4px; align-items: center; padding: 4px 8px; background: #f8fafc; border-radius: 8px; margin-right: 8px;">
@@ -10660,6 +10678,66 @@ function printRateList() {
         const shift = (hour >= 4 && hour < 16) ? 'Morning' : 'Evening';
         ShiftReconciliation.showReconciliation(today, shift);
       }
+    </script>
+    
+    <!-- Mobile Next Button Bar -->
+    <div class="pos-next-bar mobile-only" id="posNextBar">
+      <button onclick="goToNextStep()" id="posNextBtn">
+        Next: Customer ➡️
+      </button>
+    </div>
+    
+    <!-- Mobile Step Navigation Script -->
+    <script>
+      let currentPosStep = 1;
+      const totalPosSteps = 3;
+      
+      function goToNextStep() {
+        if (currentPosStep < totalPosSteps) {
+          currentPosStep++;
+          updatePosSteps();
+        }
+      }
+      
+      function goToPrevStep() {
+        if (currentPosStep > 1) {
+          currentPosStep--;
+          updatePosSteps();
+        }
+      }
+      
+      function updatePosSteps() {
+        // Update dots
+        for (let i = 1; i <= totalPosSteps; i++) {
+          const dot = document.getElementById('step' + i + 'Dot');
+          if (dot) {
+            dot.classList.toggle('active', i <= currentPosStep);
+          }
+        }
+        
+        // Update button text
+        const nextBtn = document.getElementById('posNextBtn');
+        if (nextBtn) {
+          if (currentPosStep === 1) {
+            nextBtn.textContent = 'Next: Customer ➡️';
+          } else if (currentPosStep === 2) {
+            nextBtn.textContent = 'Next: Payment ➡️';
+          } else {
+            nextBtn.textContent = '✅ Complete Order';
+          }
+        }
+        
+        // Show/hide next bar
+        const nextBar = document.getElementById('posNextBar');
+        if (nextBar) {
+          nextBar.classList.toggle('active', currentPosStep < totalPosSteps);
+        }
+        
+        console.log('📱 POS Step:', currentPosStep, '/', totalPosSteps);
+      }
+      
+      // Initialize
+      updatePosSteps();
     </script>
   </body>
 </html>

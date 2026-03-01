@@ -1,0 +1,120 @@
+/**
+ * POS Mobile Stepped Interface
+ * Focus on one task at a time
+ */
+
+/* Mobile POS Steps */
+.pos-step {
+  display: none;
+}
+
+.pos-step.active {
+  display: block;
+}
+
+/* Step 1: Products (Full Screen on Mobile) */
+@media (max-width: 768px) {
+  .pos-step-products {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 100;
+    display: none;
+    overflow-y: auto;
+  }
+  
+  .pos-step-products.active {
+    display: block;
+  }
+  
+  /* Product grid takes full screen */
+  .pos-step-products .product-grid {
+    padding: 8px;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
+  }
+  
+  /* Next button at bottom */
+  .pos-next-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 12px;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+    z-index: 101;
+    display: none;
+  }
+  
+  .pos-next-bar.active {
+    display: block;
+  }
+  
+  .pos-next-bar button {
+    width: 100%;
+    padding: 14px;
+    background: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  /* Step indicator */
+  .pos-steps-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 102;
+    display: none;
+  }
+  
+  .pos-steps-indicator.active {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .pos-step-dot {
+    flex: 1;
+    height: 4px;
+    background: #e2e8f0;
+    margin: 0 2px;
+    border-radius: 2px;
+  }
+  
+  .pos-step-dot.active {
+    background: #16a34a;
+  }
+  
+  .pos-step-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+    text-align: center;
+    margin-top: 4px;
+  }
+}
+
+/* Desktop - Show all panels normally */
+@media (min-width: 769px) {
+  .pos-step-products {
+    position: static !important;
+    display: block !important;
+  }
+  
+  .pos-next-bar,
+  .pos-steps-indicator {
+    display: none !important;
+  }
+}
