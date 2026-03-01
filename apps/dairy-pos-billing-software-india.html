@@ -6770,14 +6770,18 @@ function loadLedgerSummary() {
 // Show specific ledger
 function showLedger(ledgerType) {
   let entries = [];
-  
+
   try {
     if (ledgerType === 'milk') {
-      entries = JSON.parse(localStorage.getItem('mr_milk_entries') || '[]');
+      // Try Collection page key first
+      const collectionEntries = localStorage.getItem('milkapp_entries_v2');
+      if (collectionEntries) {
+        entries = JSON.parse(collectionEntries);
+      }
     } else if (ledgerType === 'production') {
       entries = JSON.parse(localStorage.getItem('mr_production_batches') || '[]');
     } else if (ledgerType === 'inventory') {
-      entries = []; // Would come from inventory_current
+      entries = JSON.parse(localStorage.getItem('mr_inventory_movements') || '[]');
     } else if (ledgerType === 'sales') {
       entries = JSON.parse(localStorage.getItem('mr_pos_history') || '[]');
     } else if (ledgerType === 'cash') {
@@ -6787,13 +6791,13 @@ function showLedger(ledgerType) {
     console.error('Error loading ledger:', e);
     entries = [];
   }
-  
+
   // Ensure entries is an array and get last 10
   if (!Array.isArray(entries)) {
     entries = [];
   }
   const recentEntries = entries.slice(-10);
-  
+
   const ledgers = {
     milk: '🥛 Milk Ledger',
     production: '🏭 Production Ledger',
@@ -6801,9 +6805,9 @@ function showLedger(ledgerType) {
     sales: '💰 Sales Ledger',
     cash: '💵 Cash/Credit Ledger'
   };
-  
+
   const ledgerTitle = ledgers[ledgerType];
-  
+
   // Create modal with ledger entries
   const html = `
     <div class="overlay" id="ledgerOverlay" style="display:flex;align-items:center;justify-content:center;z-index:99999;">
@@ -6813,11 +6817,15 @@ function showLedger(ledgerType) {
           <button onclick="document.getElementById('ledgerOverlay').remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:white;">✖</button>
         </div>
         <div style="padding:20px;">
-          ${recentEntries.length === 0 ? 
+          ${recentEntries.length === 0 ?
             '<div style="text-align:center;color:#94a3b8;padding:40px;">No entries yet</div>' :
             recentEntries.map(e => {
               let displayData = '';
-              if (e.farmerName) {
+              if (ledgerType === 'inventory') {
+                // Inventory movement display
+                displayData = `${e.direction} ${e.quantity}${e.unit} ${e.item_type} (${e.movement_type})`;
+                if (e.notes) displayData += ` - ${e.notes}`;
+              } else if (e.farmerName) {
                 displayData = `${e.farmerName} - ${e.qty}L @ ₹${e.rate}/L = ₹${e.amount}`;
               } else if (e.batch_number) {
                 displayData = `${e.batch_number}: ${e.milk_quantity}L → ${e.product_quantity}kg ${e.product_type}`;
@@ -6828,8 +6836,9 @@ function showLedger(ledgerType) {
               }
               return `
                 <div style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:8px;border-left:3px solid #3b82f6;">
-                  <div style="font-size:11px;font-weight:700;color:#475569;">${e.batch_number || e.farmerName || e.customer_name || 'Entry'}</div>
+                  <div style="font-size:11px;font-weight:700;color:#475569;">${e.batch_number || e.farmerName || e.customer_name || e.item_type || 'Entry'}</div>
                   <div style="font-size:11px;color:#64748b;margin-top:4px;">${displayData}</div>
+                  <div style="font-size:10px;color:#94a3b8;margin-top:4px;">${e.created_at ? new Date(e.created_at).toLocaleString() : ''}</div>
                 </div>
               `;
             }).join('')
@@ -6838,7 +6847,7 @@ function showLedger(ledgerType) {
       </div>
     </div>
   `;
-  
+
   document.body.insertAdjacentHTML('beforeend', html);
 }
 
@@ -6957,17 +6966,17 @@ function confirmProduction() {
   const shift = document.getElementById('prodShift').value;
   const batchId = document.getElementById('batchIdDisplay').textContent;
   const notes = document.getElementById('prodNotes').value;
-  
+
   if (!milkQty || !productValue) {
     showToast('⚠️ Please enter milk quantity and select product');
     return;
   }
-  
+
   const productData = productValue.split(',');
   const productType = productData[0];
   const rate = parseFloat(productData[1]);
   const milkRatio = parseFloat(productData[2]) || 5;
-  
+
   // Get product quantity (with override if active)
   let productQty;
   const overrideSection = document.getElementById('prodOverrideSection');
@@ -6976,7 +6985,7 @@ function confirmProduction() {
   } else {
     productQty = milkQty / milkRatio;
   }
-  
+
   // Create production batch
   const batch = {
     batch_number: batchId,
@@ -6989,12 +6998,47 @@ function confirmProduction() {
     notes: notes,
     created_at: new Date().toISOString()
   };
-  
+
   // Save to localStorage
   const batches = JSON.parse(localStorage.getItem('mr_production_batches') || '[]');
   batches.push(batch);
   localStorage.setItem('mr_production_batches', JSON.stringify(batches));
+
+  // Create inventory movements (for Inventory Ledger)
+  const movements = JSON.parse(localStorage.getItem('mr_inventory_movements') || '[]');
   
+  // OUT movement for milk
+  movements.push({
+    id: 'mov_' + Date.now(),
+    movement_type: 'conversion_out',
+    direction: 'OUT',
+    item_type: milkSource === 'cow' ? 'milk_cow' : (milkSource === 'buff' ? 'milk_buff' : 'milk_mixed'),
+    quantity: milkQty,
+    unit: 'L',
+    reference_type: 'production_batch',
+    reference_id: batchId,
+    batch_number: batchId,
+    notes: `Converted to ${productQty}kg ${productType}`,
+    created_at: new Date().toISOString()
+  });
+  
+  // IN movement for product
+  movements.push({
+    id: 'mov_' + (Date.now() + 1),
+    movement_type: 'conversion_in',
+    direction: 'IN',
+    item_type: productType,
+    quantity: productQty,
+    unit: 'kg',
+    reference_type: 'production_batch',
+    reference_id: batchId,
+    batch_number: batchId,
+    notes: `Produced from ${milkQty}L ${milkSource} milk`,
+    created_at: new Date().toISOString()
+  });
+  
+  localStorage.setItem('mr_inventory_movements', JSON.stringify(movements));
+
   // Add to cart (for POS integration)
   cart.push({
     name: productType.charAt(0).toUpperCase() + productType.slice(1),
@@ -7006,10 +7050,13 @@ function confirmProduction() {
     isProduction: true,
     batchId: batchId
   });
-  
+
   updateUI();
   closeModal('convertModal');
-  showToast('✅ Production batch created: ' + batchId);
+  showToast(`✅ Production batch created: ${batchId} (${milkQty}L → ${productQty}kg ${productType})`);
+  
+  // Refresh recent batches display
+  loadRecentBatches();
 }
 
 // Suggest appropriate quantities based on unit selected
