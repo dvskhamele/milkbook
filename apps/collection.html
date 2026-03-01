@@ -2082,6 +2082,73 @@
   <body>
     <!-- Mobile CSS -->
     <link rel="stylesheet" href="mobile-optimized.css" />
+    <style>
+      /* Big Scrollbar for Collection Page */
+      @media (max-width: 768px) {
+        /* Main panel scrollbar */
+        .mainPanel,
+        .actionBody,
+        .rightPanel {
+          overflow-y: auto !important;
+          scrollbar-width: thick !important;
+          scrollbar-color: #3b82f6 #e2e8f0 !important;
+        }
+        
+        /* Webkit scrollbar */
+        .mainPanel::-webkit-scrollbar,
+        .actionBody::-webkit-scrollbar,
+        .rightPanel::-webkit-scrollbar {
+          width: 16px !important;
+        }
+        
+        .mainPanel::-webkit-scrollbar-track,
+        .actionBody::-webkit-scrollbar-track,
+        .rightPanel::-webkit-scrollbar-track {
+          background: #e2e8f0 !important;
+          border-radius: 8px !important;
+        }
+        
+        .mainPanel::-webkit-scrollbar-thumb,
+        .actionBody::-webkit-scrollbar-thumb,
+        .rightPanel::-webkit-scrollbar-thumb {
+          background: #3b82f6 !important;
+          border-radius: 8px !important;
+          border: 2px solid #e2e8f0 !important;
+        }
+        
+        .mainPanel::-webkit-scrollbar-thumb:hover,
+        .actionBody::-webkit-scrollbar-thumb:hover,
+        .rightPanel::-webkit-scrollbar-thumb:hover {
+          background: #2563eb !important;
+        }
+        
+        /* Table scrollbar */
+        table {
+          scrollbar-width: thick !important;
+          scrollbar-color: #3b82f6 #e2e8f0 !important;
+        }
+        
+        table::-webkit-scrollbar {
+          height: 16px !important;
+          width: 16px !important;
+        }
+        
+        table::-webkit-scrollbar-track {
+          background: #e2e8f0 !important;
+          border-radius: 8px !important;
+        }
+        
+        table::-webkit-scrollbar-thumb {
+          background: #3b82f6 !important;
+          border-radius: 8px !important;
+          border: 2px solid #e2e8f0 !important;
+        }
+        
+        table::-webkit-scrollbar-thumb:hover {
+          background: #2563eb !important;
+        }
+      }
+    </style>
     
     <div class="app">
       <!-- Mobile Header (Mobile Only) -->
