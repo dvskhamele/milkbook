@@ -2069,9 +2069,26 @@
 </div>
 
   <body>
+    <!-- Mobile CSS -->
+    <link rel="stylesheet" href="mobile-optimized.css" />
+    
     <div class="app">
-      <!-- HEADER -->
-      <div class="topbar">
+      <!-- Mobile Header with Hamburger -->
+      <div class="mobile-header">
+        <button class="hamburger-btn" onclick="SidebarManager.toggle()" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div style="text-align:center;">
+          <div style="font-size:16px;font-weight:900;color:#1e293b;">🥛 MilkRecord</div>
+          <div id="mobileHeaderShop" style="font-size:11px;color:#64748b;">Loading...</div>
+        </div>
+        <button onclick="openOverlay('overlayHistory')" style="width:48px;height:48px;border:none;background:#f1f5f9;border-radius:12px;cursor:pointer;font-size:20px;" aria-label="History">📜</button>
+      </div>
+      
+      <!-- Desktop Header (hidden on mobile) -->
+      <div class="topbar desktop-only">
         <div class="brand">
           <a href="homepage_landing_recovered.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
             <div class="logo" style="background: linear-gradient(180deg, #2563eb, #1d4ed8); border-color: #1e40af;">
@@ -9087,6 +9104,18 @@ These are required for procurement-grade accountability.`;
       };
 
       init();
+    </script>
+    
+    <!-- Mobile Sidebar -->
+    <script src="../js/mobile-sidebar.js"></script>
+    <script>
+      // Initialize mobile header
+      document.addEventListener('DOMContentLoaded', function() {
+        const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Your Dairy';
+        const shopEl = document.getElementById('mobileHeaderShop');
+        if (shopEl) shopEl.textContent = shopName;
+        if (window.SidebarManager) SidebarManager.setActive('collection');
+      });
     </script>
   </body>
 </html>

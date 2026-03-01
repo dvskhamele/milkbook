@@ -1,0 +1,148 @@
+/**
+ * MilkRecord - Mobile Sidebar Navigation
+ * Hamburger menu with quick access to all features
+ */
+
+(function() {
+  'use strict';
+
+  // Sidebar Manager
+  window.SidebarManager = {
+    isOpen: false,
+    
+    // Initialize sidebar
+    init: function() {
+      this.createSidebar();
+      this.addEventListeners();
+      console.log('✅ Sidebar initialized');
+    },
+    
+    // Create sidebar HTML
+    createSidebar: function() {
+      const html = `
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="SidebarManager.toggle()"></div>
+        
+        <!-- Sidebar Menu -->
+        <div class="sidebar-menu" id="sidebarMenu">
+          <div class="sidebar-header">
+            <h2>🥛 MilkRecord</h2>
+            <p id="sidebarShopName">Loading...</p>
+          </div>
+          
+          <div class="sidebar-nav">
+            <button onclick="SidebarManager.navigate('collection')" id="navCollection">
+              <span>📊</span> Collection
+            </button>
+            <button onclick="SidebarManager.navigate('pos')" id="navPOS">
+              <span>🛒</span> POS Billing
+            </button>
+            <button onclick="SidebarManager.navigate('production')" id="navProduction">
+              <span>🏭</span> Production
+            </button>
+            <button onclick="SidebarManager.navigate('ledger')" id="navLedger">
+              <span>📒</span> Customer Ledger
+            </button>
+            <button onclick="SidebarManager.navigate('farmers')" id="navFarmers">
+              <span>👥</span> Farmers
+            </button>
+            <button onclick="SidebarManager.navigate('products')" id="navProducts">
+              <span>📦</span> Products
+            </button>
+            <button onclick="SidebarManager.navigate('history')" id="navHistory">
+              <span>📜</span> History
+            </button>
+            <button onclick="SidebarManager.navigate('reports')" id="navReports">
+              <span>📊</span> Reports
+            </button>
+            <button onclick="SidebarManager.navigate('settings')" id="navSettings">
+              <span>⚙️</span> Settings
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.insertAdjacentHTML('afterbegin', html);
+    },
+    
+    // Toggle sidebar
+    toggle: function() {
+      this.isOpen = !this.isOpen;
+      const overlay = document.getElementById('sidebarOverlay');
+      const menu = document.getElementById('sidebarMenu');
+      const hamburger = document.querySelector('.hamburger-btn');
+      
+      if (this.isOpen) {
+        overlay.classList.add('active');
+        menu.classList.add('active');
+        if (hamburger) hamburger.classList.add('active');
+      } else {
+        overlay.classList.remove('active');
+        menu.classList.remove('active');
+        if (hamburger) hamburger.classList.remove('active');
+      }
+    },
+    
+    // Navigate to page
+    navigate: function(page) {
+      const pages = {
+        'collection': 'collection.html',
+        'pos': 'dairy-pos-billing-software-india.html',
+        'production': 'production.html',
+        'ledger': 'dairy-pos-billing-software-india.html#ledger',
+        'farmers': 'collection.html#farmers',
+        'products': 'dairy-pos-billing-software-india.html#products',
+        'history': 'dairy-pos-billing-software-india.html#history',
+        'reports': 'reports.html',
+        'settings': 'settings.html'
+      };
+      
+      if (pages[page]) {
+        window.location.href = pages[page];
+      }
+      
+      this.toggle();
+    },
+    
+    // Add event listeners
+    addEventListeners: function() {
+      // Handle back button
+      window.addEventListener('popstate', () => {
+        if (this.isOpen) {
+          this.toggle();
+        }
+      });
+      
+      // Load shop name
+      this.loadShopInfo();
+    },
+    
+    // Load shop information
+    loadShopInfo: function() {
+      const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Your Dairy';
+      const shopNameEl = document.getElementById('sidebarShopName');
+      if (shopNameEl) {
+        shopNameEl.textContent = shopName;
+      }
+    },
+    
+    // Set active nav item
+    setActive: function(pageId) {
+      const buttons = document.querySelectorAll('.sidebar-nav button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      
+      const activeBtn = document.getElementById('nav' + pageId.charAt(0).toUpperCase() + pageId.slice(1));
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+      }
+    }
+  };
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => SidebarManager.init());
+  } else {
+    SidebarManager.init();
+  }
+
+})();

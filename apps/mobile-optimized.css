@@ -1,0 +1,548 @@
+/**
+ * MilkRecord - Mobile-First Optimization
+ * Touch-friendly, fast, minimal taps
+ */
+
+/* ============================================
+   BASE MOBILE STYLES
+   ============================================ */
+:root {
+  --touch-min: 48px;        /* Minimum touch target */
+  --touch-comfort: 56px;    /* Comfortable touch target */
+  --input-height: 52px;     /* Input field height */
+  --btn-primary: #16a34a;
+  --btn-secondary: #3b82f6;
+  --btn-danger: #dc2626;
+  --bg-light: #f8fafc;
+  --border-light: #e2e8f0;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;          /* Prevents iOS zoom */
+  line-height: 1.5;
+  touch-action: manipulation;
+}
+
+/* ============================================
+   HAMBURGER SIDEBAR NAVIGATION
+   ============================================ */
+.mobile-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: white;
+  border-bottom: 2px solid var(--border-light);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.hamburger-btn {
+  width: var(--touch-comfort);
+  height: var(--touch-comfort);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 8px;
+}
+
+.hamburger-btn span {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background: #1e293b;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.hamburger-btn.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger-btn.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-btn.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1001;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sidebar-menu {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  z-index: 1002;
+  transition: left 0.3s ease-out;
+  overflow-y: auto;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+}
+
+.sidebar-menu.active {
+  left: 0;
+}
+
+.sidebar-header {
+  background: linear-gradient(135deg, #16a34a, #059669);
+  color: white;
+  padding: 24px 16px;
+}
+
+.sidebar-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.sidebar-header p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.sidebar-nav {
+  padding: 16px 0;
+}
+
+.sidebar-nav button {
+  width: 100%;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s;
+}
+
+.sidebar-nav button:hover {
+  background: #f1f5f9;
+}
+
+.sidebar-nav button.active {
+  background: #f0fdf4;
+  color: #16a34a;
+  border-left: 4px solid #16a34a;
+}
+
+.sidebar-nav button span {
+  font-size: 20px;
+}
+
+/* ============================================
+   MOBILE INPUT OPTIMIZATION
+   ============================================ */
+input[type="text"],
+input[type="number"],
+input[type="tel"],
+input[type="email"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+  width: 100%;
+  height: var(--input-height);
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 2px solid var(--border-light);
+  border-radius: 12px;
+  background: white;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--btn-primary);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+/* Large number inputs for quantity */
+.input-large {
+  font-size: 24px;
+  font-weight: 900;
+  text-align: center;
+  height: 64px;
+}
+
+/* ============================================
+   MOBILE BUTTONS
+   ============================================ */
+.btn {
+  min-height: var(--touch-min);
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  touch-action: manipulation;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--btn-primary);
+  color: white;
+}
+
+.btn-secondary {
+  background: var(--btn-secondary);
+  color: white;
+}
+
+.btn-danger {
+  background: var(--btn-danger);
+  color: white;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-lg {
+  height: 56px;
+  font-size: 16px;
+}
+
+/* ============================================
+   MOBILE CARD LAYOUTS
+   ============================================ */
+.mobile-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 2px solid var(--border-light);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.mobile-card.active {
+  border-color: var(--btn-primary);
+  background: #f0fdf4;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* ============================================
+   QUICK ACTION GRID
+   ============================================ */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 16px;
+}
+
+.quick-action-btn {
+  background: white;
+  border: 2px solid var(--border-light);
+  border-radius: 16px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-action-btn:active {
+  transform: scale(0.95);
+  border-color: var(--btn-primary);
+}
+
+.quick-action-btn span {
+  font-size: 32px;
+}
+
+.quick-action-btn strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+}
+
+/* ============================================
+   MOBILE PRODUCT/FARMER LIST
+   ============================================ */
+.mobile-list {
+  padding: 16px;
+}
+
+.list-item {
+  background: white;
+  border: 2px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.list-item:active {
+  background: #f1f5f9;
+  border-color: var(--btn-secondary);
+}
+
+.list-item.selected {
+  border-color: var(--btn-primary);
+  background: #f0fdf4;
+}
+
+.list-item-emoji {
+  font-size: 32px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.list-item-info {
+  flex: 1;
+}
+
+.list-item-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.list-item-detail {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.list-item-action {
+  min-width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--border-light);
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+/* ============================================
+   MOBILE CART/BILL
+   ============================================ */
+.mobile-cart {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 2px solid var(--border-light);
+  padding: 16px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+  z-index: 999;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.cart-total-label {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.cart-total-amount {
+  font-size: 24px;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+.cart-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+/* ============================================
+   MOBILE MODAL
+   ============================================ */
+.mobile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.mobile-modal {
+  background: white;
+  width: 100%;
+  max-height: 90vh;
+  border-radius: 20px 20px 0 0;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  padding: 20px 16px;
+  border-bottom: 2px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+.modal-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f5f9;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-body {
+  padding: 20px 16px;
+}
+
+/* ============================================
+   RESPONSIVE GRID
+   ============================================ */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+  
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+  
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-center { text-align: center; }
+.text-bold { font-weight: 700; }
+.text-large { font-size: 20px; }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-4 { margin-bottom: 16px; }
+.p-2 { padding: 8px; }
+.p-4 { padding: 16px; }
+
+/* Safe area for notched phones */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .mobile-cart {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}
