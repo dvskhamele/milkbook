@@ -1360,7 +1360,10 @@
                 
                 <!-- Today's Milk Collection -->
                 <div style="background:#eff6ff; padding:16px; border-radius:12px; border:2px solid #3b82f6;">
-                    <div style="font-size:12px; font-weight:700; color:#1e40af; margin-bottom:12px;">📊 Today's Milk Collection</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <div style="font-size:12px; font-weight:700; color:#1e40af;">📊 Today's Milk Collection</div>
+                        <a href="collection.html" style="font-size:11px; color:#2563eb; font-weight:700; text-decoration:none; background:#dbeafe; padding:4px 8px; border-radius:4px;">📝 Go to Collection →</a>
+                    </div>
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                         <div style="background:white; padding:12px; border-radius:8px;">
                             <div style="font-size:10px; color:#64748b; font-weight:700;">🥛 COW MILK</div>
@@ -1378,6 +1381,10 @@
                             <span>📈 TOTAL:</span>
                             <span><span id="todayTotalMilk">0.0</span> L | ₹<span id="todayTotalAmount">0</span></span>
                         </div>
+                    </div>
+                    <div id="noMilkWarning" style="display:none; margin-top:12px; padding:12px; background:#fef2f2; border:2px solid #fecaca; border-radius:8px; text-align:center;">
+                        <div style="font-size:12px; font-weight:700; color:#991b1b; margin-bottom:4px;">⚠️ No milk collected today!</div>
+                        <div style="font-size:11px; color:#7f1d1d;">Go to Collection page to add milk entries first</div>
                     </div>
                 </div>
 
@@ -1497,11 +1504,22 @@
                 <!-- Actions -->
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                     <button type="button" onclick="closeModal('convertModal')" style="padding:14px; background:#f1f5f9; border:none; border-radius:8px; font-weight:700; cursor:pointer; color:#64748b; font-size:14px;">Cancel</button>
-                    <button type="button" onclick="confirmProduction()" style="padding:14px; background:linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border:none; border-radius:8px; font-weight:700; cursor:pointer; color:white; font-size:14px;">✅ Create Batch</button>
+                    <button type="button" id="createBatchBtn" onclick="confirmProduction()" style="padding:14px; background:linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border:none; border-radius:8px; font-weight:700; cursor:pointer; color:white; font-size:14px;" disabled>✅ Create Batch</button>
+                </div>
+                <div id="createBatchDisabled" style="display:none; padding:12px; background:#fef3c7; border:2px solid #f59e0b; border-radius:8px; text-align:center; font-size:11px; color:#92400e; font-weight:700;">
+                    ⚠️ Add milk collection first to enable production
                 </div>
 
                 <div style="font-size:10px; color:#64748b; text-align:center;">
                     💡 Common ratios: Paneer (5L→1kg), Ghee (25L→1kg), Curd (1L→1kg)
+                </div>
+                
+                <!-- Recent Batches -->
+                <div id="recentBatches" style="margin-top:16px; padding-top:16px; border-top:2px dashed #e2e8f0;">
+                    <div style="font-size:11px; font-weight:700; color:#475569; margin-bottom:8px;">📜 Recent Batches (Today)</div>
+                    <div id="recentBatchesList" style="max-height:150px; overflow-y:auto;">
+                        <div style="text-align:center; color:#94a3b8; padding:12px; font-size:12px;">No batches created today</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -6635,7 +6653,59 @@ function loadTodayMilkForProduction() {
   if (el('availableCow')) el('availableCow').textContent = cowMilk.toFixed(1);
   if (el('availableBuff')) el('availableBuff').textContent = buffMilk.toFixed(1);
   
+  // Show warning if no milk collected
+  const noMilkWarning = document.getElementById('noMilkWarning');
+  const createBatchBtn = document.getElementById('createBatchBtn');
+  const createBatchDisabled = document.getElementById('createBatchDisabled');
+  
+  if (noMilkWarning) {
+    if (cowMilk === 0 && buffMilk === 0) {
+      noMilkWarning.style.display = 'block';
+      if (createBatchBtn) createBatchBtn.disabled = true;
+      if (createBatchDisabled) createBatchDisabled.style.display = 'block';
+    } else {
+      noMilkWarning.style.display = 'none';
+      if (createBatchBtn) createBatchBtn.disabled = false;
+      if (createBatchDisabled) createBatchDisabled.style.display = 'none';
+    }
+  }
+  
   window.todayMilk = { cow: cowMilk, buff: buffMilk, total: cowMilk + buffMilk };
+  
+  // Load recent batches
+  loadRecentBatches();
+}
+
+// Load recent production batches
+function loadRecentBatches() {
+  const batches = JSON.parse(localStorage.getItem('mr_production_batches') || '[]');
+  const today = fmtDate(new Date());
+  
+  // Filter today's batches
+  const todayBatches = batches.filter(b => b.created_at && b.created_at.startsWith(today));
+  
+  const listEl = document.getElementById('recentBatchesList');
+  if (!listEl) return;
+  
+  if (todayBatches.length === 0) {
+    listEl.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:12px; font-size:12px;">No batches created today</div>';
+    return;
+  }
+  
+  // Show last 5 batches
+  const recent = todayBatches.slice(-5).reverse();
+  
+  listEl.innerHTML = recent.map(b => `
+    <div style="background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:8px; border-left:3px solid #7c3aed;">
+      <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:#475569;">
+        <span>${b.batch_number || 'BATCH'}</span>
+        <span>${b.product_type.toUpperCase()}</span>
+      </div>
+      <div style="font-size:11px; color:#64748b; margin-top:4px;">
+        ${b.milk_quantity.toFixed(1)}L → ${b.product_quantity.toFixed(2)}kg (${b.conversion_ratio}:1)
+      </div>
+    </div>
+  `).join('');
 }
 
 // Update production ratio
