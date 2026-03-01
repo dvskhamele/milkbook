@@ -8409,6 +8409,29 @@ async function syncAllData() {
 
 // Load shop settings from API when modal opens
 async function loadShopSettings() {
+  const el = (id) => document.getElementById(id);
+  
+  // FIRST: Load from localStorage (fast, always works)
+  console.log('📂 Loading shop settings from localStorage...');
+  
+  if (el('shopNameInput')) el('shopNameInput').value = localStorage.getItem('MilkRecord_shop_name') || '';
+  if (el('shopPhoneInput')) el('shopPhoneInput').value = localStorage.getItem('MilkRecord_shop_phone') || '';
+  if (el('shopProprietorInput')) el('shopProprietorInput').value = localStorage.getItem('MilkRecord_shop_proprietor') || '';
+  if (el('shopEmailInput')) el('shopEmailInput').value = localStorage.getItem('MilkRecord_shop_email') || '';
+  if (el('shopAddressInput')) el('shopAddressInput').value = localStorage.getItem('MilkRecord_shop_address') || '';
+  if (el('shopCityInput')) el('shopCityInput').value = localStorage.getItem('MilkRecord_shop_city') || '';
+  if (el('shopPincodeInput')) el('shopPincodeInput').value = localStorage.getItem('MilkRecord_shop_pincode') || '';
+  if (el('shopGstInput')) el('shopGstInput').value = localStorage.getItem('MilkRecord_shop_gst') || '';
+  if (el('shopPanInput')) el('shopPanInput').value = localStorage.getItem('MilkRecord_shop_pan') || '';
+  if (el('shopUpiInput')) el('shopUpiInput').value = localStorage.getItem('MilkRecord_shop_upi') || '';
+  if (el('shopBankInput')) el('shopBankInput').value = localStorage.getItem('MilkRecord_shop_bank') || '';
+  if (el('shopAccountInput')) el('shopAccountInput').value = localStorage.getItem('MilkRecord_shop_account') || '';
+  if (el('shopIfscInput')) el('shopIfscInput').value = localStorage.getItem('MilkRecord_shop_ifsc') || '';
+  if (el('shopAccountNameInput')) el('shopAccountNameInput').value = localStorage.getItem('MilkRecord_shop_account_name') || '';
+  
+  console.log('✅ Shop settings loaded from localStorage');
+  
+  // THEN: Try to load from Supabase (will overwrite if available)
   try {
     const response = await fetch('/api/shop-settings');
     const result = await response.json();
@@ -8420,22 +8443,37 @@ async function loadShopSettings() {
         localStorage.setItem('MilkRecord_shop_id', result.shop_id);
         console.log('✅ Shop ID saved to localStorage:', result.shop_id);
       }
-      // Fill form fields
-      const el = (id) => document.getElementById(id);
-      if (el('shopNameInput')) el('shopNameInput').value = s.shop_name || '';
-      if (el('shopPhoneInput')) el('shopPhoneInput').value = s.shop_phone || '';
-      if (el('shopProprietorInput')) el('shopProprietorInput').value = s.shop_proprietor || '';
-      if (el('shopEmailInput')) el('shopEmailInput').value = s.shop_email || '';
-      if (el('shopAddressInput')) el('shopAddressInput').value = s.shop_address || '';
-      if (el('shopCityInput')) el('shopCityInput').value = s.shop_city || '';
-      if (el('shopPincodeInput')) el('shopPincodeInput').value = s.shop_pincode || '';
-      if (el('shopGstInput')) el('shopGstInput').value = s.shop_gst || '';
-      if (el('shopPanInput')) el('shopPanInput').value = s.shop_pan || '';
-      if (el('shopUpiInput')) el('shopUpiInput').value = s.shop_upi || '';
-      if (el('shopBankInput')) el('shopBankInput').value = s.shop_bank || '';
-      if (el('shopAccountInput')) el('shopAccountInput').value = s.shop_account || '';
-      if (el('shopIfscInput')) el('shopIfscInput').value = s.shop_ifsc || '';
-      if (el('shopAccountNameInput')) el('shopAccountNameInput').value = s.shop_account_name || '';
+      // Fill form fields from Supabase
+      if (s.shop_name) el('shopNameInput').value = s.shop_name;
+      if (s.shop_phone) el('shopPhoneInput').value = s.shop_phone;
+      if (s.shop_proprietor) el('shopProprietorInput').value = s.shop_proprietor;
+      if (s.shop_email) el('shopEmailInput').value = s.shop_email;
+      if (s.shop_address) el('shopAddressInput').value = s.shop_address;
+      if (s.shop_city) el('shopCityInput').value = s.shop_city;
+      if (s.shop_pincode) el('shopPincodeInput').value = s.shop_pincode;
+      if (s.shop_gst) el('shopGstInput').value = s.shop_gst;
+      if (s.shop_pan) el('shopPanInput').value = s.shop_pan;
+      if (s.shop_upi) el('shopUpiInput').value = s.shop_upi;
+      if (s.shop_bank) el('shopBankInput').value = s.shop_bank;
+      if (s.shop_account) el('shopAccountInput').value = s.shop_account;
+      if (s.shop_ifsc) el('shopIfscInput').value = s.shop_ifsc;
+      if (s.shop_account_name) el('shopAccountNameInput').value = s.shop_account_name;
+
+      // Also save to localStorage for backup
+      localStorage.setItem('MilkRecord_shop_name', s.shop_name || '');
+      localStorage.setItem('MilkRecord_shop_phone', s.shop_phone || '');
+      localStorage.setItem('MilkRecord_shop_proprietor', s.shop_proprietor || '');
+      localStorage.setItem('MilkRecord_shop_email', s.shop_email || '');
+      localStorage.setItem('MilkRecord_shop_address', s.shop_address || '');
+      localStorage.setItem('MilkRecord_shop_city', s.shop_city || '');
+      localStorage.setItem('MilkRecord_shop_pincode', s.shop_pincode || '');
+      localStorage.setItem('MilkRecord_shop_gst', s.shop_gst || '');
+      localStorage.setItem('MilkRecord_shop_pan', s.shop_pan || '');
+      localStorage.setItem('MilkRecord_shop_upi', s.shop_upi || '');
+      localStorage.setItem('MilkRecord_shop_bank', s.shop_bank || '');
+      localStorage.setItem('MilkRecord_shop_account', s.shop_account || '');
+      localStorage.setItem('MilkRecord_shop_ifsc', s.shop_ifsc || '');
+      localStorage.setItem('MilkRecord_shop_account_name', s.shop_account_name || '');
 
       console.log('✅ Shop settings loaded from Supabase');
       
@@ -8443,7 +8481,7 @@ async function loadShopSettings() {
       showSyncStatusConfirmation();
     }
   } catch (error) {
-    console.warn('⚠️ Failed to load shop settings:', error);
+    console.log('⚠️ Using localStorage (Supabase not available)');
   }
 }
 
