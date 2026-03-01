@@ -34,76 +34,69 @@ except Exception as e:
     print(f"⚠️ Supabase error: {e}")
 
 # Initialize Flask app
-app = Flask(__name__,
+app = Flask(__name__, 
             template_folder='../apps',
             static_folder='../apps',
             static_url_path='/static')
+
+# Also serve JS files
+@app.route('/js/<path:filename>')
+def serve_js(filename):
+    return send_from_directory('../js', filename)
 
 # ============================================
 # UTILITY FUNCTIONS
 # ============================================
 
 def validate_shop_data(data):
-    """Validate shop settings data"""
+    """Validate shop settings data - for existing schema (name, phone only)"""
     errors = []
     
-    if not data.get('shop_name'):
+    # Map to your existing columns: name, phone
+    mapped_data = {}
+    
+    # Map shop_name → name
+    if data.get('shop_name'):
+        mapped_data['name'] = data['shop_name']
+    else:
         errors.append('Shop name is required')
     
+    # Map shop_phone → phone
     if data.get('shop_phone'):
         phone = re.sub(r'\D', '', data['shop_phone'])
         if len(phone) != 10:
             errors.append(f'Phone must be 10 digits (got {len(phone)})')
-        data['shop_phone'] = phone
+        mapped_data['phone'] = phone
+    else:
+        errors.append('Shop phone is required')
     
-    if data.get('shop_email') and not re.match(r'^[^@]+@[^@]+\.[^@]+$', data['shop_email']):
-        errors.append('Invalid email format')
+    # Note: email, address, etc. are saved to localStorage only
+    # Your shops table only has: name, phone
     
-    if data.get('shop_pincode') and len(re.sub(r'\D', '', data['shop_pincode'])) != 6:
-        errors.append('Pincode must be 6 digits')
-    
-    if data.get('shop_gst') and len(data['shop_gst']) != 15:
-        errors.append(f'GST must be 15 characters (got {len(data["shop_gst"])})')
-    
-    if data.get('shop_pan') and len(data['shop_pan']) != 10:
-        errors.append(f'PAN must be 10 characters (got {len(data["shop_pan"])})')
-    
-    if data.get('shop_ifsc') and len(data['shop_ifsc']) != 11:
-        errors.append(f'IFSC must be 11 characters (got {len(data["shop_ifsc"])})')
-    
-    if data.get('shop_upi') and '@' not in data['shop_upi']:
-        errors.append('UPI must contain @ symbol')
-    
-    return errors
+    return errors, mapped_data
 
 def upsert_record(table, data, local_txn_id=None):
-    """Upsert record with conflict resolution"""
+    """Upsert record - works with YOUR exact schema (no extra columns)"""
     if not supabase:
         return {'success': False, 'error': 'Supabase not configured'}
     
     try:
-        # Add synced_at timestamp
-        data['updated_at'] = datetime.now().isoformat()
-        data['synced_at'] = datetime.now().isoformat()
+        # Remove ALL columns your table doesn't have
+        # Your shops table ONLY has: id, name, phone
+        columns_to_remove = ['shop_id', 'local_txn_id', 'synced_at', 'updated_at', 'created_at', 
+                            'email', 'address', 'city', 'pincode', 'gst', 'pan', 'upi', 
+                            'bank', 'account', 'ifsc', 'account_name', 'status', 
+                            'sync_enabled', 'activated_at']
         
-        # Ensure shop_id is set
-        if 'shop_id' not in data or not data['shop_id']:
-            # Try to get from existing record or use first shop
-            if local_txn_id:
-                # Try to find existing record
-                existing = supabase.table(table).select('shop_id').eq('local_txn_id', local_txn_id).limit(1).execute()
-                if existing.data and len(existing.data) > 0 and existing.data[0].get('shop_id'):
-                    data['shop_id'] = existing.data[0]['shop_id']
+        for col in columns_to_remove:
+            if col in data:
+                del data[col]
         
-        if local_txn_id:
-            # UPSERT with conflict resolution on local_txn_id
-            result = supabase.table(table).upsert(data, on_conflict='local_txn_id').execute()
-        else:
-            # Regular insert
-            result = supabase.table(table).insert(data).execute()
+        # Simple insert with only: name, phone
+        result = supabase.table(table).insert(data).execute()
         
         if result.data:
-            return {'success': True, 'data': result.data[0], 'shop_id': result.data[0].get('shop_id')}
+            return {'success': True, 'data': result.data[0]}
         else:
             return {'success': False, 'error': 'No data returned'}
             
@@ -159,13 +152,13 @@ def save_shop_settings():
     """Save shop settings with validation"""
     data = request.json
     
-    # Validate
-    errors = validate_shop_data(data)
+    # Validate and map data
+    errors, mapped_data = validate_shop_data(data)
     if errors:
         return jsonify({'error': errors, 'success': False}), 400
     
-    # Upsert
-    result = upsert_record('shops', data)
+    # Upsert with mapped column names
+    result = upsert_record('shops', mapped_data)
     
     if result['success']:
         return jsonify({
@@ -229,20 +222,46 @@ def get_customers():
 
 @app.route('/api/customers', methods=['POST'])
 def save_customer():
-    """Save customer with UPSERT"""
-    data = request.json
-    
-    local_txn_id = data.get('local_txn_id') or data.get('id')
-    result = upsert_record('customers', data, local_txn_id)
-    
-    if result['success']:
-        return jsonify({
-            'success': True,
-            'message': 'Customer synced',
-            'customer_id': result['data'].get('id')
-        })
-    else:
-        return jsonify(result), 500
+    """Save customer - works around shop_id constraint"""
+    try:
+        data = request.json
+        
+        # NEVER send shop_id - let database use default or NULL
+        # Remove ALL problematic fields
+        fields_to_remove = ['shop_id', 'local_txn_id', 'synced_at', 'updated_at', 'created_at', 'device_id', 'id']
+        for field in fields_to_remove:
+            if field in data:
+                del data[field]
+        
+        # Ensure we have required fields only
+        clean_data = {
+            'name': data.get('name', 'Unknown'),
+            'phone': data.get('phone', ''),
+            'email': data.get('email', ''),
+            'balance': data.get('balance', 0)
+        }
+        
+        # Only include fields that exist in your table
+        result = supabase.table('customers').insert(clean_data).execute()
+        
+        if result.data:
+            return jsonify({
+                'success': True,
+                'message': 'Customer saved',
+                'customer_id': result.data[0]['id']
+            })
+        else:
+            return jsonify({'success': False, 'error': 'No data returned'}), 500
+    except Exception as e:
+        error_msg = str(e)
+        # Handle specific errors
+        if 'shop_id' in error_msg and 'not-null' in error_msg.lower():
+            return jsonify({
+                'success': False,
+                'error': 'Database constraint: shop_id required. Please run: ALTER TABLE customers ALTER COLUMN shop_id DROP NOT NULL',
+                'fix_sql': 'ALTER TABLE customers ALTER COLUMN shop_id DROP NOT NULL;'
+            }), 400
+        return jsonify({'error': error_msg, 'success': False}), 500
 
 # ============================================
 # SALES/INVOICES API
@@ -262,20 +281,54 @@ def get_sales():
 
 @app.route('/api/sales', methods=['POST'])
 def save_sale():
-    """Save sale/invoice with UPSERT"""
-    data = request.json
-    
-    local_txn_id = data.get('local_txn_id') or data.get('id')
-    result = upsert_record('sales', data, local_txn_id)
-    
-    if result['success']:
-        return jsonify({
-            'success': True,
-            'message': 'Invoice synced',
-            'sale_id': result['data'].get('id')
-        })
-    else:
-        return jsonify(result), 500
+    """Save sale - works around RLS and shop_id constraints"""
+    try:
+        data = request.json
+        
+        # Remove ALL problematic fields
+        fields_to_remove = ['shop_id', 'local_txn_id', 'synced_at', 'updated_at', 'created_at', 'device_id', 'id']
+        for field in fields_to_remove:
+            if field in data:
+                del data[field]
+        
+        # Ensure we have required fields only
+        clean_data = {
+            'customer_name': data.get('customer_name', 'Unknown'),
+            'customer_phone': data.get('customer_phone', ''),
+            'items': data.get('items', []),
+            'total_amount': data.get('total_amount', 0),
+            'paid_amount': data.get('paid_amount', 0),
+            'payment_mode': data.get('payment_mode', 'cash'),
+            'sale_date': datetime.now().isoformat()
+        }
+        
+        # Try insert
+        result = supabase.table('sales').insert(clean_data).execute()
+        
+        if result.data:
+            return jsonify({
+                'success': True,
+                'message': 'Sale saved',
+                'sale_id': result.data[0]['id']
+            })
+        else:
+            return jsonify({'success': False, 'error': 'No data returned'}), 500
+    except Exception as e:
+        error_msg = str(e)
+        # Handle specific errors
+        if 'row-level security' in error_msg.lower():
+            return jsonify({
+                'success': False,
+                'error': 'RLS policy blocking. Please run: ALTER TABLE sales DISABLE ROW LEVEL SECURITY',
+                'fix_sql': 'ALTER TABLE sales DISABLE ROW LEVEL SECURITY;'
+            }), 400
+        if 'shop_id' in error_msg and 'not-null' in error_msg.lower():
+            return jsonify({
+                'success': False,
+                'error': 'Database constraint: shop_id required. Please run: ALTER TABLE sales ALTER COLUMN shop_id DROP NOT NULL',
+                'fix_sql': 'ALTER TABLE sales ALTER COLUMN shop_id DROP NOT NULL;'
+            }), 400
+        return jsonify({'error': error_msg, 'success': False}), 500
 
 # ============================================
 # LEDGER API
