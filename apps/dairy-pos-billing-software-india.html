@@ -6636,6 +6636,12 @@ function updateMilkStockDisplay() {
   }
 }
 
+// Format date as YYYY-MM-DD
+function fmtDate(d) {
+  if (!d) return new Date().toISOString().split('T')[0];
+  return new Date(d).toISOString().split('T')[0];
+}
+
 // Open convert modal and update stock display - PRODUCTION MODULE
 const originalOpenModal = window.openModal;
 window.openModal = function(modalId) {
