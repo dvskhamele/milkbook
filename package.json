@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "dev": "vercel dev",
-    "build": "echo 'Static site - no build required'",
+    "build": "mkdir -p dist && cp -r apps/* dist/ && cp -r js/* dist/js/ 2>/dev/null || true && cp *.css dist/ 2>/dev/null || true",
     "deploy": "vercel --prod"
   },
   "keywords": [
@@ -20,6 +20,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/milkrecord.git"
+    "url": "https://github.com/dvskhamele/milkbook.git"
   }
 }
