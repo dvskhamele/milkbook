@@ -2617,6 +2617,10 @@
         { name: "Rahul Sharma", lastOrder: "1.5L Cow Milk", rate: 64, qty: 1.5, type: "Retail", sub: 1.5 },
         { name: "Amit DCS", lastOrder: "1kg Paneer", rate: 320, qty: 1, type: "PACS", sub: 2 }
       ]);
+      
+      // Load sales history from localStorage
+      exportHistory = loadData('mr_pos_history', []);
+      console.log(`📊 Loaded ${exportHistory.length} sales from history`);
 
       // Escape HTML to prevent XSS
       function escapeHtml(text) {
