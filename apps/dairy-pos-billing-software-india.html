@@ -9845,23 +9845,28 @@ function filterCustomerLedger() {
   if (!content) return;
 
   const history = JSON.parse(localStorage.getItem('mr_sales_history') || '[]');
-  let custData = localStorage.getItem('mr_pos_customers');
-
-  // Handle custData - ensure it's an array
-  if (!custData) {
-    custData = [];
-  } else {
-    try {
-      custData = JSON.parse(custData);
-      if (!Array.isArray(custData)) {
-        console.error('❌ custData is not an array, using empty array');
-        custData = [];
+  
+  // Load customers - handle multiple possible formats
+  let custData = [];
+  try {
+    const stored = localStorage.getItem('mr_pos_customers');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        custData = parsed;
+      } else if (typeof parsed === 'object') {
+        // Handle object format - convert to array
+        custData = Object.values(parsed);
       }
-    } catch(e) {
-      console.error('❌ Failed to parse custData:', e);
-      custData = [];
     }
+  } catch(e) {
+    console.error('❌ Failed to parse custData:', e);
+    custData = [];
   }
+  
+  // Debug logging
+  console.log('📊 Customer Ledger - Customers loaded:', custData.length);
+  console.log('📊 Customer Ledger - History entries:', history.length);
 
   const searchTerm = document.getElementById('ledgerSearch').value.toLowerCase();
   const fromDate = document.getElementById('ledgerFromDate').value;
@@ -9898,6 +9903,8 @@ function filterCustomerLedger() {
       h.customer.toLowerCase().includes(searchTerm)
     );
   }
+  
+  console.log('📊 Filtered customers:', filteredCustomers.length);
 
   let html = '';
 
