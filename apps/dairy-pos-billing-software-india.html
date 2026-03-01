@@ -1349,13 +1349,46 @@
         <div class="modal" style="width:400px; height:auto;">
             <div class="panelHeader"><span>🔄 Milk → Product Conversion</span> <button onclick="closeModal('convertModal')">✖</button></div>
             <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
-                <input type="number" id="convQty" placeholder="Milk (L)" style="width:100%; padding:15px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
-                <select id="convProduct" style="width:100%; padding:15px; border-radius:10px; border:1px solid var(--line); font-weight:1000;">
-                    <option value="Cow Milk,64">Cow Milk (₹64/L)</option>
-                    <option value="Buff Milk,100">Buff Milk (₹100/L)</option>
-                    <option value="Buff Milk,80">Buff Milk (₹80/L)</option>
+                <!-- Show available milk stock -->
+                <div style="background:#f0fdf4; padding:12px; border-radius:8px; border:2px solid #16a34a; margin-bottom:8px;">
+                    <div style="font-size:11px; font-weight:700; color:#166534; margin-bottom:6px;">📊 Available Milk Stock:</div>
+                    <div id="milkStockDisplay" style="font-size:12px; color:#15803d;">
+                        <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #bbf7d0;">
+                            <span>🥛 Cow Milk:</span>
+                            <span style="font-weight:700;">0 L</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:4px 0;">
+                            <span>🐃 Buff Milk:</span>
+                            <span style="font-weight:700;">0 L</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <input type="number" id="convQty" placeholder="Milk Quantity (L)" style="width:100%; padding:15px; border-radius:10px; border:2px solid #3b82f6; font-weight:700; font-size:14px;" oninput="updateConversionPreview()" />
+                
+                <select id="convProduct" style="width:100%; padding:15px; border-radius:10px; border:2px solid #16a34a; font-weight:700; font-size:14px;" onchange="updateConversionPreview()">
+                    <option value="Cow Milk,64">🥛 Cow Milk (₹64/L)</option>
+                    <option value="Buff Milk,100">🐃 Buff Milk (₹100/L)</option>
+                    <option value="Buff Milk,80">🐃 Buff Milk (₹80/L)</option>
+                    <option value="Paneer,400">🧀 Paneer (₹400/kg)</option>
+                    <option value="Ghee,600">🧈 Ghee (₹600/L)</option>
+                    <option value="Curd,80">🥣 Curd (₹80/kg)</option>
                 </select>
-                <button class="add-btn" style="width:100%; background:var(--green);" onclick="convertMilkToProduct()">Update Stock</button>
+                
+                <!-- Conversion preview -->
+                <div id="convPreview" style="background:#fef3c7; padding:12px; border-radius:8px; border:2px solid #f59e0b; display:none;">
+                    <div style="font-size:12px; font-weight:700; color:#92400e; margin-bottom:4px;">📋 Conversion Preview:</div>
+                    <div style="font-size:13px; color:#78350f;">
+                        <span id="previewQty">0</span> L Milk → <span id="previewProduct">Product</span>
+                        <div style="font-size:11px; color:#92400e; margin-top:4px;">Value: ₹<span id="previewValue">0</span></div>
+                    </div>
+                </div>
+                
+                <button class="add-btn" style="width:100%; background:var(--green); padding:15px; font-weight:700; font-size:14px;" onclick="convertMilkToProduct()">✅ Update Stock</button>
+                
+                <div style="font-size:10px; color:#64748b; text-align:center; margin-top:8px;">
+                    💡 Enter milk quantity in Liters and select product to convert
+                </div>
             </div>
         </div>
     </div>
@@ -6222,13 +6255,95 @@ function convertMilkToProduct() {
   if (existingItem) {
     existingItem.qty += qty;
   } else {
-    cart.push({name: productName, rate, qty, emoji: '🥛', id: Date.now()});
+    cart.push({name: productName, rate, qty, emoji: getEmojiForProduct(productName), id: Date.now()});
   }
   updateUI();
   closeModal('convertModal');
   el("convQty").value = "";
-  showToast(`Converted ${qty}L to ${productName}`);
+  showToast(`✅ Converted ${qty}L to ${productName}`);
 }
+
+// Update conversion preview when qty or product changes
+function updateConversionPreview() {
+  const qty = parseFloat(el("convQty").value);
+  const productData = el("convProduct").value.split(',');
+  const productName = productData[0];
+  const rate = parseFloat(productData[1]);
+  
+  const preview = document.getElementById('convPreview');
+  if (qty && qty > 0) {
+    preview.style.display = 'block';
+    document.getElementById('previewQty').textContent = qty;
+    document.getElementById('previewProduct').textContent = productName;
+    document.getElementById('previewValue').textContent = (qty * rate).toFixed(2);
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
+// Get emoji for product name
+function getEmojiForProduct(productName) {
+  const emojis = {
+    'Cow Milk': '🥛',
+    'Buff Milk': '🥛',
+    'Paneer': '🧀',
+    'Ghee': '🧈',
+    'Curd': '🥣',
+    'Lassi': '🥣',
+    'Sweets': '🍬',
+    'Bakery': '🥐'
+  };
+  return emojis[productName] || '📦';
+}
+
+// Update milk stock display when modal opens
+function updateMilkStockDisplay() {
+  // Get milk products from product grid
+  const cowMilkCards = document.querySelectorAll('.p-card[onclick*="Cow Milk"]');
+  const buffMilkCards = document.querySelectorAll('.p-card[onclick*="Buff Milk"]');
+  
+  let cowQty = 0;
+  let buffQty = 0;
+  
+  // Sum up quantities from card badges
+  cowMilkCards.forEach(card => {
+    const badge = card.querySelector('.qty-badge');
+    if (badge && badge.textContent !== '0') {
+      cowQty += parseFloat(badge.textContent) || 0;
+    }
+  });
+  
+  buffMilkCards.forEach(card => {
+    const badge = card.querySelector('.qty-badge');
+    if (badge && badge.textContent !== '0') {
+      buffQty += parseFloat(badge.textContent) || 0;
+    }
+  });
+  
+  // Update display
+  const stockDisplay = document.getElementById('milkStockDisplay');
+  if (stockDisplay) {
+    stockDisplay.innerHTML = `
+      <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #bbf7d0;">
+        <span>🥛 Cow Milk:</span>
+        <span style="font-weight:700;">${cowQty.toFixed(1)} L</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; padding:4px 0;">
+        <span>🐃 Buff Milk:</span>
+        <span style="font-weight:700;">${buffQty.toFixed(1)} L</span>
+      </div>
+    `;
+  }
+}
+
+// Open convert modal and update stock display
+const originalOpenModal = window.openModal;
+window.openModal = function(modalId) {
+  if (modalId === 'convertModal') {
+    updateMilkStockDisplay();
+  }
+  originalOpenModal(modalId);
+};
 
 // Suggest appropriate quantities based on unit selected
 function suggestQuantitiesForUnit() {
