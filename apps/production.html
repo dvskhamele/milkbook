@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production - MilkRecord</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f1f5f9; padding: 20px; }
+    
+    .container { max-width: 900px; margin: 0 auto; }
+    
+    .header {
+      background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .header h1 { font-size: 24px; margin-bottom: 8px; }
+    .header p { font-size: 14px; opacity: 0.9; }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-box {
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid #16a34a;
+    }
+    
+    .stat-label { font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+    .stat-value { font-size: 24px; font-weight: 900; color: #0f172a; margin-top: 4px; }
+    .stat-sub { font-size: 11px; color: #166534; margin-top: 4px; }
+    
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    }
+    
+    .radio-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    
+    .radio-card {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    
+    .radio-card:hover { border-color: #16a34a; background: #f0fdf4; }
+    .radio-card input { display: none; }
+    .radio-card.selected { border-color: #16a34a; background: #f0fdf4; }
+    .radio-card .emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+    .radio-card .label { font-size: 12px; font-weight: 700; color: #475569; }
+    
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3); }
+    
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #64748b;
+      margin-top: 12px;
+    }
+    
+    .info-box {
+      background: #eff6ff;
+      border: 2px solid #3b82f6;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .info-box .title { font-size: 12px; font-weight: 700; color: #1e40af; margin-bottom: 8px; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .info-item { font-size: 13px; color: #1e3a8a; }
+    .info-item strong { color: #1e40af; }
+    
+    .preview-box {
+      background: #fef3c7;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    
+    .preview-box.show { display: block; }
+    .preview-title { font-size: 12px; font-weight: 700; color: #92400e; margin-bottom: 8px; }
+    .preview-row { display: flex; justify-content: space-between; font-size: 14px; color: #78350f; margin-bottom: 4px; }
+    .preview-row.total { font-size: 16px; font-weight: 900; border-top: 2px dashed #f59e0b; padding-top: 8px; margin-top: 8px; }
+    
+    .alert {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    .alert-warning { background: #fef3c7; color: #92400e; border: 2px solid #f59e0b; }
+    .alert-success { background: #f0fdf4; color: #166534; border: 2px solid #16a34a; }
+    
+    .batch-history { margin-top: 20px; }
+    .batch-item {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border-left: 4px solid #3b82f6;
+    }
+    .batch-header { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #475569; }
+    .batch-details { font-size: 13px; color: #64748b; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>🔄 Production Module</h1>
+      <p>Convert milk to products • Track batches • Auto stock updates</p>
+    </div>
+    
+    <!-- Today's Milk Stock -->
+    <div class="card">
+      <div class="card-title">📊 Today's Milk Collection</div>
+      <div class="stats-grid">
+        <div class="stat-box" style="border-left-color: #3b82f6;">
+          <div class="stat-label">Cow Milk</div>
+          <div class="stat-value" id="cowMilk">0.0 L</div>
+          <div class="stat-sub" id="cowAmount">₹0</div>
+        </div>
+        <div class="stat-box" style="border-left-color: #8b5cf6;">
+          <div class="stat-label">Buff Milk</div>
+          <div class="stat-value" id="buffMilk">0.0 L</div>
+          <div class="stat-sub" id="buffAmount">₹0</div>
+        </div>
+        <div class="stat-box" style="border-left-color: #16a34a;">
+          <div class="stat-label">Total</div>
+          <div class="stat-value" id="totalMilk">0.0 L</div>
+          <div class="stat-sub" id="totalAmount">₹0</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Production Form -->
+    <div class="card">
+      <div class="card-title">🏭 Create Production Batch</div>
+      
+      <div class="alert alert-warning">
+        ⚠️ Production reduces milk stock and increases product stock automatically
+      </div>
+      
+      <form id="productionForm" onsubmit="createProductionBatch(event)">
+        <!-- Shift Selection -->
+        <div class="form-group">
+          <label>Shift</label>
+          <select id="shiftId" class="form-control" required>
+            <option value="">Select current shift...</option>
+            <option value="morning">🌅 Morning</option>
+            <option value="evening">🌆 Evening</option>
+          </select>
+        </div>
+        
+        <!-- Milk Source -->
+        <div class="form-group">
+          <label>Milk Source</label>
+          <div class="radio-group">
+            <label class="radio-card" onclick="selectMilkSource('cow')">
+              <input type="radio" name="milkSource" value="cow" />
+              <span class="emoji">🥛</span>
+              <span class="label">Cow</span>
+            </label>
+            <label class="radio-card" onclick="selectMilkSource('buff')">
+              <input type="radio" name="milkSource" value="buff" />
+              <span class="emoji">🐃</span>
+              <span class="label">Buff</span>
+            </label>
+            <label class="radio-card selected" onclick="selectMilkSource('mixed')">
+              <input type="radio" name="milkSource" value="mixed" checked />
+              <span class="emoji">🔀</span>
+              <span class="label">Mixed</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Product Type -->
+        <div class="form-group">
+          <label>Product Type</label>
+          <select id="productType" class="form-control" onchange="updateConversionRatio()" required>
+            <option value="">Select product...</option>
+            <option value="paneer" data-ratio="5">🧀 Paneer (5L → 1kg)</option>
+            <option value="ghee" data-ratio="25">🧈 Ghee (25L → 1kg)</option>
+            <option value="curd" data-ratio="1">🥣 Curd (1L → 1kg)</option>
+            <option value="sweets" data-ratio="8">🍬 Sweets (8L → 1kg)</option>
+            <option value="cream" data-ratio="20">🥛 Cream (20L → 1kg)</option>
+          </select>
+        </div>
+        
+        <!-- Conversion Ratio -->
+        <div class="form-group">
+          <label>Conversion Ratio (L per kg)</label>
+          <input type="number" id="conversionRatio" class="form-control" value="5" step="0.1" min="1" readonly />
+          <div style="font-size: 11px; color: #64748b; margin-top: 4px;">💡 Standard ratios auto-filled. Edit if needed.</div>
+        </div>
+        
+        <!-- Milk Quantity -->
+        <div class="form-group">
+          <label>Milk Used (L)</label>
+          <input type="number" id="milkQty" class="form-control" placeholder="Enter milk quantity" step="0.1" min="0.1" oninput="calculateOutput()" required />
+          <div id="milkWarning" class="alert alert-warning" style="display: none; margin-top: 8px;">
+            ⚠️ Exceeds available milk!
+          </div>
+        </div>
+        
+        <!-- Output Preview -->
+        <div id="outputPreview" class="preview-box">
+          <div class="preview-title">📋 Production Preview</div>
+          <div class="preview-row">
+            <span>Milk Input:</span>
+            <span id="previewMilk">0 L</span>
+          </div>
+          <div class="preview-row">
+            <span>Conversion Ratio:</span>
+            <span id="previewRatio">5L → 1kg</span>
+          </div>
+          <div class="preview-row total">
+            <span>Product Output:</span>
+            <span id="previewOutput">0 kg</span>
+          </div>
+        </div>
+        
+        <!-- Product Quantity (with override) -->
+        <div class="form-group">
+          <label>Actual Product Quantity (kg)</label>
+          <input type="number" id="productQty" class="form-control" placeholder="Auto-calculated" step="0.01" min="0" readonly />
+          <div style="font-size: 11px; color: #64748b; margin-top: 4px;">💡 Auto-calculated from ratio. Edit for actual yield.</div>
+        </div>
+        
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes (optional)</label>
+          <textarea id="notes" class="form-control" rows="2" placeholder="Any observations..."></textarea>
+        </div>
+        
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary">✅ Create Production Batch</button>
+        <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Reset</button>
+      </form>
+    </div>
+    
+    <!-- Batch History -->
+    <div class="card batch-history">
+      <div class="card-title">📜 Today's Production Batches</div>
+      <div id="batchHistory">
+        <div style="text-align: center; color: #94a3b8; padding: 20px;">No batches created today</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load today's milk collection
+    function loadTodayMilk() {
+      const entries = JSON.parse(localStorage.getItem('mr_milk_entries') || '[]');
+      const today = new Date().toISOString().split('T')[0];
+      
+      let cowMilk = 0, cowAmount = 0, buffMilk = 0, buffAmount = 0;
+      
+      entries.forEach(e => {
+        if (e.day === today) {
+          const qty = parseFloat(e.qty) || 0;
+          const amount = parseFloat(e.amount) || 0;
+          if (e.animal === 'cow') {
+            cowMilk += qty;
+            cowAmount += amount;
+          } else if (e.animal === 'buffalo') {
+            buffMilk += qty;
+            buffAmount += amount;
+          }
+        }
+      });
+      
+      document.getElementById('cowMilk').textContent = cowMilk.toFixed(1) + ' L';
+      document.getElementById('cowAmount').textContent = '₹' + cowAmount.toFixed(0);
+      document.getElementById('buffMilk').textContent = buffMilk.toFixed(1) + ' L';
+      document.getElementById('buffAmount').textContent = '₹' + buffAmount.toFixed(0);
+      document.getElementById('totalMilk').textContent = (cowMilk + buffMilk).toFixed(1) + ' L';
+      document.getElementById('totalAmount').textContent = '₹' + (cowAmount + buffAmount).toFixed(0);
+      
+      window.todayMilk = { cow: cowMilk, buff: buffMilk, total: cowMilk + buffMilk };
+    }
+    
+    // Select milk source
+    function selectMilkSource(source) {
+      document.querySelectorAll('.radio-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      event.currentTarget.classList.add('selected');
+    }
+    
+    // Update conversion ratio
+    function updateConversionRatio() {
+      const select = document.getElementById('productType');
+      const selectedOption = select.options[select.selectedIndex];
+      const ratio = selectedOption.getAttribute('data-ratio') || 5;
+      
+      document.getElementById('conversionRatio').value = ratio;
+      calculateOutput();
+    }
+    
+    // Calculate output
+    function calculateOutput() {
+      const milkQty = parseFloat(document.getElementById('milkQty').value) || 0;
+      const ratio = parseFloat(document.getElementById('conversionRatio').value) || 5;
+      const productType = document.getElementById('productType').value;
+      
+      if (!milkQty || !productType) {
+        document.getElementById('outputPreview').classList.remove('show');
+        return;
+      }
+      
+      const productQty = milkQty / ratio;
+      
+      // Show preview
+      document.getElementById('outputPreview').classList.add('show');
+      document.getElementById('previewMilk').textContent = milkQty.toFixed(1) + ' L';
+      document.getElementById('previewRatio').textContent = ratio + 'L → 1kg';
+      document.getElementById('previewOutput').textContent = productQty.toFixed(2) + ' kg';
+      
+      // Auto-fill product quantity
+      document.getElementById('productQty').value = productQty.toFixed(2);
+      
+      // Check if exceeds available
+      const milkSource = document.querySelector('input[name="milkSource"]:checked').value;
+      let available = window.todayMilk.total;
+      if (milkSource === 'cow') available = window.todayMilk.cow;
+      if (milkSource === 'buff') available = window.todayMilk.buff;
+      
+      const warning = document.getElementById('milkWarning');
+      if (milkQty > available && available > 0) {
+        warning.style.display = 'block';
+      } else {
+        warning.style.display = 'none';
+      }
+    }
+    
+    // Create production batch
+    async function createProductionBatch(event) {
+      event.preventDefault();
+      
+      const batchData = {
+        shift_id: document.getElementById('shiftId').value,
+        milk_source: document.querySelector('input[name="milkSource"]:checked').value,
+        milk_quantity: parseFloat(document.getElementById('milkQty').value),
+        product_type: document.getElementById('productType').value,
+        product_quantity: parseFloat(document.getElementById('productQty').value),
+        conversion_ratio: parseFloat(document.getElementById('conversionRatio').value),
+        notes: document.getElementById('notes').value,
+        batch_number: 'BATCH-' + new Date().toISOString().split('T')[0].replace(/-/g, '') + '-' + String(Date.now()).slice(-3)
+      };
+      
+      try {
+        // Try API first
+        const response = await fetch('/api/conversion-batches', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(batchData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          showToast('✅ Production batch created: ' + batchData.batch_number);
+          addToHistory(batchData);
+          resetForm();
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        // Fallback: save to localStorage
+        const batches = JSON.parse(localStorage.getItem('mr_production_batches') || '[]');
+        batchData.created_at = new Date().toISOString();
+        batches.push(batchData);
+        localStorage.setItem('mr_production_batches', JSON.stringify(batches));
+        
+        showToast('✅ Production batch saved locally');
+        addToHistory(batchData);
+        resetForm();
+      }
+    }
+    
+    // Add to history
+    function addToHistory(batch) {
+      const history = document.getElementById('batchHistory');
+      const firstBatch = history.querySelector('.batch-item') === null;
+      
+      if (firstBatch) {
+        history.innerHTML = '';
+      }
+      
+      const item = document.createElement('div');
+      item.className = 'batch-item';
+      item.innerHTML = `
+        <div class="batch-header">
+          <span>${batch.batch_number}</span>
+          <span>${new Date().toLocaleTimeString()}</span>
+        </div>
+        <div class="batch-details">
+          ${batch.milk_quantity.toFixed(1)}L ${batch.milk_source} → ${batch.product_quantity.toFixed(2)}kg ${batch.product_type}
+        </div>
+      `;
+      
+      history.insertBefore(item, history.firstChild);
+    }
+    
+    // Reset form
+    function resetForm() {
+      document.getElementById('productionForm').reset();
+      document.getElementById('outputPreview').classList.remove('show');
+      document.querySelectorAll('.radio-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      document.querySelector('input[value="mixed"]').parentElement.classList.add('selected');
+      document.getElementById('conversionRatio').value = 5;
+    }
+    
+    // Toast notification
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#16a34a;color:white;padding:12px 24px;border-radius:8px;font-weight:700;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.15);';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+    
+    // Load on page load
+    loadTodayMilk();
+  </script>
+</body>
+</html>
