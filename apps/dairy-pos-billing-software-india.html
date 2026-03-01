@@ -1079,6 +1079,7 @@
                     <button onclick="openAddCustomerFromAdvanceOrder()" style="padding:10px 16px; background:#3b82f6; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;">➕ New</button>
                   </div>
                   <div id="advanceOrderPhoneWarning" style="font-size:10px; color:#dc2626; font-weight:700; margin-top:4px; display:none;">⚠️ Customer with phone number is required</div>
+                  <div id="advanceOrderCustomerBalance" style="font-size:12px; color:#166534; font-weight:700; margin-top:8px; display:none;"></div>
                 </div>
 
                 <!-- Delivery Details -->
@@ -4033,6 +4034,19 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
           // Auto-fill notes with customer phone
           if (notesInput && customer.phone) {
             notesInput.value = `Call on ${customer.phone}`;
+          }
+          
+          // AUTO-FILL: Show customer's current balance/advance
+          const balanceDisplay = document.getElementById('advanceOrderCustomerBalance');
+          if (balanceDisplay) {
+            const customerBalance = customer.balance || 0;
+            const customerAdvance = customer.advance || 0;
+            balanceDisplay.textContent = `Balance: ${formatINR(customerBalance)} | Advance: ${formatINR(customerAdvance)}`;
+            balanceDisplay.style.color = customerBalance > 0 ? '#dc2626' : '#16a34a';
+            balanceDisplay.style.display = 'block';
+            balanceDisplay.style.fontSize = '12px';
+            balanceDisplay.style.fontWeight = '700';
+            balanceDisplay.style.marginTop = '8px';
           }
 
           // Check if customer has phone number - ONLY show warning if they have advance orders
