@@ -8722,7 +8722,7 @@ window.addEventListener('DOMContentLoaded', function() {
 // Keyboard Navigation - Full End-to-End Invoice Creation
 document.addEventListener('keydown', function(e) {
   // Auto-focus product search when typing (if no other focus)
-  if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+  if (e.key && e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
     const activeElement = document.activeElement;
     const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA';
     
