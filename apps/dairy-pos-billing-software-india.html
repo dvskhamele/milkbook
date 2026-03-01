@@ -6656,11 +6656,36 @@ window.openModal = function(modalId) {
 
 // Load today's milk collection for Production Module
 function loadTodayMilkForProduction() {
-  const entries = JSON.parse(localStorage.getItem('mr_milk_entries') || '[]');
+  // Try both localStorage keys (Collection page uses milkapp_entries_v2)
+  let entries = [];
+  
+  // Try Collection page key first
+  try {
+    const collectionEntries = localStorage.getItem('milkapp_entries_v2');
+    if (collectionEntries) {
+      entries = JSON.parse(collectionEntries);
+      console.log('✅ Loaded', entries.length, 'entries from milkapp_entries_v2');
+    }
+  } catch (e) {
+    console.error('Error loading collection entries:', e);
+  }
+  
+  // Also try POS key
+  try {
+    const posEntries = localStorage.getItem('mr_milk_entries');
+    if (posEntries) {
+      const posData = JSON.parse(posEntries);
+      entries = entries.concat(posData);
+      console.log('✅ Loaded', posData.length, 'entries from mr_milk_entries');
+    }
+  } catch (e) {
+    console.error('Error loading POS entries:', e);
+  }
+  
   const today = fmtDate(new Date());
-  
+
   let cowMilk = 0, cowAmount = 0, buffMilk = 0, buffAmount = 0;
-  
+
   entries.forEach(e => {
     if (e.day === today) {
       const qty = parseFloat(e.qty) || 0;
@@ -6674,7 +6699,9 @@ function loadTodayMilkForProduction() {
       }
     }
   });
-  
+
+  console.log('📊 Today\'s milk:', cowMilk.toFixed(1) + 'L cow,', buffMilk.toFixed(1) + 'L buff');
+
   // Update today's collection display
   const el = (id) => document.getElementById(id);
   if (el('todayCowMilk')) el('todayCowMilk').textContent = cowMilk.toFixed(1);
@@ -6683,16 +6710,16 @@ function loadTodayMilkForProduction() {
   if (el('todayBuffAmount')) el('todayBuffAmount').textContent = buffAmount.toFixed(0);
   if (el('todayTotalMilk')) el('todayTotalMilk').textContent = (cowMilk + buffMilk).toFixed(1);
   if (el('todayTotalAmount')) el('todayTotalAmount').textContent = (cowAmount + buffAmount).toFixed(0);
-  
+
   // Update available for production
   if (el('availableCow')) el('availableCow').textContent = cowMilk.toFixed(1);
   if (el('availableBuff')) el('availableBuff').textContent = buffMilk.toFixed(1);
-  
+
   // Show warning if no milk collected
   const noMilkWarning = document.getElementById('noMilkWarning');
   const createBatchBtn = document.getElementById('createBatchBtn');
   const createBatchDisabled = document.getElementById('createBatchDisabled');
-  
+
   if (noMilkWarning) {
     if (cowMilk === 0 && buffMilk === 0) {
       noMilkWarning.style.display = 'block';
@@ -6704,9 +6731,9 @@ function loadTodayMilkForProduction() {
       if (createBatchDisabled) createBatchDisabled.style.display = 'none';
     }
   }
-  
+
   window.todayMilk = { cow: cowMilk, buff: buffMilk, total: cowMilk + buffMilk };
-  
+
   // Show auto-suggestion if milk available
   const autoSuggestion = document.getElementById('autoSuggestion');
   if (autoSuggestion) {
@@ -6716,10 +6743,10 @@ function loadTodayMilkForProduction() {
       autoSuggestion.style.display = 'none';
     }
   }
-  
+
   // Load recent batches
   loadRecentBatches();
-  
+
   // Load ledger summary
   loadLedgerSummary();
 }
