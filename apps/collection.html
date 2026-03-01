@@ -2084,7 +2084,21 @@
     <link rel="stylesheet" href="mobile-optimized.css" />
     
     <div class="app">
-      <!-- Desktop Header Only -->
+      <!-- Mobile Header (Mobile Only) -->
+      <div class="mobile-header mobile-only" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:white;border-bottom:2px solid #e2e8f0;position:static;">
+        <button class="hamburger-btn" onclick="SidebarManager.toggle()" aria-label="Menu" style="width:48px;height:48px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:none;border:none;cursor:pointer;padding:8px;">
+          <span style="display:block;width:24px;height:3px;background:#1e293b;border-radius:2px;transition:all 0.3s;"></span>
+          <span style="display:block;width:24px;height:3px;background:#1e293b;border-radius:2px;transition:all 0.3s;"></span>
+          <span style="display:block;width:24px;height:3px;background:#1e293b;border-radius:2px;transition:all 0.3s;"></span>
+        </button>
+        <a href="dairy-pos-billing-software-india.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:8px;">
+          <div style="font-size:24px;">🥛</div>
+          <div style="font-size:16px;font-weight:900;color:#1e293b;">MilkRecord</div>
+        </a>
+        <div style="width:48px;"></div>
+      </div>
+      
+      <!-- Desktop Header (Desktop Only) -->
       <div class="topbar mobile-only" style="display:none !important;"></div>
       <div class="topbar desktop-only">
         <div class="brand">

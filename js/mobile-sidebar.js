@@ -75,14 +75,25 @@
       const menu = document.getElementById('sidebarMenu');
       const hamburger = document.querySelector('.hamburger-btn');
       
+      if (!overlay || !menu) {
+        console.error('❌ Sidebar elements not found');
+        return;
+      }
+      
       if (this.isOpen) {
-        overlay.classList.add('active');
-        menu.classList.add('active');
+        overlay.style.display = 'block';
+        overlay.style.opacity = '1';
+        menu.style.left = '0';
         if (hamburger) hamburger.classList.add('active');
+        document.body.style.overflow = 'hidden';
       } else {
-        overlay.classList.remove('active');
-        menu.classList.remove('active');
+        overlay.style.opacity = '0';
+        menu.style.left = '-280px';
         if (hamburger) hamburger.classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          if (!this.isOpen) overlay.style.display = 'none';
+        }, 300);
       }
     },
     
