@@ -376,6 +376,17 @@
         background: #fff;
         flex-shrink: 0;
       }
+      
+      /* Mobile - No fixed headers */
+      @media (max-width: 768px) {
+        .panelHeader {
+          position: static !important;
+          top: auto !important;
+        }
+        .topbar, .mobile-header {
+          position: static !important;
+        }
+      }
       .panelHeader small {
         color: var(--muted);
         font-weight: 900;
@@ -2073,17 +2084,7 @@
     <link rel="stylesheet" href="mobile-optimized.css" />
     
     <div class="app">
-      <!-- Mobile Header (Mobile Only) -->
-      <div class="mobile-header mobile-only">
-        <button class="hamburger-btn" onclick="SidebarManager.toggle()" aria-label="Menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-        <div style="width:48px;"></div> <!-- Spacer for balance -->
-      </div>
-      
-      <!-- Desktop Header (Desktop Only) -->
+      <!-- Desktop Header Only -->
       <div class="topbar mobile-only" style="display:none !important;"></div>
       <div class="topbar desktop-only">
         <div class="brand">
