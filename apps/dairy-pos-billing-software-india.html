@@ -7040,6 +7040,22 @@ function confirmProduction() {
   const batches = JSON.parse(localStorage.getItem('mr_production_batches') || '[]');
   batches.push(batch);
   localStorage.setItem('mr_production_batches', JSON.stringify(batches));
+  
+  // Check yield variance (auto-alert if high variance)
+  if (window.YieldCalculator) {
+    const milkType = milkSource === 'cow' ? 'cow' : 'buffalo';
+    // Get average fat from today's collections
+    const collections = JSON.parse(localStorage.getItem('milkapp_entries_v2') || '[]');
+    const today = new Date().toISOString().split('T')[0];
+    const todayMilk = collections.filter(e => e.day === today && e.animal === milkType);
+    const avgFat = todayMilk.length > 0 ? todayMilk.reduce((sum, e) => sum + (parseFloat(e.fat) || 0), 0) / todayMilk.length : (milkType === 'cow' ? 4.0 : 6.0);
+    const avgSnf = todayMilk.length > 0 ? todayMilk.reduce((sum, e) => sum + (parseFloat(e.snf) || 0), 0) / todayMilk.length : (milkType === 'cow' ? 8.5 : 9.0);
+    
+    const alertData = YieldCalculator.checkYieldVariance(productType, milkType, avgFat, avgSnf, milkQty, productQty);
+    if (alertData) {
+      YieldCalculator.showYieldAlert(alertData, productType);
+    }
+  }
 
   // Create inventory movements (for Inventory Ledger)
   const movements = JSON.parse(localStorage.getItem('mr_inventory_movements') || '[]');
@@ -10548,6 +10564,28 @@ function printRateList() {
     }, 500);
   }
 }
+    </script>
+    
+    <!-- Mobile Sidebar -->
+    <script src="../js/mobile-sidebar.js"></script>
+    <script src="../js/shift-reconciliation-engine.js"></script>
+    <script src="../js/yield-calculator.js"></script>
+    <script>
+      // Initialize mobile header
+      document.addEventListener('DOMContentLoaded', function() {
+        const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Your Dairy';
+        const shopEl = document.getElementById('mobileHeaderShop');
+        if (shopEl) shopEl.textContent = shopName;
+        if (window.SidebarManager) SidebarManager.setActive('pos');
+      });
+      
+      // Quick shift close button
+      function quickShiftClose() {
+        const today = new Date().toISOString().split('T')[0];
+        const hour = new Date().getHours();
+        const shift = (hour >= 4 && hour < 16) ? 'Morning' : 'Evening';
+        ShiftReconciliation.showReconciliation(today, shift);
+      }
     </script>
   </body>
 </html>

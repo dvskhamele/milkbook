@@ -2084,7 +2084,10 @@
           <div style="font-size:16px;font-weight:900;color:#1e293b;">🥛 MilkRecord</div>
           <div id="mobileHeaderShop" style="font-size:11px;color:#64748b;">Loading...</div>
         </div>
-        <button onclick="openOverlay('overlayHistory')" style="width:48px;height:48px;border:none;background:#f1f5f9;border-radius:12px;cursor:pointer;font-size:20px;" aria-label="History">📜</button>
+        <div style="display:flex;gap:8px;">
+          <button onclick="quickShiftClose()" style="width:48px;height:48px;border:none;background:#dc2626;color:white;border-radius:12px;cursor:pointer;font-size:20px;" aria-label="Close Shift" title="Close Shift">🔄</button>
+          <button onclick="openOverlay('overlayHistory')" style="width:48px;height:48px;border:none;background:#f1f5f9;border-radius:12px;cursor:pointer;font-size:20px;" aria-label="History">📜</button>
+        </div>
       </div>
       
       <!-- Desktop Header (hidden on mobile) -->
@@ -9108,6 +9111,8 @@ These are required for procurement-grade accountability.`;
     
     <!-- Mobile Sidebar -->
     <script src="../js/mobile-sidebar.js"></script>
+    <script src="../js/shift-reconciliation-engine.js"></script>
+    <script src="../js/yield-calculator.js"></script>
     <script>
       // Initialize mobile header
       document.addEventListener('DOMContentLoaded', function() {
@@ -9116,6 +9121,14 @@ These are required for procurement-grade accountability.`;
         if (shopEl) shopEl.textContent = shopName;
         if (window.SidebarManager) SidebarManager.setActive('collection');
       });
+      
+      // Quick shift close button
+      function quickShiftClose() {
+        const today = new Date().toISOString().split('T')[0];
+        const hour = new Date().getHours();
+        const shift = (hour >= 4 && hour < 16) ? 'Morning' : 'Evening';
+        ShiftReconciliation.showReconciliation(today, shift);
+      }
     </script>
   </body>
 </html>
