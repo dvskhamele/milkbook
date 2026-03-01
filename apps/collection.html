@@ -2073,8 +2073,9 @@
     <link rel="stylesheet" href="mobile-optimized.css" />
     
     <div class="app">
-      <!-- Mobile Header with Hamburger (Minimal) -->
-      <div class="mobile-header">
+      <!-- Mobile Header with Hamburger (Mobile Only) -->
+      <div class="mobile-header desktop-only" style="display:none !important;"></div>
+      <div class="mobile-header mobile-only">
         <button class="hamburger-btn" onclick="SidebarManager.toggle()" aria-label="Menu">
           <span></span>
           <span></span>
@@ -2083,7 +2084,8 @@
         <div style="width:48px;"></div> <!-- Spacer for balance -->
       </div>
       
-      <!-- Desktop Header (hidden on mobile) -->
+      <!-- Desktop Header (Desktop Only) -->
+      <div class="topbar mobile-only" style="display:none !important;"></div>
       <div class="topbar desktop-only">
         <div class="brand">
           <a href="homepage_landing_recovered.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">

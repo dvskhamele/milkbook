@@ -9,12 +9,24 @@
   // Sidebar Manager
   window.SidebarManager = {
     isOpen: false,
+    isMobile: false,
+    
+    // Check if mobile
+    checkMobile: function() {
+      this.isMobile = window.innerWidth < 768;
+      return this.isMobile;
+    },
     
     // Initialize sidebar
     init: function() {
+      if (!this.checkMobile()) {
+        // Desktop - don't create sidebar
+        return;
+      }
+      
       this.createSidebar();
       this.addEventListeners();
-      console.log('✅ Sidebar initialized');
+      console.log('✅ Sidebar initialized (mobile only)');
     },
     
     // Create sidebar HTML
@@ -96,6 +108,13 @@
       window.addEventListener('popstate', () => {
         if (this.isOpen) {
           this.toggle();
+        }
+      });
+      
+      // Handle resize
+      window.addEventListener('resize', () => {
+        if (this.checkMobile() && !document.getElementById('sidebarMenu')) {
+          this.createSidebar();
         }
       });
       

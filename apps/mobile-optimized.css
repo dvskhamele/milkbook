@@ -520,6 +520,10 @@ textarea:focus {
     display: none !important;
   }
   
+  .desktop-only {
+    display: block !important;
+  }
+  
   .grid-3 {
     grid-template-columns: repeat(3, 1fr);
   }
