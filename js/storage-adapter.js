@@ -249,13 +249,14 @@
     }
 
     /**
-     * Add to sync queue
+     * Add to sync queue with priority
      */
-    async addToSyncQueue(operation, data) {
+    async addToSyncQueue(operation, data, priority = 'normal') {
       const queueItem = {
         entity_type: operation.replace('save_', ''),
-        entity_id: data.id || `temp_${Date.now()}`,
-        operation: 'upsert',
+        entity_id: data.id || data.local_txn_id || `temp_${Date.now()}`,
+        operation: operation,
+        priority: priority || 'normal', // critical, high, normal, low
         payload_json: JSON.stringify(data),
         status: 'pending',
         retry_count: 0,
@@ -265,13 +266,13 @@
       };
 
       await this.set('sync_queue', queueItem);
-      console.log('📝 Queued for sync:', operation, queueItem.entity_id);
+      console.log('📝 Sync Queue:', {
+        id: queueItem.id,
+        operation,
+        priority,
+        entity_id: queueItem.entity_id
+      });
       
-      // Trigger sync if engine exists
-      if (window.syncEngine) {
-        window.syncEngine.trigger();
-      }
-
       return queueItem;
     }
 

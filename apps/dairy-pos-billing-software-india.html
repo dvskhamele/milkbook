@@ -2037,8 +2037,11 @@
         return { success: true, level: 'basic' };
       };
 
-      // Save sale to backend with hybrid sync
+      // Save sale to backend with 3-tier sync
       async function saveSaleToBackend(saleData) {
+        console.log('🔴 LEVEL 2: Saving Invoice (Transaction Sync)');
+        console.log('📊 Sale Data:', saleData);
+
         // ALWAYS save locally first (works offline)
         try {
           const history = safeArray(loadData('mr_sales_history', []));
@@ -2055,16 +2058,21 @@
           };
           history.push(saleRecord);
           saveData('mr_sales_history', history);
-          console.log('✅ Sale saved locally');
+          console.log('✅ Invoice saved locally (instant)');
 
-          // Queue for API sync (background)
-          if (window.storage) {
-            await window.storage.addToSyncQueue('save_sale', saleRecord);
+          // Queue for sync with HIGH priority (but don't block UI)
+          if (window.syncEngine) {
+            const result = await window.syncEngine.queue('save_sale', saleRecord, 'high');
+            console.log('📝 Invoice sync status:', result);
+            
+            if (result.type === 'local_only') {
+              console.log('🔵 Trial Mode: Will sync after shop registration');
+            }
           }
 
-          return { success: true, type: 'local+queue' };
+          return { success: true, type: 'local+queued' };
         } catch (error) {
-          console.error('❌ Error saving sale:', error);
+          console.error('❌ Error saving invoice:', error);
           return { success: false, error: error.message };
         }
       }
@@ -7555,8 +7563,10 @@ async function loadShopSettings() {
   }
 }
 
-// Save shop settings with account creation and sync
+// Save shop settings with 3-tier sync model
 async function saveShopSettings() {
+  console.log('🟢 LEVEL 1: Shop Registration/Update');
+  
   // Capitalize first letter of each word for names
   const capitalizeName = (str) => {
     return str.replace(/\b\w/g, c => c.toUpperCase());
@@ -7577,48 +7587,21 @@ async function saveShopSettings() {
   const shopAccount = el("shopAccountInput") ? el("shopAccountInput").value.trim() : '';
   const shopIfsc = el("shopIfscInput") ? el("shopIfscInput").value.trim().toUpperCase() : '';
   const shopAccountName = el("shopAccountNameInput") ? el("shopAccountNameInput").value.trim() : '';
-  
-  // Get email if provided (for account creation)
+
+  // Get email if provided
   const shopEmail = el("shopEmailInput") ? el("shopEmailInput").value.trim().toLowerCase() : '';
 
   if (!shopName) {
     showToast('⚠️ Shop name required!');
     return;
   }
-  
+
   if (!shopPhone) {
     showToast('⚠️ Shop phone required!');
     return;
   }
 
-  // Check if account already exists (only if email or phone changed)
-  const existingEmail = localStorage.getItem('MilkRecord_account_email');
-  const existingPhone = localStorage.getItem('MilkRecord_account_phone');
-  
-  if ((shopEmail && shopEmail !== existingEmail) || (shopPhone && shopPhone !== existingPhone)) {
-    const checkResult = await checkAccountExists(shopEmail, shopPhone);
-    if (checkResult.exists) {
-      if (!confirm(`⚠️ ${checkResult.message}\n\nDo you want to update existing account instead?`)) {
-        return;
-      }
-    }
-  }
-
-  // Save all shop settings to localStorage (IMMEDIATE - works offline)
-  localStorage.setItem('MilkRecord_shop_name', shopName);
-  localStorage.setItem('MilkRecord_shop_phone', shopPhone);
-  if (shopProprietor) localStorage.setItem('MilkRecord_shop_proprietor', shopProprietor);
-  if (shopAddress) localStorage.setItem('MilkRecord_shop_address', shopAddress);
-  if (shopCity) localStorage.setItem('MilkRecord_shop_city', shopCity);
-  // Save shop payment details - Save to BOTH localStorage AND Supabase
-  if (shopUpi) localStorage.setItem('MilkRecord_shop_upi', shopUpi);
-  if (shopBank) localStorage.setItem('MilkRecord_shop_bank', shopBank);
-  if (shopAccount) localStorage.setItem('MilkRecord_shop_account', shopAccount);
-  if (shopIfsc) localStorage.setItem('MilkRecord_shop_ifsc', shopIfsc);
-  if (shopAccountName) localStorage.setItem('MilkRecord_shop_account_name', shopAccountName);
-  if (shopEmail) localStorage.setItem('MilkRecord_shop_email', shopEmail);
-
-  // Queue for API sync (HYBRID SYNC - syncs when online)
+  // Prepare shop data
   const shopData = {
     shop_name: shopName,
     shop_phone: shopPhone,
@@ -7634,46 +7617,71 @@ async function saveShopSettings() {
     shop_ifsc: shopIfsc || '',
     shop_account_name: shopAccountName || ''
   };
-  
-  addToSyncQueue('save_shop_settings', shopData);
-  showToast('✅ Saved locally + queued for sync!');
 
-  // Create account if this is first time setup
-  const hasAccount = localStorage.getItem('MilkRecord_account_email') || localStorage.getItem('MilkRecord_account_phone');
-  if (!hasAccount || (shopEmail && shopEmail !== existingEmail)) {
-    showToast('⏳ Creating account...');
-    const createResult = await createAccount({
-      email: shopEmail,
-      phone: shopPhone,
-      shopName: shopName,
-      shopPhone: shopPhone,
-      shopAddress: shopAddress,
-      shopCity: shopCity,
-      shopPincode: shopPincode
-    });
+  console.log('📊 Shop Data:', shopData);
+
+  // Check if this is first-time activation (LEVEL 0 → LEVEL 1)
+  const existingShopId = localStorage.getItem('MilkRecord_shop_id');
+  
+  if (!existingShopId) {
+    // FIRST TIME ACTIVATION - Use syncEngine.activateShop()
+    console.log('🟢 LEVEL 1: First-time shop activation');
+    showToast('⏳ Activating shop...');
     
-    if (createResult.success) {
-      console.log('✅ Account created successfully');
+    const result = await window.syncEngine.activateShop(shopData);
+    
+    if (result.success) {
+      console.log('✅ Shop activated!');
+      console.log('🆔 Shop ID:', result.shopId);
+      showToast('✅ Shop activated! Cloud sync enabled');
+      
+      // Save to localStorage as backup
+      localStorage.setItem('MilkRecord_shop_name', shopName);
+      localStorage.setItem('MilkRecord_shop_phone', shopPhone);
+      
+      // Update UI
+      const profileName = document.getElementById('profileName');
+      if (profileName) {
+        profileName.textContent = shopName;
+      }
     } else {
-      console.error('❌ Account creation failed:', createResult.error);
+      console.error('❌ Activation failed:', result.error);
+      showToast('⚠️ Saved locally. Will sync when online');
+    }
+  } else {
+    // ALREADY ACTIVATED - Just update settings
+    console.log('🔵 Shop already activated - updating settings');
+    
+    // Save locally
+    localStorage.setItem('MilkRecord_shop_name', shopName);
+    localStorage.setItem('MilkRecord_shop_phone', shopPhone);
+    if (shopProprietor) localStorage.setItem('MilkRecord_shop_proprietor', shopProprietor);
+    if (shopAddress) localStorage.setItem('MilkRecord_shop_address', shopAddress);
+    if (shopCity) localStorage.setItem('MilkRecord_shop_city', shopCity);
+    if (shopUpi) localStorage.setItem('MilkRecord_shop_upi', shopUpi);
+    if (shopBank) localStorage.setItem('MilkRecord_shop_bank', shopBank);
+    if (shopAccount) localStorage.setItem('MilkRecord_shop_account', shopAccount);
+    if (shopIfsc) localStorage.setItem('MilkRecord_shop_ifsc', shopIfsc);
+    if (shopAccountName) localStorage.setItem('MilkRecord_shop_account_name', shopAccountName);
+    if (shopEmail) localStorage.setItem('MilkRecord_shop_email', shopEmail);
+    
+    console.log('✅ Settings saved locally');
+    
+    // Queue for sync with NORMAL priority (settings can wait)
+    if (window.syncEngine) {
+      await window.syncEngine.queue('save_shop_settings', shopData, 'normal');
+    }
+    
+    showToast('✅ Settings saved!');
+    
+    // Update UI
+    const profileName = document.getElementById('profileName');
+    if (profileName) {
+      profileName.textContent = shopName;
     }
   }
 
-  // Sync all data with Supabase
-  showToast('🔄 Syncing data...');
-  const syncResult = await syncAllData();
-  if (syncResult.success) {
-    console.log('✅ Data synced:', syncResult.type);
-  }
-
   closeModal('settingsModal');
-  showToast('✅ Settings saved & synced!');
-  
-  // Refresh UI to show updated shop name
-  const shopTitleEl = document.getElementById('shopTitle');
-  if (shopTitleEl) {
-    shopTitleEl.textContent = shopName + (shopTitleEl.id === 'shopTitle' ? ' POS' : '');
-  }
 }
 
 // Copy to clipboard utility
