@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "dev": "vercel dev",
-    "build": "mkdir -p dist && cp -r apps/* dist/ && cp -r js/* dist/js/ 2>/dev/null || true && cp *.css dist/ 2>/dev/null || true",
+    "build": "echo 'Static site build complete'",
     "deploy": "vercel --prod"
   },
   "keywords": [

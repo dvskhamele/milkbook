@@ -1,26 +1,18 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "dist": "dist"
-      }
-    }
-  ],
+  "outputDirectory": ".",
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/api/$1"
     },
     {
       "src": "/pos/?",
-      "dest": "/dairy-pos-billing-software-india.html"
+      "dest": "/apps/dairy-pos-billing-software-india.html"
     },
     {
       "src": "/collection/?",
-      "dest": "/collection.html"
+      "dest": "/apps/collection.html"
     },
     {
       "src": "/js/(.*)",
