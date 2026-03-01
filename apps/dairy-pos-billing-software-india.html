@@ -1401,11 +1401,20 @@
                 <!-- Milk quantity input -->
                 <input type="number" id="convQty" placeholder="Milk Quantity (L)" style="width:100%; padding:15px; border-radius:10px; border:2px solid #3b82f6; font-weight:700; font-size:14px;" oninput="updateConversionPreview()" />
                 
-                <!-- Product quantity output -->
+                <!-- Product quantity output with override -->
                 <div style="background:#f0fdf4; padding:12px; border-radius:8px; border:2px solid #16a34a;">
-                    <div style="font-size:11px; font-weight:700; color:#166534; margin-bottom:4px;">✅ You Will Get:</div>
-                    <div style="font-size:16px; color:#15803d; font-weight:900;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <div style="font-size:11px; font-weight:700; color:#166534;">✅ You Will Get:</div>
+                        <button type="button" onclick="toggleOverride()" style="font-size:10px; padding:4px 8px; background:#fef3c7; color:#92400e; border:1px solid #f59e0b; border-radius:4px; font-weight:700; cursor:pointer;" title="Override calculated quantity">✏️ Override</button>
+                    </div>
+                    <div id="outputQtyDisplay" style="font-size:16px; color:#15803d; font-weight:900;">
                         <span id="outputQty">0</span> <span id="outputUnit">kg/L</span>
+                    </div>
+                    <!-- Override input (hidden by default) -->
+                    <div id="overrideInput" style="display:none; margin-top:8px;">
+                        <label style="font-size:10px; color:#78350f; font-weight:700;">Actual Product Quantity:</label>
+                        <input type="number" id="actualProductQty" value="0" step="0.01" style="width:100%; padding:10px; border-radius:6px; border:2px solid #f59e0b; font-weight:700; font-size:14px; box-sizing:border-box;" oninput="updateOverride()" />
+                        <div style="font-size:9px; color:#92400e; margin-top:4px;">💡 Enter actual quantity you get practically</div>
                     </div>
                 </div>
                 
@@ -6285,18 +6294,26 @@ function convertMilkToProduct() {
   
   if (!milkQty || milkQty <= 0) return showToast("Enter valid milk quantity");
   
-  // Calculate product quantity based on ratio
+  // Check if override is active
+  const overrideDiv = document.getElementById('overrideInput');
   let productQty;
   let productUnit;
   
-  if (productName.includes('Paneer') || productName.includes('Ghee')) {
-    // For paneer/ghee: milkQty / ratio = product kg
-    productQty = milkQty / milkRatio;
+  if (overrideDiv && overrideDiv.style.display !== 'none') {
+    // Use override value
+    productQty = parseFloat(el('actualProductQty').value) || 0;
     productUnit = 'kg';
   } else {
-    // For milk/curd: 1:1 ratio
-    productQty = milkQty;
-    productUnit = productName.includes('Milk') ? 'L' : 'kg';
+    // Calculate product quantity based on ratio
+    if (productName.includes('Paneer') || productName.includes('Ghee')) {
+      // For paneer/ghee: milkQty / ratio = product kg
+      productQty = milkQty / milkRatio;
+      productUnit = 'kg';
+    } else {
+      // For milk/curd: 1:1 ratio
+      productQty = milkQty;
+      productUnit = productName.includes('Milk') ? 'L' : 'kg';
+    }
   }
   
   if (productQty <= 0) return showToast("Invalid conversion");
@@ -6311,6 +6328,13 @@ function convertMilkToProduct() {
   updateUI();
   closeModal('convertModal');
   el("convQty").value = "";
+  
+  // Reset override
+  if (overrideDiv) {
+    overrideDiv.style.display = 'none';
+    el('actualProductQty').value = '0';
+  }
+  
   showToast(`✅ Converted ${milkQty}L milk to ${productQty.toFixed(2)}${productUnit} ${productName}`);
 }
 
@@ -6381,8 +6405,42 @@ function updateConversionPreview() {
 
 // Update output display
 function updateOutputDisplay(qty, unit) {
-  document.getElementById('outputQty').textContent = qty.toFixed(2);
+  // Check if override is active
+  const overrideDiv = document.getElementById('overrideInput');
+  if (overrideDiv && overrideDiv.style.display !== 'none') {
+    // Override is active, use manual value
+    const actualQty = parseFloat(el('actualProductQty').value) || 0;
+    document.getElementById('outputQty').textContent = actualQty.toFixed(2);
+  } else {
+    // Use calculated value
+    document.getElementById('outputQty').textContent = qty.toFixed(2);
+  }
   document.getElementById('outputUnit').textContent = unit;
+}
+
+// Toggle override mode
+function toggleOverride() {
+  const overrideDiv = document.getElementById('overrideInput');
+  const calcQty = document.getElementById('outputQty').textContent;
+  
+  if (overrideDiv.style.display === 'none') {
+    // Show override input
+    overrideDiv.style.display = 'block';
+    el('actualProductQty').value = calcQty;
+    el('actualProductQty').focus();
+    el('actualProductQty').select();
+  } else {
+    // Hide override input
+    overrideDiv.style.display = 'none';
+    updateConversionPreview();
+  }
+}
+
+// Update when override value changes
+function updateOverride() {
+  const actualQty = parseFloat(el('actualProductQty').value) || 0;
+  document.getElementById('outputQty').textContent = actualQty.toFixed(2);
+  updateConversionPreview();
 }
 
 // Update preview display
