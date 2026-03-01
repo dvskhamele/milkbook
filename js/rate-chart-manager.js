@@ -148,8 +148,8 @@
             <div class="panelHeader" style="background:linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color:white; position:sticky; top:0; z-index:10;">
               <span>📋 Rate List (Chart)</span>
               <div style="display:flex;gap:8px;">
-                <button onclick="RateChartManager.editChart()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">✏️ Edit Rate</button>
-                <button onclick="RateChartManager.shareWhatsApp()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">💬 WhatsApp</button>
+                <button onclick="RateChartManager.editChart()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">✏️ Edit</button>
+                <button onclick="RateChartManager.shareWhatsApp()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">💬 Share</button>
                 <button onclick="document.getElementById('rateListOverlay').remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:white;padding:0;width:32px;height:32px;">✖</button>
               </div>
             </div>
@@ -171,24 +171,19 @@
                     <div style="padding:8px;background:#f8fafc;">FAT %</div>
                     <div style="padding:8px;background:#f8fafc;text-align:right;">RATE (₹/L)</div>
                   </div>
-                  <div style="max-height:300px;overflow-y:auto;">
+                  <div style="max-height:250px;overflow-y:auto;">
                     ${this.defaultChart.cow.slice(0, 30).map((entry, i) => `
                       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;font-size:12px;border-bottom:1px solid #f1f5f9;${i % 2 === 0 ? 'background:#f8fafc' : ''}">
                         <div style="padding:8px;font-weight:700;color:#1e293b;">${entry.fat}%</div>
                         <div style="padding:8px;text-align:right;font-weight:900;color:#16a34a;">₹${entry.rate.toFixed(2)}</div>
                       </div>
                     `).join('')}
-                    ${this.defaultChart.cow.length > 30 ? `
-                      <div style="padding:12px;text-align:center;font-size:11px;color:#64748b;background:#fef3c7;">
-                        Showing 30 of ${this.defaultChart.cow.length} entries. Click "✏️ Edit Rate" to see all.
-                      </div>
-                    ` : ''}
                   </div>
                 </div>
               </div>
               
               <!-- Buffalo Milk Chart -->
-              <div>
+              <div style="margin-bottom:16px;">
                 <div style="font-size:14px;font-weight:900;color:#1e293b;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
                   <span style="font-size:20px;">🐃</span> Buffalo Milk Rate Chart
                 </div>
@@ -197,28 +192,26 @@
                     <div style="padding:8px;background:#f8fafc;">FAT %</div>
                     <div style="padding:8px;background:#f8fafc;text-align:right;">RATE (₹/L)</div>
                   </div>
-                  <div style="max-height:300px;overflow-y:auto;">
+                  <div style="max-height:250px;overflow-y:auto;">
                     ${this.defaultChart.buffalo.slice(0, 30).map((entry, i) => `
                       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;font-size:12px;border-bottom:1px solid #f1f5f9;${i % 2 === 0 ? 'background:#f8fafc' : ''}">
                         <div style="padding:8px;font-weight:700;color:#1e293b;">${entry.fat}%</div>
                         <div style="padding:8px;text-align:right;font-weight:900;color:#16a34a;">₹${entry.rate.toFixed(2)}</div>
                       </div>
                     `).join('')}
-                    ${this.defaultChart.buffalo.length > 30 ? `
-                      <div style="padding:12px;text-align:center;font-size:11px;color:#64748b;background:#fef3c7;">
-                        Showing 30 of ${this.defaultChart.buffalo.length} entries. Click "✏️ Edit Rate" to see all.
-                      </div>
-                    ` : ''}
                   </div>
                 </div>
               </div>
               
-              <!-- Import/Export -->
-              <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                <button onclick="document.getElementById('rateImportInput').click()" style="padding:12px;background:#3b82f6;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">📥 Import CSV</button>
-                <button onclick="RateChartManager.exportChart()" style="padding:12px;background:#16a34a;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">📤 Export CSV</button>
+              <!-- Import/Export Buttons -->
+              <div style="margin-top:16px;padding-top:16px;border-top:2px dashed #e2e8f0;">
+                <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:8px;">📁 Import / Export</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <button onclick="document.getElementById('rateImportInput').click()" style="padding:12px;background:#3b82f6;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">📥 Import CSV</button>
+                  <button onclick="RateChartManager.exportChart()" style="padding:12px;background:#16a34a;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">📤 Export CSV</button>
+                </div>
+                <input type="file" id="rateImportInput" accept=".csv" style="display:none;" onchange="RateChartManager.importChart(this)" />
               </div>
-              <input type="file" id="rateImportInput" accept=".csv" style="display:none;" onchange="RateChartManager.importChart(this)" />
               
             </div>
           </div>
