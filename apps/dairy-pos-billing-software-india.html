@@ -6742,48 +6742,70 @@ function loadLedgerSummary() {
 
 // Show specific ledger
 function showLedger(ledgerType) {
-  const ledgers = {
-    milk: {
-      title: '🥛 Milk Ledger',
-      entries: JSON.parse(localStorage.getItem('mr_milk_entries') || '[]').slice(-10)
-    },
-    production: {
-      title: '🏭 Production Ledger',
-      entries: JSON.parse(localStorage.getItem('mr_production_batches') || '[]').slice(-10)
-    },
-    inventory: {
-      title: '📦 Inventory Ledger',
-      entries: [] // Would come from inventory_current
-    },
-    sales: {
-      title: '💰 Sales Ledger',
-      entries: JSON.parse(localStorage.getItem('mr_pos_history') || '[]').slice(-10)
-    },
-    cash: {
-      title: '💵 Cash/Credit Ledger',
-      entries: [] // Would come from sales with payment mode
+  let entries = [];
+  
+  try {
+    if (ledgerType === 'milk') {
+      entries = JSON.parse(localStorage.getItem('mr_milk_entries') || '[]');
+    } else if (ledgerType === 'production') {
+      entries = JSON.parse(localStorage.getItem('mr_production_batches') || '[]');
+    } else if (ledgerType === 'inventory') {
+      entries = []; // Would come from inventory_current
+    } else if (ledgerType === 'sales') {
+      entries = JSON.parse(localStorage.getItem('mr_pos_history') || '[]');
+    } else if (ledgerType === 'cash') {
+      entries = []; // Would come from sales with payment mode
     }
+  } catch (e) {
+    console.error('Error loading ledger:', e);
+    entries = [];
+  }
+  
+  // Ensure entries is an array and get last 10
+  if (!Array.isArray(entries)) {
+    entries = [];
+  }
+  const recentEntries = entries.slice(-10);
+  
+  const ledgers = {
+    milk: '🥛 Milk Ledger',
+    production: '🏭 Production Ledger',
+    inventory: '📦 Inventory Ledger',
+    sales: '💰 Sales Ledger',
+    cash: '💵 Cash/Credit Ledger'
   };
   
-  const ledger = ledgers[ledgerType];
+  const ledgerTitle = ledgers[ledgerType];
   
   // Create modal with ledger entries
   const html = `
     <div class="overlay" id="ledgerOverlay" style="display:flex;align-items:center;justify-content:center;z-index:99999;">
       <div class="modal" style="width:600px;max-height:80vh;overflow-y:auto;">
         <div class="panelHeader" style="background:#1e293b;color:white;">
-          <span>${ledger.title}</span>
+          <span>${ledgerTitle}</span>
           <button onclick="document.getElementById('ledgerOverlay').remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:white;">✖</button>
         </div>
         <div style="padding:20px;">
-          ${ledger.entries.length === 0 ? 
+          ${recentEntries.length === 0 ? 
             '<div style="text-align:center;color:#94a3b8;padding:40px;">No entries yet</div>' :
-            ledger.entries.map(e => `
-              <div style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:8px;border-left:3px solid #3b82f6;">
-                <div style="font-size:11px;font-weight:700;color:#475569;">${e.batch_number || e.farmerName || 'Entry'}</div>
-                <div style="font-size:11px;color:#64748b;margin-top:4px;">${JSON.stringify(e).substring(0, 200)}...</div>
-              </div>
-            `).join('')
+            recentEntries.map(e => {
+              let displayData = '';
+              if (e.farmerName) {
+                displayData = `${e.farmerName} - ${e.qty}L @ ₹${e.rate}/L = ₹${e.amount}`;
+              } else if (e.batch_number) {
+                displayData = `${e.batch_number}: ${e.milk_quantity}L → ${e.product_quantity}kg ${e.product_type}`;
+              } else if (e.customer_name) {
+                displayData = `${e.customer_name}: ₹${e.total_amount} (${e.payment_mode})`;
+              } else {
+                displayData = JSON.stringify(e).substring(0, 150);
+              }
+              return `
+                <div style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:8px;border-left:3px solid #3b82f6;">
+                  <div style="font-size:11px;font-weight:700;color:#475569;">${e.batch_number || e.farmerName || e.customer_name || 'Entry'}</div>
+                  <div style="font-size:11px;color:#64748b;margin-top:4px;">${displayData}</div>
+                </div>
+              `;
+            }).join('')
           }
         </div>
       </div>
