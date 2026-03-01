@@ -83,17 +83,27 @@ def upsert_record(table, data, local_txn_id=None):
     
     try:
         # Add synced_at timestamp
+        data['updated_at'] = datetime.now().isoformat()
         data['synced_at'] = datetime.now().isoformat()
         
+        # Ensure shop_id is set
+        if 'shop_id' not in data or not data['shop_id']:
+            # Try to get from existing record or use first shop
+            if local_txn_id:
+                # Try to find existing record
+                existing = supabase.table(table).select('shop_id').eq('local_txn_id', local_txn_id).limit(1).execute()
+                if existing.data and len(existing.data) > 0 and existing.data[0].get('shop_id'):
+                    data['shop_id'] = existing.data[0]['shop_id']
+        
         if local_txn_id:
-            # UPSERT with conflict resolution
+            # UPSERT with conflict resolution on local_txn_id
             result = supabase.table(table).upsert(data, on_conflict='local_txn_id').execute()
         else:
             # Regular insert
             result = supabase.table(table).insert(data).execute()
         
         if result.data:
-            return {'success': True, 'data': result.data[0]}
+            return {'success': True, 'data': result.data[0], 'shop_id': result.data[0].get('shop_id')}
         else:
             return {'success': False, 'error': 'No data returned'}
             
