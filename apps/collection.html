@@ -4621,11 +4621,30 @@ function refreshRatePill() {
       function updateTodayCollection() {
         const today = fmtDate(new Date());
         const todays = entries.filter(e => e.day === today);
+
+        // Calculate cow vs buffalo separately
+        let cowMilk = 0, cowAmount = 0;
+        let buffMilk = 0, buffAmount = 0;
         
-        const totalMilk = todays.reduce((sum, e) => sum + Number(e.qty || 0), 0);
-        const totalAmount = todays.reduce((sum, e) => sum + Number(e.amount || 0), 0);
-        
-        if (el("todayMilk")) el("todayMilk").textContent = totalMilk.toFixed(1);
+        todays.forEach(e => {
+          const qty = Number(e.qty || 0);
+          const amount = Number(e.amount || 0);
+          if (e.animal === 'cow') {
+            cowMilk += qty;
+            cowAmount += amount;
+          } else if (e.animal === 'buffalo') {
+            buffMilk += qty;
+            buffAmount += amount;
+          }
+        });
+
+        const totalMilk = cowMilk + buffMilk;
+        const totalAmount = cowAmount + buffAmount;
+
+        // Update display with cow/buff split
+        if (el("todayMilk")) {
+          el("todayMilk").innerHTML = `🥛${cowMilk.toFixed(1)}L 🐃${buffMilk.toFixed(1)}L`;
+        }
         if (el("todayAmount")) el("todayAmount").textContent = formatAmount(totalAmount);
         if (el("todayEntries")) el("todayEntries").textContent = todays.length;
       }
@@ -5507,8 +5526,8 @@ function printCollectionBill(entry) {
             <span>Farmer:</span>
             <span class="bold">${farmer.name}</span>
         </div>
-        ${farmer.serial ? `<div class="row"><span>Serial:</span><span class="bold">#${farmer.serial}</span></div>` : ''}
-        ${entry.id ? `<div class="row"><span>Entry ID:</span><span class="bold">#${entry.id.slice(-6).toUpperCase()}</span></div>` : ''}
+        ${farmer.serial ? `<div class="row"><span>🏷️ Farmer Serial:</span><span class="bold" style="color:#2563eb;">#${escapeHtml(farmer.serial)}</span></div>` : ''}
+        ${entry.id ? `<div class="row"><span>📝 Entry ID:</span><span class="bold">#${entry.id.slice(-6).toUpperCase()}</span></div>` : ''}
         ${farmer.phone ? `<div class="row"><span>Phone:</span><span class="bold">${farmer.phone}</span></div>` : ''}
         ${farmer.address ? `<div class="row"><span>Address:</span><span class="bold">${farmer.address}</span></div>` : ''}
         ${farmer.city ? `<div class="row"><span>City:</span><span class="bold">${farmer.city}${farmer.pincode ? ' - ' + farmer.pincode : ''}</span></div>` : ''}
@@ -8906,6 +8925,55 @@ These are required for procurement-grade accountability.`;
         //     `⏱ ${pad(Math.floor(sec / 60))}:${pad(sec % 60)}`;
         // }, 1000);
       }
+
+      // Update milk stock display from collection entries (for conversion modal)
+      window.updateMilkStockDisplay = function() {
+        const today = fmtDate(new Date());
+        const todays = entries.filter(e => e.day === today);
+        
+        let cowQty = 0, buffQty = 0;
+        
+        todays.forEach(e => {
+          const qty = parseFloat(e.qty) || 0;
+          if (e.animal === 'cow') cowQty += qty;
+          else if (e.animal === 'buffalo') buffQty += qty;
+        });
+        
+        const stockDisplay = document.getElementById('milkStockDisplay');
+        if (stockDisplay) {
+          if (cowQty === 0 && buffQty === 0) {
+            stockDisplay.innerHTML = `
+              <div style="padding:12px; text-align:center; color:#dc2626; font-size:11px; font-weight:700;">
+                ⚠️ No milk collected today<br/>
+                <span style="color:#64748b; font-weight:500; font-size:10px;">Collect milk first, then convert</span>
+              </div>
+            `;
+          } else {
+            stockDisplay.innerHTML = `
+              <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #bbf7d0;">
+                <span>🥛 Cow Milk:</span>
+                <span style="font-weight:700;">${cowQty.toFixed(1)} L</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:4px 0;">
+                <span>🐃 Buff Milk:</span>
+                <span style="font-weight:700;">${buffQty.toFixed(1)} L</span>
+              </div>
+              <div style="margin-top:8px; padding-top:8px; border-top:1px solid #16a34a; font-size:10px; color:#166534; font-weight:700;">
+                ✅ From today's collection: ${(cowQty + buffQty).toFixed(1)} L
+              </div>
+            `;
+          }
+        }
+      };
+      
+      // Override openModal to update milk stock when conversion modal opens
+      const originalOpenModal2 = window.openModal;
+      window.openModal = function(modalId) {
+        if (modalId === 'convertModal') {
+          setTimeout(updateMilkStockDisplay, 100);
+        }
+        if (originalOpenModal2) originalOpenModal2(modalId);
+      };
 
       init();
     </script>
