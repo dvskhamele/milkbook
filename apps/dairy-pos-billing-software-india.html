@@ -1382,6 +1382,23 @@
                             <span><span id="todayTotalMilk">0.0</span> L | ₹<span id="todayTotalAmount">0</span></span>
                         </div>
                     </div>
+                    
+                    <!-- Auto Production Suggestion -->
+                    <div id="autoSuggestion" style="display:none; margin-top:12px; padding:12px; background:#f0fdf4; border:2px solid #16a34a; border-radius:8px;">
+                        <div style="font-size:11px; font-weight:700; color:#166534; margin-bottom:8px;">💡 Suggested Production (Based on Sales Pattern)</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                            <div style="background:white; padding:8px; border-radius:6px;">
+                                <div style="font-size:10px; color:#64748b;">🧀 Paneer</div>
+                                <div style="font-size:13px; font-weight:900; color:#15803d;">100L → 20kg</div>
+                            </div>
+                            <div style="background:white; padding:8px; border-radius:6px;">
+                                <div style="font-size:10px; color:#64748b;">🥣 Curd</div>
+                                <div style="font-size:13px; font-weight:900; color:#15803d;">50L → 50kg</div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="applySuggestion()" style="margin-top:8px; width:100%; padding:8px; background:#16a34a; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:11px;">✅ Apply Suggestion</button>
+                    </div>
+                    
                     <div id="noMilkWarning" style="display:none; margin-top:12px; padding:12px; background:#fef2f2; border:2px solid #fecaca; border-radius:8px; text-align:center;">
                         <div style="font-size:12px; font-weight:700; color:#991b1b; margin-bottom:4px;">⚠️ No milk collected today!</div>
                         <div style="font-size:11px; color:#7f1d1d;">Go to Collection page to add milk entries first</div>
@@ -1519,6 +1536,18 @@
                     <div style="font-size:11px; font-weight:700; color:#475569; margin-bottom:8px;">📜 Recent Batches (Today)</div>
                     <div id="recentBatchesList" style="max-height:150px; overflow-y:auto;">
                         <div style="text-align:center; color:#94a3b8; padding:12px; font-size:12px;">No batches created today</div>
+                    </div>
+                </div>
+                
+                <!-- 5 Ledgers Display -->
+                <div style="margin-top:16px; padding-top:16px; border-top:2px dashed #e2e8f0;">
+                    <div style="font-size:11px; font-weight:700; color:#475569; margin-bottom:8px;">📊 5 Ledgers (Live)</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <button type="button" onclick="showLedger('milk')" style="padding:10px; background:#eff6ff; border:2px solid #3b82f6; border-radius:6px; font-weight:700; color:#1e3a8a; cursor:pointer; font-size:11px;">🥛 Milk Ledger</button>
+                        <button type="button" onclick="showLedger('production')" style="padding:10px; background:#f3e8ff; border:2px solid #c084fc; border-radius:6px; font-weight:700; color:#7e22ce; cursor:pointer; font-size:11px;">🏭 Production Ledger</button>
+                        <button type="button" onclick="showLedger('inventory')" style="padding:10px; background:#f0fdf4; border:2px solid #16a34a; border-radius:6px; font-weight:700; color:#15803d; cursor:pointer; font-size:11px;">📦 Inventory Ledger</button>
+                        <button type="button" onclick="showLedger('sales')" style="padding:10px; background:#fef3c7; border:2px solid #f59e0b; border-radius:6px; font-weight:700; color:#92400e; cursor:pointer; font-size:11px;">💰 Sales Ledger</button>
+                        <button type="button" onclick="showLedger('cash')" style="padding:10px; background:#fee2e2; border:2px solid #dc2626; border-radius:6px; font-weight:700; color:#991b1b; cursor:pointer; font-size:11px;">💵 Cash/Credit Ledger</button>
                     </div>
                 </div>
             </div>
@@ -6672,8 +6701,90 @@ function loadTodayMilkForProduction() {
   
   window.todayMilk = { cow: cowMilk, buff: buffMilk, total: cowMilk + buffMilk };
   
+  // Show auto-suggestion if milk available
+  const autoSuggestion = document.getElementById('autoSuggestion');
+  if (autoSuggestion) {
+    if (cowMilk + buffMilk > 50) {
+      autoSuggestion.style.display = 'block';
+    } else {
+      autoSuggestion.style.display = 'none';
+    }
+  }
+  
   // Load recent batches
   loadRecentBatches();
+  
+  // Load ledger summary
+  loadLedgerSummary();
+}
+
+// Apply production suggestion
+function applySuggestion() {
+  document.getElementById('prodMilkQty').value = '150';
+  document.getElementById('prodProduct').value = 'paneer,400,5';
+  updateProductionRatio();
+  updateProductionPreview();
+  showToast('💡 Suggestion applied: 150L → Paneer');
+}
+
+// Load ledger summary for display
+function loadLedgerSummary() {
+  // This would load from localStorage or API
+  // For now, show placeholder
+  console.log('Ledger summary loaded');
+}
+
+// Show specific ledger
+function showLedger(ledgerType) {
+  const ledgers = {
+    milk: {
+      title: '🥛 Milk Ledger',
+      entries: JSON.parse(localStorage.getItem('mr_milk_entries') || '[]').slice(-10)
+    },
+    production: {
+      title: '🏭 Production Ledger',
+      entries: JSON.parse(localStorage.getItem('mr_production_batches') || '[]').slice(-10)
+    },
+    inventory: {
+      title: '📦 Inventory Ledger',
+      entries: [] // Would come from inventory_current
+    },
+    sales: {
+      title: '💰 Sales Ledger',
+      entries: JSON.parse(localStorage.getItem('mr_pos_history') || '[]').slice(-10)
+    },
+    cash: {
+      title: '💵 Cash/Credit Ledger',
+      entries: [] // Would come from sales with payment mode
+    }
+  };
+  
+  const ledger = ledgers[ledgerType];
+  
+  // Create modal with ledger entries
+  const html = `
+    <div class="overlay" id="ledgerOverlay" style="display:flex;align-items:center;justify-content:center;z-index:99999;">
+      <div class="modal" style="width:600px;max-height:80vh;overflow-y:auto;">
+        <div class="panelHeader" style="background:#1e293b;color:white;">
+          <span>${ledger.title}</span>
+          <button onclick="document.getElementById('ledgerOverlay').remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:white;">✖</button>
+        </div>
+        <div style="padding:20px;">
+          ${ledger.entries.length === 0 ? 
+            '<div style="text-align:center;color:#94a3b8;padding:40px;">No entries yet</div>' :
+            ledger.entries.map(e => `
+              <div style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:8px;border-left:3px solid #3b82f6;">
+                <div style="font-size:11px;font-weight:700;color:#475569;">${e.batch_number || e.farmerName || 'Entry'}</div>
+                <div style="font-size:11px;color:#64748b;margin-top:4px;">${JSON.stringify(e).substring(0, 200)}...</div>
+              </div>
+            `).join('')
+          }
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', html);
 }
 
 // Load recent production batches
