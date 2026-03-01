@@ -2396,6 +2396,11 @@
     <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
+    <!-- Enterprise-Grade JavaScript Modules (Same as POS) -->
+    <script src="../js/safe-execution.js"></script>
+    <script src="../js/storage-adapter.js"></script>
+    <script src="../js/sync-engine.js"></script>
+
     <!-- Backend -->
     <script src="simple-backend.js"></script>
     <!-- Debug script COMMENTED OUT - was causing page load issues -->
@@ -5175,8 +5180,41 @@ function playSuccessSound() {
 
     entries.push(entry);
     saveEntries(entries);
-    
-    // Save to backend if API mode is enabled
+
+    // Create milk collection record for sync
+    const milkCollection = {
+      local_txn_id: entry.id,
+      farmer_id: farmer.id,
+      farmer_name: farmer.name || "",
+      quantity: entry.qty,
+      fat: entry.fat,
+      snf: entry.snf,
+      rate: entry.rateSnapshot,
+      amount: entry.amount,
+      shift: entry.session === 'Morning' ? 'morning' : 'evening',
+      collection_date: new Date(entry.day).toISOString().split('T')[0],
+      payment_mode: selectedPayMode.toLowerCase(),
+      payment_status: selectedPayMode === 'Cash' ? 'settled' : 'pending',
+      animal_type: entry.animal,
+      created_at: new Date(entry.createdAt).toISOString(),
+      synced_at: null
+    };
+
+    console.log('🔴 LEVEL 2: Saving Milk Collection (Transaction Sync)');
+    console.log('📊 Collection Data:', milkCollection);
+
+    // Save to sync engine (3-tier sync)
+    if (window.syncEngine) {
+      window.syncEngine.queue('save_milk_collection', milkCollection, 'high')
+        .then(result => {
+          console.log('📝 Milk collection sync status:', result);
+          if (result.type === 'local_only') {
+            console.log('🔵 Trial Mode: Will sync after shop registration');
+          }
+        });
+    }
+
+    // Save to backend if API mode is enabled (legacy support)
     if (window.USE_API && window.MilkRecordAPI) {
       window.MilkRecordAPI.milkEntries.create({
         farmer_id: farmer.id,
@@ -5191,7 +5229,7 @@ function playSuccessSound() {
         reading_mode: 'manual',
         images: entry.images || []
       }).catch(error => {
-        console.error('Failed to save to backend:', error);
+        console.error('Failed to save to legacy backend:', error);
       });
     }
     
@@ -7032,7 +7070,7 @@ function loadFarmerTransactions(fId) {
     }
 }
 
-// Save farmer details
+// Save farmer details with 3-tier sync
 function saveFarmerDetails() {
     const f = getFarmerById(selectedFarmerId);
     if (!f) return;
@@ -7044,7 +7082,7 @@ function saveFarmerDetails() {
     f.address = el("editAddress").value.trim();
     f.city = el("editCity").value.trim();
     f.pincode = el("editPincode").value.trim();
-    
+
     // Save payment details
     f.upi = el("editUPI") ? el("editUPI").value.trim() : (f.upi || '');
     f.bankName = el("editBankName") ? el("editBankName").value.trim() : (f.bankName || '');
@@ -7054,7 +7092,35 @@ function saveFarmerDetails() {
 
     saveFarmers(farmers);
     renderFarmers();
-    showToast("✅ Farmer details updated!");
+    showToast("✅ Farmer details updated locally!");
+
+    // Queue for sync with NORMAL priority (farmers can wait)
+    const farmerData = {
+      local_txn_id: f.id,
+      name: f.name,
+      phone: f.phone,
+      animal_type: f.animalType,
+      balance: f.balance,
+      address: f.address,
+      city: f.city,
+      pincode: f.pincode,
+      upi: f.upi,
+      bank_name: f.bankName,
+      account_no: f.accountNo,
+      ifsc: f.ifsc,
+      account_name: f.accountName,
+      updated_at: new Date().toISOString()
+    };
+
+    console.log('🔵 Farmer Update: Queuing for sync');
+    console.log('📊 Farmer Data:', farmerData);
+
+    if (window.syncEngine) {
+      window.syncEngine.queue('save_farmer', farmerData, 'normal')
+        .then(result => {
+          console.log('📝 Farmer sync status:', result);
+        });
+    }
 
     // Refresh modal
     openFarmerDetail(selectedFarmerId);
