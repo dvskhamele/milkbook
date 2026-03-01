@@ -30,6 +30,15 @@
             <p id="sidebarShopName">Loading...</p>
           </div>
           
+          <!-- Quick Actions (Mobile-Optimized) -->
+          <div style="padding:16px;background:#f8fafc;border-bottom:2px solid #e2e8f0;">
+            <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:8px;">⚡ QUICK ACTIONS</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button onclick="quickShiftClose()" style="padding:12px;background:#dc2626;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">🔄 Close Shift</button>
+              <button onclick="openOverlay('overlayHistory')" style="padding:12px;background:#3b82f6;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">📜 History</button>
+            </div>
+          </div>
+          
           <div class="sidebar-nav">
             <button onclick="SidebarManager.navigate('collection')" id="navCollection">
               <span>📊</span> Collection
@@ -49,11 +58,14 @@
             <button onclick="SidebarManager.navigate('products')" id="navProducts">
               <span>📦</span> Products
             </button>
-            <button onclick="SidebarManager.navigate('history')" id="navHistory">
-              <span>📜</span> History
-            </button>
             <button onclick="SidebarManager.navigate('reports')" id="navReports">
               <span>📊</span> Reports
+            </button>
+            <button onclick="SidebarManager.navigate('compliance')" id="navCompliance">
+              <span>✅</span> FSSAI Compliance
+            </button>
+            <button onclick="SidebarManager.navigate('traceability')" id="navTraceability">
+              <span>📱</span> QR Traceability
             </button>
             <button onclick="SidebarManager.navigate('settings')" id="navSettings">
               <span>⚙️</span> Settings
@@ -88,16 +100,21 @@
       const pages = {
         'collection': 'collection.html',
         'pos': 'dairy-pos-billing-software-india.html',
-        'production': 'production.html',
+        'production': 'dairy-pos-billing-software-india.html#production',
         'ledger': 'dairy-pos-billing-software-india.html#ledger',
         'farmers': 'collection.html#farmers',
         'products': 'dairy-pos-billing-software-india.html#products',
-        'history': 'dairy-pos-billing-software-india.html#history',
-        'reports': 'reports.html',
+        'reports': 'collection.html#reports',
+        'compliance': 'showFSSAI',
+        'traceability': 'showQR',
         'settings': 'settings.html'
       };
       
-      if (pages[page]) {
+      if (pages[page] === 'showFSSAI') {
+        if (window.FSSAICompliance) FSSAICompliance.showDashboard();
+      } else if (pages[page] === 'showQR') {
+        showToast('📱 QR feature: Generate from Production batches');
+      } else if (pages[page]) {
         window.location.href = pages[page];
       }
       

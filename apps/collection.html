@@ -2073,7 +2073,7 @@
     <link rel="stylesheet" href="mobile-optimized.css" />
     
     <div class="app">
-      <!-- Mobile Header with Hamburger -->
+      <!-- Mobile Header with Hamburger (Minimal) -->
       <div class="mobile-header">
         <button class="hamburger-btn" onclick="SidebarManager.toggle()" aria-label="Menu">
           <span></span>
@@ -2082,12 +2082,8 @@
         </button>
         <div style="text-align:center;">
           <div style="font-size:16px;font-weight:900;color:#1e293b;">🥛 MilkRecord</div>
-          <div id="mobileHeaderShop" style="font-size:11px;color:#64748b;">Loading...</div>
         </div>
-        <div style="display:flex;gap:8px;">
-          <button onclick="quickShiftClose()" style="width:48px;height:48px;border:none;background:#dc2626;color:white;border-radius:12px;cursor:pointer;font-size:20px;" aria-label="Close Shift" title="Close Shift">🔄</button>
-          <button onclick="openOverlay('overlayHistory')" style="width:48px;height:48px;border:none;background:#f1f5f9;border-radius:12px;cursor:pointer;font-size:20px;" aria-label="History">📜</button>
-        </div>
+        <div style="width:48px;"></div> <!-- Spacer for balance -->
       </div>
       
       <!-- Desktop Header (hidden on mobile) -->
@@ -9113,6 +9109,8 @@ These are required for procurement-grade accountability.`;
     <script src="../js/mobile-sidebar.js"></script>
     <script src="../js/shift-reconciliation-engine.js"></script>
     <script src="../js/yield-calculator.js"></script>
+    <script src="../js/fssai-compliance.js"></script>
+    <script src="../js/qr-traceability.js"></script>
     <script>
       // Initialize mobile header
       document.addEventListener('DOMContentLoaded', function() {
