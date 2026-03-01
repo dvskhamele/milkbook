@@ -1716,9 +1716,19 @@
         </div>
 
         <!-- Action Buttons -->
-        <div style="padding:12px 16px; border-top:1px solid #e2e8f0; flex-shrink:0; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-          <button onclick="exportCustomerLedgerExcel()" style="padding:10px; background:#16a34a; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12px;">📊 Export Excel</button>
-          <button onclick="printCustomerLedger()" style="padding:10px; background:#3b82f6; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12px;">🖨️ Print Report</button>
+        <div style="padding:12px 16px; border-top:1px solid #e2e8f0; flex-shrink:0;">
+          <!-- Quick Actions Grid -->
+          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:12px;">
+            <button onclick="window.location.href='shift-reconciliation-screen.html'" style="padding:12px; background:#dc2626; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:11px;">🔄 Close Shift</button>
+            <button onclick="window.location.href='fssai-compliance-screen.html'" style="padding:12px; background:#16a34a; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:11px;">✅ FSSAI Report</button>
+            <button onclick="showQRTraceability()" style="padding:12px; background:#7c3aed; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:11px;">📱 QR Traceability</button>
+            <button onclick="showProductionReport()" style="padding:12px; background:#f59e0b; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:11px;">🏭 Production</button>
+          </div>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button onclick="exportCustomerLedgerExcel()" style="padding:10px; background:#16a34a; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12px;">📊 Export Excel</button>
+            <button onclick="printCustomerLedger()" style="padding:10px; background:#3b82f6; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12px;">🖨️ Print Report</button>
+          </div>
         </div>
       </div>
     </div>
@@ -9818,6 +9828,68 @@ let customerLedgerView = 'all';
 function openCustomerLedger() {
   openModal('customerLedgerModal');
   loadCustomerLedger();
+}
+
+// Show QR Traceability
+function showQRTraceability() {
+  if (window.QRTraceability) {
+    // Get latest production batch
+    const batches = JSON.parse(localStorage.getItem('mr_production_batches') || '[]');
+    if (batches.length > 0) {
+      const latestBatch = batches[batches.length - 1];
+      QRTraceability.showQRLabel(latestBatch);
+    } else {
+      showToast('📱 No production batches found. Create one first!');
+    }
+  } else {
+    showToast('⚠️ QR Traceability not loaded');
+  }
+}
+
+// Show Production Report
+function showProductionReport() {
+  const batches = JSON.parse(localStorage.getItem('mr_production_batches') || '[]');
+  
+  let html = '<div style="padding:20px;">';
+  html += '<h3 style="margin-bottom:16px;">🏭 Production Batches</h3>';
+  
+  if (batches.length === 0) {
+    html += '<div style="padding:40px; text-align:center; color:#94a3b8;">No production batches yet</div>';
+  } else {
+    batches.slice(-10).reverse().forEach(b => {
+      html += `
+        <div style="background:#f8fafc; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid #7c3aed;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="font-weight:700; color:#1e293b;">${b.batch_number}</span>
+            <span style="font-size:11px; color:#64748b;">${b.product_type.toUpperCase()}</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:12px;">
+            <div>🥛 Milk: ${b.milk_quantity}L</div>
+            <div>📦 Product: ${b.product_quantity}kg</div>
+            <div>📊 Ratio: ${b.conversion_ratio}:1</div>
+            <div>📅 ${new Date(b.created_at).toLocaleDateString()}</div>
+          </div>
+        </div>
+      `;
+    });
+  }
+  
+  html += '</div>';
+  
+  // Show in modal
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.id = 'productionReportOverlay';
+  overlay.innerHTML = `
+    <div class="modal" style="width:95vw; max-width:500px; max-height:80vh; overflow-y:auto;">
+      <div class="panelHeader">
+        <span>🏭 Production Report</span>
+        <button onclick="document.getElementById('productionReportOverlay').remove()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b;">✖</button>
+      </div>
+      ${html}
+    </div>
+  `;
+  document.body.appendChild(overlay);
 }
 
 // Load customer ledger data
