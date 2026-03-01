@@ -8590,13 +8590,21 @@ async function saveShopSettings() {
     if (shopEmail) localStorage.setItem('MilkRecord_shop_email', shopEmail);
     
     console.log('✅ Settings saved locally');
-    
-    // Queue for sync with NORMAL priority (settings can wait)
+
+    // Reload sync engine state (shop_id may have been set)
     if (window.syncEngine) {
-      await window.syncEngine.queue('save_shop_settings', shopData, 'normal');
+      await window.syncEngine.loadState();
+      
+      // If no longer in trial mode, queue for sync
+      if (!window.syncEngine.isTrialMode) {
+        await window.syncEngine.queue('save_shop_settings', shopData, 'normal');
+        console.log('🟢 Sync enabled - data will sync to cloud');
+      } else {
+        console.log('🔵 Still in trial mode - data saved locally only');
+      }
     }
-    
-    showToast('✅ Settings saved!');
+
+    showToast('✅ Settings saved!' + (window.syncEngine && !window.syncEngine.isTrialMode ? ' ☁️ Syncing to cloud...' : ''));
     
     // Update UI
     const profileName = document.getElementById('profileName');
@@ -8672,14 +8680,14 @@ window.addEventListener('DOMContentLoaded', function() {
     settingsModal.addEventListener('click', function(e) {
       if (e.target === settingsModal) {
         // Load current settings
-        el('shopNameInput').value = localStorage.getItem('MilkRecord_shop_name') || '';
-        el('shopPhoneInput').value = localStorage.getItem('MilkRecord_shop_phone') || '';
-        el('shopProprietorInput').value = localStorage.getItem('MilkRecord_shop_proprietor') || '';
-        el('shopAddressInput').value = localStorage.getItem('MilkRecord_shop_address') || '';
-        el('shopCityInput').value = localStorage.getItem('MilkRecord_shop_city') || '';
-        el('shopPincodeInput').value = localStorage.getItem('MilkRecord_shop_pincode') || '';
-        el('shopGstInput').value = localStorage.getItem('MilkRecord_shop_gst') || '';
-        el('shopPanInput').value = localStorage.getItem('MilkRecord_shop_pan') || '';
+        if (el('shopNameInput')) el('shopNameInput').value = localStorage.getItem('MilkRecord_shop_name') || '';
+        if (el('shopPhoneInput')) el('shopPhoneInput').value = localStorage.getItem('MilkRecord_shop_phone') || '';
+        if (el('shopProprietorInput')) el('shopProprietorInput').value = localStorage.getItem('MilkRecord_shop_proprietor') || '';
+        if (el('shopAddressInput')) el('shopAddressInput').value = localStorage.getItem('MilkRecord_shop_address') || '';
+        if (el('shopCityInput')) el('shopCityInput').value = localStorage.getItem('MilkRecord_shop_city') || '';
+        if (el('shopPincodeInput')) el('shopPincodeInput').value = localStorage.getItem('MilkRecord_shop_pincode') || '';
+        if (el('shopGstInput')) el('shopGstInput').value = localStorage.getItem('MilkRecord_shop_gst') || '';
+        if (el('shopPanInput')) el('shopPanInput').value = localStorage.getItem('MilkRecord_shop_pan') || '';
         // Load shop payment details
         if (el('shopUpiInput')) el('shopUpiInput').value = localStorage.getItem('MilkRecord_shop_upi') || '';
         if (el('shopBankInput')) el('shopBankInput').value = localStorage.getItem('MilkRecord_shop_bank') || '';
