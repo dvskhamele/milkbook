@@ -498,15 +498,34 @@ def internal_error(error):
 if __name__ == '__main__':
     import webbrowser
     import threading
+    import signal
+    import sys
+    
+    # Handle graceful shutdown
+    def signal_handler(sig, frame):
+        print('\n🛑 Shutting down gracefully...')
+        sys.exit(0)
+    
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
     
     def open_browser():
-        webbrowser.open('http://localhost:5000/pos')
+        try:
+            webbrowser.open('http://localhost:5000/pos')
+        except:
+            pass
     
     print("🚀 Starting MilkRecord POS...")
     print("📍 Local URL: http://localhost:5000/pos")
     print("📍 API Health: http://localhost:5000/api/health")
     print("")
+    print("✅ Server running... Press CTRL+C to stop")
+    print("")
     
     threading.Timer(2.0, open_browser).start()
     
-    app.run(host='127.0.0.1', port=5000, debug=False, threaded=True)
+    try:
+        app.run(host='127.0.0.1', port=5000, debug=False, threaded=True)
+    except KeyboardInterrupt:
+        print('\n👋 Server stopped by user')
+        sys.exit(0)
