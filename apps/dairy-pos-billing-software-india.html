@@ -8423,7 +8423,7 @@ async function loadShopSettings() {
       // Fill form fields
       if (el('shopNameInput')) el('shopNameInput').value = s.shop_name || '';
       if (el('shopPhoneInput')) el('shopPhoneInput').value = s.shop_phone || '';
-      if (el('shopProprietorInput')) el('shopProprietorInput').value = '';
+      if (el('shopProprietorInput')) el('shopProprietorInput').value = s.shop_proprietor || '';
       if (el('shopEmailInput')) el('shopEmailInput').value = s.shop_email || '';
       if (el('shopAddressInput')) el('shopAddressInput').value = s.shop_address || '';
       if (el('shopCityInput')) el('shopCityInput').value = s.shop_city || '';
