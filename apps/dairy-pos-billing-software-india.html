@@ -807,6 +807,7 @@
           <button onclick="filterProductsByCategory('curd')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Curd">🥣 Curd</button>
           <button onclick="filterProductsByCategory('sweets')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Sweets">🍬 Sweets</button>
           <button onclick="filterProductsByCategory('bakery')" class="category-btn" style="padding: 4px 6px; background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Bakery">🥐 Bakery</button>
+          <button onclick="openModal('convertModal')" class="category-btn" style="padding: 4px 6px; background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer;" title="Convert Milk to Product">🔄 Milk→Product</button>
         </div>
         <div class="brand">
           <a href="index.html" style="text-decoration:none; color:inherit; display: flex; align-items: center; gap: 6px;">
@@ -3369,19 +3370,27 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
               let html = '';
               selectedDropIndex = -1;
 
-              // Always show "Add New Customer" option at top
-              if (searchVal) {
-                  html += `
-                    <div class="drop-item add-new" onclick="addCustomerDirect('${escapeHtml(searchVal)}')" data-index="0">
-                      <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="font-size:18px;">➕</span>
-                        <div>
-                          <div style="font-weight:900; color:#166534;">Add New Customer</div>
-                          <div style="font-size:11px; color:#15803d;">"${escapeHtml(searchVal)}"</div>
+              // Always show "Add New Customer" option at top when typing
+              if (searchVal && searchVal.length > 0) {
+                  // Check if customer with this name already exists
+                  const existingCustomer = customers.find(c => 
+                    c.name.toLowerCase() === searchVal.toLowerCase() ||
+                    c.phone === searchVal
+                  );
+                  
+                  if (!existingCustomer) {
+                      html += `
+                        <div class="drop-item add-new" onclick="addCustomerDirect('${escapeHtml(searchVal)}')" data-index="0" style="background:#f0fdf4; border:2px solid #16a34a;">
+                          <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:18px;">➕</span>
+                            <div>
+                              <div style="font-weight:900; color:#166534;">Add Customer: "${escapeHtml(searchVal)}"</div>
+                              <div style="font-size:11px; color:#15803d;">Click to create new customer</div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  `;
+                      `;
+                  }
               }
 
               // Show matching customers with their frequent buys
