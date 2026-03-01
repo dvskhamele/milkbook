@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FSSAI Compliance - MilkRecord</title>
+  <link rel="stylesheet" href="mobile-optimized.css" />
+  <style>
+    body { background: #f8fafc; padding-bottom: 80px; }
+    .page-header { background: #16a34a; color: white; padding: 16px; position: sticky; top: 0; z-index: 100; }
+    .page-title { font-size: 18px; font-weight: 900; margin: 0; }
+    .section { background: white; margin: 12px; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .section-title { font-size: 14px; font-weight: 900; color: #1e293b; margin-bottom: 12px; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat-card { background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center; }
+    .stat-label { font-size: 10px; color: #64748b; margin-bottom: 4px; }
+    .stat-value { font-size: 20px; font-weight: 900; }
+    .log-item { background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #16a34a; }
+    .log-item.fail { border-left-color: #dc2626; background: #fef2f2; }
+    .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <div class="page-title">✅ FSSAI Compliance</div>
+    <div style="font-size:11px;opacity:0.9;margin-top:4px;">Auto-logs & Quality Reports</div>
+  </div>
+
+  <!-- Compliance Summary -->
+  <div class="section">
+    <div class="section-title">📊 Today's Summary</div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Samples</div>
+        <div class="stat-value" id="totalSamples">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pass Rate</div>
+        <div class="stat-value" id="passRate" style="color:#16a34a;">100%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Adulteration Alert -->
+  <div class="section" id="adulterationSection" style="display:none;">
+    <div class="section-title" style="color:#dc2626;">⚠️ Adulteration Detected</div>
+    <div id="adulterationList"></div>
+  </div>
+
+  <!-- Recent Logs -->
+  <div class="section">
+    <div class="section-title">📝 Recent Collections</div>
+    <div id="logsList"></div>
+  </div>
+
+  <!-- Bottom Action -->
+  <div class="bottom-bar">
+    <button onclick="exportCompliance()" class="btn btn-primary btn-block">📥 Export Compliance Report</button>
+  </div>
+
+  <script src="../js/fssai-compliance.js"></script>
+  <script>
+    // Load today's logs
+    const logs = JSON.parse(localStorage.getItem('mr_fssai_logs') || '[]');
+    const today = new Date().toISOString().split('T')[0];
+    const todayLogs = logs.filter(l => l.timestamp.startsWith(today));
+    
+    // Calculate stats
+    const total = todayLogs.length;
+    const pass = todayLogs.filter(l => l.compliance_status === 'PASS').length;
+    const fail = total - pass;
+    const passPercent = total > 0 ? ((pass / total) * 100) : 100;
+    
+    document.getElementById('totalSamples').textContent = total;
+    document.getElementById('passRate').textContent = passPercent.toFixed(1) + '%';
+    document.getElementById('passRate').style.color = passPercent >= 95 ? '#16a34a' : '#dc2626';
+    
+    // Show adulteration alerts
+    const adulterated = todayLogs.filter(l => parseFloat(l.added_water) > 0);
+    if (adulterated.length > 0) {
+      document.getElementById('adulterationSection').style.display = 'block';
+      document.getElementById('adulterationList').innerHTML = adulterated.map(l => `
+        <div class="log-item fail">
+          <div style="font-size:13px;font-weight:700;color:#991b1b;">${l.farmer_name}</div>
+          <div style="font-size:11px;color:#991b1b;margin-top:4px;">
+            Added Water: ${l.added_water}% | CLR: ${l.clr} | Fat: ${l.fat}%
+          </div>
+          <div style="font-size:10px;color:#dc2626;margin-top:4px;">⚠️ Reject this milk!</div>
+        </div>
+      `).join('');
+    }
+    
+    // Show recent logs
+    document.getElementById('logsList').innerHTML = todayLogs.slice(-10).reverse().map(l => `
+      <div class="log-item ${l.compliance_status === 'FAIL' ? 'fail' : ''}">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#1e293b;">${l.farmer_name}</div>
+            <div style="font-size:11px;color:#64748b;">${l.milk_type} • ${l.quantity}L</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px;font-weight:700;color:${l.compliance_status === 'PASS' ? '#16a34a' : '#dc2626'};">
+              ${l.compliance_status}
+            </div>
+            <div style="font-size:10px;color:#64748b;">${l.quality_status}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;font-size:11px;">
+          <div><strong>Fat:</strong> ${l.fat}%</div>
+          <div><strong>SNF:</strong> ${l.snf}%</div>
+          <div><strong>CLR:</strong> ${l.clr}</div>
+        </div>
+      </div>
+    `).join('');
+    
+    function exportCompliance() {
+      const report = FSSAICompliance.generateReport(today, today);
+      const csv = [
+        ['FSSAI Compliance Report'],
+        ['Date', today],
+        ['Total Samples', report.totalSamples],
+        ['Pass Count', report.passCount],
+        ['Fail Count', report.failCount],
+        ['Pass Rate', report.passPercent],
+        ['Average Fat', report.averageFat],
+        ['Average SNF', report.averageSNF],
+        [],
+        ['Sample Details']
+      ];
+      
+      todayLogs.forEach(l => {
+        csv.push([
+          l.farmer_name,
+          l.milk_type,
+          l.quantity,
+          l.fat,
+          l.snf,
+          l.clr,
+          l.added_water,
+          l.compliance_status,
+          l.quality_status
+        ]);
+      });
+      
+      const blob = new Blob([csv.map(r => r.join(',')).join('\n')], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fssai-compliance-${today}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('📥 Report exported!');
+    }
+  </script>
+</body>
+</html>

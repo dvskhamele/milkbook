@@ -34,8 +34,8 @@
           <div style="padding:16px;background:#f8fafc;border-bottom:2px solid #e2e8f0;">
             <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:8px;">⚡ QUICK ACTIONS</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-              <button onclick="quickShiftClose()" style="padding:12px;background:#dc2626;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">🔄 Close Shift</button>
-              <button onclick="openOverlay('overlayHistory')" style="padding:12px;background:#3b82f6;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">📜 History</button>
+              <button onclick="window.location.href='shift-reconciliation-screen.html'" style="padding:12px;background:#dc2626;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">🔄 Close Shift</button>
+              <button onclick="window.location.href='fssai-compliance-screen.html'" style="padding:12px;background:#16a34a;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">✅ FSSAI</button>
             </div>
           </div>
           
@@ -105,16 +105,13 @@
         'farmers': 'collection.html#farmers',
         'products': 'dairy-pos-billing-software-india.html#products',
         'reports': 'collection.html#reports',
-        'compliance': 'showFSSAI',
-        'traceability': 'showQR',
+        'compliance': 'fssai-compliance-screen.html',
+        'traceability': 'qr-traceability-screen.html',
+        'reconciliation': 'shift-reconciliation-screen.html',
         'settings': 'settings.html'
       };
       
-      if (pages[page] === 'showFSSAI') {
-        if (window.FSSAICompliance) FSSAICompliance.showDashboard();
-      } else if (pages[page] === 'showQR') {
-        showToast('📱 QR feature: Generate from Production batches');
-      } else if (pages[page]) {
+      if (pages[page]) {
         window.location.href = pages[page];
       }
       

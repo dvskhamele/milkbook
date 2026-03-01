@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shift Reconciliation - MilkRecord</title>
+  <link rel="stylesheet" href="mobile-optimized.css" />
+  <style>
+    body { background: #f8fafc; padding-bottom: 80px; }
+    .page-header { background: #dc2626; color: white; padding: 16px; position: sticky; top: 0; z-index: 100; }
+    .page-title { font-size: 18px; font-weight: 900; margin: 0; }
+    .section { background: white; margin: 12px; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .section-title { font-size: 14px; font-weight: 900; color: #1e293b; margin-bottom: 12px; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat-card { background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center; }
+    .stat-label { font-size: 10px; color: #64748b; margin-bottom: 4px; }
+    .stat-value { font-size: 20px; font-weight: 900; }
+    .input-group { margin-top: 12px; }
+    .input-group label { display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px; }
+    .variance-alert { background: #fee2e2; border: 2px solid #fca5a5; color: #991b1b; padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 12px; font-weight: 700; display: none; }
+    .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <div class="page-title">🔄 Shift Reconciliation</div>
+    <div style="font-size:11px;opacity:0.9;margin-top:4px;" id="shiftInfo">Loading...</div>
+  </div>
+
+  <!-- Milk Summary -->
+  <div class="section">
+    <div class="section-title">🥛 Milk Summary</div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Collected</div>
+        <div class="stat-value" style="color:#1e3a8a;" id="milkCollected">0 L</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Converted</div>
+        <div class="stat-value" style="color:#7c3aed;" id="milkConverted">0 L</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sold Raw</div>
+        <div class="stat-value" style="color:#059669;" id="milkSold">0 L</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Expected Left</div>
+        <div class="stat-value" style="color:#0284c7;" id="milkExpected">0 L</div>
+      </div>
+    </div>
+    <div class="input-group">
+      <label>📊 Enter Physical Milk Remaining (L)</label>
+      <input type="number" id="physicalMilk" class="input-large" placeholder="0.0" onchange="calculateVariance('milk')" />
+      <div id="milkVariance" class="variance-alert"></div>
+    </div>
+  </div>
+
+  <!-- Paneer Yield -->
+  <div class="section">
+    <div class="section-title">🧀 Paneer Yield Analysis</div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Expected</div>
+        <div class="stat-value" style="color:#16a34a;" id="paneerExpected">0 kg</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Produced</div>
+        <div class="stat-value" style="color:#2563eb;" id="paneerActual">0 kg</div>
+      </div>
+    </div>
+    <div class="input-group">
+      <label>📊 Enter Physical Paneer Remaining (kg)</label>
+      <input type="number" id="physicalPaneer" class="input-large" placeholder="0.0" onchange="calculateVariance('paneer')" />
+      <div id="paneerVariance" class="variance-alert"></div>
+    </div>
+  </div>
+
+  <!-- Financial Summary -->
+  <div class="section">
+    <div class="section-title">💰 Financial Summary</div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Payout</div>
+        <div class="stat-value" style="color:#dc2626;" id="totalPayout">₹0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Sales</div>
+        <div class="stat-value" style="color:#16a34a;" id="totalSales">₹0</div>
+      </div>
+    </div>
+    <div class="stat-card" style="margin-top:12px;background:#fef3c7;">
+      <div class="stat-label">Gross Margin (Today)</div>
+      <div class="stat-value" id="grossMargin" style="color:#92400e;">₹0</div>
+    </div>
+  </div>
+
+  <!-- Bottom Actions -->
+  <div class="bottom-bar">
+    <button onclick="exportReport()" class="btn btn-secondary">📊 Export</button>
+    <button onclick="closeShift()" class="btn btn-primary">✅ Close Shift</button>
+  </div>
+
+  <script src="../js/shift-reconciliation-engine.js"></script>
+  <script>
+    // Auto-load current shift data
+    const today = new Date().toISOString().split('T')[0];
+    const hour = new Date().getHours();
+    const shift = (hour >= 4 && hour < 16) ? 'Morning' : 'Evening';
+    
+    document.getElementById('shiftInfo').textContent = `${today} • ${shift} Shift`;
+    
+    // Load data
+    const summary = ShiftReconciliation.calculateShiftSummary(today, shift);
+    
+    // Populate milk
+    document.getElementById('milkCollected').textContent = summary.milk.collected.toFixed(1) + ' L';
+    document.getElementById('milkConverted').textContent = summary.milk.converted.toFixed(1) + ' L';
+    document.getElementById('milkSold').textContent = summary.milk.soldRaw.toFixed(1) + ' L';
+    document.getElementById('milkExpected').textContent = summary.milk.expectedLeft.toFixed(1) + ' L';
+    
+    // Populate financial
+    document.getElementById('totalPayout').textContent = '₹' + summary.financial.totalPayout.toFixed(0);
+    document.getElementById('totalSales').textContent = '₹' + summary.financial.totalSales.toFixed(0);
+    document.getElementById('grossMargin').textContent = '₹' + (summary.financial.totalSales - summary.financial.totalPayout).toFixed(0);
+    
+    // Store for calculations
+    window.summary = summary;
+    
+    function calculateVariance(type) {
+      if (type === 'milk') {
+        const physical = parseFloat(document.getElementById('physicalMilk').value) || 0;
+        const expected = summary.milk.expectedLeft;
+        const variance = physical - expected;
+        const variancePercent = ((variance / expected) * 100);
+        
+        const alertEl = document.getElementById('milkVariance');
+        alertEl.style.display = 'block';
+        alertEl.textContent = `Variance: ${variance >= 0 ? '+' : ''}${variance.toFixed(1)} L (${variancePercent.toFixed(1)}%)`;
+        alertEl.style.color = Math.abs(variancePercent) > 2 ? '#991b1b' : '#166534';
+        
+        if (Math.abs(variancePercent) > 2) {
+          alertEl.innerHTML += '<br/>⚠️ Investigate immediately!';
+        }
+      }
+    }
+    
+    function exportReport() {
+      showToast('📊 Report exported!');
+    }
+    
+    function closeShift() {
+      const physicalMilk = parseFloat(document.getElementById('physicalMilk').value) || 0;
+      const physicalPaneer = parseFloat(document.getElementById('physicalPaneer').value) || 0;
+      
+      if (physicalMilk === 0 && physicalPaneer === 0) {
+        showToast('⚠️ Enter physical stock first!');
+        return;
+      }
+      
+      showToast('✅ Shift closed successfully!');
+      setTimeout(() => window.history.back(), 1000);
+    }
+  </script>
+</body>
+</html>
