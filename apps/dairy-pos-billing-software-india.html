@@ -1492,14 +1492,22 @@
 
                 <!-- Product Quantity with Override -->
                 <div>
-                    <label style="font-size:10px; color:#64748b; font-weight:700;">Actual Product Quantity (kg)</label>
-                    <input type="number" id="prodProductQty" placeholder="Auto-calculated" style="width:100%; padding:12px; border-radius:8px; border:2px solid #16a34a; font-weight:700; font-size:14px;" readonly />
-                    <div style="font-size:11px; color:#64748b; margin-top:4px;">💡 Auto-calculated. Edit below for actual yield.</div>
-                    <div id="prodOverrideSection" style="display:none; margin-top:8px;">
-                        <input type="number" id="prodActualQty" placeholder="Enter actual quantity" style="width:100%; padding:10px; border-radius:6px; border:2px solid #f59e0b; font-weight:700; font-size:14px;" oninput="updateProdActual()" />
-                        <div style="font-size:10px; color:#92400e; margin-top:4px;">💡 Override for practical yield</div>
+                    <div id="prodCalculatedQty" style="background:#f0fdf4; padding:12px; border-radius:8px; border:2px solid #16a34a;">
+                        <div style="font-size:11px; font-weight:700; color:#166534; margin-bottom:4px;">✅ Product Output (Auto-calculated):</div>
+                        <div style="font-size:18px; color:#15803d; font-weight:900;">
+                            <span id="prodProductQty">0</span> kg
+                        </div>
+                        <div style="font-size:10px; color:#166534; margin-top:4px;">💡 Based on conversion ratio</div>
                     </div>
-                    <button type="button" onclick="toggleProdOverride()" style="margin-top:8px; padding:8px 12px; background:#fef3c7; color:#92400e; border:1px solid #f59e0b; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">📝 Edit Actual Yield</button>
+                    
+                    <!-- Override section - hidden by default -->
+                    <div id="prodOverrideSection" style="display:none; margin-top:12px; background:#fef3c7; padding:12px; border-radius:8px; border:2px solid #f59e0b;">
+                        <label style="font-size:10px; color:#92400e; font-weight:700; display:block; margin-bottom:6px;">📝 Override Actual Product Quantity (kg)</label>
+                        <input type="number" id="prodActualQty" placeholder="Enter actual quantity" style="width:100%; padding:10px; border-radius:6px; border:2px solid #f59e0b; font-weight:700; font-size:14px;" oninput="updateProdActual()" />
+                        <div style="font-size:10px; color:#92400e; margin-top:4px;">💡 Enter actual yield you get practically</div>
+                    </div>
+                    
+                    <button type="button" onclick="toggleProdOverride()" style="margin-top:12px; width:100%; padding:10px; background:#fef3c7; color:#92400e; border:1px solid #f59e0b; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">📝 Edit Actual Yield (Override)</button>
                 </div>
 
                 <!-- Notes -->
@@ -6727,7 +6735,7 @@ function loadTodayMilkForProduction() {
   }
 
   window.todayMilk = { cow: cowMilk, buff: buffMilk, total: cowMilk + buffMilk };
-
+  
   // Show auto-suggestion if milk available
   const autoSuggestion = document.getElementById('autoSuggestion');
   if (autoSuggestion) {
@@ -6737,12 +6745,20 @@ function loadTodayMilkForProduction() {
       autoSuggestion.style.display = 'none';
     }
   }
-
+  
   // Load recent batches
   loadRecentBatches();
-
+  
   // Load ledger summary
   loadLedgerSummary();
+  
+  // Focus on Milk Used input for better UX
+  setTimeout(() => {
+    const milkInput = document.getElementById('prodMilkQty');
+    if (milkInput) {
+      milkInput.focus();
+    }
+  }, 300);
 }
 
 // Apply production suggestion
@@ -6917,8 +6933,8 @@ function updateProductionPreview() {
   document.getElementById('previewProdOutput').textContent = productQty.toFixed(2);
   document.getElementById('previewEfficiency').textContent = '100';
   
-  // Auto-fill product quantity
-  document.getElementById('prodProductQty').value = productQty.toFixed(2);
+  // Update calculated quantity display (span, not input)
+  document.getElementById('prodProductQty').textContent = productQty.toFixed(2);
   
   // Check if exceeds available
   const milkSource = document.querySelector('input[name="milkSource"]:checked').value;
@@ -6935,14 +6951,20 @@ function updateProductionPreview() {
 // Toggle production override
 function toggleProdOverride() {
   const overrideSection = document.getElementById('prodOverrideSection');
+  const calculatedDisplay = document.getElementById('prodCalculatedQty');
   const actualInput = document.getElementById('prodActualQty');
   
   if (overrideSection.style.display === 'none') {
+    // Show override
     overrideSection.style.display = 'block';
-    actualInput.value = document.getElementById('prodProductQty').value;
+    calculatedDisplay.style.display = 'none';
+    actualInput.value = document.getElementById('prodProductQty').textContent;
     actualInput.focus();
+    actualInput.select();
   } else {
+    // Hide override
     overrideSection.style.display = 'none';
+    calculatedDisplay.style.display = 'block';
   }
 }
 
