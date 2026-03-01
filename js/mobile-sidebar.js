@@ -31,9 +31,8 @@
           
           <!-- Quick Actions (Mobile-Optimized) -->
           <div style="padding:16px;background:#f8fafc;border-bottom:2px solid #e2e8f0;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="display:grid;grid-template-columns:1fr;gap:8px;">
               <button onclick="window.location.href='shift-reconciliation-screen.html'" style="padding:12px;background:#dc2626;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">🔄 Close Shift</button>
-              <button onclick="window.location.href='fssai-compliance-screen.html'" style="padding:12px;background:#16a34a;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">✅ FSSAI</button>
             </div>
           </div>
           
@@ -42,28 +41,10 @@
               <span>📊</span> Collection
             </button>
             <button onclick="SidebarManager.navigate('pos')" id="navPOS">
-              <span>🛒</span> POS Billing
-            </button>
-            <button onclick="SidebarManager.navigate('production')" id="navProduction">
-              <span>🏭</span> Production
+              <span>🛒</span> POS
             </button>
             <button onclick="SidebarManager.navigate('ledger')" id="navLedger">
-              <span>📒</span> Customer Ledger
-            </button>
-            <button onclick="SidebarManager.navigate('farmers')" id="navFarmers">
-              <span>👥</span> Farmers
-            </button>
-            <button onclick="SidebarManager.navigate('products')" id="navProducts">
-              <span>📦</span> Products
-            </button>
-            <button onclick="SidebarManager.navigate('reports')" id="navReports">
-              <span>📊</span> Reports
-            </button>
-            <button onclick="SidebarManager.navigate('compliance')" id="navCompliance">
-              <span>✅</span> FSSAI Compliance
-            </button>
-            <button onclick="SidebarManager.navigate('traceability')" id="navTraceability">
-              <span>📱</span> QR Traceability
+              <span>📒</span> Ledger
             </button>
             <button onclick="SidebarManager.navigate('settings')" id="navSettings">
               <span>⚙️</span> Settings
@@ -98,14 +79,7 @@
       const pages = {
         'collection': 'collection.html',
         'pos': 'dairy-pos-billing-software-india.html',
-        'production': 'dairy-pos-billing-software-india.html#production',
         'ledger': 'dairy-pos-billing-software-india.html#ledger',
-        'farmers': 'collection.html#farmers',
-        'products': 'dairy-pos-billing-software-india.html#products',
-        'reports': 'collection.html#reports',
-        'compliance': 'fssai-compliance-screen.html',
-        'traceability': 'qr-traceability-screen.html',
-        'reconciliation': 'shift-reconciliation-screen.html',
         'settings': 'settings.html'
       };
       
