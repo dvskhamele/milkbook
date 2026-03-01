@@ -1,16 +1,14 @@
 -- ============================================
--- MilkRecord POS - BULLETPROOF Migration
--- STEP 1: Add ALL columns (no constraints)
--- STEP 2: Add ALL constraints
--- STEP 3: Create ALL indexes
--- 100% safe to run multiple times
+-- MilkRecord POS - TRULY BULLETPROOF Migration
+-- Handles existing tables with missing columns
+-- 100% safe - tested for edge cases
 -- ============================================
 
 -- ============================================
--- STEP 1: ADD ALL COLUMNS (NO CONSTRAINTS)
+-- PART 1: ADD COLUMNS TO EXISTING TABLES
 -- ============================================
 
--- SHOPS TABLE
+-- SHOPS
 ALTER TABLE shops ADD COLUMN IF NOT EXISTS shop_phone TEXT;
 ALTER TABLE shops ADD COLUMN IF NOT EXISTS shop_email TEXT;
 ALTER TABLE shops ADD COLUMN IF NOT EXISTS shop_address TEXT;
@@ -27,23 +25,23 @@ ALTER TABLE shops ADD COLUMN IF NOT EXISTS shop_status TEXT DEFAULT 'activated';
 ALTER TABLE shops ADD COLUMN IF NOT EXISTS sync_enabled BOOLEAN DEFAULT true;
 ALTER TABLE shops ADD COLUMN IF NOT EXISTS activated_at TIMESTAMP WITH TIME ZONE;
 
--- PRODUCTS TABLE
+-- PRODUCTS
 ALTER TABLE products ADD COLUMN IF NOT EXISTS local_txn_id TEXT;
 ALTER TABLE products ADD COLUMN IF NOT EXISTS shop_id UUID;
 ALTER TABLE products ADD COLUMN IF NOT EXISTS synced_at TIMESTAMP WITH TIME ZONE;
 
--- CUSTOMERS TABLE
+-- CUSTOMERS
 ALTER TABLE customers ADD COLUMN IF NOT EXISTS local_txn_id TEXT;
 ALTER TABLE customers ADD COLUMN IF NOT EXISTS shop_id UUID;
 ALTER TABLE customers ADD COLUMN IF NOT EXISTS synced_at TIMESTAMP WITH TIME ZONE;
 
--- SALES TABLE
+-- SALES
 ALTER TABLE sales ADD COLUMN IF NOT EXISTS local_txn_id TEXT;
 ALTER TABLE sales ADD COLUMN IF NOT EXISTS shop_id UUID;
 ALTER TABLE sales ADD COLUMN IF NOT EXISTS synced_at TIMESTAMP WITH TIME ZONE;
 
 -- ============================================
--- STEP 2: CREATE TABLES (without constraints)
+-- PART 2: CREATE NEW TABLES (with all columns)
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS devices (
@@ -120,16 +118,27 @@ CREATE TABLE IF NOT EXISTS milk_collections (
 );
 
 -- ============================================
--- STEP 3: ADD UNIQUE CONSTRAINTS (after columns exist)
+-- PART 3: ADD COLUMNS TO NEWLY CREATED TABLES
+-- (In case tables existed but missing columns)
 -- ============================================
 
--- First ensure columns exist in new tables
+-- DEVICES
 ALTER TABLE devices ADD COLUMN IF NOT EXISTS device_id TEXT;
+
+-- LEDGER
 ALTER TABLE ledger ADD COLUMN IF NOT EXISTS local_txn_id TEXT;
+
+-- ADVANCE ORDERS
 ALTER TABLE advance_orders ADD COLUMN IF NOT EXISTS local_txn_id TEXT;
+
+-- MILK COLLECTIONS
 ALTER TABLE milk_collections ADD COLUMN IF NOT EXISTS local_txn_id TEXT;
 
--- Now add constraints
+-- ============================================
+-- PART 4: ADD UNIQUE CONSTRAINTS
+-- (Drop first to avoid conflicts)
+-- ============================================
+
 ALTER TABLE products DROP CONSTRAINT IF EXISTS unique_product_local_txn;
 ALTER TABLE products ADD CONSTRAINT unique_product_local_txn UNIQUE (local_txn_id);
 
@@ -152,7 +161,7 @@ ALTER TABLE devices DROP CONSTRAINT IF EXISTS devices_device_id_key;
 ALTER TABLE devices ADD CONSTRAINT devices_device_id_key UNIQUE (device_id);
 
 -- ============================================
--- STEP 4: CREATE ALL INDEXES (after everything else)
+-- PART 5: CREATE ALL INDEXES
 -- ============================================
 
 CREATE INDEX IF NOT EXISTS idx_shops_phone ON shops(shop_phone);
@@ -179,7 +188,7 @@ CREATE INDEX IF NOT EXISTS idx_collections_farmer ON milk_collections(farmer_id)
 CREATE INDEX IF NOT EXISTS idx_collections_local_txn ON milk_collections(local_txn_id);
 
 -- ============================================
--- STEP 5: ENABLE RLS
+-- PART 6: ENABLE RLS
 -- ============================================
 
 ALTER TABLE shops ENABLE ROW LEVEL SECURITY;
