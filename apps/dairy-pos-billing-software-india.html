@@ -6473,27 +6473,23 @@ function getEmojiForProduct(productName) {
 
 // Update milk stock display when modal opens
 function updateMilkStockDisplay() {
-  // Get milk products from product grid
-  const cowMilkCards = document.querySelectorAll('.p-card[onclick*="Cow Milk"]');
-  const buffMilkCards = document.querySelectorAll('.p-card[onclick*="Buff Milk"]');
-  
+  // Read directly from cart array for accurate quantities
   let cowQty = 0;
   let buffQty = 0;
   
-  // Sum up quantities from cart badges (the red badges showing quantity in cart)
-  cowMilkCards.forEach(card => {
-    const badge = card.querySelector('.qty-badge');
-    if (badge && badge.style.display !== 'none' && badge.textContent.trim() !== '0') {
-      cowQty += parseFloat(badge.textContent.trim()) || 0;
-    }
-  });
-  
-  buffMilkCards.forEach(card => {
-    const badge = card.querySelector('.qty-badge');
-    if (badge && badge.style.display !== 'none' && badge.textContent.trim() !== '0') {
-      buffQty += parseFloat(badge.textContent.trim()) || 0;
-    }
-  });
+  // Sum up milk quantities from cart
+  if (typeof cart !== 'undefined' && Array.isArray(cart)) {
+    cart.forEach(item => {
+      if (item && item.name) {
+        const nameLower = item.name.toLowerCase();
+        if (nameLower.includes('cow') && nameLower.includes('milk')) {
+          cowQty += item.qty || 0;
+        } else if ((nameLower.includes('buff') || nameLower.includes('buffalo')) && nameLower.includes('milk')) {
+          buffQty += item.qty || 0;
+        }
+      }
+    });
+  }
   
   // Update display
   const stockDisplay = document.getElementById('milkStockDisplay');
