@@ -2,30 +2,46 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "apps/**",
+      "src": "apps/index.html",
       "use": "@vercel/static"
     },
     {
-      "src": "js/**",
+      "src": "apps/*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "js/*.js",
       "use": "@vercel/static"
     },
     {
       "src": "*.css",
       "use": "@vercel/static"
+    },
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "api/index.py"
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/pos/?",
+      "dest": "/apps/dairy-pos-billing-software-india.html"
+    },
+    {
+      "src": "/collection/?",
+      "dest": "/apps/collection.html"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/js/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "api/index.py"
+      "dest": "/apps/$1"
     }
   ],
   "env": {
