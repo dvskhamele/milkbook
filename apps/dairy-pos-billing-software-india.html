@@ -4174,12 +4174,19 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
 
       // Reset customer modal to add mode
       function resetCustomerModalToAddMode() {
-        document.getElementById('newCustId').value = '';
-        document.getElementById('newName').value = '';
-        document.getElementById('newPhone').value = '';
-        document.getElementById('newEmail').value = '';
-        document.getElementById('newAddress').value = '';
-        document.getElementById('newUnit').value = 'L';
+        const newCustId = document.getElementById('newCustId');
+        const newName = document.getElementById('newName');
+        const newPhone = document.getElementById('newPhone');
+        const newEmail = document.getElementById('newEmail');
+        const newAddress = document.getElementById('newAddress');
+        const newUnit = document.getElementById('newUnit');
+        
+        if (newCustId) newCustId.value = '';
+        if (newName) newName.value = '';
+        if (newPhone) newPhone.value = '';
+        if (newEmail) newEmail.value = '';
+        if (newAddress) newAddress.value = '';
+        if (newUnit) newUnit.value = 'L';
         
         const modalTitle = document.querySelector('#addCustModal .panelHeader span');
         if (modalTitle) modalTitle.textContent = '📝 Add/Edit Customer';
