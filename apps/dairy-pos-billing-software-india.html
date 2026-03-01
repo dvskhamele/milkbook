@@ -799,6 +799,7 @@
     <!-- Mobile POS Compact Interface CSS -->
     <link rel="stylesheet" href="pos-mobile-compact.css" />
     <link rel="stylesheet" href="mobile-forms-vertical.css" />
+    <script src="../js/rate-chart-manager.js"></script>
     
     <div class="app">
       <div class="topbar">
@@ -836,8 +837,8 @@
           </button>
 
           <!-- Product Rate List Button -->
-          <button class="pillbtn primary" onclick="openRateListModal()" style="background:#7c3aed; border-color:#7c3aed;" title="View & Share Rate List">
-            📋 Product Rate List
+          <button class="pillbtn primary" onclick="RateChartManager.showRateList()" style="background:#7c3aed; border-color:#7c3aed;" title="View & Share Rate List">
+            📋 Rate List
           </button>
 
           <!-- Switch to Collection -->

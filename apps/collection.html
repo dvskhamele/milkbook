@@ -2084,6 +2084,7 @@
     <link rel="stylesheet" href="mobile-optimized.css" />
     <link rel="stylesheet" href="mobile-forms-vertical.css" />
     <link rel="stylesheet" href="quick-production-bar.css" />
+    <script src="../js/rate-chart-manager.js"></script>
     <style>
       /* Big Scrollbar for Collection Page */
       @media (max-width: 768px) {
@@ -2282,6 +2283,9 @@
               </div>
               <button class="addNewBtn" id="btnAddFarmerMain" style="padding: 8px 16px; font-size: 13px;" onclick="openOverlay('overlayFarmer'); return false;">
                 ➕ Farmer
+              </button>
+              <button class="addNewBtn" onclick="RateChartManager.showRateList()" style="padding: 8px 16px; font-size: 13px; background:#3b82f6; color:white; border:none; border-radius:6px; font-weight:700; cursor:pointer;" title="View Rate List">
+                📋 Rate List
               </button>
             </div>
             <small id="holdBadge"></small>
