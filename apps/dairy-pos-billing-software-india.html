@@ -8421,6 +8421,7 @@ async function loadShopSettings() {
         console.log('✅ Shop ID saved to localStorage:', result.shop_id);
       }
       // Fill form fields
+      const el = (id) => document.getElementById(id);
       if (el('shopNameInput')) el('shopNameInput').value = s.shop_name || '';
       if (el('shopPhoneInput')) el('shopPhoneInput').value = s.shop_phone || '';
       if (el('shopProprietorInput')) el('shopProprietorInput').value = s.shop_proprietor || '';
@@ -8437,9 +8438,51 @@ async function loadShopSettings() {
       if (el('shopAccountNameInput')) el('shopAccountNameInput').value = s.shop_account_name || '';
 
       console.log('✅ Shop settings loaded from Supabase');
+      
+      // Show sync status confirmation
+      showSyncStatusConfirmation();
     }
   } catch (error) {
     console.warn('⚠️ Failed to load shop settings:', error);
+  }
+}
+
+// Show sync status confirmation message
+function showSyncStatusConfirmation() {
+  const shopId = localStorage.getItem('MilkRecord_shop_id');
+  const shopName = localStorage.getItem('MilkRecord_shop_name') || 'Your Shop';
+  const shopEmail = localStorage.getItem('MilkRecord_shop_email') || '';
+  const shopPhone = localStorage.getItem('MilkRecord_shop_phone') || '';
+  
+  if (shopId) {
+    const confirmationHtml = `
+      <div style="background:#f0fdf4; border:2px solid #16a34a; border-radius:12px; padding:16px; margin:16px 0;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+          <div style="width:40px; height:40px; background:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:20px;">✅</div>
+          <div>
+            <div style="font-size:14px; font-weight:900; color:#15803d;">🎉 Sync Enabled & Active!</div>
+            <div style="font-size:11px; color:#166534;">Your data is backed up to Supabase</div>
+          </div>
+        </div>
+        <div style="background:white; border-radius:8px; padding:12px; font-size:12px; color:#475569;">
+          <div style="margin-bottom:8px;"><strong>🏪 Shop:</strong> ${escapeHtml(shopName)}</div>
+          <div style="margin-bottom:8px;"><strong>📧 Email:</strong> ${escapeHtml(shopEmail) || 'Not set'}</div>
+          <div style="margin-bottom:8px;"><strong>📱 Phone:</strong> ${escapeHtml(shopPhone) || 'Not set'}</div>
+          <div style="margin-top:12px; padding:8px; background:#fef3c7; border-radius:6px; font-size:11px; color:#92400e;">
+            ⚠️ <strong>Important:</strong> Keep your email and phone updated! This is how you access your data on new devices.
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Insert after settings form
+    const settingsForm = document.querySelector('#settingsModal form');
+    if (settingsForm && !document.getElementById('syncStatusConfirmation')) {
+      const div = document.createElement('div');
+      div.id = 'syncStatusConfirmation';
+      div.innerHTML = confirmationHtml;
+      settingsForm.insertBefore(div, settingsForm.firstChild);
+    }
   }
 }
 
