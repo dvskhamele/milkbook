@@ -1364,16 +1364,50 @@
                     </div>
                 </div>
                 
+                <!-- Product selection -->
+                <select id="convProduct" style="width:100%; padding:15px; border-radius:10px; border:2px solid #16a34a; font-weight:700; font-size:14px;" onchange="updateConversionRatio()">
+                    <option value="Cow Milk,64,1">🥛 Cow Milk (1L → 1L)</option>
+                    <option value="Buff Milk,100,1">🐃 Buff Milk (1L → 1L)</option>
+                    <option value="Buff Milk,80,1">🐃 Buff Milk (₹80/L)</option>
+                    <option value="Paneer,400,5">🧀 Paneer (5L → 1kg)</option>
+                    <option value="Ghee,600,25">🧈 Ghee (25L → 1kg)</option>
+                    <option value="Curd,80,1">🥣 Curd (1L → 1kg)</option>
+                    <option value="custom">⚙️ Custom Ratio...</option>
+                </select>
+                
+                <!-- Conversion ratio display -->
+                <div id="ratioDisplay" style="background:#eff6ff; padding:12px; border-radius:8px; border:2px solid #3b82f6; display:none;">
+                    <div style="font-size:11px; font-weight:700; color:#1e40af; margin-bottom:4px;">📊 Conversion Ratio:</div>
+                    <div style="font-size:13px; color:#1e3a8a; font-weight:700;">
+                        <span id="ratioText">5L Milk → 1kg Paneer</span>
+                    </div>
+                </div>
+                
+                <!-- Custom ratio inputs -->
+                <div id="customRatioInputs" style="display:none; background:#fef3c7; padding:12px; border-radius:8px; border:2px solid #f59e0b;">
+                    <div style="font-size:11px; font-weight:700; color:#92400e; margin-bottom:8px;">⚙️ Custom Conversion Ratio:</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <div>
+                            <label style="font-size:10px; color:#78350f; font-weight:700;">Milk (L):</label>
+                            <input type="number" id="customMilkRatio" value="5" step="0.5" style="width:100%; padding:8px; border-radius:6px; border:1px solid #d97706; font-weight:700;" onchange="updateCustomRatio()" />
+                        </div>
+                        <div>
+                            <label style="font-size:10px; color:#78350f; font-weight:700;">Product (kg/L):</label>
+                            <input type="number" id="customProductRatio" value="1" step="0.5" style="width:100%; padding:8px; border-radius:6px; border:1px solid #d97706; font-weight:700;" onchange="updateCustomRatio()" />
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Milk quantity input -->
                 <input type="number" id="convQty" placeholder="Milk Quantity (L)" style="width:100%; padding:15px; border-radius:10px; border:2px solid #3b82f6; font-weight:700; font-size:14px;" oninput="updateConversionPreview()" />
                 
-                <select id="convProduct" style="width:100%; padding:15px; border-radius:10px; border:2px solid #16a34a; font-weight:700; font-size:14px;" onchange="updateConversionPreview()">
-                    <option value="Cow Milk,64">🥛 Cow Milk (₹64/L)</option>
-                    <option value="Buff Milk,100">🐃 Buff Milk (₹100/L)</option>
-                    <option value="Buff Milk,80">🐃 Buff Milk (₹80/L)</option>
-                    <option value="Paneer,400">🧀 Paneer (₹400/kg)</option>
-                    <option value="Ghee,600">🧈 Ghee (₹600/L)</option>
-                    <option value="Curd,80">🥣 Curd (₹80/kg)</option>
-                </select>
+                <!-- Product quantity output -->
+                <div style="background:#f0fdf4; padding:12px; border-radius:8px; border:2px solid #16a34a;">
+                    <div style="font-size:11px; font-weight:700; color:#166534; margin-bottom:4px;">✅ You Will Get:</div>
+                    <div style="font-size:16px; color:#15803d; font-weight:900;">
+                        <span id="outputQty">0</span> <span id="outputUnit">kg/L</span>
+                    </div>
+                </div>
                 
                 <!-- Conversion preview -->
                 <div id="convPreview" style="background:#fef3c7; padding:12px; border-radius:8px; border:2px solid #f59e0b; display:none;">
@@ -1387,7 +1421,7 @@
                 <button class="add-btn" style="width:100%; background:var(--green); padding:15px; font-weight:700; font-size:14px;" onclick="convertMilkToProduct()">✅ Update Stock</button>
                 
                 <div style="font-size:10px; color:#64748b; text-align:center; margin-top:8px;">
-                    💡 Enter milk quantity in Liters and select product to convert
+                    💡 Common ratios: Paneer (5L→1kg), Ghee (25L→1kg), Curd (1L→1kg)
                 </div>
             </div>
         </div>
@@ -6243,39 +6277,122 @@ function toggleGaps() { el("gapsPanel").classList.toggle("open"); }
 
 // Convert milk to product
 function convertMilkToProduct() {
-  const qty = parseFloat(el("convQty").value);
+  const milkQty = parseFloat(el("convQty").value);
   const productData = el("convProduct").value.split(',');
   const productName = productData[0];
   const rate = parseFloat(productData[1]);
-
-  if (!qty || qty <= 0) return showToast("Enter valid quantity");
+  const milkRatio = parseFloat(productData[2]) || 1;
+  
+  if (!milkQty || milkQty <= 0) return showToast("Enter valid milk quantity");
+  
+  // Calculate product quantity based on ratio
+  let productQty;
+  let productUnit;
+  
+  if (productName.includes('Paneer') || productName.includes('Ghee')) {
+    // For paneer/ghee: milkQty / ratio = product kg
+    productQty = milkQty / milkRatio;
+    productUnit = 'kg';
+  } else {
+    // For milk/curd: 1:1 ratio
+    productQty = milkQty;
+    productUnit = productName.includes('Milk') ? 'L' : 'kg';
+  }
+  
+  if (productQty <= 0) return showToast("Invalid conversion");
 
   // Add to cart
   const existingItem = cart.find(item => item.name === productName && item.rate === rate);
   if (existingItem) {
-    existingItem.qty += qty;
+    existingItem.qty += productQty;
   } else {
-    cart.push({name: productName, rate, qty, emoji: getEmojiForProduct(productName), id: Date.now()});
+    cart.push({name: productName, rate, qty: productQty, emoji: getEmojiForProduct(productName), id: Date.now(), unit: productUnit});
   }
   updateUI();
   closeModal('convertModal');
   el("convQty").value = "";
-  showToast(`✅ Converted ${qty}L to ${productName}`);
+  showToast(`✅ Converted ${milkQty}L milk to ${productQty.toFixed(2)}${productUnit} ${productName}`);
+}
+
+// Update conversion ratio display when product changes
+function updateConversionRatio() {
+  const productValue = el("convProduct").value;
+  const ratioDisplay = document.getElementById('ratioDisplay');
+  const customInputs = document.getElementById('customRatioInputs');
+  
+  if (productValue === 'custom') {
+    ratioDisplay.style.display = 'none';
+    customInputs.style.display = 'block';
+  } else {
+    customInputs.style.display = 'none';
+    const productData = productValue.split(',');
+    const productName = productData[0];
+    const milkRatio = parseFloat(productData[2]) || 1;
+    
+    if (milkRatio > 1) {
+      ratioDisplay.style.display = 'block';
+      document.getElementById('ratioText').textContent = `${milkRatio}L Milk → 1${productName.includes('Paneer') || productName.includes('Ghee') ? 'kg' : 'L'} ${productName}`;
+    } else {
+      ratioDisplay.style.display = 'block';
+      document.getElementById('ratioText').textContent = `1L Milk → 1${productName.includes('Curd') ? 'kg' : 'L'} ${productName}`;
+    }
+  }
+  
+  updateConversionPreview();
+}
+
+// Update custom ratio
+function updateCustomRatio() {
+  updateConversionPreview();
 }
 
 // Update conversion preview when qty or product changes
 function updateConversionPreview() {
-  const qty = parseFloat(el("convQty").value);
-  const productData = el("convProduct").value.split(',');
-  const productName = productData[0];
-  const rate = parseFloat(productData[1]);
+  const milkQty = parseFloat(el("convQty").value);
+  const productValue = el("convProduct").value;
   
+  if (productValue === 'custom') {
+    const milkRatio = parseFloat(el("customMilkRatio").value) || 1;
+    const productRatio = parseFloat(el("customProductRatio").value) || 1;
+    const productQty = milkQty ? (milkQty / milkRatio) * productRatio : 0;
+    
+    updateOutputDisplay(productQty, 'kg/L');
+    updatePreviewDisplay(milkQty, 'Custom', productValue.split(',')[1] || 100, productQty);
+  } else {
+    const productData = productValue.split(',');
+    const productName = productData[0];
+    const milkRatio = parseFloat(productData[2]) || 1;
+    
+    let productQty;
+    let productUnit;
+    
+    if (productName.includes('Paneer') || productName.includes('Ghee')) {
+      productQty = milkQty ? milkQty / milkRatio : 0;
+      productUnit = 'kg';
+    } else {
+      productQty = milkQty || 0;
+      productUnit = productName.includes('Milk') ? 'L' : 'kg';
+    }
+    
+    updateOutputDisplay(productQty, productUnit);
+    updatePreviewDisplay(milkQty, productName, productData[1] || 0, productQty);
+  }
+}
+
+// Update output display
+function updateOutputDisplay(qty, unit) {
+  document.getElementById('outputQty').textContent = qty.toFixed(2);
+  document.getElementById('outputUnit').textContent = unit;
+}
+
+// Update preview display
+function updatePreviewDisplay(milkQty, productName, rate, productQty) {
   const preview = document.getElementById('convPreview');
-  if (qty && qty > 0) {
+  if (milkQty && milkQty > 0) {
     preview.style.display = 'block';
-    document.getElementById('previewQty').textContent = qty;
+    document.getElementById('previewQty').textContent = milkQty;
     document.getElementById('previewProduct').textContent = productName;
-    document.getElementById('previewValue').textContent = (qty * rate).toFixed(2);
+    document.getElementById('previewValue').textContent = (productQty * rate).toFixed(2);
   } else {
     preview.style.display = 'none';
   }
