@@ -1,0 +1,339 @@
+# 🚀 SUPABASE DEPLOYMENT - Copy Paste SQL
+
+## **⚡ QUICK DEPLOY (2 Minutes):**
+
+### **Step 1: Open Supabase SQL Editor**
+
+Click here: **https://supabase.com/dashboard/project/uoeswfuiwjluqomgepar/sql**
+
+### **Step 2: Copy SQL Below**
+
+Select ALL SQL from `-- START COPY` to `-- END COPY`
+
+### **Step 3: Paste & Run**
+
+Paste in SQL Editor → Click **Run** (or Ctrl+Enter)
+
+---
+
+## **📋 SQL TO COPY:**
+
+```sql
+-- START COPY - Deploy to Supabase
+
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- SHIFTS TABLE
+CREATE TABLE IF NOT EXISTS shifts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID REFERENCES shops(id) ON DELETE CASCADE,
+    shift_name TEXT NOT NULL,
+    shift_date DATE NOT NULL,
+    start_time TIMESTAMPTZ DEFAULT NOW(),
+    end_time TIMESTAMPTZ,
+    status TEXT DEFAULT 'open',
+    opening_milk_cow DECIMAL(10,2) DEFAULT 0,
+    opening_milk_buff DECIMAL(10,2) DEFAULT 0,
+    opening_cash DECIMAL(10,2) DEFAULT 0,
+    total_milk_collected DECIMAL(10,2) DEFAULT 0,
+    total_milk_converted DECIMAL(10,2) DEFAULT 0,
+    total_milk_sold DECIMAL(10,2) DEFAULT 0,
+    total_sales_amount DECIMAL(10,2) DEFAULT 0,
+    closing_milk_cow DECIMAL(10,2),
+    closing_milk_buff DECIMAL(10,2),
+    closing_cash DECIMAL(10,2),
+    milk_variance DECIMAL(10,2) DEFAULT 0,
+    milk_variance_percent DECIMAL(5,2) DEFAULT 0,
+    cash_variance DECIMAL(10,2) DEFAULT 0,
+    reconciled_by TEXT,
+    reconciled_at TIMESTAMPTZ,
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_shifts_shop ON shifts(shop_id);
+CREATE INDEX IF NOT EXISTS idx_shifts_date ON shifts(shift_date);
+CREATE INDEX IF NOT EXISTS idx_shifts_status ON shifts(status);
+
+-- INVENTORY CURRENT TABLE
+CREATE TABLE IF NOT EXISTS inventory_current (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID REFERENCES shops(id) ON DELETE CASCADE,
+    item_type TEXT NOT NULL,
+    quantity DECIMAL(10,3) NOT NULL DEFAULT 0,
+    unit TEXT NOT NULL,
+    last_updated TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(shop_id, item_type)
+);
+
+CREATE INDEX IF NOT EXISTS idx_inventory_current_shop ON inventory_current(shop_id);
+CREATE INDEX IF NOT EXISTS idx_inventory_current_type ON inventory_current(item_type);
+
+-- INVENTORY MOVEMENTS TABLE
+CREATE TABLE IF NOT EXISTS inventory_movements (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID REFERENCES shops(id) ON DELETE CASCADE,
+    shift_id UUID REFERENCES shifts(id) ON DELETE CASCADE,
+    movement_type TEXT NOT NULL,
+    direction TEXT NOT NULL,
+    item_type TEXT NOT NULL,
+    quantity DECIMAL(10,3) NOT NULL,
+    unit TEXT NOT NULL,
+    reference_type TEXT,
+    reference_id UUID,
+    batch_number TEXT,
+    notes TEXT,
+    created_by TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_inventory_movements_shop ON inventory_movements(shop_id);
+CREATE INDEX IF NOT EXISTS idx_inventory_movements_shift ON inventory_movements(shift_id);
+CREATE INDEX IF NOT EXISTS idx_inventory_movements_type ON inventory_movements(movement_type);
+CREATE INDEX IF NOT EXISTS idx_inventory_movements_item ON inventory_movements(item_type);
+CREATE INDEX IF NOT EXISTS idx_inventory_movements_date ON inventory_movements(created_at);
+
+-- PRODUCTION BATCHES TABLE
+CREATE TABLE IF NOT EXISTS production_batches (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID REFERENCES shops(id) ON DELETE CASCADE,
+    shift_id UUID REFERENCES shifts(id) ON DELETE CASCADE,
+    batch_number TEXT UNIQUE NOT NULL,
+    from_item_type TEXT NOT NULL,
+    from_quantity DECIMAL(10,3) NOT NULL,
+    from_unit TEXT NOT NULL,
+    to_item_type TEXT NOT NULL,
+    to_quantity DECIMAL(10,3) NOT NULL,
+    to_unit TEXT NOT NULL,
+    conversion_ratio DECIMAL(5,2),
+    expected_ratio DECIMAL(5,2),
+    variance_percent DECIMAL(5,2) DEFAULT 0,
+    yield_efficiency DECIMAL(5,2) DEFAULT 0,
+    avg_fat DECIMAL(5,2),
+    avg_snf DECIMAL(5,2),
+    waste_percent DECIMAL(5,2) DEFAULT 0,
+    quality_grade TEXT,
+    operator_name TEXT,
+    notes TEXT,
+    status TEXT DEFAULT 'completed',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_production_batches_shop ON production_batches(shop_id);
+CREATE INDEX IF NOT EXISTS idx_production_batches_shift ON production_batches(shift_id);
+CREATE INDEX IF NOT EXISTS idx_production_batches_date ON production_batches(created_at);
+CREATE INDEX IF NOT EXISTS idx_production_batches_from ON production_batches(from_item_type);
+CREATE INDEX IF NOT EXISTS idx_production_batches_to ON production_batches(to_item_type);
+
+-- SHIFT RECONCILIATION TABLE
+CREATE TABLE IF NOT EXISTS shift_reconciliation (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID REFERENCES shops(id) ON DELETE CASCADE,
+    shift_id UUID REFERENCES shifts(id) ON DELETE CASCADE,
+    shift_date DATE NOT NULL,
+    shift_name TEXT NOT NULL,
+    milk_opening DECIMAL(10,2) DEFAULT 0,
+    milk_collected DECIMAL(10,2) DEFAULT 0,
+    milk_converted DECIMAL(10,2) DEFAULT 0,
+    milk_sold_raw DECIMAL(10,2) DEFAULT 0,
+    milk_waste DECIMAL(10,2) DEFAULT 0,
+    milk_expected_closing DECIMAL(10,2) DEFAULT 0,
+    milk_actual_closing DECIMAL(10,2) DEFAULT 0,
+    milk_variance DECIMAL(10,2) DEFAULT 0,
+    milk_variance_percent DECIMAL(5,2) DEFAULT 0,
+    product_opening DECIMAL(10,2) DEFAULT 0,
+    product_produced DECIMAL(10,2) DEFAULT 0,
+    product_sold DECIMAL(10,2) DEFAULT 0,
+    product_waste DECIMAL(10,2) DEFAULT 0,
+    product_expected_closing DECIMAL(10,2) DEFAULT 0,
+    product_actual_closing DECIMAL(10,2) DEFAULT 0,
+    product_variance DECIMAL(10,2) DEFAULT 0,
+    product_variance_percent DECIMAL(5,2) DEFAULT 0,
+    cash_opening DECIMAL(10,2) DEFAULT 0,
+    cash_sales DECIMAL(10,2) DEFAULT 0,
+    cash_other_in DECIMAL(10,2) DEFAULT 0,
+    cash_expenses DECIMAL(10,2) DEFAULT 0,
+    cash_expected_closing DECIMAL(10,2) DEFAULT 0,
+    cash_actual_closing DECIMAL(10,2) DEFAULT 0,
+    cash_variance DECIMAL(10,2) DEFAULT 0,
+    cash_variance_percent DECIMAL(5,2) DEFAULT 0,
+    status TEXT DEFAULT 'pending',
+    reconciled_by TEXT,
+    reconciled_at TIMESTAMPTZ,
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_shift_reconciliation_shop ON shift_reconciliation(shop_id);
+CREATE INDEX IF NOT EXISTS idx_shift_reconciliation_date ON shift_reconciliation(shift_date);
+CREATE INDEX IF NOT EXISTS idx_shift_reconciliation_status ON shift_reconciliation(status);
+
+-- FARMER YIELD ANALYTICS TABLE
+CREATE TABLE IF NOT EXISTS farmer_yield_analytics (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    farmer_id UUID NOT NULL,
+    farmer_name TEXT NOT NULL,
+    shop_id UUID REFERENCES shops(id) ON DELETE CASCADE,
+    analysis_date DATE DEFAULT CURRENT_DATE,
+    shift_name TEXT,
+    total_quantity DECIMAL(10,2) DEFAULT 0,
+    avg_fat DECIMAL(5,2),
+    avg_snf DECIMAL(5,2),
+    total_amount DECIMAL(10,2) DEFAULT 0,
+    paneer_yield_per_liter DECIMAL(5,3),
+    ghee_yield_per_liter DECIMAL(5,3),
+    curd_yield_per_liter DECIMAL(5,3),
+    profit_per_liter DECIMAL(10,2),
+    cost_per_liter DECIMAL(10,2),
+    quality_score DECIMAL(5,2),
+    quality_grade TEXT,
+    recommendation TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_farmer_yield_farmer ON farmer_yield_analytics(farmer_id);
+CREATE INDEX IF NOT EXISTS idx_farmer_yield_shop ON farmer_yield_analytics(shop_id);
+CREATE INDEX IF NOT EXISTS idx_farmer_yield_date ON farmer_yield_analytics(analysis_date);
+CREATE INDEX IF NOT EXISTS idx_farmer_yield_score ON farmer_yield_analytics(quality_score DESC);
+
+-- WASTE TRACKING TABLE
+CREATE TABLE IF NOT EXISTS waste_tracking (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID REFERENCES shops(id) ON DELETE CASCADE,
+    shift_id UUID REFERENCES shifts(id) ON DELETE CASCADE,
+    waste_type TEXT NOT NULL,
+    item_type TEXT NOT NULL,
+    quantity DECIMAL(10,3) NOT NULL,
+    unit TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    notes TEXT,
+    cost_amount DECIMAL(10,2) DEFAULT 0,
+    approved_by TEXT,
+    approved_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_waste_tracking_shop ON waste_tracking(shop_id);
+CREATE INDEX IF NOT EXISTS idx_waste_tracking_shift ON waste_tracking(shift_id);
+CREATE INDEX IF NOT EXISTS idx_waste_tracking_type ON waste_tracking(waste_type);
+CREATE INDEX IF NOT EXISTS idx_waste_tracking_date ON waste_tracking(created_at);
+
+-- ENABLE RLS
+ALTER TABLE shifts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE inventory_current ENABLE ROW LEVEL SECURITY;
+ALTER TABLE inventory_movements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE production_batches ENABLE ROW LEVEL SECURITY;
+ALTER TABLE shift_reconciliation ENABLE ROW LEVEL SECURITY;
+ALTER TABLE farmer_yield_analytics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE waste_tracking ENABLE ROW LEVEL SECURITY;
+
+-- DROP EXISTING POLICIES
+DROP POLICY IF EXISTS "Enable all access for shifts" ON shifts;
+DROP POLICY IF EXISTS "Enable all access for inventory_current" ON inventory_current;
+DROP POLICY IF EXISTS "Enable all access for inventory_movements" ON inventory_movements;
+DROP POLICY IF EXISTS "Enable all access for production_batches" ON production_batches;
+DROP POLICY IF EXISTS "Enable all access for shift_reconciliation" ON shift_reconciliation;
+DROP POLICY IF EXISTS "Enable all access for farmer_yield_analytics" ON farmer_yield_analytics;
+DROP POLICY IF EXISTS "Enable all access for waste_tracking" ON waste_tracking;
+
+-- CREATE POLICIES
+CREATE POLICY "Enable all access for shifts" ON shifts FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Enable all access for inventory_current" ON inventory_current FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Enable all access for inventory_movements" ON inventory_movements FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Enable all access for production_batches" ON production_batches FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Enable all access for shift_reconciliation" ON shift_reconciliation FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Enable all access for farmer_yield_analytics" ON farmer_yield_analytics FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Enable all access for waste_tracking" ON waste_tracking FOR ALL USING (true) WITH CHECK (true);
+
+-- INITIALIZE INVENTORY
+INSERT INTO inventory_current (shop_id, item_type, quantity, unit)
+VALUES 
+    (NULL, 'milk_cow', 0, 'L'),
+    (NULL, 'milk_buff', 0, 'L'),
+    (NULL, 'paneer', 0, 'kg'),
+    (NULL, 'curd', 0, 'kg'),
+    (NULL, 'ghee', 0, 'kg'),
+    (NULL, 'butter', 0, 'kg'),
+    (NULL, 'sweets', 0, 'kg')
+ON CONFLICT (shop_id, item_type) DO NOTHING;
+
+-- VERIFICATION QUERY
+SELECT 
+    '✅ Complete Inventory & Reconciliation Schema Deployed' as status,
+    (SELECT count(*) FROM information_schema.tables 
+     WHERE table_schema = 'public' 
+     AND table_name IN ('shifts', 'inventory_current', 'inventory_movements', 
+                        'production_batches', 'shift_reconciliation', 
+                        'farmer_yield_analytics', 'waste_tracking')) as tables_created,
+    (SELECT count(*) FROM pg_views 
+     WHERE schemaname = 'public' 
+     AND viewname IN ('milk_ledger', 'production_ledger', 'inventory_ledger', 
+                      'sales_ledger', 'cash_credit_ledger')) as views_created;
+
+-- END COPY
+```
+
+---
+
+## **✅ AFTER RUNNING:**
+
+You should see:
+```
+status                                              | tables_created | views_created
+----------------------------------------------------|----------------|--------------
+✅ Complete Inventory & Reconciliation Schema Deployed | 7              | 0
+```
+
+---
+
+## **📊 VERIFY TABLES:**
+
+Run this query:
+```sql
+SELECT table_name, '✅ Created' as status
+FROM information_schema.tables 
+WHERE table_schema = 'public' 
+AND table_name IN (
+    'shifts',
+    'inventory_current',
+    'inventory_movements',
+    'production_batches',
+    'shift_reconciliation',
+    'farmer_yield_analytics',
+    'waste_tracking'
+)
+ORDER BY table_name;
+```
+
+**Expected:**
+```
+table_name             | status
+-----------------------|---------
+farmer_yield_analytics | ✅ Created
+inventory_current      | ✅ Created
+inventory_movements    | ✅ Created
+production_batches     | ✅ Created
+shift_reconciliation   | ✅ Created
+shifts                 | ✅ Created
+waste_tracking         | ✅ Created
+```
+
+---
+
+## **🎉 DONE!**
+
+**Now test in POS:**
+1. Refresh: http://localhost:5000/pos
+2. Click 🏭 Production
+3. Click any 5 Ledger button
+4. Should work without errors
+
+**Your 100L milk collection** is still in localStorage and will show in the Production popup!
+
+---
+
+**Copy the SQL above and run it in Supabase SQL Editor!** 🚀

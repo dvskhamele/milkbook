@@ -7,6 +7,52 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================
+-- 0. SHIFTS TABLE (Required for reconciliation)
+-- ============================================
+CREATE TABLE IF NOT EXISTS shifts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID REFERENCES shops(id) ON DELETE CASCADE,
+    shift_name TEXT NOT NULL, -- morning, evening, night
+    shift_date DATE NOT NULL,
+    start_time TIMESTAMPTZ DEFAULT NOW(),
+    end_time TIMESTAMPTZ,
+    status TEXT DEFAULT 'open', -- open, closed, reconciled
+    
+    -- Opening balances
+    opening_milk_cow DECIMAL(10,2) DEFAULT 0,
+    opening_milk_buff DECIMAL(10,2) DEFAULT 0,
+    opening_cash DECIMAL(10,2) DEFAULT 0,
+    
+    -- Auto-calculated totals
+    total_milk_collected DECIMAL(10,2) DEFAULT 0,
+    total_milk_converted DECIMAL(10,2) DEFAULT 0,
+    total_milk_sold DECIMAL(10,2) DEFAULT 0,
+    total_sales_amount DECIMAL(10,2) DEFAULT 0,
+    
+    -- Closing balances
+    closing_milk_cow DECIMAL(10,2),
+    closing_milk_buff DECIMAL(10,2),
+    closing_cash DECIMAL(10,2),
+    
+    -- Variance
+    milk_variance DECIMAL(10,2) DEFAULT 0,
+    milk_variance_percent DECIMAL(5,2) DEFAULT 0,
+    cash_variance DECIMAL(10,2) DEFAULT 0,
+    
+    -- Reconciliation
+    reconciled_by TEXT,
+    reconciled_at TIMESTAMPTZ,
+    notes TEXT,
+    
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_shifts_shop ON shifts(shop_id);
+CREATE INDEX idx_shifts_date ON shifts(shift_date);
+CREATE INDEX idx_shifts_status ON shifts(status);
+
+-- ============================================
 -- 1. INVENTORY CURRENT TABLE (New - Real-time stock)
 -- ============================================
 CREATE TABLE IF NOT EXISTS inventory_current (
