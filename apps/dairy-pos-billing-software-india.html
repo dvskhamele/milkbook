@@ -7546,9 +7546,14 @@ async function loadShopSettings() {
   try {
     const response = await fetch('/api/shop-settings');
     const result = await response.json();
-    
+
     if (result.success && result.settings) {
       const s = result.settings;
+      // Save shop_id to localStorage if returned
+      if (result.shop_id) {
+        localStorage.setItem('MilkRecord_shop_id', result.shop_id);
+        console.log('✅ Shop ID saved to localStorage:', result.shop_id);
+      }
       // Fill form fields
       if (el('shopNameInput')) el('shopNameInput').value = s.shop_name || '';
       if (el('shopPhoneInput')) el('shopPhoneInput').value = s.shop_phone || '';
@@ -7564,7 +7569,7 @@ async function loadShopSettings() {
       if (el('shopAccountInput')) el('shopAccountInput').value = s.shop_account || '';
       if (el('shopIfscInput')) el('shopIfscInput').value = s.shop_ifsc || '';
       if (el('shopAccountNameInput')) el('shopAccountNameInput').value = s.shop_account_name || '';
-      
+
       console.log('✅ Shop settings loaded from Supabase');
     }
   } catch (error) {
@@ -7631,23 +7636,24 @@ async function saveShopSettings() {
 
   // Check if this is first-time activation (LEVEL 0 → LEVEL 1)
   const existingShopId = localStorage.getItem('MilkRecord_shop_id');
-  
+
   if (!existingShopId) {
     // FIRST TIME ACTIVATION - Use syncEngine.activateShop()
     console.log('🟢 LEVEL 1: First-time shop activation');
     showToast('⏳ Activating shop...');
-    
+
     const result = await window.syncEngine.activateShop(shopData);
-    
+
     if (result.success) {
       console.log('✅ Shop activated!');
       console.log('🆔 Shop ID:', result.shopId);
       showToast('✅ Shop activated! Cloud sync enabled');
-      
+
       // Save to localStorage as backup
+      localStorage.setItem('MilkRecord_shop_id', result.shopId);
       localStorage.setItem('MilkRecord_shop_name', shopName);
       localStorage.setItem('MilkRecord_shop_phone', shopPhone);
-      
+
       // Update UI
       const profileName = document.getElementById('profileName');
       if (profileName) {
@@ -7660,7 +7666,7 @@ async function saveShopSettings() {
   } else {
     // ALREADY ACTIVATED - Just update settings
     console.log('🔵 Shop already activated - updating settings');
-    
+
     // Save locally
     localStorage.setItem('MilkRecord_shop_name', shopName);
     localStorage.setItem('MilkRecord_shop_phone', shopPhone);
