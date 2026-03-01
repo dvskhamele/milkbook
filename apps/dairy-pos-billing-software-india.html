@@ -6480,18 +6480,18 @@ function updateMilkStockDisplay() {
   let cowQty = 0;
   let buffQty = 0;
   
-  // Sum up quantities from card badges
+  // Sum up quantities from cart badges (the red badges showing quantity in cart)
   cowMilkCards.forEach(card => {
     const badge = card.querySelector('.qty-badge');
-    if (badge && badge.textContent !== '0') {
-      cowQty += parseFloat(badge.textContent) || 0;
+    if (badge && badge.style.display !== 'none' && badge.textContent.trim() !== '0') {
+      cowQty += parseFloat(badge.textContent.trim()) || 0;
     }
   });
   
   buffMilkCards.forEach(card => {
     const badge = card.querySelector('.qty-badge');
-    if (badge && badge.textContent !== '0') {
-      buffQty += parseFloat(badge.textContent) || 0;
+    if (badge && badge.style.display !== 'none' && badge.textContent.trim() !== '0') {
+      buffQty += parseFloat(badge.textContent.trim()) || 0;
     }
   });
   
