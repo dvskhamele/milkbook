@@ -2409,6 +2409,7 @@
     <!-- Collection Page Specific Modules -->
     <script src="../js/session-context.js"></script>
     <script src="../js/rate-engine.js"></script>
+    <script src="../js/rate-chart-engine.js"></script>
     <script src="../js/ledger-engine.js"></script>
     <script src="../js/transaction-writer.js"></script>
     <script src="../js/audit-logger.js"></script>
@@ -4176,6 +4177,103 @@ document.getElementById("fImageEntry").addEventListener("change", function(e) {
       // Rate List kholne ke liye - show the rate chart
 function openRateEditor() {
     openRateTable();  // Show rate list chart
+}
+
+// Rate Chart Mode Implementation
+function renderRateCharts() {
+  const cowChart = document.getElementById('cowRateChart');
+  const buffChart = document.getElementById('buffRateChart');
+  
+  if (cowChart) {
+    const cowRates = RateChartManager.cache.cow || [];
+    cowChart.innerHTML = cowRates.length === 0 ? 
+      '<div style="padding:20px;text-align:center;color:#94a3b8;">No rates defined</div>' :
+      cowRates.map((r, i) => `
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;padding:8px;border-bottom:1px solid #f1f5f9;align-items:center;">
+          <input type="number" step="0.1" value="${r.fat}" onchange="updateRateEntry('cow',${i},'fat',this.value)" style="padding:6px;border:1px solid #e2e8f0;border-radius:4px;font-size:12px;" />
+          <input type="number" step="0.01" value="${r.rate}" onchange="updateRateEntry('cow',${i},'rate',this.value)" style="padding:6px;border:1px solid #e2e8f0;border-radius:4px;font-size:12px;" />
+          <button type="button" onclick="deleteRateEntry('cow',${i})" style="padding:4px 8px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;cursor:pointer;font-size:11px;">🗑️</button>
+        </div>
+      `).join('');
+  }
+  
+  if (buffChart) {
+    const buffRates = RateChartManager.cache.buffalo || [];
+    buffChart.innerHTML = buffRates.length === 0 ? 
+      '<div style="padding:20px;text-align:center;color:#94a3b8;">No rates defined</div>' :
+      buffRates.map((r, i) => `
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;padding:8px;border-bottom:1px solid #f1f5f9;align-items:center;">
+          <input type="number" step="0.1" value="${r.fat}" onchange="updateRateEntry('buffalo',${i},'fat',this.value)" style="padding:6px;border:1px solid #e2e8f0;border-radius:4px;font-size:12px;" />
+          <input type="number" step="0.01" value="${r.rate}" onchange="updateRateEntry('buffalo',${i},'rate',this.value)" style="padding:6px;border:1px solid #e2e8f0;border-radius:4px;font-size:12px;" />
+          <button type="button" onclick="deleteRateEntry('buffalo',${i})" style="padding:4px 8px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;cursor:pointer;font-size:11px;">🗑️</button>
+        </div>
+      `).join('');
+  }
+}
+
+function addRateEntry(milkType) {
+  RateChartManager.addRate(milkType, milkType === 'cow' ? 4.0 : 5.0, 40.00);
+  renderRateCharts();
+}
+
+function updateRateEntry(milkType, index, field, value) {
+  const chart = RateChartManager.cache[milkType] || [];
+  if (chart[index]) {
+    chart[index][field] = parseFloat(value);
+    RateChartManager.saveChart();
+  }
+}
+
+function deleteRateEntry(milkType, index) {
+  const chart = RateChartManager.cache[milkType] || [];
+  chart.splice(index, 1);
+  RateChartManager.saveChart();
+  renderRateCharts();
+}
+
+function exportRateChart() {
+  const cowCSV = RateChartManager.exportToCSV('cow');
+  const buffCSV = RateChartManager.exportToCSV('buffalo');
+  const blob = new Blob([`# Cow Milk\nfat,rate\n${cowCSV}\n\n# Buffalo Milk\nfat,rate\n${buffCSV}`], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'rate-chart.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 Rate chart exported!');
+}
+
+function importRateChart(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    let milkType = 'cow';
+    let count = 0;
+    
+    text.split('\n').forEach(line => {
+      if (line.includes('Buffalo')) milkType = 'buffalo';
+      else if (line.includes('Cow')) milkType = 'cow';
+      else if (!line.startsWith('#') && line.trim()) {
+        const parts = line.split(',');
+        if (parts.length >= 2) {
+          const fat = parseFloat(parts[0]);
+          const rate = parseFloat(parts[1]);
+          if (!isNaN(fat) && !isNaN(rate)) {
+            RateChartManager.addRate(milkType, fat, rate);
+            count++;
+          }
+        }
+      }
+    });
+    
+    renderRateCharts();
+    showToast(`📤 Imported ${count} rates!`);
+  };
+  reader.readAsText(file);
 }
 
 // Update formula preview in settings
