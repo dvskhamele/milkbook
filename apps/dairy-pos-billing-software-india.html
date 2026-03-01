@@ -1756,9 +1756,17 @@
       </div>
     </div>
 
+    <!-- Enterprise-Grade JavaScript Modules -->
+    <script src="../js/safe-execution.js"></script>
+    <script src="../js/storage-adapter.js"></script>
+    <script src="../js/sync-engine.js"></script>
+
     <!-- Backend API Calls -->
     <script>
       console.log('🚀 POS Backend: Using Supabase APIs');
+      console.log('🛡️ Safe Execution: Enabled');
+      console.log('💾 Hybrid Storage: Enabled');
+      console.log('🔄 Background Sync: Enabled');
     </script>
     <script>
       // Check if backend is configured
@@ -1993,11 +2001,11 @@
       // Load customers from backend
       async function loadCustomersFromBackend() {
         if (!useBackend || !currentShopId) return;
-        
+
         try {
-          In real implementation, fetch from API
-          const response = await fetch('/api/customers', {
-            headers: { 'Authorization': `Bearer ${authToken}` }
+          // In real implementation, fetch from API
+          // const response = await fetch('/api/customers', {
+          //   headers: { 'Authorization': `Bearer ${authToken}` }
           // });
           // const { customers } = await response.json();
           // customers.forEach(c => {
@@ -2014,46 +2022,164 @@
       // Load sales from backend
       async function loadSalesFromBackend() {
         if (!useBackend || !currentShopId) return;
-        
+
         try {
-          In real implementation, fetch from API
+          // In real implementation, fetch from API
           console.log('Loaded sales from backend');
         } catch (error) {
           console.error('Failed to load sales:', error);
         }
       }
-      
-      // Save sale to backend
+
+      // Stub function for onboarding (not implemented)
+      window.checkOnboardingProgress = window.checkOnboardingProgress || function() {
+        // Stub - onboarding not implemented yet
+        return { success: true, level: 'basic' };
+      };
+
+      // Save sale to backend with hybrid sync
       async function saveSaleToBackend(saleData) {
-        if (!useBackend || !currentShopId) return null;
-        
+        // ALWAYS save locally first (works offline)
         try {
-          const response = await fetch('/api/sales', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${authToken}`
-            },
-            body: JSON.stringify({
-              shop_id: currentShopId,
-              customer_name: saleData.customer,
-              customer_phone: saleData.phone || '',
-              items: saleData.items,
-              total_amount: saleData.total,
-              payment_mode: saleData.paymentMode
-            })
-          });
-          
-          if (response.ok) {
-            const { sale } = await response.json();
-            return sale;
+          const history = safeArray(loadData('mr_sales_history', []));
+          const saleRecord = {
+            id: saleData.id || `sale_${Date.now()}`,
+            customer_name: saleData.customer || 'Walking Customer',
+            customer_phone: saleData.phone || '',
+            items: safeArray(saleData.items),
+            total_amount: saleData.total || 0,
+            paid_amount: saleData.paid || 0,
+            payment_mode: saleData.paymentMode || 'cash',
+            sale_date: new Date().toISOString(),
+            created_at: new Date().toISOString()
+          };
+          history.push(saleRecord);
+          saveData('mr_sales_history', history);
+          console.log('✅ Sale saved locally');
+
+          // Queue for API sync (background)
+          if (window.storage) {
+            await window.storage.addToSyncQueue('save_sale', saleRecord);
           }
-          return null;
+
+          return { success: true, type: 'local+queue' };
         } catch (error) {
-          console.error('Failed to save sale:', error);
-          return null;
+          console.error('❌ Error saving sale:', error);
+          return { success: false, error: error.message };
         }
       }
+
+      // ============================================
+      // HYBRID SYNC SYSTEM (API + LocalStorage)
+      // Works like enterprise POS (McDonald's, Starbucks)
+      // ============================================
+
+      // Sync queue for offline operations
+      let syncQueue = [];
+      let isSyncing = false;
+      const SYNC_INTERVAL = 30000; // Sync every 30 seconds when online
+
+      // Add operation to sync queue
+      function addToSyncQueue(operation, data) {
+        syncQueue.push({
+          id: Date.now() + Math.random(),
+          operation: operation,
+          data: data,
+          timestamp: Date.now(),
+          synced: false
+        });
+        console.log('📝 Added to sync queue:', operation, syncQueue.length, 'items');
+        processSyncQueue();
+      }
+
+      // Process sync queue
+      async function processSyncQueue() {
+        if (isSyncing || syncQueue.length === 0) return;
+        
+        // Check if online
+        if (!navigator.onLine) {
+          console.log('⚠️ Offline - sync queued');
+          return;
+        }
+        
+        isSyncing = true;
+        
+        try {
+          const unsynced = syncQueue.filter(item => !item.synced);
+          
+          for (const item of unsynced) {
+            try {
+              await syncToAPI(item.operation, item.data);
+              item.synced = true;
+              console.log('✅ Synced:', item.operation, item.id);
+            } catch (error) {
+              console.warn('⚠️ Sync failed:', item.operation, error);
+            }
+          }
+          
+          // Clean old synced items (keep last 100)
+          if (syncQueue.length > 100) {
+            syncQueue = syncQueue.slice(-100);
+          }
+        } finally {
+          isSyncing = false;
+        }
+      }
+
+      // Sync to API
+      async function syncToAPI(operation, data) {
+        const endpoints = {
+          'save_product': '/api/products',
+          'save_customer': '/api/customers',
+          'save_sale': '/api/sales',
+          'save_shop_settings': '/api/shop-settings'
+        };
+        
+        const endpoint = endpoints[operation];
+        if (!endpoint) throw new Error('Unknown operation: ' + operation);
+        
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        if (!result.success) throw new Error(result.error || 'Sync failed');
+        
+        return result;
+      }
+
+      // Auto-sync periodically
+      setInterval(() => {
+        if (navigator.onLine && syncQueue.length > 0) {
+          console.log('🔄 Auto-syncing queue...');
+          processSyncQueue();
+        }
+      }, SYNC_INTERVAL);
+
+      // Listen for online/offline events
+      window.addEventListener('online', () => {
+        console.log('✅ Online - processing sync queue');
+        processSyncQueue();
+      });
+
+      window.addEventListener('offline', () => {
+        console.log('⚠️ Offline - queuing operations');
+      });
+
+      // Initialize hybrid sync on page load
+      async function initializeHybridSync() {
+        console.log('🚀 Initializing hybrid sync system...');
+        
+        // Process any pending sync queue
+        await processSyncQueue();
+        
+        console.log('✅ Hybrid sync initialized');
+      }
+
+      // Run initialization
+      initializeHybridSync();
     </script>
     <script>
       const el = (id) => document.getElementById(id);
@@ -2239,39 +2365,49 @@
         }, 5000);
       }
 
-      // Save all data WITH VALIDATION
+      // Save all data WITH VALIDATION - Safe execution
       function saveAllData() {
-        // Validate before saving
-        if (!Array.isArray(cart)) cart = [];
-        if (!Array.isArray(customers)) customers = [];
-        if (!Array.isArray(exportHistory)) exportHistory = [];
-        
-        // Get products safely - USE loadData()
-        let products = loadData('mr_pos_custom_products', []);
-        if (!Array.isArray(products)) products = [];
-        
-        // Get product order safely - USE loadData()
-        let productOrder = loadData('mr_pos_product_order', []);
-        if (!Array.isArray(productOrder)) productOrder = [];
-        
-        saveData('mr_pos_cart', cart, 'cart_update');
-        saveData('mr_pos_customers', customers, 'customers_update');
-        saveData('mr_pos_history', exportHistory, 'history_update');
-        saveData('mr_pos_custom_products', products, 'products_update');
-        saveData('mr_pos_product_order', productOrder, 'order_update');
-        console.log('💾 Auto-saved all data');
-        
-        // Check onboarding progress
-        checkOnboardingProgress();
+        try {
+          // Validate before saving
+          if (!Array.isArray(cart)) cart = [];
+          if (!Array.isArray(customers)) customers = [];
+          if (!Array.isArray(exportHistory)) exportHistory = [];
+
+          // Get products safely - USE loadData()
+          let products = loadData('mr_pos_custom_products', []);
+          if (!Array.isArray(products)) products = [];
+
+          // Get product order safely - USE loadData()
+          let productOrder = loadData('mr_pos_product_order', []);
+          if (!Array.isArray(productOrder)) productOrder = [];
+
+          saveData('mr_pos_cart', cart, 'cart_update');
+          saveData('mr_pos_customers', customers, 'customers_update');
+          saveData('mr_pos_history', exportHistory, 'history_update');
+          saveData('mr_pos_custom_products', products, 'products_update');
+          saveData('mr_pos_product_order', productOrder, 'order_update');
+          console.log('💾 Auto-saved all data');
+
+          // Check onboarding progress safely
+          if (typeof checkOnboardingProgress === 'function') {
+            safeExecute(checkOnboardingProgress);
+          }
+        } catch (error) {
+          console.error('❌ saveAllData error:', error);
+          // Don't throw - continue working
+        }
       }
-      
+
       // Save before unload (browser close/tab close)
       window.addEventListener('beforeunload', () => {
-        saveAllData();
+        safeExecute(saveAllData);
       });
-      
-      // Periodic backup (every 30 seconds)
-      setInterval(saveAllData, 30000);
+
+      // Periodic backup (every 30 seconds) - Debounced
+      const debouncedSaveAll = debounce(saveAllData, 1000);
+      setInterval(() => {
+        safeExecute(debouncedSaveAll);
+      }, 30000);
       
       // Show data status indicator
       function showDataStatus() {
@@ -2467,9 +2603,29 @@
       }
 
       // Toggle profile dropdown
-      function toggleProfileDropdown() {
+      async function toggleProfileDropdown() {
           const dropdown = document.getElementById('profileDropdown');
           dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+
+          // Load shop name from API
+          try {
+            const response = await fetch('/api/shop-settings');
+            const result = await response.json();
+            if (result.success && result.settings && result.settings.shop_name) {
+              const shopName = result.settings.shop_name;
+              const profileName = document.getElementById('profileName');
+              if (profileName) {
+                profileName.textContent = shopName;
+              }
+              const dropdownShop = document.getElementById('dropdownShop');
+              if (dropdownShop) {
+                dropdownShop.textContent = shopName;
+              }
+              console.log('✅ Shop name loaded from API:', shopName);
+            }
+          } catch (error) {
+            console.warn('⚠️ Failed to load shop name:', error);
+          }
 
           // Load user info and progress
           const session = localStorage.getItem('MilkRecord_session');
@@ -2478,11 +2634,9 @@
               const txCount = getTodayTransactionCount();
               const progress = getProgressEmoji(txCount);
               const shiftColor = getShiftColor();
-              
-              document.getElementById('profileName').innerHTML = `${progress.emoji} ${data.shop_name || 'User'}`;
+
               document.getElementById('dropdownEmail').textContent = data.email || 'user@email.com';
-              document.getElementById('dropdownShop').textContent = data.shop_name || 'Shop';
-              
+
               // Update dropdown header with progress
               const header = document.getElementById('profileDropdownHeader');
               if (header) {
@@ -3177,7 +3331,12 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       function handleSearch(val) {
           const drop = el("searchDropdown");
           const searchVal = val.trim();
-          
+
+          // Ensure customers array exists
+          if (!customers || !Array.isArray(customers)) {
+            customers = [];
+          }
+
           console.log('🔍 Search:', searchVal, 'Customers loaded:', customers.length);
 
           // Show ALL customers when search is focused (even if empty)
@@ -5621,6 +5780,11 @@ function clearTodayHistory() {
           const firstInput = modal.querySelector('input, select, textarea');
           if (firstInput) setTimeout(() => firstInput.focus(), 100);
 
+          // Load shop settings when opening settings modal
+          if (id === 'settingsModal') {
+            loadShopSettings();
+          }
+
           // Reset step inputs when opening Add Product modal
           if (id === 'addProductModal') {
             stepCount = 3;
@@ -6530,7 +6694,7 @@ function addNewProductFromModal() {
     grid.insertBefore(newCard, addCardBtn);
   });
 
-  // Save to localStorage
+  // Save to localStorage (IMMEDIATE - works offline)
   qtys.forEach(qty => {
     if (qty !== 0) {
       customProducts.push({name, price, unit: unit || 'unit', emoji, qty});
@@ -6547,6 +6711,13 @@ function addNewProductFromModal() {
     console.error('❌ Failed to save products:', e);
   }
 
+  // Queue for API sync (HYBRID SYNC - syncs when online)
+  qtys.forEach(qty => {
+    if (qty !== 0) {
+      addToSyncQueue('save_product', {name, price, unit: unit || 'unit', emoji, qty});
+    }
+  });
+
   // Close modal and clear
   closeModal('addProductModal');
   el("pName").value = "";
@@ -6557,6 +6728,8 @@ function addNewProductFromModal() {
     input.value = [1, 2, 5, 10, 20][i];
   });
 
+  const stepInputs = document.querySelectorAll('.pStep');
+  const steps = Array.from(stepInputs).map(input => parseFloat(input.value) || 0);
   showToast(`Created ${steps.filter(s => s !== 0).length} product cards for ${name}`);
 }
 
@@ -7351,6 +7524,37 @@ async function syncAllData() {
   }
 }
 
+// Load shop settings from API when modal opens
+async function loadShopSettings() {
+  try {
+    const response = await fetch('/api/shop-settings');
+    const result = await response.json();
+    
+    if (result.success && result.settings) {
+      const s = result.settings;
+      // Fill form fields
+      if (el('shopNameInput')) el('shopNameInput').value = s.shop_name || '';
+      if (el('shopPhoneInput')) el('shopPhoneInput').value = s.shop_phone || '';
+      if (el('shopProprietorInput')) el('shopProprietorInput').value = '';
+      if (el('shopEmailInput')) el('shopEmailInput').value = s.shop_email || '';
+      if (el('shopAddressInput')) el('shopAddressInput').value = s.shop_address || '';
+      if (el('shopCityInput')) el('shopCityInput').value = s.shop_city || '';
+      if (el('shopPincodeInput')) el('shopPincodeInput').value = s.shop_pincode || '';
+      if (el('shopGstInput')) el('shopGstInput').value = s.shop_gst || '';
+      if (el('shopPanInput')) el('shopPanInput').value = s.shop_pan || '';
+      if (el('shopUpiInput')) el('shopUpiInput').value = s.shop_upi || '';
+      if (el('shopBankInput')) el('shopBankInput').value = s.shop_bank || '';
+      if (el('shopAccountInput')) el('shopAccountInput').value = s.shop_account || '';
+      if (el('shopIfscInput')) el('shopIfscInput').value = s.shop_ifsc || '';
+      if (el('shopAccountNameInput')) el('shopAccountNameInput').value = s.shop_account_name || '';
+      
+      console.log('✅ Shop settings loaded from Supabase');
+    }
+  } catch (error) {
+    console.warn('⚠️ Failed to load shop settings:', error);
+  }
+}
+
 // Save shop settings with account creation and sync
 async function saveShopSettings() {
   // Capitalize first letter of each word for names
@@ -7400,23 +7604,39 @@ async function saveShopSettings() {
     }
   }
 
-  // Save all shop settings to localStorage
+  // Save all shop settings to localStorage (IMMEDIATE - works offline)
   localStorage.setItem('MilkRecord_shop_name', shopName);
   localStorage.setItem('MilkRecord_shop_phone', shopPhone);
   if (shopProprietor) localStorage.setItem('MilkRecord_shop_proprietor', shopProprietor);
   if (shopAddress) localStorage.setItem('MilkRecord_shop_address', shopAddress);
   if (shopCity) localStorage.setItem('MilkRecord_shop_city', shopCity);
-  if (shopPincode) localStorage.setItem('MilkRecord_shop_pincode', shopPincode);
-  if (shopGst) localStorage.setItem('MilkRecord_shop_gst', shopGst);
-  if (shopPan) localStorage.setItem('MilkRecord_shop_pan', shopPan);
-  
-  // Save shop payment details
+  // Save shop payment details - Save to BOTH localStorage AND Supabase
   if (shopUpi) localStorage.setItem('MilkRecord_shop_upi', shopUpi);
   if (shopBank) localStorage.setItem('MilkRecord_shop_bank', shopBank);
   if (shopAccount) localStorage.setItem('MilkRecord_shop_account', shopAccount);
   if (shopIfsc) localStorage.setItem('MilkRecord_shop_ifsc', shopIfsc);
   if (shopAccountName) localStorage.setItem('MilkRecord_shop_account_name', shopAccountName);
   if (shopEmail) localStorage.setItem('MilkRecord_shop_email', shopEmail);
+
+  // Queue for API sync (HYBRID SYNC - syncs when online)
+  const shopData = {
+    shop_name: shopName,
+    shop_phone: shopPhone,
+    shop_email: shopEmail || '',
+    shop_address: shopAddress || '',
+    shop_city: shopCity || '',
+    shop_pincode: shopPincode || '',
+    shop_gst: shopGst || '',
+    shop_pan: shopPan || '',
+    shop_upi: shopUpi || '',
+    shop_bank: shopBank || '',
+    shop_account: shopAccount || '',
+    shop_ifsc: shopIfsc || '',
+    shop_account_name: shopAccountName || ''
+  };
+  
+  addToSyncQueue('save_shop_settings', shopData);
+  showToast('✅ Saved locally + queued for sync!');
 
   // Create account if this is first time setup
   const hasAccount = localStorage.getItem('MilkRecord_account_email') || localStorage.getItem('MilkRecord_account_phone');

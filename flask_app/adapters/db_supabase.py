@@ -19,15 +19,31 @@ except ImportError:
 # Initialize Supabase client
 supabase: Optional[Client] = None
 
-def init_supabase():
-    """Initialize Supabase client from environment variables"""
+def get_client() -> Optional[Client]:
+    """Get Supabase client instance"""
     global supabase
     
-    if not HAS_SUPABASE:
-        return None
+    if supabase is None:
+        supabase_url = os.getenv('SUPABASE_URL')
+        supabase_key = os.getenv('SUPABASE_KEY')
+        
+        if not supabase_url or not supabase_key:
+            print("Warning: SUPABASE_URL or SUPABASE_KEY not set")
+            return None
+        
+        try:
+            supabase = create_client(supabase_url, supabase_key)
+            print("✅ Supabase client initialized")
+            return supabase
+        except Exception as e:
+            print(f"Error initializing Supabase: {e}")
+            return None
     
-    supabase_url = os.getenv('SUPABASE_URL')
-    supabase_key = os.getenv('SUPABASE_KEY')  # Use anon key for client safety
+    return supabase
+
+def init_supabase():
+    """Initialize Supabase client from environment variables"""
+    return get_client()  # Use get_client instead
     
     if not supabase_url or not supabase_key:
         print("Warning: SUPABASE_URL or SUPABASE_KEY not set")

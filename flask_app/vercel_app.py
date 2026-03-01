@@ -7,12 +7,38 @@ import os
 import sys
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import core services
 from core import services
+
+# Import Supabase client directly
+try:
+    from supabase import create_client
+    import os
+    
+    supabase_url = os.getenv('SUPABASE_URL')
+    supabase_key = os.getenv('SUPABASE_KEY')
+    
+    if supabase_url and supabase_key:
+        supabase_client = create_client(supabase_url, supabase_key)
+        print("✅ Supabase connected")
+    else:
+        supabase_client = None
+        print("⚠️ Supabase not configured (check .env)")
+except Exception as e:
+    supabase_client = None
+    print(f"⚠️ Supabase error: {e}")
+
+def get_client():
+    """Get Supabase client"""
+    return supabase_client
 
 # Initialize Flask app
 app = Flask(__name__, 
@@ -174,9 +200,142 @@ def get_user():
     })
 
 # ============================================
+# Shop Settings API
+# ============================================
+
+@app.route('/api/shop-settings', methods=['GET'])
+def get_shop_settings():
+    """Get shop settings"""
+    try:
+        client = get_client()
+        result = client.table('shop_settings').select('*').limit(1).execute()
+        
+        if result.data and len(result.data) > 0:
+            return jsonify({'settings': result.data[0], 'success': True})
+        else:
+            return jsonify({'settings': {}, 'success': True})
+    except Exception as e:
+        return jsonify({'error': str(e), 'success': False}), 500
+
+@app.route('/api/shop-settings', methods=['POST'])
+def save_shop_settings():
+    """Save shop settings with validation"""
+    try:
+        data = request.json
+        import re
+        
+        # Validation errors list
+        errors = []
+        
+        # Required fields
+        if not data.get('shop_name'):
+            errors.append('Shop name is required')
+        
+        # Phone validation (10 digits)
+        if data.get('shop_phone'):
+            phone = re.sub(r'\D', '', data['shop_phone'])  # Remove non-digits
+            if len(phone) != 10:
+                errors.append(f'Phone must be 10 digits (got {len(phone)})')
+            data['shop_phone'] = phone  # Clean phone
+        
+        # Email validation
+        if data.get('shop_email'):
+            if not re.match(r'^[^@]+@[^@]+\.[^@]+$', data['shop_email']):
+                errors.append('Invalid email format')
+        
+        # Pincode validation (6 digits)
+        if data.get('shop_pincode'):
+            pincode = re.sub(r'\D', '', data['shop_pincode'])
+            if len(pincode) != 6:
+                errors.append(f'Pincode must be 6 digits (got {len(pincode)})')
+            data['shop_pincode'] = pincode
+        
+        # GST validation (15 chars)
+        if data.get('shop_gst'):
+            if len(data['shop_gst']) != 15:
+                errors.append(f'GST must be 15 characters (got {len(data["shop_gst"])})')
+        
+        # PAN validation (10 chars)
+        if data.get('shop_pan'):
+            if len(data['shop_pan']) != 10:
+                errors.append(f'PAN must be 10 characters (got {len(data["shop_pan"])})')
+        
+        # IFSC validation (11 chars)
+        if data.get('shop_ifsc'):
+            if len(data['shop_ifsc']) != 11:
+                errors.append(f'IFSC must be 11 characters (got {len(data["shop_ifsc"])})')
+        
+        # UPI validation (contains @)
+        if data.get('shop_upi'):
+            if '@' not in data['shop_upi']:
+                errors.append('UPI must contain @ symbol')
+        
+        # Return validation errors
+        if errors:
+            return jsonify({
+                'error': 'Validation failed',
+                'errors': errors,
+                'success': False
+            }), 400
+        
+        # All validations passed - save to Supabase
+        client = get_client()
+        
+        if not client:
+            return jsonify({
+                'error': 'Supabase not configured',
+                'success': False
+            }), 500
+        
+        # Check if settings exist
+        existing = client.table('shop_settings').select('id').limit(1).execute()
+        
+        if existing.data and len(existing.data) > 0:
+            # Update existing
+            result = client.table('shop_settings').update(data).eq('id', existing.data[0]['id']).execute()
+            message = 'Settings updated in Supabase!'
+        else:
+            # Insert new
+            result = client.table('shop_settings').insert(data).execute()
+            message = 'Settings saved to Supabase!'
+        
+        return jsonify({
+            'success': True,
+            'message': message,
+            'data': data
+        })
+    except Exception as e:
+        return jsonify({
+            'error': str(e),
+            'success': False
+        }), 500
+
+# ============================================
 # Vercel Handler
 # ============================================
 
 def handler(request):
     """Vercel serverless handler"""
     return app(request.environ, lambda *args: None)
+
+# ============================================
+# Run Locally
+# ============================================
+
+if __name__ == '__main__':
+    import webbrowser
+    import threading
+    
+    def open_browser():
+        webbrowser.open('http://localhost:5000/pos')
+    
+    print("🚀 Starting MilkRecord POS...")
+    print("📍 Local URL: http://localhost:5000/pos")
+    print("📍 API Health: http://localhost:5000/api/health")
+    print("")
+    
+    # Open browser after 2 seconds
+    threading.Timer(2.0, open_browser).start()
+    
+    # Run Flask
+    app.run(host='127.0.0.1', port=5000, debug=False, threaded=True)

@@ -10,7 +10,6 @@ Flask-SQLAlchemy==3.1.1
 
 # Supabase Cloud Client
 supabase==2.0.3
-postgrest==1.0.0
 
 # Environment Variables
 python-dotenv==1.0.0
@@ -23,15 +22,3 @@ uuid6==2024.1.12
 
 # System Info (for device ID)
 psutil==5.9.6
-
-# Serial Communication (Desktop/Hardware - Optional)
-# Uncomment for desktop with hardware
-# pyserial==3.5
-
-# Windows EXE Build (Desktop only - Optional)
-# Uncomment for building EXE
-# pyinstaller==6.3.0
-
-# Production Server (Linux/Mac - Optional)
-# Uncomment for production deployment
-# gunicorn==21.2.0
