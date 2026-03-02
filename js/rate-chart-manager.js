@@ -104,11 +104,20 @@
       return false;
     },
     
-    // Import from CSV
+    // Import from CSV or Excel matrix format
     importFromCSV: function(csvText, milkType) {
       const lines = csvText.trim().split('\n');
       const newChart = [];
       
+      // Check if this is a matrix format (CLR/SNF table)
+      const isMatrixFormat = lines.some(line => line.includes('CLR') || line.includes('SNF'));
+      
+      if (isMatrixFormat) {
+        // Parse matrix format
+        return this.importMatrixFormat(lines, milkType);
+      }
+      
+      // Simple 2-column format (FAT,RATE)
       for (let line of lines) {
         const parts = line.split(',');
         if (parts.length >= 2) {
@@ -120,6 +129,61 @@
               fat: fat.toFixed(1),
               rate: rate
             });
+          }
+        }
+      }
+      
+      if (newChart.length > 0) {
+        // Sort by FAT
+        newChart.sort((a, b) => parseFloat(a.fat) - parseFloat(b.fat));
+        this.defaultChart[milkType] = newChart;
+        this.saveChart();
+        return newChart.length;
+      }
+      return 0;
+    },
+    
+    // Parse matrix format (CLR/SNF table)
+    importMatrixFormat: function(lines, milkType) {
+      const newChart = [];
+      let clrValues = [];
+      let headerFound = false;
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const parts = line.split(/\t+/); // Tab-separated
+        
+        // Find CLR header row
+        if (line.includes('CLR') && !headerFound) {
+          // Extract CLR values (skip first 2-3 columns)
+          for (let j = 2; j < parts.length; j++) {
+            const clr = parseFloat(parts[j].trim());
+            if (!isNaN(clr)) {
+              clrValues.push(clr);
+            }
+          }
+          headerFound = true;
+          continue;
+        }
+        
+        // Skip non-data rows
+        if (!headerFound || parts.length < 3) continue;
+        
+        // Parse FAT row
+        const fat = parseFloat(parts[0]?.trim());
+        if (isNaN(fat)) continue;
+        
+        // Find best rate for this FAT (use first valid SNF/RATE pair)
+        for (let j = 2; j < parts.length && j - 2 < clrValues.length; j++) {
+          const snf = parseFloat(parts[j]?.trim());
+          const rate = parseFloat(parts[j + 1]?.trim());
+          
+          if (!isNaN(snf) && !isNaN(rate) && snf >= 8.0) {
+            newChart.push({
+              fat: fat.toFixed(1),
+              rate: rate
+            });
+            break; // Take first valid rate for this FAT
           }
         }
       }
@@ -309,8 +373,18 @@
       const reader = new FileReader();
       reader.onload = (e) => {
         const text = e.target.result;
-        const count = this.importFromCSV(text, 'cow');
-        showToast(`📥 Imported ${count} rates!`);
+        
+        // Try to import for both Cow and Buffalo
+        let cowCount = this.importFromCSV(text, 'cow');
+        let buffCount = this.importFromCSV(text, 'buffalo');
+        
+        // If only one type imported, use same for both
+        if (cowCount > 0 && buffCount === 0) {
+          buffCount = this.importFromCSV(text, 'buffalo');
+        }
+        
+        const total = cowCount + buffCount;
+        showToast(`📥 Imported ${total} rates! (Cow: ${cowCount}, Buffalo: ${buffCount})`);
         this.showRateList();
       };
       reader.readAsText(file);
