@@ -2777,7 +2777,7 @@
       }
 
       // Logout function
-      async function logout() {
+      window.logout = async function() {
           if (confirm('Are you sure you want to logout?')) {
               // Get current session
               const sessionData = localStorage.getItem('MilkRecord_session');
@@ -2848,7 +2848,7 @@
       }
 
       // Toggle profile dropdown
-      async function toggleProfileDropdown() {
+      window.toggleProfileDropdown = async function() {
           const dropdown = document.getElementById('profileDropdown');
           dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
 
@@ -3975,7 +3975,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       }
       
       // Toggle advance section visibility
-      function toggleAdvance() {
+      window.toggleAdvance = function() {
         const paymentForm = el("paymentForm");
         const advanceForm = el("advanceForm");
         const advanceAmount = el("advanceAmount");
@@ -4250,7 +4250,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       }
 
       // Toggle advance order section visibility
-      function toggleAdvanceOrder() {
+      window.toggleAdvanceOrder = function() {
         const advanceOrderSection = document.getElementById('advanceOrderSection');
         const paymentForm = el("paymentForm");
         const advanceForm = el("advanceForm");
@@ -4792,7 +4792,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       }
       
       // Send monthly summary via WhatsApp
-      function sendMonthlySummary() {
+      window.sendMonthlySummary = function() {
         const customerName = el("activeCust").innerText;
         const customer = customers.find(c => c.name === customerName);
         
@@ -5294,7 +5294,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       }
 
       // Save entry - FULLY OFFLINE MODE
-      async function saveEntry(mode) {
+      async window.saveEntry = function(mode) {
         if(total === 0) return showToast("Cart empty");
 
         const custName = el("activeCust").innerText;
@@ -6024,7 +6024,7 @@ function clearTodayHistory() {
       }
       
       // Show held carts modal
-      function showHeldCarts() {
+      window.showHeldCarts = function() {
         if (heldCarts.length === 0) return showToast("No held orders");
         
         const modal = document.getElementById('heldCartsModal');
@@ -9859,7 +9859,7 @@ function sendLedgerWhatsApp() {
 let customerLedgerView = 'all';
 
 // Open customer ledger
-function openCustomerLedger() {
+window.openCustomerLedger = function() {
   openModal('customerLedgerModal');
   loadCustomerLedger();
 }
