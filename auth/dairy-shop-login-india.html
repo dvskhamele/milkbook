@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dairy Shop Login India - MilkRecord POS Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
     <script>
       // Initialize Supabase client when library loads
       var supabase = null;
@@ -17,11 +17,16 @@
         var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZXN3ZnVpd2psdXFvbWdlcGFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgzNTI3NzMsImV4cCI6MjA1MzkyODc3M30.LjEgIb8vKqJ5K5K5K5K5K5K5K5K5K5K5K5K5K5K5K5';
         
         if (window.supabase) {
-          supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-          console.log('✅ Supabase initialized');
+          try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log('✅ Supabase initialized');
+          } catch (e) {
+            console.error('❌ Supabase init error:', e);
+            setTimeout(initSupabase, 500);
+          }
         } else {
-          console.error('❌ Supabase library not loaded, retrying...');
-          setTimeout(initSupabase, 100); // Retry after 100ms
+          console.log('⏳ Waiting for Supabase library...');
+          setTimeout(initSupabase, 200);
         }
       }
       
@@ -29,7 +34,7 @@
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initSupabase);
       } else {
-        initSupabase();
+        setTimeout(initSupabase, 100);
       }
     </script>
     <style>
