@@ -1,219 +1,165 @@
 """
-MilkRecord POS - Vercel Serverless Entry Point
-Serves static files and API endpoints
+MilkRecord POS - Vercel Serverless API
+Handles authentication and API endpoints with Supabase
 """
 
 import json
 import os
-from urllib.parse import urlparse
+from datetime import datetime
+
+# ============================================
+# SUPABASE CLIENT SETUP
+# ============================================
+
+def get_supabase():
+    """Initialize Supabase client"""
+    try:
+        from supabase import create_client
+        supabase_url = os.getenv('SUPABASE_URL')
+        supabase_key = os.getenv('SUPABASE_KEY')
+        
+        if not supabase_url or not supabase_key:
+            return None
+        
+        return create_client(supabase_url, supabase_key)
+    except Exception as e:
+        print(f"Supabase init error: {e}")
+        return None
 
 # ============================================
 # VERCEL SERVERLESS HANDLER
 # ============================================
 
 def handler(request, response):
-    """Vercel serverless handler - serves static files and API"""
+    """Vercel serverless handler - serves API endpoints"""
     try:
         # Get request details from Vercel
         path = request.get('path', '/')
         method = request.get('method', 'GET')
+        body = request.get('body', '{}')
         
-        # Health check endpoint
+        # CORS headers
+        cors_headers = {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
+        }
+        
+        # Handle OPTIONS (CORS preflight)
+        if method == 'OPTIONS':
+            return {'statusCode': 200, 'headers': cors_headers, 'body': ''}
+        
+        # Health check
         if path == '/api/health':
             return {
                 'statusCode': 200,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
+                'headers': cors_headers,
                 'body': json.dumps({
                     'status': 'healthy',
                     'platform': 'vercel',
                     'runtime': 'serverless',
-                    'supabase': 'connected' if os.getenv('SUPABASE_URL') else 'not configured',
-                    'timestamp': __import__('datetime').datetime.now().isoformat()
+                    'supabase': 'connected' if os.getenv('SUPABASE_URL') else 'not configured'
                 })
             }
         
-        # API routes
-        if path.startswith('/api/'):
-            return {
-                'statusCode': 501,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'body': json.dumps({
-                    'error': 'API endpoints require Flask server',
-                    'message': 'This is a static deployment. Use Supabase client directly.'
-                })
-            }
+        # Initialize Supabase
+        supabase = get_supabase()
         
-        # Static file routes - determine file path
-        file_path = None
-        
-        # Route: /js/* -> js folder
-        if path.startswith('/js/'):
-            file_path = path[1:]  # Remove leading /
-        
-        # Route: /apps/* -> apps folder
-        elif path.startswith('/apps/'):
-            file_path = path[1:]  # Remove leading /
-        
-        # Route: /*.html -> apps folder
-        elif path.endswith('.html'):
-            file_path = f'apps{path}'
-        
-        # Route: /*.css -> try root first, then apps folder
-        elif path.endswith('.css'):
-            root_css = path[1:]  # Remove leading /
-            apps_css = f'apps{path}'
-            if os.path.exists(root_css):
-                file_path = root_css
-            elif os.path.exists(apps_css):
-                file_path = apps_css
-            else:
-                file_path = root_css  # Will trigger 404
-        
-        # Route: /*.js -> try root first, then js folder
-        elif path.endswith('.js'):
-            root_js = path[1:]
-            js_folder = f'js{path}'
-            if os.path.exists(root_js):
-                file_path = root_js
-            elif os.path.exists(js_folder):
-                file_path = js_folder
-            else:
-                file_path = root_js
-        
-        # Route: /pos, /collection, etc. -> specific HTML files
-        elif path == '/':
-            file_path = 'apps/index.html'
-        elif path == '/pos':
-            file_path = 'apps/dairy-pos-billing-software-india.html'
-        elif path == '/collection':
-            file_path = 'apps/collection.html'
-        elif path == '/farmers':
-            file_path = 'apps/farmer-management-milk-collection-centers.html'
-        elif path == '/customers':
-            file_path = 'apps/customer-ledger-udhar-tracking-dairy.html'
-        elif path == '/inventory':
-            file_path = 'apps/inventory.html'
-        elif path == '/reports':
-            file_path = 'apps/reports-dashboard.html'
-        elif path == '/settings':
-            file_path = 'apps/settings.html'
-        
-        # Route: images and other assets
-        elif path.endswith(('.png', '.jpg', '.jpeg', '.svg', '.ico', '.gif', '.webp')):
-            root_asset = path[1:]
-            apps_asset = f'apps{path}'
-            if os.path.exists(root_asset):
-                file_path = root_asset
-            elif os.path.exists(apps_asset):
-                file_path = apps_asset
-            else:
-                file_path = root_asset
-        
-        # Route: fonts
-        elif path.endswith(('.woff', '.woff2', '.ttf', '.eot')):
-            root_font = path[1:]
-            apps_font = f'apps{path}'
-            if os.path.exists(root_font):
-                file_path = root_font
-            elif os.path.exists(apps_font):
-                file_path = apps_font
-            else:
-                file_path = root_font
-        
-        # Default: try apps folder
-        else:
-            file_path = f'apps{path}'
-        
-        # Try to read and serve the file
-        try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-            
-            # Determine content type based on file extension
-            content_type = 'text/html'
-            if file_path.endswith('.css'):
-                content_type = 'text/css'
-            elif file_path.endswith('.js'):
-                content_type = 'application/javascript'
-            elif file_path.endswith('.json'):
-                content_type = 'application/json'
-            elif file_path.endswith('.png'):
-                content_type = 'image/png'
-            elif file_path.endswith('.jpg') or file_path.endswith('.jpeg'):
-                content_type = 'image/jpeg'
-            elif file_path.endswith('.svg'):
-                content_type = 'image/svg+xml'
-            elif file_path.endswith('.ico'):
-                content_type = 'image/x-icon'
-            elif file_path.endswith('.gif'):
-                content_type = 'image/gif'
-            elif file_path.endswith('.webp'):
-                content_type = 'image/webp'
-            elif file_path.endswith('.woff'):
-                content_type = 'font/woff'
-            elif file_path.endswith('.woff2'):
-                content_type = 'font/woff2'
-            elif file_path.endswith('.ttf'):
-                content_type = 'font/ttf'
-            elif file_path.endswith('.eot'):
-                content_type = 'application/vnd.ms-fontobject'
-            
-            return {
-                'statusCode': 200,
-                'headers': {
-                    'Content-Type': content_type,
-                    'Access-Control-Allow-Origin': '*',
-                    'Cache-Control': 'public, max-age=3600'
-                },
-                'body': content
-            }
-        
-        except FileNotFoundError:
-            # Try fallback: if path doesn't start with /, try apps folder
-            if not path.startswith('/'):
-                fallback = f'apps/{path}'
-            else:
-                fallback = f'apps{path}'
-            
+        # Login endpoint
+        if path == '/api/login' and method == 'POST':
             try:
-                with open(fallback, 'r', encoding='utf-8') as f:
-                    content = f.read()
+                data = json.loads(body) if body else {}
+                email = data.get('email', '').strip()
+                password = data.get('password', '')
+                
+                if not email or not password:
+                    return {'statusCode': 400, 'headers': cors_headers, 'body': json.dumps({'message': 'Email and password required'})}
+                
+                if not supabase:
+                    return {'statusCode': 503, 'headers': cors_headers, 'body': json.dumps({'message': 'Database not configured'})}
+                
+                auth_response = supabase.auth.sign_in_with_password({'email': email, 'password': password})
+                user = auth_response.user
+                session = auth_response.session
+                
+                if not user:
+                    return {'statusCode': 401, 'headers': cors_headers, 'body': json.dumps({'message': 'Invalid email or password'})}
+                
+                shop_name = user.user_metadata.get('shop_name', 'My Dairy Shop') if user.user_metadata else 'My Dairy Shop'
+                
                 return {
                     'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'text/html',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'body': content
+                    'headers': cors_headers,
+                    'body': json.dumps({
+                        'success': True,
+                        'user': {'id': user.id, 'email': user.email, 'shop': shop_name},
+                        'session': {'access_token': session.access_token, 'refresh_token': session.refresh_token, 'expires_in': session.expires_in}
+                    })
                 }
-            except:
-                pass
-            
-            # File not found
+            except Exception as e:
+                return {'statusCode': 500, 'headers': cors_headers, 'body': json.dumps({'message': f'Login failed: {str(e)}'})}
+        
+        # Register endpoint
+        if path == '/api/register' and method == 'POST':
+            try:
+                data = json.loads(body) if body else {}
+                shop = data.get('shop', '').strip()
+                email = data.get('email', '').strip()
+                phone = data.get('phone', '').strip()
+                password = data.get('password', '')
+                
+                if not all([shop, email, password]):
+                    return {'statusCode': 400, 'headers': cors_headers, 'body': json.dumps({'message': 'Shop name, email and password required'})}
+                
+                if len(password) < 6:
+                    return {'statusCode': 400, 'headers': cors_headers, 'body': json.dumps({'message': 'Password must be at least 6 characters'})}
+                
+                if not supabase:
+                    return {'statusCode': 503, 'headers': cors_headers, 'body': json.dumps({'message': 'Database not configured'})}
+                
+                auth_response = supabase.auth.sign_up({
+                    'email': email,
+                    'password': password,
+                    'options': {'data': {'shop_name': shop, 'phone': phone, 'role': 'owner'}}
+                })
+                
+                user = auth_response.user
+                session = auth_response.session
+                
+                if not user:
+                    return {'statusCode': 500, 'headers': cors_headers, 'body': json.dumps({'message': 'Registration failed'})}
+                
+                return {
+                    'statusCode': 201,
+                    'headers': cors_headers,
+                    'body': json.dumps({
+                        'success': True,
+                        'user': {'id': user.id, 'email': user.email, 'shop': shop, 'phone': phone},
+                        'session': {'access_token': session.access_token if session else '', 'refresh_token': session.refresh_token if session else '', 'expires_in': session.expires_in if session else 3600}
+                    })
+                }
+            except Exception as e:
+                error_msg = str(e)
+                if 'User already registered' in error_msg:
+                    return {'statusCode': 409, 'headers': cors_headers, 'body': json.dumps({'message': 'Email already registered. Please login instead.'})}
+                return {'statusCode': 500, 'headers': cors_headers, 'body': json.dumps({'message': f'Registration failed: {error_msg}'})}
+        
+        # Demo login endpoint
+        if path == '/api/demo-login' and method == 'POST':
             return {
-                'statusCode': 404,
-                'headers': {
-                    'Content-Type': 'text/html',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'body': '<h1>404 - File Not Found</h1><p>The requested file could not be found.</p>'
+                'statusCode': 200,
+                'headers': cors_headers,
+                'body': json.dumps({
+                    'success': True,
+                    'user': {'id': 'demo_user', 'email': 'demo@milkrecord.in', 'shop': 'Demo Dairy Shop', 'phone': '9876543210'},
+                    'session': {'access_token': 'demo_token', 'refresh_token': 'demo_refresh', 'expires_in': 86400},
+                    'is_demo': True
+                })
             }
-    
+        
+        # Default: 404
+        return {'statusCode': 404, 'headers': cors_headers, 'body': json.dumps({'error': 'API endpoint not found'})}
+        
     except Exception as e:
-        return {
-            'statusCode': 500,
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'body': json.dumps({
-                'error': 'Internal server error',
-                'message': str(e)
-            })
-        }
+        return {'statusCode': 500, 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'}, 'body': json.dumps({'error': str(e)})}
