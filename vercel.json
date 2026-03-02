@@ -3,16 +3,16 @@
   "outputDirectory": ".",
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
       "src": "/",
       "dest": "/homepage_landing_recovered.html"
     },
     {
       "src": "/standalone_milkbook_complete",
       "dest": "/deploy/standalone_milkbook_complete.html"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
     },
     {
       "src": "/login-pos",
