@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dairy Shop Login India - MilkRecord POS Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      // Initialize Supabase client
+      const SUPABASE_URL = 'https://uoeswfuiwjluqomgepar.supabase.co';
+      const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZXN3ZnVpd2psdXFvbWdlcGFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgzNTI3NzMsImV4cCI6MjA1MzkyODc3M30.LjEgIb8vKqJ5K5K5K5K5K5K5K5K5K5K5K5K5K5K5K5';
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -368,7 +375,7 @@
             }
         }
 
-        // Handle Login - Uses Supabase Auth
+        // Handle Login - Uses Supabase Client-Side Auth
         async function handleLogin(event) {
             event.preventDefault();
 
@@ -380,27 +387,28 @@
             btn.innerHTML = '⏳ Logging in...';
 
             try {
-                // Call Supabase Auth API
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
+                // Sign in with Supabase
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
                 });
 
-                const data = await response.json();
+                if (error) throw error;
 
-                if (!response.ok) {
-                    throw new Error(data.message || 'Login failed');
-                }
+                const user = data.user;
+                const session = data.session;
+
+                // Get shop name from metadata
+                const shop_name = user.user_metadata?.shop_name || 'My Dairy Shop';
 
                 // Save session
                 localStorage.setItem('MilkRecord_session', JSON.stringify({
-                    shop_name: data.user.shop,
-                    email: data.user.email,
-                    user_id: data.user.id,
-                    token: data.session.access_token,
-                    expires: Date.now() + (data.session.expires_in * 1000),
-                    is_demo: data.is_demo || false
+                    shop_name: shop_name,
+                    email: user.email,
+                    user_id: user.id,
+                    token: session.access_token,
+                    expires: Date.now() + (session.expires_in * 1000),
+                    is_demo: false
                 }));
 
                 showSuccess('✅ Login successful! Redirecting...');
@@ -429,41 +437,47 @@
             btn.innerHTML = '⏳ Creating account...';
             
             try {
-                // Call backend API
-                const response = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ shop, email, phone, password })
+                // Sign up with Supabase
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            shop_name: shop,
+                            phone: phone,
+                            role: 'owner'
+                        }
+                    }
                 });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.message || 'Registration failed');
-                }
-                
-                // Auto-login
+
+                if (error) throw error;
+
+                const user = data.user;
+                const session = data.session;
+
+                // Save session
                 localStorage.setItem('MilkRecord_session', JSON.stringify({
-                    shop_name: data.user.shop,
-                    email: data.user.email,
-                    user_id: data.user.id,
-                    token: data.session.access_token,
-                    expires: Date.now() + (data.session.expires_in * 1000)
+                    shop_name: shop,
+                    email: user.email,
+                    user_id: user.id,
+                    token: session?.access_token || '',
+                    expires: Date.now() + (session?.expires_in || 3600),
+                    is_demo: false
                 }));
-                
+
                 showSuccess('✅ Account created! Redirecting...');
                 setTimeout(() => {
                     window.location.href = '/pos';
                 }, 1000);
-                
+
             } catch (error) {
                 let errorMsg = error.message;
-                
-                // Check for database table errors
-                if (errorMsg.includes('table') || errorMsg.includes('schema') || errorMsg.includes('relation')) {
-                    errorMsg = 'Database not set up yet. Please use Demo Account or contact admin to create database tables.';
+
+                // Check for common errors
+                if (errorMsg.includes('already registered') || errorMsg.includes('User already registered')) {
+                    errorMsg = 'Email already registered. Please login instead.';
                 }
-                
+
                 showError('❌ ' + errorMsg);
                 btn.disabled = false;
                 btn.innerHTML = 'Create Free Account';
