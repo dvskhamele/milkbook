@@ -11,16 +11,48 @@
       "dest": "/api/$1"
     },
     {
-      "src": "/pos/?",
+      "src": "/login-pos",
+      "dest": "/auth/dairy-shop-login-india.html"
+    },
+    {
+      "src": "/login",
+      "dest": "/auth/dairy-shop-login-india.html"
+    },
+    {
+      "src": "/login-bmc",
+      "dest": "/auth/bmc-login-milk-collection-center.html"
+    },
+    {
+      "src": "/demo-bmc-login",
+      "dest": "/demo/demo-bmc-login.html"
+    },
+    {
+      "src": "/pos",
       "dest": "/apps/dairy-pos-billing-software-india.html"
     },
     {
-      "src": "/collection/?",
+      "src": "/collection",
       "dest": "/apps/collection.html"
     },
     {
       "src": "/js/(.*)",
       "dest": "/js/$1"
+    },
+    {
+      "src": "/auth/(.*)",
+      "dest": "/auth/$1"
+    },
+    {
+      "src": "/demo/(.*)",
+      "dest": "/demo/$1"
+    },
+    {
+      "src": "/apps/(.*)",
+      "dest": "/apps/$1"
+    },
+    {
+      "src": "/(.*)\\.html",
+      "dest": "/$1.html"
     },
     {
       "src": "/(.*)",
