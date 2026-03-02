@@ -1724,8 +1724,8 @@
         <div style="padding:12px 16px; border-top:1px solid #e2e8f0; flex-shrink:0;">
           <!-- Quick Actions Grid -->
           <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:12px;">
-            <button onclick="window.location.href='shift-reconciliation-screen.html'" style="padding:12px; background:#dc2626; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:11px;">🔄 Close Shift</button>
-            <button onclick="window.location.href='fssai-compliance-screen.html'" style="padding:12px; background:#16a34a; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:11px;">✅ FSSAI Report</button>
+            <button onclick="showShiftReconciliation()" style="padding:12px; background:#dc2626; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:11px;">🔄 Close Shift</button>
+            <button onclick="openFSSAIScreen()" style="padding:12px; background:#16a34a; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:11px;">✅ FSSAI Report</button>
             <button onclick="showQRTraceability()" style="padding:12px; background:#7c3aed; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:11px;">📱 QR Traceability</button>
             <button onclick="showProductionReport()" style="padding:12px; background:#f59e0b; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:11px;">🏭 Production</button>
           </div>
@@ -9833,6 +9833,23 @@ let customerLedgerView = 'all';
 function openCustomerLedger() {
   openModal('customerLedgerModal');
   loadCustomerLedger();
+}
+
+// Show Shift Reconciliation
+function showShiftReconciliation() {
+  if (window.ShiftReconciliation) {
+    const today = new Date().toISOString().split('T')[0];
+    const hour = new Date().getHours();
+    const shift = (hour >= 4 && hour < 16) ? 'Morning' : 'Evening';
+    ShiftReconciliation.showReconciliation(today, shift);
+  } else {
+    showToast('⚠️ Shift Reconciliation not loaded');
+  }
+}
+
+// Open FSSAI Screen
+function openFSSAIScreen() {
+  window.location.href = '/fssai-compliance-screen';
 }
 
 // Show QR Traceability

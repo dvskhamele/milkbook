@@ -39,6 +39,14 @@
       "dest": "/apps/collection.html"
     },
     {
+      "src": "/fssai-compliance-screen",
+      "dest": "/apps/fssai-compliance-screen.html"
+    },
+    {
+      "src": "/shift-reconciliation-screen",
+      "dest": "/apps/shift-reconciliation-screen.html"
+    },
+    {
       "src": "/js/(.*)",
       "dest": "/js/$1"
     },
