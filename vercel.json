@@ -1,10 +1,15 @@
 {
   "version": 2,
   "outputDirectory": ".",
+  "cleanUrls": true,
   "routes": [
     {
       "src": "/",
       "dest": "/homepage_landing_recovered.html"
+    },
+    {
+      "src": "/standalone_milkbook_complete",
+      "dest": "/deploy/standalone_milkbook_complete.html"
     },
     {
       "src": "/api/(.*)",
@@ -47,12 +52,12 @@
       "dest": "/demo/$1"
     },
     {
-      "src": "/apps/(.*)",
-      "dest": "/apps/$1"
+      "src": "/deploy/(.*)",
+      "dest": "/deploy/$1"
     },
     {
-      "src": "/(.*)\\.html",
-      "dest": "/$1.html"
+      "src": "/apps/(.*)",
+      "dest": "/apps/$1"
     },
     {
       "src": "/(.*)",
