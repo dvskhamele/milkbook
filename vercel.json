@@ -1,6 +1,15 @@
 {
   "version": 2,
+  "outputDirectory": ".",
   "routes": [
+    {
+      "src": "/",
+      "dest": "/homepage_landing_recovered.html"
+    },
+    {
+      "src": "/index.html",
+      "dest": "/homepage_landing_recovered.html"
+    },
     {
       "src": "/api/(.*)",
       "dest": "/api/index.py"
@@ -15,47 +24,39 @@
     },
     {
       "src": "/pos",
-      "dest": "/index.html"
+      "dest": "/apps/dairy-pos-billing-software-india.html"
     },
     {
       "src": "/collection",
       "dest": "/apps/collection.html"
     },
     {
-      "src": "/farmers",
-      "dest": "/apps/farmer-management-milk-collection-centers.html"
+      "src": "/login",
+      "dest": "/auth/dairy-shop-login-india.html"
     },
     {
-      "src": "/customers",
-      "dest": "/apps/customer-ledger-udhar-tracking-dairy.html"
+      "src": "/login-pos",
+      "dest": "/auth/dairy-shop-login-india.html"
     },
     {
-      "src": "/inventory",
-      "dest": "/apps/inventory.html"
+      "src": "/login-bmc",
+      "dest": "/auth/bmc-login-milk-collection-center.html"
     },
     {
-      "src": "/reports",
-      "dest": "/apps/reports-dashboard.html"
+      "src": "/demo-bmc-login",
+      "dest": "/demo/demo-bmc-login.html"
     },
     {
-      "src": "/settings",
-      "dest": "/apps/settings.html"
+      "src": "/fssai-compliance-screen",
+      "dest": "/apps/fssai-compliance-screen.html"
     },
     {
-      "src": "/",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/(.+\\.html)",
-      "dest": "/$1"
-    },
-    {
-      "src": "/(.+\\.(css|js|json|png|jpg|jpeg|svg|ico|woff|woff2|ttf|eot))",
-      "dest": "/$1"
+      "src": "/shift-reconciliation-screen",
+      "dest": "/apps/shift-reconciliation-screen.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/$1"
     }
   ]
 }
