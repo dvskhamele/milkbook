@@ -794,6 +794,7 @@
 .price-input { width: 60px; border: 1px solid var(--line); border-radius: 5px; padding: 2px; font-weight: bold; text-align: center; }
 .p-card .price-tag { font-size: 11px; font-weight: 700; color: #16a34a; background: #f0fdf4; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: block; text-align: center; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
   </head>
   <body>
     <!-- Mobile POS Compact Interface CSS -->
@@ -2776,8 +2777,31 @@
       }
 
       // Logout function
-      function logout() {
+      async function logout() {
           if (confirm('Are you sure you want to logout?')) {
+              // Get current session
+              const sessionData = localStorage.getItem('MilkRecord_session');
+              
+              if (sessionData) {
+                  try {
+                      const session = JSON.parse(sessionData);
+                      
+                      // If we have a Supabase token, sign out properly
+                      if (session.token && window.supabase) {
+                          try {
+                              await window.supabase.auth.signOut({
+                                  scope: 'local' // Only sign out from this device
+                              });
+                              console.log('✅ Supabase logout successful');
+                          } catch (e) {
+                              console.log('⚠️ Supabase logout error:', e.message);
+                          }
+                      }
+                  } catch (e) {
+                      console.log('⚠️ Session parse error:', e.message);
+                  }
+              }
+              
               // Clear session
               localStorage.removeItem('MilkRecord_session');
 
