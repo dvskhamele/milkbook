@@ -200,13 +200,13 @@
     /**
      * Get stats
      */
-    getStats() {
+    async getStats() {
       try {
         const stored = localStorage.getItem(this.entriesKey);
         if (!stored) return { total_entries: 0 };
 
         const all = JSON.parse(stored);
-const today = await this.getTodayEntries();
+        const today = await this.getTodayEntries();
 
         return {
           total_entries: all.length,
