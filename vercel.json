@@ -3,6 +3,10 @@
   "outputDirectory": ".",
   "routes": [
     {
+      "src": "/",
+      "dest": "/homepage_landing_recovered.html"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MilkRecord - Dairy Shop Financial Control System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 48px; font-weight: 900; margin-bottom: 20px; line-height: 1.2; }
+        .hero p { font-size: 20px; opacity: 0.9; max-width: 700px; margin: 0 auto 30px; }
+        .hero-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 15px 30px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; border: none; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #fbbf24; color: #78350f; }
+        .btn-secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid white; }
+        
+        /* Features Grid */
+        .features { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
+        .features h2 { text-align: center; font-size: 36px; margin-bottom: 50px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .feature-icon { font-size: 48px; margin-bottom: 15px; }
+        .feature-card h3 { font-size: 20px; margin-bottom: 10px; color: #1e40af; }
+        .feature-card p { color: #64748b; line-height: 1.6; }
+        .feature-card ul { margin-top: 15px; padding-left: 20px; color: #475569; }
+        .feature-card li { margin-bottom: 8px; }
+        
+        /* Pricing */
+        .pricing { background: #f1f5f9; padding: 80px 20px; }
+        .pricing h2 { text-align: center; font-size: 36px; margin-bottom: 50px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .pricing-card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; }
+        .pricing-card.popular { border: 3px solid #fbbf24; transform: scale(1.05); }
+        .pricing-card.popular::before { content: 'MOST POPULAR'; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .pricing-card h3 { font-size: 24px; margin-bottom: 10px; }
+        .price { font-size: 48px; font-weight: 900; color: #1e40af; margin: 20px 0; }
+        .price span { font-size: 16px; color: #64748b; font-weight: 400; }
+        .pricing-card ul { list-style: none; margin-top: 20px; }
+        .pricing-card li { padding: 10px 0; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 10px; }
+        .pricing-card li::before { content: '✅'; }
+        .pricing-card li.locked { color: #94a3b8; text-decoration: line-through; }
+        .pricing-card li.locked::before { content: '🔒'; }
+        .pricing-card .btn { width: 100%; margin-top: 20px; text-align: center; }
+        
+        /* Testimonials */
+        .testimonials { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
+        .testimonials h2 { text-align: center; font-size: 36px; margin-bottom: 50px; }
+        .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .testimonial-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .testimonial-card blockquote { font-size: 16px; font-style: italic; color: #475569; margin-bottom: 20px; line-height: 1.6; }
+        .testimonial-author { font-weight: 700; color: #1e293b; }
+        .testimonial-role { color: #64748b; font-size: 14px; }
+        
+        /* CTA */
+        .cta { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 80px 20px; text-align: center; }
+        .cta h2 { font-size: 36px; margin-bottom: 20px; }
+        .cta p { font-size: 18px; opacity: 0.9; margin-bottom: 30px; }
+        
+        /* Footer */
+        footer { background: #1e293b; color: #94a3b8; padding: 40px 20px; text-align: center; }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 16px; }
+            .pricing-card.popular { transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Dairy Shop Financial Control System</h1>
+        <p>Billing + Udhar + Monthly Hisab in One Place. Built exclusively for dairy shop owners.</p>
+        <div class="hero-buttons">
+            <a href="pos-demo.html" class="btn btn-primary">🚀 Start Free Trial</a>
+            <a href="index.html" class="btn btn-secondary">📊 Milk Collection</a>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <h2>Everything Your Dairy Shop Needs</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🥛</div>
+                <h3>Milk Sales Engine</h3>
+                <p>Quick billing designed for dairy shops</p>
+                <ul>
+                    <li>Cow/Buffalo variants</li>
+                    <li>Manual + Auto rate mode</li>
+                    <li>Cash / UPI / Credit (Likh Lo)</li>
+                    <li>Daily session tracking</li>
+                    <li>Hindi/English support</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📒</div>
+                <h3>Udhar & Bakaya Control</h3>
+                <p>No more notebook hisaab confusion</p>
+                <ul>
+                    <li>Customer-wise running balance</li>
+                    <li>Automatic balance update per bill</li>
+                    <li>Advance tracking</li>
+                    <li>Aging summary (0-30 / 30-60 days)</li>
+                    <li>WhatsApp balance reminders</li>
+                    <li>Monthly balance confirmation</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>Dairy Financial Memory</h3>
+                <p>Complete transaction history & insights</p>
+                <ul>
+                    <li>30-day detailed history (Free)</li>
+                    <li>Monthly milk summary per customer</li>
+                    <li>Customer delivery sheet (Milkman Sheet)</li>
+                    <li>Weekly milk summary</li>
+                    <li>Monthly settlement statement</li>
+                    <li>Bill-wise payment mapping</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Daily Control Dashboard</h3>
+                <p>Owner control without sitting at counter</p>
+                <ul>
+                    <li>Total sales today</li>
+                    <li>Cash vs UPI vs Credit split</li>
+                    <li>Total udhar created today</li>
+                    <li>Cash mismatch warning</li>
+                    <li>Previous 7-day trend</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Hardware Integration</h3>
+                <p>Optional automation for faster billing</p>
+                <ul>
+                    <li>QR farmer cards (optional)</li>
+                    <li>Analyzer auto-read</li>
+                    <li>Digital scale integration</li>
+                    <li>Thermal printer support</li>
+                    <li>Fast entry mode for repeats</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Reports & Compliance</h3>
+                <p>Professional reports for your business</p>
+                <ul>
+                    <li>CSV export (Paid)</li>
+                    <li>Monthly GST-ready summary</li>
+                    <li>Customer ledger export</li>
+                    <li>1-year transaction history</li>
+                    <li>Backup download</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing">
+        <h2>Simple Pricing for Dairy Shops</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>🟢 Trial</h3>
+                <div class="price">FREE<span>/30 days</span></div>
+                <p>Perfect for testing</p>
+                <ul>
+                    <li>Full billing system</li>
+                    <li>Udhar tracking</li>
+                    <li>30-day history</li>
+                    <li class="locked">CSV export</li>
+                    <li class="locked">Monthly dairy sheet</li>
+                    <li class="locked">WhatsApp reminders</li>
+                    <li class="locked">Balance confirmation</li>
+                </ul>
+                <a href="pos-demo.html" class="btn btn-secondary" style="background: #1e40af; color: white;">Start Free Trial</a>
+                <p style="margin-top: 15px; font-size: 12px; color: #64748b;">After 30 days: Can continue billing but limited to 3-day history</p>
+            </div>
+
+            <div class="pricing-card popular">
+                <h3>🔵 Standard</h3>
+                <div class="price">₹2000<span>/year</span></div>
+                <p>For growing dairy shops</p>
+                <ul>
+                    <li>Everything in Trial</li>
+                    <li>Unlimited history</li>
+                    <li>Monthly dairy sheet</li>
+                    <li>Milkman summary</li>
+                    <li>CSV export</li>
+                    <li>Balance reminders</li>
+                    <li>Backup access</li>
+                </ul>
+                <a href="pos-demo.html" class="btn btn-primary">Start 30-Day Free Trial</a>
+                <p style="margin-top: 15px; font-size: 12px; color: #64748b;">Pay only after trial ends</p>
+            </div>
+
+            <div class="pricing-card">
+                <h3>🟣 Growth Add-ons</h3>
+                <div class="price">Coming<span> Soon</span></div>
+                <p>Optional modules</p>
+                <ul>
+                    <li class="locked">Advanced analytics</li>
+                    <li class="locked">Multi-branch support</li>
+                    <li class="locked">Cheque printing</li>
+                    <li class="locked">Loan ledger</li>
+                    <li class="locked">GST filing integration</li>
+                </ul>
+                <button class="btn btn-secondary" disabled style="background: #cbd5e1; color: #64748b; cursor: not-allowed;">Coming Soon</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <h2>Trusted by Dairy Shop Owners</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <blockquote>"Pehle notebook mein hisaab rakhta tha, ab sab digital. Udhar ka bhi tension nahi. WhatsApp reminder bhej deta hu customers ko!"</blockquote>
+                <div class="testimonial-author">Ramesh Kumar</div>
+                <div class="testimonial-role">Gopal Dairy, Pune</div>
+            </div>
+
+            <div class="testimonial-card">
+                <blockquote>"Monthly milk sheet automatically ban jati hai. Customers ko dikhata hu toh trust badh jata hai. Best investment for dairy shop!"</blockquote>
+                <div class="testimonial-author">Suresh Patil</div>
+                <div class="testimonial-role">Shri Krishna Dairy, Nashik</div>
+            </div>
+
+            <div class="testimonial-card">
+                <blockquote>"Hardware integration se speed double ho gayi. Analyzer se direct reading, printer se bill. Customer khush, main khush!"</blockquote>
+                <div class="testimonial-author">Amit Shah</div>
+                <div class="testimonial-role">Modern Dairy, Mumbai</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <h2>Start Your Free 30-Day Trial</h2>
+        <p>No credit card required. Full features. Pay only if you love it.</p>
+        <div class="hero-buttons">
+            <a href="pos-demo.html" class="btn btn-primary">🚀 Start Free Trial</a>
+            <a href="index.html" class="btn btn-secondary">📊 Milk Collection</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 30px;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <span style="font-size: 28px;">🥛</span>
+                    <a href="homepage_landing_recovered.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: 700;">MilkRecord</a>
+                </div>
+                    <p style="color: #94a3b8; line-height: 1.6; font-size: 14px;">Complete dairy shop management system for billing, udhar tracking, and monthly hisab.</p>
+                </div>
+                <div>
+                    <h3 style="color: white; margin-bottom: 15px; font-size: 18px;">Quick Links</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;"><a href="homepage_landing_recovered.html" style="color: #94a3b8; text-decoration: none; font-size: 14px;">🏠 Home</a></li>
+                        <li style="margin-bottom: 10px;"><a href="index.html" style="color: #94a3b8; text-decoration: none; font-size: 14px;">📊 Milk Collection</a></li>
+                        <li style="margin-bottom: 10px;"><a href="pos-demo.html" style="color: #94a3b8; text-decoration: none; font-size: 14px;">🛒 POS System</a></li>
+                        <li><a href="login.html" style="color: #94a3b8; text-decoration: none; font-size: 14px;">🔐 Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="color: white; margin-bottom: 15px; font-size: 18px;">Features</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px; color: #94a3b8; font-size: 14px;">✅ Auto Rate Calculation</li>
+                        <li style="margin-bottom: 10px; color: #94a3b8; font-size: 14px;">✅ Udhar (Credit) Management</li>
+                        <li style="margin-bottom: 10px; color: #94a3b8; font-size: 14px;">✅ WhatsApp Integration</li>
+                        <li style="margin-bottom: 10px; color: #94a3b8; font-size: 14px;">✅ Offline Mode</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="color: white; margin-bottom: 15px; font-size: 18px;">Contact</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; color: #94a3b8; font-size: 14px;">
+                        <li style="margin-bottom: 8px;">📧 support@milkrecord.in</li>
+                        <li style="margin-bottom: 8px;">📱 +91 98765 43210</li>
+                        <li>📍 India</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #334155; padding-top: 20px; text-align: center; color: #64748b; font-size: 14px;">
+                <p>© 2026 MilkRecord. Built exclusively for Indian Dairy Shops.</p>
+                <p style="margin-top: 10px;">
+                    <a href="homepage_landing_recovered.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">Home</a> •
+                    <a href="index.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">Milk Collection</a> •
+                    <a href="pos-demo.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">POS</a> •
+                    <a href="login.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">Login</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

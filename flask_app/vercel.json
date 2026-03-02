@@ -1,14 +1,57 @@
 {
   "version": 2,
-  "outputDirectory": ".",
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/js/$1"
+    },
+    {
+      "src": "/apps/(.*)",
+      "dest": "/apps/$1"
+    },
+    {
+      "src": "/pos",
+      "dest": "/apps/dairy-pos-billing-software-india.html"
+    },
+    {
+      "src": "/collection",
+      "dest": "/apps/collection.html"
+    },
+    {
+      "src": "/farmers",
+      "dest": "/apps/farmer-management-milk-collection-centers.html"
+    },
+    {
+      "src": "/customers",
+      "dest": "/apps/customer-ledger-udhar-tracking-dairy.html"
+    },
+    {
+      "src": "/inventory",
+      "dest": "/apps/inventory.html"
+    },
+    {
+      "src": "/reports",
+      "dest": "/apps/reports-dashboard.html"
+    },
+    {
+      "src": "/settings",
+      "dest": "/apps/settings.html"
+    },
+    {
+      "src": "/(.+\\.html)",
+      "dest": "/apps/$1"
+    },
+    {
+      "src": "/(.+\\.(css|js|json|png|jpg|jpeg|svg|ico|woff|woff2|ttf|eot))",
+      "dest": "/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/api/index.py"
     }
   ]
 }

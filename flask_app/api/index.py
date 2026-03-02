@@ -10,7 +10,7 @@ from datetime import datetime
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory, send_file
 from core import services
 
 # Force cloud mode
@@ -23,29 +23,78 @@ os.environ['VERCEL'] = '1'
 
 def create_app():
     """Create Flask application for Vercel"""
-    
+
     app = Flask(__name__,
                 template_folder='../apps',
-                static_folder='../apps',
-                static_url_path='/static')
-    
+                static_folder='..',
+                static_url_path='')
+
     # Configuration
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'vercel-secret-key')
     app.config['DEBUG'] = False  # Never debug in production
-    
+
     # Register routes
     register_routes(app)
-    
+
     return app
 
 
 def register_routes(app):
     """Register all routes"""
-    
-    # Main Pages
+
+    # Main Pages - serve from apps folder
     @app.route('/')
     def index():
-        return send_file('../apps/dairy-pos-billing-software-india.html')
+        return send_from_directory('../apps', 'dairy-pos-billing-software-india.html')
+
+    @app.route('/pos')
+    def pos():
+        return send_from_directory('../apps', 'dairy-pos-billing-software-india.html')
+
+    @app.route('/collection')
+    def collection():
+        return send_from_directory('../apps', 'collection.html')
+
+    @app.route('/farmers')
+    def farmers():
+        return send_from_directory('../apps', 'farmer-management-milk-collection-centers.html')
+
+    @app.route('/customers')
+    def customers():
+        return send_from_directory('../apps', 'customer-ledger-udhar-tracking-dairy.html')
+
+    @app.route('/inventory')
+    def inventory():
+        return send_from_directory('../apps', 'inventory.html')
+
+    @app.route('/reports')
+    def reports():
+        return send_from_directory('../apps', 'reports-dashboard.html')
+
+    @app.route('/settings')
+    def settings():
+        return send_from_directory('../apps', 'settings.html')
+
+    # Serve JS files from js folder
+    @app.route('/js/<path:filename>')
+    def serve_js(filename):
+        return send_from_directory('../js', filename)
+
+    # Serve CSS files from root
+    @app.route('/<path:filename>')
+    def serve_static(filename):
+        # Check if it's an HTML file in apps
+        apps_path = os.path.join('../apps', filename)
+        if os.path.isfile(apps_path):
+            return send_from_directory('../apps', filename)
+        
+        # Check if it's a JS file
+        js_path = os.path.join('../js', filename)
+        if os.path.isfile(js_path):
+            return send_from_directory('../js', filename)
+        
+        # Default: try to serve from root
+        return send_from_directory('..', filename)
     
     # API - Farmers
     @app.route('/api/farmers', methods=['GET'])
