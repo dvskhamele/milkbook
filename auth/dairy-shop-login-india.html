@@ -8,17 +8,20 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
       // Initialize Supabase client when library loads
-      let supabase = null;
+      var supabase = null;
       
       function initSupabase() {
-        const SUPABASE_URL = 'https://uoeswfuiwjluqomgepar.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZXN3ZnVpd2psdXFvbWdlcGFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgzNTI3NzMsImV4cCI6MjA1MzkyODc3M30.LjEgIb8vKqJ5K5K5K5K5K5K5K5K5K5K5K5K5K5K5K5';
+        if (supabase) return; // Already initialized
+        
+        var SUPABASE_URL = 'https://uoeswfuiwjluqomgepar.supabase.co';
+        var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZXN3ZnVpd2psdXFvbWdlcGFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgzNTI3NzMsImV4cCI6MjA1MzkyODc3M30.LjEgIb8vKqJ5K5K5K5K5K5K5K5K5K5K5K5K5K5K5K5';
         
         if (window.supabase) {
           supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
           console.log('✅ Supabase initialized');
         } else {
-          console.error('❌ Supabase library not loaded');
+          console.error('❌ Supabase library not loaded, retrying...');
+          setTimeout(initSupabase, 100); // Retry after 100ms
         }
       }
       
