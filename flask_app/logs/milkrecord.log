@@ -1,0 +1,19 @@
+2026-03-02 10:52:49,836 - app - INFO - Database initialized
+2026-03-02 10:52:49,843 - app - INFO - Flask app created successfully
+2026-03-02 10:52:49,865 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-03-02 10:52:49,865 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-02 10:57:16,305 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "GET / HTTP/1.1" 200 -
+2026-03-02 10:57:16,340 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /pos-mobile-compact.css HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,342 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /mobile-forms-vertical.css HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,344 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /js/rate-chart-manager.js HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,345 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /logo.jpg HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,346 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /js/safe-execution.js HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,347 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /js/storage-adapter.js HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,347 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /js/sync-engine.js HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,348 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /js/mobile-sidebar.js HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,349 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /js/shift-reconciliation-engine.js HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,354 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /js/yield-calculator.js HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,355 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /js/fssai-compliance.js HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,357 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /js/qr-traceability.js HTTP/1.1[0m" 404 -
+2026-03-02 10:57:16,587 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 10:57:16] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
