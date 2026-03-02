@@ -2700,7 +2700,7 @@
           bho: { shop:"मिल्क-रिकॉर्ड POS", mem:"🧠 याद", hist:"🧾 इतिहास", exp:"📊 एक्सपोर्ट", term:"टर्मिनल", sum:"सारांश", payable:"कुल देय", cash:"नगदी", credit:"लिख लउ (उधार)", hold:"🟡 होल्ड", done:"🟢 हो गइल", clear:"🔴 साफ करी", lang:"🌐 भोजपुरी (BHO)" }
       };
 
-      function toggleLanguage() {
+      window.toggleLanguage = function() {
           // Cycle through: English → Hindi → Bhojpuri → English
           if (currentLang === 'en') {
               currentLang = 'hi';
@@ -2907,7 +2907,7 @@
       });
 
       // Sync total payable display with cart total
-      function updateTotalPayableDisplay() {
+      window.updateTotalPayableDisplay = function() {
         const totalPayable = el("totalPayableDisplay");
         if (totalPayable) {
           // Format with Indian numbering system (lakhs and crores)
@@ -2917,7 +2917,7 @@
       }
 
       // Apply roundup to payment amount - this becomes the FINAL accepted amount
-      function applyRoundup() {
+      window.applyRoundup = function() {
         const roundValue = parseInt(el("roundupInput").value) || 0;
         const paymentAmount = el("paymentAmount");
         const totalPayableDisplay = el("totalPayableDisplay");
@@ -4132,7 +4132,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       }
 
       // Open add customer modal for advance order (NEW CUSTOMER)
-      function openAddCustomerFromAdvanceOrder() {
+      window.openAddCustomerFromAdvanceOrder = function() {
         // Clear the add customer modal
         document.getElementById('newCustId').value = '';
         document.getElementById('newName').value = '';
@@ -4314,7 +4314,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       }
 
       // Clear advance order form
-      function clearAdvanceOrderForm() {
+      window.clearAdvanceOrderForm = function() {
         document.getElementById('advanceOrderLocation').value = '';
         document.getElementById('advanceOrderNotes').value = '';
         const customerSelect = document.getElementById('advanceOrderCustomer');
@@ -4328,7 +4328,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       }
 
       // Save advance order
-      function saveAdvanceOrder() {
+      window.saveAdvanceOrder = function() {
         const customerSelect = document.getElementById('advanceOrderCustomer');
         const location = document.getElementById('advanceOrderLocation').value.trim();
         const date = document.getElementById('advanceOrderDate').value;
@@ -4391,7 +4391,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       }
 
       // View advance orders - Opens full management modal
-      function viewAdvanceOrders() {
+      window.viewAdvanceOrders = function() {
         openModal('advanceOrdersModal');
         renderAdvanceOrdersList();
         updateAdvanceOrderStats();
@@ -4758,7 +4758,7 @@ ${creditAmount > 0 ? `⚖️ *Balance:* ${formatINR(creditAmount)}` : ''}
       }
 
       // Update advance (give/cut) - auto-saves on amount change or toggle
-      function updateAdvance(showToastMsg = false) {
+      window.updateAdvance = function(showToastMsg = false) {
         const customerName = el("activeCust").innerText;
         const amount = parseFloat(el("advanceAmount").value);
         const isCredit = document.querySelector('input[name="ledgerType"][value="credit"]').checked;
@@ -5963,7 +5963,7 @@ function clearTodayHistory() {
       function resetCart() { cart = []; updateUI(); el("activeCust").innerText = "Walking Customer"; el("custSearch").value = ""; el("advanceForm").style.display = 'none'; el("paymentForm").style.display = 'flex'; }
       
       // Hold cart functionality
-      function holdCart() {
+      window.holdCart = function() {
         if (cart.length === 0) return showToast("Cart is empty!");
         const customerName = el("activeCust").innerText;
         const holdId = Date.now();
@@ -6043,7 +6043,7 @@ function clearTodayHistory() {
         openModal('heldCartsModal');
       }
       
-      function openModal(id) {
+      window.openModal = function(id) {
         const modal = el(id);
         if (modal) {
           modal.style.display = "flex";
@@ -6081,7 +6081,7 @@ function clearTodayHistory() {
           }
         }
       }
-      function closeModal(id) {
+      window.closeModal = function(id) {
         const modal = el(id);
         if (modal) modal.style.display = "none";
       }
@@ -6096,7 +6096,7 @@ function clearTodayHistory() {
       //   });
       // });
 
-      function showToast(msg) { const t = el("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1500); }
+      window.showToast = function(msg) { const t = el("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1500); }
 
       // Play success sound
       function playSuccessSound() {
@@ -6129,7 +6129,7 @@ function clearTodayHistory() {
         e.dataTransfer.setData('text/plain', this.id);
       }
 
-      function handleDragOver(e) {
+      window.handleDragOver = function(e) {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
         this.style.background = '#eff6ff';
@@ -6150,7 +6150,7 @@ function clearTodayHistory() {
         draggedCardId = null;
       }
 
-      function handleDrop(e) {
+      window.handleDrop = function(e) {
         e.preventDefault();
         e.stopPropagation();
         
@@ -6820,7 +6820,7 @@ function loadTodayMilkForProduction() {
 }
 
 // Apply production suggestion
-function applySuggestion() {
+window.applySuggestion = function() {
   document.getElementById('prodMilkQty').value = '150';
   document.getElementById('prodProduct').value = 'paneer,400,5';
   updateProductionRatio();
@@ -6836,7 +6836,7 @@ function loadLedgerSummary() {
 }
 
 // Show specific ledger
-function showLedger(ledgerType) {
+window.showLedger = function(ledgerType) {
   let entries = [];
 
   try {
@@ -6952,7 +6952,7 @@ function loadRecentBatches() {
 }
 
 // Update production ratio
-function updateProductionRatio() {
+window.updateProductionRatio = function() {
   const select = document.getElementById('prodProduct');
   const selectedOption = select.options[select.selectedIndex];
   const ratio = selectedOption.getAttribute('data-ratio') || 5;
@@ -6969,7 +6969,7 @@ function updateProductionRatio() {
 }
 
 // Update production preview
-function updateProductionPreview() {
+window.updateProductionPreview = function() {
   const milkQty = parseFloat(document.getElementById('prodMilkQty').value) || 0;
   const productValue = document.getElementById('prodProduct').value;
   
@@ -7007,7 +7007,7 @@ function updateProductionPreview() {
 }
 
 // Toggle production override
-function toggleProdOverride() {
+window.toggleProdOverride = function() {
   const overrideSection = document.getElementById('prodOverrideSection');
   const calculatedDisplay = document.getElementById('prodCalculatedQty');
   const actualInput = document.getElementById('prodActualQty');
@@ -7027,13 +7027,13 @@ function toggleProdOverride() {
 }
 
 // Update production actual quantity
-function updateProdActual() {
+window.updateProdActual = function() {
   const actualQty = parseFloat(document.getElementById('prodActualQty').value) || 0;
   console.log('Actual quantity:', actualQty);
 }
 
 // Confirm production batch
-function confirmProduction() {
+window.confirmProduction = function() {
   const milkQty = parseFloat(document.getElementById('prodMilkQty').value) || 0;
   const productValue = document.getElementById('prodProduct').value;
   const milkSource = document.querySelector('input[name="milkSource"]:checked').value;
@@ -7670,7 +7670,7 @@ function addNewProductFromModal() {
 }
 
 // Edit individual product card
-function editProductCard(btn) {
+window.editProductCard = function(btn) {
   const card = btn.closest('.p-card');
   const nameDiv = card.querySelector('div[style*="font-weight: 900"]');
   const small = card.querySelector('small');
@@ -7753,7 +7753,7 @@ function filterProducts(query) {
 
 // Filter products by category
 let currentCategory = 'all';
-function filterProductsByCategory(category) {
+window.filterProductsByCategory = function(category) {
   currentCategory = category;
   const grid = document.getElementById("productGrid");
   const cards = grid.querySelectorAll('.p-card:not(.add-new-product)');
@@ -7798,7 +7798,7 @@ function filterProductsByCategory(category) {
 }
 
 // Close customer search dropdown
-function closeSearchDropdown() {
+window.closeSearchDropdown = function() {
   const dropdown = el("searchDropdown");
   if (dropdown) dropdown.style.display = 'none';
 }
@@ -8067,7 +8067,7 @@ function createDefaultProducts() {
 }
 
 // Edit Products Modal - shows custom products from localStorage
-function openEditInventory() {
+window.openEditInventory = function() {
   const list = el("editInventoryList");
 
   // Get custom products from localStorage - USE loadData()
@@ -9865,7 +9865,7 @@ window.openCustomerLedger = function() {
 }
 
 // Show Shift Reconciliation
-function showShiftReconciliation() {
+window.showShiftReconciliation = function() {
   if (window.ShiftReconciliation) {
     const today = new Date().toISOString().split('T')[0];
     const hour = new Date().getHours();
@@ -9877,12 +9877,12 @@ function showShiftReconciliation() {
 }
 
 // Open FSSAI Screen
-function openFSSAIScreen() {
+window.openFSSAIScreen = function() {
   window.location.href = '/fssai-compliance-screen';
 }
 
 // Show QR Traceability
-function showQRTraceability() {
+window.showQRTraceability = function() {
   if (window.QRTraceability) {
     // Get latest production batch
     const batches = JSON.parse(localStorage.getItem('mr_production_batches') || '[]');
@@ -9898,7 +9898,7 @@ function showQRTraceability() {
 }
 
 // Show Production Report
-function showProductionReport() {
+window.showProductionReport = function() {
   const batches = JSON.parse(localStorage.getItem('mr_production_batches') || '[]');
   
   let html = '<div style="padding:20px;">';
@@ -10741,7 +10741,7 @@ function printRateList() {
       }
       
       // Hold cart
-      function holdCart() {
+      window.holdCart = function() {
         if (cart.length === 0) {
           showToast('⚠️ Cart is empty!');
           return;
@@ -10752,7 +10752,7 @@ function printRateList() {
       }
       
       // Show payment modal
-      function showPaymentModal() {
+      window.showPaymentModal = function() {
         if (cart.length === 0) {
           showToast('⚠️ Cart is empty!');
           return;

@@ -433,7 +433,7 @@
     updateBaseRate: function(value) {
       this.baseRate = parseFloat(value);
       this.generateDefaultChart();
-      showToast('✅ Base rate updated!');
+      showToastFn('✅ Base rate updated!');
     },
     
     // Update rate entry
@@ -447,7 +447,7 @@
     // Reset rate entry to formula
     resetRateEntry: function(milkType, index) {
       this.generateDefaultChart();
-      showToast('✅ Rate reset to formula!');
+      showToastFn('✅ Rate reset to formula!');
     },
     
     // Import chart from CSV
@@ -477,6 +477,9 @@
     
     // Export chart to CSV
     exportChart: function() {
+      // Use global showToast if available
+      var showToastFn = window.showToast || function(msg) { console.log(msg); };
+
       const csv = this.exportToCSV('cow');
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
@@ -485,7 +488,7 @@
       a.download = 'rate-chart.csv';
       a.click();
       URL.revokeObjectURL(url);
-      showToast('📤 Rate chart exported!');
+      showToastFn('📤 Rate chart exported!');
     },
     
     // Share via WhatsApp
