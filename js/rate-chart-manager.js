@@ -113,7 +113,7 @@
       const isMatrixFormat = lines.some(line => line.includes('CLR') || line.includes('SNF'));
       
       if (isMatrixFormat) {
-        // Parse matrix format
+        // Parse matrix format - import ALL columns
         return this.importMatrixFormat(lines, milkType);
       }
       
@@ -127,7 +127,9 @@
           if (!isNaN(fat) && !isNaN(rate)) {
             newChart.push({
               fat: fat.toFixed(1),
-              rate: rate
+              rate: rate,
+              snf: 8.5, // Default SNF
+              clr: 30   // Default CLR
             });
           }
         }
@@ -143,19 +145,20 @@
       return 0;
     },
     
-    // Parse matrix format (CLR/SNF table)
+    // Parse matrix format (CLR/SNF table) - Import ALL columns
     importMatrixFormat: function(lines, milkType) {
       const newChart = [];
       let clrValues = [];
       let headerFound = false;
+      let clrRowIndex = -1;
       
+      // First pass: find CLR row and extract CLR values
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
-        const parts = line.split(/\t+/); // Tab-separated
-        
-        // Find CLR header row
-        if (line.includes('CLR') && !headerFound) {
-          // Extract CLR values (skip first 2-3 columns)
+        if (line.includes('CLR')) {
+          clrRowIndex = i;
+          const parts = line.split(/\t+/);
+          // Extract CLR values (skip first 2 columns which are labels)
           for (let j = 2; j < parts.length; j++) {
             const clr = parseFloat(parts[j].trim());
             if (!isNaN(clr)) {
@@ -163,34 +166,57 @@
             }
           }
           headerFound = true;
-          continue;
+          break;
         }
+      }
+      
+      if (!headerFound || clrValues.length === 0) {
+        return 0;
+      }
+      
+      // Second pass: parse FAT rows with ALL SNF/RATE columns
+      for (let i = clrRowIndex + 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const parts = line.split(/\t+/);
         
-        // Skip non-data rows
-        if (!headerFound || parts.length < 3) continue;
+        // Skip empty or header rows
+        if (parts.length < 3 || line.includes('FAT') || line.includes('SNF')) continue;
         
-        // Parse FAT row
+        // First column is FAT value
         const fat = parseFloat(parts[0]?.trim());
         if (isNaN(fat)) continue;
         
-        // Find best rate for this FAT (use first valid SNF/RATE pair)
-        for (let j = 2; j < parts.length && j - 2 < clrValues.length; j++) {
-          const snf = parseFloat(parts[j]?.trim());
-          const rate = parseFloat(parts[j + 1]?.trim());
+        // Parse each CLR column's SNF/RATE pair
+        // Structure: FAT | SNF@CLR30 | RATE@CLR30 | SNF@CLR29 | RATE@CLR29 | ...
+        for (let col = 0; col < clrValues.length; col++) {
+          const snfIndex = 1 + (col * 2);      // SNF column index
+          const rateIndex = 2 + (col * 2);     // RATE column index
           
-          if (!isNaN(snf) && !isNaN(rate) && snf >= 8.0) {
+          if (snfIndex >= parts.length || rateIndex >= parts.length) break;
+          
+          const snf = parseFloat(parts[snfIndex]?.trim());
+          const rate = parseFloat(parts[rateIndex]?.trim());
+          
+          // Only add if we have valid SNF and RATE
+          if (!isNaN(snf) && !isNaN(rate) && snf >= 7.0) {
             newChart.push({
               fat: fat.toFixed(1),
-              rate: rate
+              snf: snf.toFixed(1),
+              rate: rate,
+              clr: clrValues[col]
             });
-            break; // Take first valid rate for this FAT
           }
         }
       }
       
       if (newChart.length > 0) {
-        // Sort by FAT
-        newChart.sort((a, b) => parseFloat(a.fat) - parseFloat(b.fat));
+        // Sort by FAT, then by CLR
+        newChart.sort((a, b) => {
+          const fatDiff = parseFloat(a.fat) - parseFloat(b.fat);
+          if (fatDiff !== 0) return fatDiff;
+          return b.clr - a.clr; // Higher CLR first
+        });
+        
         this.defaultChart[milkType] = newChart;
         this.saveChart();
         return newChart.length;
@@ -201,7 +227,66 @@
     // Export to CSV
     exportToCSV: function(milkType) {
       const chart = this.defaultChart[milkType] || this.defaultChart.cow;
+      if (chart.length === 0) return '';
+      
+      // Check if we have CLR/SNF data (matrix format)
+      const hasMatrixData = chart.some(entry => entry.clr !== undefined);
+      
+      if (hasMatrixData) {
+        // Export in matrix format
+        return this.exportMatrixFormat(chart, milkType);
+      }
+      
+      // Simple format
       return chart.map(e => `${e.fat}%,₹${e.rate}`).join('\n');
+    },
+    
+    // Export in matrix format (CLR/SNF table with all columns)
+    exportMatrixFormat: function(chart, milkType) {
+      // Get unique CLR values (sorted descending)
+      const clrValues = [...new Set(chart.map(e => e.clr))].sort((a, b) => b - a);
+      
+      // Get unique FAT values (sorted ascending)
+      const fatValues = [...new Set(chart.map(e => e.fat))].sort((a, b) => parseFloat(a) - parseFloat(b));
+      
+      // Build CSV rows
+      const rows = [];
+      
+      // Header row 1: Title
+      rows.push(`\tRATE CHART FOR ${milkType.toUpperCase()} MILK`);
+      rows.push(`\tGenerated: ${new Date().toLocaleDateString()}`);
+      rows.push('');
+      
+      // Header row 2: CLR values
+      let clrRow = '\tCLR';
+      clrValues.forEach(clr => {
+        clrRow += `\t${clr}`;
+      });
+      rows.push(clrRow);
+      
+      // Header row 3: SNF/RATE headers
+      let headerRow = '\tFAT';
+      clrValues.forEach(clr => {
+        headerRow += `\tSNF\tRATE`;
+      });
+      rows.push(headerRow);
+      
+      // Data rows: FAT values with SNF/RATE pairs
+      fatValues.forEach(fat => {
+        let row = `\t${fat}`;
+        clrValues.forEach(clr => {
+          // Find entry for this FAT and CLR
+          const entry = chart.find(e => e.fat === fat && e.clr === clr);
+          if (entry) {
+            row += `\t${entry.snf}\t${entry.rate}`;
+          } else {
+            row += `\t\t`; // Empty cells if no data
+          }
+        });
+        rows.push(row);
+      });
+      
+      return rows.join('\n');
     },
     
     // Show rate list modal
