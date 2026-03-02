@@ -362,7 +362,7 @@
         if (session) {
             const sessionData = JSON.parse(session);
             if (sessionData.expires > Date.now()) {
-                window.location.href = 'pos-demo.html';
+                window.location.href = '/pos';
             } else {
                 localStorage.removeItem('MilkRecord_session');
             }
@@ -453,7 +453,7 @@
                 
                 showSuccess('✅ Account created! Redirecting...');
                 setTimeout(() => {
-                    window.location.href = 'pos-demo.html';
+                    window.location.href = '/pos';
                 }, 1000);
                 
             } catch (error) {
@@ -477,7 +477,7 @@
         <span style="color: #cbd5e1;">•</span>
         <a href="index.html" style="color: #667eea; text-decoration: none;">📊 Collection</a>
         <span style="color: #cbd5e1;">•</span>
-        <a href="pos-demo.html" style="color: #667eea; text-decoration: none;">🛒 POS</a>
+        <a href="/pos" style="color: #667eea; text-decoration: none;">🛒 POS</a>
         <span style="color: #cbd5e1;">•</span>
         <a href="farmers.html" style="color: #667eea; text-decoration: none;">👨‍🌾 Farmers</a>
     </div>
