@@ -1,7 +1,6 @@
 {
   "version": 2,
   "outputDirectory": ".",
-  "cleanUrls": true,
   "routes": [
     {
       "src": "/",
