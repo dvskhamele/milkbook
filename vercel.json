@@ -1,74 +1,61 @@
 {
   "version": 2,
-  "outputDirectory": ".",
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/api/index.py"
     },
     {
-      "src": "/",
-      "dest": "/homepage_landing_recovered.html"
-    },
-    {
-      "src": "/standalone_milkbook_complete",
-      "dest": "/deploy/standalone_milkbook_complete.html"
-    },
-    {
-      "src": "/login-pos",
-      "dest": "/auth/dairy-shop-login-india.html"
-    },
-    {
-      "src": "/login",
-      "dest": "/auth/dairy-shop-login-india.html"
-    },
-    {
-      "src": "/login-bmc",
-      "dest": "/auth/bmc-login-milk-collection-center.html"
-    },
-    {
-      "src": "/demo-bmc-login",
-      "dest": "/demo/demo-bmc-login.html"
-    },
-    {
-      "src": "/pos",
-      "dest": "/apps/dairy-pos-billing-software-india.html"
-    },
-    {
-      "src": "/collection",
-      "dest": "/apps/collection.html"
-    },
-    {
-      "src": "/fssai-compliance-screen",
-      "dest": "/apps/fssai-compliance-screen.html"
-    },
-    {
-      "src": "/shift-reconciliation-screen",
-      "dest": "/apps/shift-reconciliation-screen.html"
-    },
-    {
       "src": "/js/(.*)",
       "dest": "/js/$1"
-    },
-    {
-      "src": "/auth/(.*)",
-      "dest": "/auth/$1"
-    },
-    {
-      "src": "/demo/(.*)",
-      "dest": "/demo/$1"
-    },
-    {
-      "src": "/deploy/(.*)",
-      "dest": "/deploy/$1"
     },
     {
       "src": "/apps/(.*)",
       "dest": "/apps/$1"
     },
     {
-      "src": "/(.*)",
+      "src": "/pos",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/collection",
+      "dest": "/apps/collection.html"
+    },
+    {
+      "src": "/farmers",
+      "dest": "/apps/farmer-management-milk-collection-centers.html"
+    },
+    {
+      "src": "/customers",
+      "dest": "/apps/customer-ledger-udhar-tracking-dairy.html"
+    },
+    {
+      "src": "/inventory",
+      "dest": "/apps/inventory.html"
+    },
+    {
+      "src": "/reports",
+      "dest": "/apps/reports-dashboard.html"
+    },
+    {
+      "src": "/settings",
+      "dest": "/apps/settings.html"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/(.+\\.html)",
       "dest": "/$1"
+    },
+    {
+      "src": "/(.+\\.(css|js|json|png|jpg|jpeg|svg|ico|woff|woff2|ttf|eot))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.py"
     }
   ]
 }

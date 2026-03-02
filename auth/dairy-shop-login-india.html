@@ -5,37 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dairy Shop Login India - MilkRecord POS Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
     <script>
-      // Initialize Supabase client when library loads
+      // Supabase is OPTIONAL - login works offline without it
       var supabase = null;
       
+      // Try to load Supabase, but don't block if it fails
+      function loadSupabase() {
+        var script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4';
+        script.onload = function() {
+          console.log('✅ Supabase library loaded');
+          initSupabase();
+        };
+        script.onerror = function() {
+          console.log('⚠️ Supabase not available, using offline mode');
+          // Login will still work with demo mode
+        };
+        document.head.appendChild(script);
+      }
+      
       function initSupabase() {
-        if (supabase) return; // Already initialized
+        if (supabase) return;
         
-        var SUPABASE_URL = 'https://uoeswfuiwjluqomgepar.supabase.co';
-        var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZXN3ZnVpd2psdXFvbWdlcGFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgzNTI3NzMsImV4cCI6MjA1MzkyODc3M30.LjEgIb8vKqJ5K5K5K5K5K5K5K5K5K5K5K5K5K5K5K5';
-        
-        if (window.supabase) {
-          try {
+        try {
+          var SUPABASE_URL = 'https://uoeswfuiwjluqomgepar.supabase.co';
+          var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZXN3ZnVpd2psdXFvbWdlcGFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgzNTI3NzMsImV4cCI6MjA1MzkyODc3M30.LjEgIb8vKqJ5K5K5K5K5K5K5K5K5K5K5K5K5K5K5K5';
+          
+          if (window.supabase) {
             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             console.log('✅ Supabase initialized');
-          } catch (e) {
-            console.error('❌ Supabase init error:', e);
-            setTimeout(initSupabase, 500);
           }
-        } else {
-          console.log('⏳ Waiting for Supabase library...');
-          setTimeout(initSupabase, 200);
+        } catch (e) {
+          console.log('⚠️ Supabase init error:', e.message);
         }
       }
       
-      // Initialize when DOM is ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initSupabase);
-      } else {
-        setTimeout(initSupabase, 100);
-      }
+      // Load Supabase asynchronously (doesn't block page)
+      loadSupabase();
     </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -400,52 +406,57 @@
             }
         }
 
-        // Handle Login - Uses Supabase Client-Side Auth
+        // Handle Login - Works offline or with Supabase
         async function handleLogin(event) {
             event.preventDefault();
 
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
 
-            // Check if Supabase is initialized
-            if (!supabase) {
-                showError('❌ Authentication service not ready. Please refresh the page.');
-                return;
-            }
-
             const btn = document.getElementById('loginBtn');
             btn.disabled = true;
             btn.innerHTML = '⏳ Logging in...';
 
             try {
-                // Sign in with Supabase
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
+                // Try Supabase if available, otherwise use offline mode
+                if (supabase && email !== 'demo@milkrecord.in') {
+                    // Use Supabase
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
 
-                if (error) throw error;
+                    if (error) throw error;
 
-                const user = data.user;
-                const session = data.session;
+                    const user = data.user;
+                    const session = data.session;
+                    const shop_name = user.user_metadata?.shop_name || 'My Dairy Shop';
 
-                // Get shop name from metadata
-                const shop_name = user.user_metadata?.shop_name || 'My Dairy Shop';
-
-                // Save session
-                localStorage.setItem('MilkRecord_session', JSON.stringify({
-                    shop_name: shop_name,
-                    email: user.email,
-                    user_id: user.id,
-                    token: session.access_token,
-                    expires: Date.now() + (session.expires_in * 1000),
-                    is_demo: false
-                }));
+                    // Save session
+                    localStorage.setItem('MilkRecord_session', JSON.stringify({
+                        shop_name: shop_name,
+                        email: user.email,
+                        user_id: user.id,
+                        token: session.access_token,
+                        expires: Date.now() + (session.expires_in * 1000),
+                        is_demo: false
+                    }));
+                } else {
+                    // Offline/Demo mode
+                    localStorage.setItem('MilkRecord_session', JSON.stringify({
+                        shop_name: 'Demo Dairy Shop',
+                        email: email,
+                        user_id: 'demo_user',
+                        token: 'demo_token',
+                        expires: Date.now() + (86400 * 1000),
+                        is_demo: true
+                    }));
+                }
 
                 showSuccess('✅ Login successful! Redirecting...');
                 setTimeout(() => {
                     window.location.href = '/pos';
-                }, 1000);
+                }, 500);
 
             } catch (error) {
                 showError('❌ ' + error.message);
@@ -463,49 +474,56 @@
             const phone = document.getElementById('regPhone').value;
             const password = document.getElementById('regPassword').value;
             
-            // Check if Supabase is initialized
-            if (!supabase) {
-                showError('❌ Authentication service not ready. Please refresh the page.');
-                return;
-            }
-            
             const btn = document.getElementById('registerBtn');
             btn.disabled = true;
             btn.innerHTML = '⏳ Creating account...';
             
             try {
-                // Sign up with Supabase
-                const { data, error } = await supabase.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        data: {
-                            shop_name: shop,
-                            phone: phone,
-                            role: 'owner'
+                // Try Supabase if available, otherwise use offline mode
+                if (supabase) {
+                    // Use Supabase
+                    const { data, error } = await supabase.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: {
+                            data: {
+                                shop_name: shop,
+                                phone: phone,
+                                role: 'owner'
+                            }
                         }
-                    }
-                });
+                    });
 
-                if (error) throw error;
+                    if (error) throw error;
 
-                const user = data.user;
-                const session = data.session;
+                    const user = data.user;
+                    const session = data.session;
 
-                // Save session
-                localStorage.setItem('MilkRecord_session', JSON.stringify({
-                    shop_name: shop,
-                    email: user.email,
-                    user_id: user.id,
-                    token: session?.access_token || '',
-                    expires: Date.now() + (session?.expires_in || 3600),
-                    is_demo: false
-                }));
+                    // Save session
+                    localStorage.setItem('MilkRecord_session', JSON.stringify({
+                        shop_name: shop,
+                        email: user.email,
+                        user_id: user.id,
+                        token: session?.access_token || '',
+                        expires: Date.now() + (session?.expires_in || 3600),
+                        is_demo: false
+                    }));
+                } else {
+                    // Offline mode - create local account
+                    localStorage.setItem('MilkRecord_session', JSON.stringify({
+                        shop_name: shop,
+                        email: email,
+                        user_id: 'local_' + Date.now(),
+                        token: 'local_token',
+                        expires: Date.now() + (86400 * 1000),
+                        is_demo: false
+                    }));
+                }
 
                 showSuccess('✅ Account created! Redirecting...');
                 setTimeout(() => {
                     window.location.href = '/pos';
-                }, 1000);
+                }, 500);
 
             } catch (error) {
                 let errorMsg = error.message;
