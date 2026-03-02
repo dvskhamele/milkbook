@@ -8574,17 +8574,18 @@ async function loadShopSettings() {
         localStorage.setItem('MilkRecord_shop_city', s.shop_city || '');
         localStorage.setItem('MilkRecord_shop_pincode', s.shop_pincode || '');
         localStorage.setItem('MilkRecord_shop_gst', s.shop_gst || '');
-      localStorage.setItem('MilkRecord_shop_pan', s.shop_pan || '');
-      localStorage.setItem('MilkRecord_shop_upi', s.shop_upi || '');
-      localStorage.setItem('MilkRecord_shop_bank', s.shop_bank || '');
-      localStorage.setItem('MilkRecord_shop_account', s.shop_account || '');
-      localStorage.setItem('MilkRecord_shop_ifsc', s.shop_ifsc || '');
-      localStorage.setItem('MilkRecord_shop_account_name', s.shop_account_name || '');
+        localStorage.setItem('MilkRecord_shop_pan', s.shop_pan || '');
+        localStorage.setItem('MilkRecord_shop_upi', s.shop_upi || '');
+        localStorage.setItem('MilkRecord_shop_bank', s.shop_bank || '');
+        localStorage.setItem('MilkRecord_shop_account', s.shop_account || '');
+        localStorage.setItem('MilkRecord_shop_ifsc', s.shop_ifsc || '');
+        localStorage.setItem('MilkRecord_shop_account_name', s.shop_account_name || '');
 
-      console.log('✅ Shop settings loaded from Supabase');
-      
-      // Show sync status confirmation
-      showSyncStatusConfirmation();
+        console.log('✅ Shop settings loaded from Supabase');
+        
+        // Show sync status confirmation
+        showSyncStatusConfirmation();
+      }
     }
   } catch (error) {
     console.log('⚠️ Using localStorage (Supabase not available)');
@@ -10729,7 +10730,7 @@ function printRateList() {
         const mobileBar = document.getElementById('mobilePaymentBar');
         const mobileTotal = document.getElementById('mobileTotalAmount');
         
-        if (mobileBar && mobileTotal) {
+        if (mobileBar && mobileTotal && typeof cart !== 'undefined' && typeof total !== 'undefined') {
           if (cart.length > 0) {
             mobileBar.style.display = 'flex';
             mobileTotal.textContent = '₹' + total.toFixed(2);
