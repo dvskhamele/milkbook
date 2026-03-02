@@ -318,7 +318,43 @@
             document.getElementById('loginPassword').value = 'demo123';
             
             // Auto-submit
-            handleLogin({ preventDefault: () => {} });
+            // Demo login function
+            async function handleDemoLogin() {
+                const btn = document.getElementById('demoLoginBtn');
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Loading...';
+
+                try {
+                    const response = await fetch('/api/demo-login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('MilkRecord_session', JSON.stringify({
+                            shop_name: data.user.shop,
+                            email: data.user.email,
+                            user_id: data.user.id,
+                            token: data.session.access_token,
+                            expires: Date.now() + (data.session.expires_in * 1000),
+                            is_demo: true
+                        }));
+
+                        showSuccess('✅ Demo account loaded! Redirecting...');
+                        setTimeout(() => {
+                            window.location.href = '/pos';
+                        }, 1000);
+                    } else {
+                        throw new Error('Demo login failed');
+                    }
+                } catch (error) {
+                    showError('❌ ' + error.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '🚀 Quick Login with Demo Account';
+                }
+            }
         }
 
         // Check existing session
@@ -332,45 +368,46 @@
             }
         }
 
-        // Handle Login - Calls Backend API
+        // Handle Login - Uses Supabase Auth
         async function handleLogin(event) {
             event.preventDefault();
-            
+
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            
+
             const btn = document.getElementById('loginBtn');
             btn.disabled = true;
             btn.innerHTML = '⏳ Logging in...';
-            
+
             try {
-                // Call backend API
+                // Call Supabase Auth API
                 const response = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (!response.ok) {
                     throw new Error(data.message || 'Login failed');
                 }
-                
+
                 // Save session
                 localStorage.setItem('MilkRecord_session', JSON.stringify({
                     shop_name: data.user.shop,
                     email: data.user.email,
                     user_id: data.user.id,
                     token: data.session.access_token,
-                    expires: Date.now() + (data.session.expires_in * 1000)
+                    expires: Date.now() + (data.session.expires_in * 1000),
+                    is_demo: data.is_demo || false
                 }));
-                
+
                 showSuccess('✅ Login successful! Redirecting...');
                 setTimeout(() => {
-                    window.location.href = 'pos-demo.html';
+                    window.location.href = '/pos';
                 }, 1000);
-                
+
             } catch (error) {
                 showError('❌ ' + error.message);
                 btn.disabled = false;

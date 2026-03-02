@@ -34,10 +34,18 @@ except Exception as e:
     print(f"⚠️ Supabase error: {e}")
 
 # Initialize Flask app
-app = Flask(__name__, 
+app = Flask(__name__,
             template_folder='../apps',
             static_folder='../apps',
             static_url_path='/static')
+
+# Register Auth Blueprint
+try:
+    from api_auth import auth_bp
+    app.register_blueprint(auth_bp)
+    print("✅ Auth API registered")
+except Exception as e:
+    print(f"⚠️  Auth API not available: {e}")
 
 # Also serve JS files
 @app.route('/js/<path:filename>')
