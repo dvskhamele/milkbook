@@ -2424,6 +2424,7 @@
                 <div style="flex: 1;">
                   <div class="label" id="amtLabel">TOTAL AMOUNT</div>
                   <div class="amt" id="amountView"></div>
+                  <div class="label" style="font-size: 10px; margin-top: 4px; color: #64748b;">Selected: <span id="selectedName" style="font-weight: 700; color: #1e293b;">—</span></div>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                   <!-- Round Input -->
@@ -2485,6 +2486,9 @@
         </div>
 
         <!-- Payment Buttons: LIKH LO First, Then CASH, Then Relations -->
+        <button class="panicBtn hold" id="btnHold" style="background:#f59e0b; color:#fff; flex: 1;">
+          🟡 HOLD <span class="subnote">rok lo</span>
+        </button>
         <button class="panicBtn credit" id="btnLikhlo" style="background:#dc2626; color:#fff; flex: 1;">
           📒 LIKHLO <span class="subnote">udhar</span>
         </button>
