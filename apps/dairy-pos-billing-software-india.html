@@ -2852,22 +2852,20 @@
           const dropdown = document.getElementById('profileDropdown');
           dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
 
-          // Load shop name from API
+          // Load shop name from localStorage (offline-first)
           try {
-            const response = await fetch('/api/shop-settings');
-            const result = await response.json();
-            if (result.success && result.settings && result.settings.shop_name) {
-              const shopName = result.settings.shop_name;
-              const profileName = document.getElementById('profileName');
-              if (profileName) {
-                profileName.textContent = shopName;
-              }
-              const dropdownShop = document.getElementById('dropdownShop');
-              if (dropdownShop) {
-                dropdownShop.textContent = shopName;
-              }
-              console.log('✅ Shop name loaded from API:', shopName);
+            const shopSettings = JSON.parse(localStorage.getItem('MilkRecord_shop_settings') || '{}');
+            const shopName = shopSettings.shop_name || localStorage.getItem('MilkRecord_shop_name') || 'Gopal Dairy';
+            
+            const profileName = document.getElementById('profileName');
+            if (profileName) {
+              profileName.textContent = shopName;
             }
+            const dropdownShop = document.getElementById('dropdownShop');
+            if (dropdownShop) {
+              dropdownShop.textContent = shopName;
+            }
+            console.log('✅ Shop name loaded from localStorage:', shopName);
           } catch (error) {
             console.warn('⚠️ Failed to load shop name:', error);
           }
@@ -8534,42 +8532,48 @@ async function loadShopSettings() {
   console.log('✅ Shop settings loaded from localStorage');
   
   // THEN: Try to load from Supabase (will overwrite if available)
+  // Note: This is optional - works offline without Supabase
   try {
-    const response = await fetch('/api/shop-settings');
-    const result = await response.json();
+    // Check if we're online and have Supabase configured
+    const supabaseUrl = localStorage.getItem('MilkRecord_supabase_url');
+    const supabaseKey = localStorage.getItem('MilkRecord_supabase_key');
+    
+    if (supabaseUrl && supabaseKey && navigator.onLine) {
+      const response = await fetch('/api/shop-settings');
+      const result = await response.json();
 
-    if (result.success && result.settings) {
-      const s = result.settings;
-      // Save shop_id to localStorage if returned
-      if (result.shop_id) {
-        localStorage.setItem('MilkRecord_shop_id', result.shop_id);
-        console.log('✅ Shop ID saved to localStorage:', result.shop_id);
-      }
-      // Fill form fields from Supabase
-      if (s.shop_name) el('shopNameInput').value = s.shop_name;
-      if (s.shop_phone) el('shopPhoneInput').value = s.shop_phone;
-      if (s.shop_proprietor) el('shopProprietorInput').value = s.shop_proprietor;
-      if (s.shop_email) el('shopEmailInput').value = s.shop_email;
-      if (s.shop_address) el('shopAddressInput').value = s.shop_address;
-      if (s.shop_city) el('shopCityInput').value = s.shop_city;
-      if (s.shop_pincode) el('shopPincodeInput').value = s.shop_pincode;
-      if (s.shop_gst) el('shopGstInput').value = s.shop_gst;
-      if (s.shop_pan) el('shopPanInput').value = s.shop_pan;
-      if (s.shop_upi) el('shopUpiInput').value = s.shop_upi;
-      if (s.shop_bank) el('shopBankInput').value = s.shop_bank;
-      if (s.shop_account) el('shopAccountInput').value = s.shop_account;
-      if (s.shop_ifsc) el('shopIfscInput').value = s.shop_ifsc;
-      if (s.shop_account_name) el('shopAccountNameInput').value = s.shop_account_name;
+      if (result.success && result.settings) {
+        const s = result.settings;
+        // Save shop_id to localStorage if returned
+        if (result.shop_id) {
+          localStorage.setItem('MilkRecord_shop_id', result.shop_id);
+          console.log('✅ Shop ID saved to localStorage:', result.shop_id);
+        }
+        // Fill form fields from Supabase
+        if (s.shop_name) el('shopNameInput').value = s.shop_name;
+        if (s.shop_phone) el('shopPhoneInput').value = s.shop_phone;
+        if (s.shop_proprietor) el('shopProprietorInput').value = s.shop_proprietor;
+        if (s.shop_email) el('shopEmailInput').value = s.shop_email;
+        if (s.shop_address) el('shopAddressInput').value = s.shop_address;
+        if (s.shop_city) el('shopCityInput').value = s.shop_city;
+        if (s.shop_pincode) el('shopPincodeInput').value = s.shop_pincode;
+        if (s.shop_gst) el('shopGstInput').value = s.shop_gst;
+        if (s.shop_pan) el('shopPanInput').value = s.shop_pan;
+        if (s.shop_upi) el('shopUpiInput').value = s.shop_upi;
+        if (s.shop_bank) el('shopBankInput').value = s.shop_bank;
+        if (s.shop_account) el('shopAccountInput').value = s.shop_account;
+        if (s.shop_ifsc) el('shopIfscInput').value = s.shop_ifsc;
+        if (s.shop_account_name) el('shopAccountNameInput').value = s.shop_account_name;
 
-      // Also save to localStorage for backup
-      localStorage.setItem('MilkRecord_shop_name', s.shop_name || '');
-      localStorage.setItem('MilkRecord_shop_phone', s.shop_phone || '');
-      localStorage.setItem('MilkRecord_shop_proprietor', s.shop_proprietor || '');
-      localStorage.setItem('MilkRecord_shop_email', s.shop_email || '');
-      localStorage.setItem('MilkRecord_shop_address', s.shop_address || '');
-      localStorage.setItem('MilkRecord_shop_city', s.shop_city || '');
-      localStorage.setItem('MilkRecord_shop_pincode', s.shop_pincode || '');
-      localStorage.setItem('MilkRecord_shop_gst', s.shop_gst || '');
+        // Also save to localStorage for backup
+        localStorage.setItem('MilkRecord_shop_name', s.shop_name || '');
+        localStorage.setItem('MilkRecord_shop_phone', s.shop_phone || '');
+        localStorage.setItem('MilkRecord_shop_proprietor', s.shop_proprietor || '');
+        localStorage.setItem('MilkRecord_shop_email', s.shop_email || '');
+        localStorage.setItem('MilkRecord_shop_address', s.shop_address || '');
+        localStorage.setItem('MilkRecord_shop_city', s.shop_city || '');
+        localStorage.setItem('MilkRecord_shop_pincode', s.shop_pincode || '');
+        localStorage.setItem('MilkRecord_shop_gst', s.shop_gst || '');
       localStorage.setItem('MilkRecord_shop_pan', s.shop_pan || '');
       localStorage.setItem('MilkRecord_shop_upi', s.shop_upi || '');
       localStorage.setItem('MilkRecord_shop_bank', s.shop_bank || '');
